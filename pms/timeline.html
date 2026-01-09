@@ -1,0 +1,2335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MVP Implementation Timeline - Cardamom Processing Client</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #059669;
+            --primary-dark: #047857;
+            --primary-light: #d1fae5;
+            --secondary: #f59e0b;
+            --secondary-light: #fef3c7;
+            --accent: #8b5cf6;
+            --accent-light: #ede9fe;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #047857, #059669);
+            color: white;
+            padding: 48px 40px;
+            border-radius: 16px;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .header .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 16px;
+        }
+
+        .header p {
+            opacity: 0.85;
+            max-width: 800px;
+        }
+
+        .header-badges {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            padding: 6px 14px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .badge-mvp {
+            background: #fbbf24;
+            color: #78350f;
+        }
+
+        /* Typography */
+        h2 {
+            font-size: 1.5rem;
+            margin: 48px 0 20px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+            color: var(--primary-dark);
+        }
+
+        h2:first-of-type {
+            margin-top: 0;
+            padding-top: 0;
+            border-top: none;
+        }
+
+        h3 {
+            font-size: 1.15rem;
+            margin: 0 0 12px;
+            color: var(--text);
+        }
+
+        h4 {
+            font-size: 0.95rem;
+            margin: 20px 0 10px;
+            color: var(--text-muted);
+        }
+
+        p { margin-bottom: 14px; }
+
+        /* Cards */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        /* Grid */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        @media (max-width: 900px) {
+            .grid-2, .grid-3, .grid-4 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Client Info Box */
+        .client-box {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border: 2px solid #f59e0b;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 32px;
+        }
+
+        .client-box h3 {
+            color: #92400e;
+            margin-bottom: 16px;
+        }
+
+        .client-box p {
+            color: #78350f;
+            margin-bottom: 12px;
+        }
+
+        .client-stats {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+        }
+
+        .client-stat {
+            background: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .client-stat .number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #92400e;
+        }
+
+        .client-stat .label {
+            font-size: 0.8rem;
+            color: #78350f;
+        }
+
+        /* Process Flow */
+        .process-flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            padding: 24px;
+            background: var(--bg);
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .process-box {
+            padding: 14px 20px;
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .process-box.rm { border-color: #3b82f6; background: #eff6ff; }
+        .process-box.sfg { border-color: #f59e0b; background: #fef3c7; }
+        .process-box.fg { border-color: #10b981; background: #d1fae5; }
+        .process-box.process { border-color: #8b5cf6; background: #ede9fe; }
+
+        .process-box .type {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 4px;
+        }
+
+        .process-box.rm .type { color: #1d4ed8; }
+        .process-box.sfg .type { color: #b45309; }
+        .process-box.fg .type { color: #047857; }
+        .process-box.process .type { color: #6d28d9; }
+
+        .process-arrow {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+        }
+
+        /* Phase Cards */
+        .phase-card {
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .phase-header {
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .phase-number {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .phase-1 .phase-number { background: #ef4444; }
+        .phase-1 { border-color: #fecaca; }
+        .phase-2 .phase-number { background: #f59e0b; }
+        .phase-2 { border-color: #fde68a; }
+        .phase-3 .phase-number { background: #10b981; }
+        .phase-3 { border-color: #a7f3d0; }
+        .phase-4 .phase-number { background: #3b82f6; }
+        .phase-4 { border-color: #bfdbfe; }
+        .phase-5 .phase-number { background: #8b5cf6; }
+        .phase-5 { border-color: #ddd6fe; }
+
+        .phase-info h3 {
+            margin: 0 0 4px;
+            font-size: 1.15rem;
+        }
+
+        .phase-info p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .phase-duration {
+            margin-left: auto;
+            padding: 8px 16px;
+            background: var(--bg);
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .phase-body {
+            padding: 0 24px 24px;
+        }
+
+        /* Module Section */
+        .module-section {
+            background: var(--bg);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 16px 0;
+        }
+
+        .module-section h4 {
+            margin: 0 0 16px;
+            color: var(--text);
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .module-badge {
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            background: var(--primary);
+            color: white;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        /* Task List */
+        .task-section {
+            margin-bottom: 20px;
+        }
+
+        .task-section h4 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .task-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .task-list li {
+            padding: 10px 14px;
+            background: var(--bg);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .task-list li::before {
+            content: "○";
+            color: var(--text-muted);
+        }
+
+        .task-list li.mvp-critical::before {
+            content: "★";
+            color: #f59e0b;
+        }
+
+        .task-tag {
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            margin-left: auto;
+            flex-shrink: 0;
+        }
+
+        .tag-mvp { background: #fef3c7; color: #92400e; }
+        .tag-core { background: #dbeafe; color: #1e40af; }
+        .tag-later { background: #f3f4f6; color: #6b7280; }
+
+        /* Detailed Task Table */
+        .task-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            margin: 12px 0;
+        }
+
+        .task-table th, .task-table td {
+            padding: 10px 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .task-table th {
+            background: var(--bg);
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+        }
+
+        .task-table tr:hover {
+            background: #f8fafc;
+        }
+
+        .task-table .task-id {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--primary);
+        }
+
+        .task-table .effort {
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        /* MVP Highlight */
+        .mvp-highlight {
+            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+            border: 2px solid #10b981;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 24px 0;
+        }
+
+        .mvp-highlight h3 {
+            color: #047857;
+            margin-bottom: 12px;
+        }
+
+        .mvp-highlight p {
+            color: #065f46;
+        }
+
+        /* Timeline */
+        .timeline-summary {
+            background: linear-gradient(135deg, #1e293b, #334155);
+            color: white;
+            padding: 32px;
+            border-radius: 16px;
+            margin: 32px 0;
+        }
+
+        .timeline-summary h3 {
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .timeline-row {
+            display: flex;
+            align-items: stretch;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .timeline-phase {
+            flex: 1;
+            padding: 16px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .timeline-phase.mvp {
+            background: rgba(16, 185, 129, 0.3);
+            border: 2px solid #10b981;
+        }
+
+        .timeline-phase.future {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+        }
+
+        .timeline-phase .name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .timeline-phase .duration {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #34d399;
+        }
+
+        .timeline-phase.future .duration {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .timeline-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            margin-top: 20px;
+        }
+
+        .timeline-total .mvp-total {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #34d399;
+        }
+
+        .timeline-total .full-total {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Tables */
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 16px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: var(--bg);
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Code */
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--bg);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.85em;
+        }
+
+        /* Mapping Table */
+        .mapping-table tr td:first-child {
+            font-weight: 600;
+            color: var(--secondary);
+        }
+
+        .mapping-table tr td:nth-child(2) {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        /* Feature comparison */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin: 20px 0;
+        }
+
+        .feature-col h4 {
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .feature-col.mvp h4 {
+            border-color: #10b981;
+            color: #047857;
+        }
+
+        .feature-col.later h4 {
+            border-color: #94a3b8;
+            color: #64748b;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .feature-list li::before {
+            content: "✓";
+            font-weight: bold;
+        }
+
+        .feature-col.mvp .feature-list li::before {
+            color: #10b981;
+        }
+
+        .feature-col.later .feature-list li::before {
+            color: #94a3b8;
+        }
+
+        /* Deliverables */
+        .deliverable-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+
+        .deliverable-item {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .deliverable-item .icon {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .deliverable-item .name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .deliverable-item .desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* Database & API Summary */
+        .summary-box {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px;
+        }
+
+        .summary-box h5 {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .summary-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .summary-list li {
+            padding: 6px 0;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px dashed var(--border);
+        }
+
+        .summary-list li:last-child {
+            border-bottom: none;
+        }
+
+        .summary-list code {
+            font-size: 0.8rem;
+        }
+
+        /* Week breakdown */
+        .week-box {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border: 1px solid #7dd3fc;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 12px 0;
+        }
+
+        .week-box h5 {
+            color: #0369a1;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .week-box ul {
+            margin: 0;
+            padding-left: 20px;
+            font-size: 0.85rem;
+            color: #0c4a6e;
+        }
+
+        .week-box li {
+            margin-bottom: 4px;
+        }
+
+        /* Print Styles */
+        @media print {
+            body { background: white; font-size: 10pt; }
+            .container { max-width: 100%; padding: 0; }
+            .header, .timeline-summary { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .phase-card { page-break-inside: avoid; }
+            h2 { page-break-after: avoid; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>MVP Implementation Timeline</h1>
+            <div class="subtitle">Cardamom Processing Management System</div>
+            <p>Client-focused implementation plan built on our industry-agnostic PMS architecture. MVP prioritizes the core workflows needed for cardamom grading, sorting, and batch traceability.</p>
+            <div class="header-badges">
+                <span class="badge badge-mvp">MVP Focus</span>
+                <span class="badge">Split Processing</span>
+                <span class="badge">Batch Traceability</span>
+                <span class="badge">Yield Tracking</span>
+            </div>
+        </div>
+
+        <!-- Client Overview -->
+        <div class="client-box">
+            <h3>Client Business Profile</h3>
+            <p>Cardamom processing business handling auction lots, farmer purchases, and trader supplies. Core operations involve grading by size and sorting by quality, with full traceability from raw material to finished goods.</p>
+            <div class="client-stats">
+                <div class="client-stat">
+                    <div class="number">12</div>
+                    <div class="label">Raw Materials</div>
+                </div>
+                <div class="client-stat">
+                    <div class="number">~100</div>
+                    <div class="label">Semi-Finished</div>
+                </div>
+                <div class="client-stat">
+                    <div class="number">~68</div>
+                    <div class="label">Finished Goods</div>
+                </div>
+                <div class="client-stat">
+                    <div class="number">2</div>
+                    <div class="label">Core Processes</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Client Process Flow -->
+        <h2>Client Process Flow</h2>
+        <div class="card">
+            <p>The client's manufacturing follows a clear <strong>SPLIT</strong> pattern - one input produces multiple outputs at each stage:</p>
+
+            <div class="process-flow">
+                <div class="process-box rm">
+                    <div class="type">Raw Material</div>
+                    <div>Cardamom Lot</div>
+                    <div style="font-size: 0.75rem; color: #64748b;">Auction/Farmer/Trader</div>
+                </div>
+                <span class="process-arrow">→</span>
+                <div class="process-box process">
+                    <div class="type">Process</div>
+                    <div>Grading</div>
+                    <div style="font-size: 0.75rem; color: #64748b;">Split by Size</div>
+                </div>
+                <span class="process-arrow">→</span>
+                <div class="process-box sfg">
+                    <div class="type">Semi-Finished</div>
+                    <div>Size Grades</div>
+                    <div style="font-size: 0.75rem; color: #64748b;">8.5mm, 8mm, 7-8mm...</div>
+                </div>
+                <span class="process-arrow">→</span>
+                <div class="process-box process">
+                    <div class="type">Process</div>
+                    <div>Sorting</div>
+                    <div style="font-size: 0.75rem; color: #64748b;">Split by Quality</div>
+                </div>
+                <span class="process-arrow">→</span>
+                <div class="process-box fg">
+                    <div class="type">Finished Good</div>
+                    <div>Sorted Output</div>
+                    <div style="font-size: 0.75rem; color: #64748b;">Main, Split, Sick, Fruit</div>
+                </div>
+            </div>
+
+            <h4>Grading Outputs (by Size)</h4>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px;">
+                <code>8.5mm Bold</code>
+                <code>8.0mm Bold</code>
+                <code>7.5-8.0mm</code>
+                <code>7.0-8.0mm</code>
+                <code>6.0-7.0mm</code>
+                <code>5.0-6.0mm</code>
+                <code>Seed</code>
+            </div>
+
+            <h4>Sorting Outputs (by Quality)</h4>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <code>Main (Primary)</code>
+                <code>Split</code>
+                <code>Sick</code>
+                <code>Fruit</code>
+            </div>
+        </div>
+
+        <!-- System Mapping -->
+        <h2>Client to PMS Mapping</h2>
+        <div class="card">
+            <p>How the client's concepts map to our industry-agnostic PMS:</p>
+            <div class="table-wrapper">
+                <table class="mapping-table">
+                    <thead>
+                        <tr>
+                            <th>Client Term</th>
+                            <th>PMS Concept</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>RM (Raw Material)</td>
+                            <td>RAW_MATERIAL</td>
+                            <td>Cardamom lots from auction, farmers, traders</td>
+                        </tr>
+                        <tr>
+                            <td>SFG (Semi-Finished)</td>
+                            <td>INTERMEDIATE</td>
+                            <td>Graded cardamom by size, ready for sorting</td>
+                        </tr>
+                        <tr>
+                            <td>FG (Finished Good)</td>
+                            <td>FINISHED_GOOD</td>
+                            <td>Sorted, packed cardamom ready for sale</td>
+                        </tr>
+                        <tr>
+                            <td>Grading Process</td>
+                            <td>SPLIT Procedure</td>
+                            <td>1 input → multiple outputs by size with yield %</td>
+                        </tr>
+                        <tr>
+                            <td>Sorting Process</td>
+                            <td>SPLIT Procedure</td>
+                            <td>1 input → multiple outputs by quality with yield %</td>
+                        </tr>
+                        <tr>
+                            <td>Lot Number</td>
+                            <td>Batch</td>
+                            <td>Traceable batch from source to finished product</td>
+                        </tr>
+                        <tr>
+                            <td>Size (8mm, 7-8mm)</td>
+                            <td>Item Attribute (JSONB)</td>
+                            <td>Flexible attribute stored per item</td>
+                        </tr>
+                        <tr>
+                            <td>Quality (Split, Sick)</td>
+                            <td>Item Attribute (JSONB)</td>
+                            <td>Flexible attribute stored per item</td>
+                        </tr>
+                        <tr>
+                            <td>Yield %</td>
+                            <td>BOM Output Yield</td>
+                            <td>Expected output percentage per grade/sort</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Timeline Summary -->
+        <div class="timeline-summary">
+            <h3>Implementation Timeline Overview</h3>
+            <div class="timeline-row">
+                <div class="timeline-phase mvp">
+                    <div class="name">Phase 1</div>
+                    <div class="duration">~2 week</div>
+                    <div style="font-size: 0.75rem; opacity: 0.8;">Foundation</div>
+                </div>
+                <div class="timeline-phase mvp">
+                    <div class="name">Phase 2</div>
+                    <div class="duration">~3 weeks</div>
+                    <div style="font-size: 0.75rem; opacity: 0.8;">Item Master</div>
+                </div>
+                <div class="timeline-phase mvp">
+                    <div class="name">Phase 3</div>
+                    <div class="duration">~3 weeks</div>
+                    <div style="font-size: 0.75rem; opacity: 0.8;">Manufacturing</div>
+                </div>
+                <div class="timeline-phase mvp">
+                    <div class="name">Phase 4</div>
+                    <div class="duration">~2 weeks</div>
+                    <div style="font-size: 0.75rem; opacity: 0.8;">Inventory & Batch</div>
+                </div>
+                <div class="timeline-phase future">
+                    <div class="name">Phase 5</div>
+                    <div class="duration">~2 weeks</div>
+                    <div style="font-size: 0.75rem; opacity: 0.8;">Advanced</div>
+                </div>
+            </div>
+            <div class="timeline-total">
+                <div>
+                    <div style="font-size: 0.85rem; opacity: 0.7;">MVP Delivery</div>
+                    <div class="mvp-total">~10 weeks</div>
+                </div>
+                <div style="text-align: right;">
+                    <div style="font-size: 0.85rem; opacity: 0.7;">Full System</div>
+                    <div class="full-total">~12 weeks</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MVP Scope -->
+        <h2>MVP vs Future Scope</h2>
+        <div class="card">
+            <div class="feature-grid">
+                <div class="feature-col mvp">
+                    <h4>MVP (Phases 1-4)</h4>
+                    <ul class="feature-list">
+                        <li>Item Master with RM, SFG, FG types</li>
+                        <li>Flexible attributes (size, quality)</li>
+                        <li>Categories & Units of Measure</li>
+                        <li>SPLIT-type BOMs with yield %</li>
+                        <li>Production Orders & Execution</li>
+                        <li>Batch/Lot creation & tracking</li>
+                        <li>Batch genealogy (parent-child)</li>
+                        <li>Basic inventory tracking</li>
+                        <li>Stock movements (in/out)</li>
+                        <li>Forward & backward traceability</li>
+                        <li>Simple reporting</li>
+                    </ul>
+                </div>
+                <div class="feature-col later">
+                    <h4>Phase 5 (Later)</h4>
+                    <ul class="feature-list">
+                        <li>Advanced QC parameters</li>
+                        <li>QC hold/release workflow</li>
+                        <li>Certificate of Analysis (COA)</li>
+                        <li>Cost analysis & reports</li>
+                        <li>Dashboard & analytics</li>
+                        <li>Notifications & alerts</li>
+                        <li>Multi-warehouse support</li>
+                        <li>COMBINE/COMPLEX BOMs</li>
+                        <li>Advanced reporting</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- PHASE 1: DETAILED -->
+        <!-- ============================================ -->
+        <h2>Phase 1: Foundation & Setup</h2>
+
+        <div class="phase-card phase-1">
+            <div class="phase-header">
+                <div class="phase-number">1</div>
+                <div class="phase-info">
+                    <h3>Foundation & Setup</h3>
+                    <p>Project setup, authentication, base UI layout, core infrastructure</p>
+                </div>
+                <div class="phase-duration">~2 week</div>
+            </div>
+            <div class="phase-body">
+                <!-- Week breakdown -->
+                <div class="week-box">
+                    <h5>Week 1 Goals</h5>
+                    <ul>
+                        <li>Complete backend project setup with database connection</li>
+                        <li>Implement JWT authentication flow</li>
+                        <li>Create frontend base layout with navigation</li>
+                        <li>Set up development environment and tooling</li>
+                    </ul>
+                </div>
+                <div class="week-box">
+                    <h5>Week 2 Goals</h5>
+                    <ul>
+                        <li>Finalize authentication and authorization</li>
+                        <li>Complete audit logging infrastructure</li>
+                        <li>Polish UI components and layout</li>
+                        <li>Testing and initial deployment setup</li>
+                    </ul>
+                </div>
+
+                <!-- Modules -->
+                <div class="module-section">
+                    <h4><span class="module-badge">MODULE</span> Auth Integration</h4>
+                    <div class="grid-3">
+                        <div class="summary-box">
+                            <h5>Database Tables</h5>
+                            <ul class="summary-list">
+                                <li><code>users</code> - User accounts</li>
+                                <li><code>audit_logs</code> - Activity tracking</li>
+                            </ul>
+                        </div>
+                        <div class="summary-box">
+                            <h5>API Endpoints</h5>
+                            <ul class="summary-list">
+                                <li><code>POST /auth/login</code></li>
+                                <li><code>POST /auth/logout</code></li>
+                                <li><code>GET /auth/me</code></li>
+                                <li><code>POST /auth/refresh</code></li>
+                            </ul>
+                        </div>
+                        <div class="summary-box">
+                            <h5>UI Screens</h5>
+                            <ul class="summary-list">
+                                <li>Login Page</li>
+                                <li>Main Layout (Shell)</li>
+                                <li>Dashboard (Placeholder)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detailed Tasks -->
+                <h4>Detailed Task Breakdown</h4>
+                <table class="task-table">
+                    <thead>
+                        <tr>
+                            <th>Task ID</th>
+                            <th>Task</th>
+                            <th>Type</th>
+                            <th>Effort</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="task-id">P1-001</td>
+                            <td>Initialize NestJS project with TypeScript</td>
+                            <td>Backend</td>
+                            <td class="effort">2h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P1-002</td>
+                            <td>Configure TypeORM with PostgreSQL connection</td>
+                            <td>Backend</td>
+                            <td class="effort">2h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P1-003</td>
+                            <td>Create users table and entity</td>
+                            <td>Database</td>
+                            <td class="effort">1h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P1-004</td>
+                            <td>Create audit_logs table and entity</td>
+                            <td>Database</td>
+                            <td class="effort">1h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P1-005</td>
+                            <td>Implement JWT authentication service</td>
+                            <td>Backend</td>
+                            <td class="effort">4h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P1-006</td>
+                            <td>Create auth controller (login, logout, me, refresh)</td>
+                            <td>Backend</td>
+                            <td class="effort">3h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P1-007</td>
+                            <td>Implement auth guards and decorators</td>
+                            <td>Backend</td>
+                            <td class="effort">2h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P1-008</td>
+                            <td>Create audit log middleware</td>
+                            <td>Backend</td>
+                            <td class="effort">2h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P1-009</td>
+                            <td>Set up Swagger API documentation</td>
+                            <td>Backend</td>
+                            <td class="effort">1h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P1-010</td>
+                            <td>Initialize React project with TypeScript + Vite</td>
+                            <td>Frontend</td>
+                            <td class="effort">2h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P1-011</td>
+                            <td>Set up Ant Design / UI component library</td>
+                            <td>Frontend</td>
+                            <td class="effort">1h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P1-012</td>
+                            <td>Create API service layer with Axios</td>
+                            <td>Frontend</td>
+                            <td class="effort">2h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P1-013</td>
+                            <td>Implement auth context/store</td>
+                            <td>Frontend</td>
+                            <td class="effort">3h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P1-014</td>
+                            <td>Create Login page with form</td>
+                            <td>Frontend</td>
+                            <td class="effort">4h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P1-015</td>
+                            <td>Create main layout (sidebar, header, content area)</td>
+                            <td>Frontend</td>
+                            <td class="effort">4h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P1-016</td>
+                            <td>Set up React Router with protected routes</td>
+                            <td>Frontend</td>
+                            <td class="effort">2h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P1-017</td>
+                            <td>Create placeholder Dashboard page</td>
+                            <td>Frontend</td>
+                            <td class="effort">1h</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div style="margin-top: 16px; padding: 12px; background: #f0fdf4; border-radius: 8px;">
+                    <strong>Phase 1 Summary:</strong> 2 tables, 4 endpoints, 3 screens | <strong>Total: ~37 hours</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- PHASE 2: DETAILED -->
+        <!-- ============================================ -->
+        <h2>Phase 2: Item Master & Categories</h2>
+
+        <div class="phase-card phase-2">
+            <div class="phase-header">
+                <div class="phase-number">2</div>
+                <div class="phase-info">
+                    <h3>Item Master & Categories</h3>
+                    <p>Complete item management with flexible attributes for cardamom variants</p>
+                </div>
+                <div class="phase-duration">~3 weeks</div>
+            </div>
+            <div class="phase-body">
+                <div class="mvp-highlight">
+                    <h3>Client-Critical: Item Setup</h3>
+                    <p>This phase enables the client to set up all 180+ cardamom items (RM, SFG, FG) with size and quality attributes. The flexible JSONB attributes allow storing cardamom-specific data like grade size, quality type, and source.</p>
+                </div>
+
+                <!-- Week breakdown -->
+                <div class="week-box">
+                    <h5>Week 3 Goals</h5>
+                    <ul>
+                        <li>Create all database tables for items module</li>
+                        <li>Implement category and unit management</li>
+                        <li>Begin item CRUD APIs</li>
+                    </ul>
+                </div>
+                <div class="week-box">
+                    <h5>Week 4 Goals</h5>
+                    <ul>
+                        <li>Complete item CRUD APIs with filtering</li>
+                        <li>Build frontend screens for item management</li>
+                        <li>Implement bulk import functionality</li>
+                    </ul>
+                </div>
+                <div class="week-box">
+                    <h5>Week 5 Goals</h5>
+                    <ul>
+                        <li>Complete all frontend screens</li>
+                        <li>Import client's item master data</li>
+                        <li>Testing and refinement of item module</li>
+                    </ul>
+                </div>
+
+                <!-- Modules -->
+                <div class="module-section">
+                    <h4><span class="module-badge">MODULE</span> Items</h4>
+                    <div class="grid-3">
+                        <div class="summary-box">
+                            <h5>Database Tables</h5>
+                            <ul class="summary-list">
+                                <li><code>items</code> - Item master</li>
+                                <li><code>item_attributes</code> - JSONB attrs</li>
+                            </ul>
+                        </div>
+                        <div class="summary-box">
+                            <h5>API Endpoints</h5>
+                            <ul class="summary-list">
+                                <li><code>GET /items</code></li>
+                                <li><code>GET /items/:id</code></li>
+                                <li><code>POST /items</code></li>
+                                <li><code>PUT /items/:id</code></li>
+                                <li><code>DELETE /items/:id</code></li>
+                                <li><code>POST /items/bulk-import</code></li>
+                            </ul>
+                        </div>
+                        <div class="summary-box">
+                            <h5>UI Screens</h5>
+                            <ul class="summary-list">
+                                <li>Item List (with filters)</li>
+                                <li>Item Create/Edit Form</li>
+                                <li>Item Detail View</li>
+                                <li>Bulk Import Screen</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="module-section">
+                    <h4><span class="module-badge">MODULE</span> Categories</h4>
+                    <div class="grid-3">
+                        <div class="summary-box">
+                            <h5>Database Tables</h5>
+                            <ul class="summary-list">
+                                <li><code>categories</code> - Hierarchical</li>
+                            </ul>
+                        </div>
+                        <div class="summary-box">
+                            <h5>API Endpoints</h5>
+                            <ul class="summary-list">
+                                <li><code>GET /categories</code></li>
+                                <li><code>POST /categories</code></li>
+                                <li><code>PUT /categories/:id</code></li>
+                                <li><code>DELETE /categories/:id</code></li>
+                            </ul>
+                        </div>
+                        <div class="summary-box">
+                            <h5>UI Screens</h5>
+                            <ul class="summary-list">
+                                <li>Category Tree View</li>
+                                <li>Category Form Modal</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="module-section">
+                    <h4><span class="module-badge">MODULE</span> Units of Measure</h4>
+                    <div class="grid-3">
+                        <div class="summary-box">
+                            <h5>Database Tables</h5>
+                            <ul class="summary-list">
+                                <li><code>units</code> - Base units</li>
+                                <li><code>unit_conversions</code> - Conversion factors</li>
+                            </ul>
+                        </div>
+                        <div class="summary-box">
+                            <h5>API Endpoints</h5>
+                            <ul class="summary-list">
+                                <li><code>GET /units</code></li>
+                                <li><code>POST /units</code></li>
+                                <li><code>PUT /units/:id</code></li>
+                            </ul>
+                        </div>
+                        <div class="summary-box">
+                            <h5>UI Screens</h5>
+                            <ul class="summary-list">
+                                <li>Units List</li>
+                                <li>Unit Form Modal</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detailed Tasks -->
+                <h4>Detailed Task Breakdown</h4>
+                <table class="task-table">
+                    <thead>
+                        <tr>
+                            <th>Task ID</th>
+                            <th>Task</th>
+                            <th>Type</th>
+                            <th>Effort</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="task-id">P2-001</td>
+                            <td>Create categories table with parent_id (self-reference)</td>
+                            <td>Database</td>
+                            <td class="effort">1h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P2-002</td>
+                            <td>Create units table</td>
+                            <td>Database</td>
+                            <td class="effort">0.5h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P2-003</td>
+                            <td>Create unit_conversions table</td>
+                            <td>Database</td>
+                            <td class="effort">0.5h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P2-004</td>
+                            <td>Create items table with item_type enum and JSONB attributes</td>
+                            <td>Database</td>
+                            <td class="effort">1h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P2-005</td>
+                            <td>Implement categories service and controller</td>
+                            <td>Backend</td>
+                            <td class="effort">3h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P2-006</td>
+                            <td>Implement units service and controller</td>
+                            <td>Backend</td>
+                            <td class="effort">2h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P2-007</td>
+                            <td>Implement unit conversion logic</td>
+                            <td>Backend</td>
+                            <td class="effort">2h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P2-008</td>
+                            <td>Create item entity with TypeORM decorators</td>
+                            <td>Backend</td>
+                            <td class="effort">1h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P2-009</td>
+                            <td>Implement items service (CRUD)</td>
+                            <td>Backend</td>
+                            <td class="effort">4h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P2-010</td>
+                            <td>Implement item filtering (by type, category, status)</td>
+                            <td>Backend</td>
+                            <td class="effort">2h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P2-011</td>
+                            <td>Create items controller with validation</td>
+                            <td>Backend</td>
+                            <td class="effort">2h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P2-012</td>
+                            <td>Implement bulk import API (CSV/Excel parsing)</td>
+                            <td>Backend</td>
+                            <td class="effort">4h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P2-013</td>
+                            <td>Create Item List page with table and filters</td>
+                            <td>Frontend</td>
+                            <td class="effort">6h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P2-014</td>
+                            <td>Create Item form (create/edit) with dynamic attributes</td>
+                            <td>Frontend</td>
+                            <td class="effort">6h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P2-015</td>
+                            <td>Create Item detail view page</td>
+                            <td>Frontend</td>
+                            <td class="effort">3h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P2-016</td>
+                            <td>Create Category management page (tree view)</td>
+                            <td>Frontend</td>
+                            <td class="effort">4h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P2-017</td>
+                            <td>Create Category add/edit modal</td>
+                            <td>Frontend</td>
+                            <td class="effort">2h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P2-018</td>
+                            <td>Create Units management page</td>
+                            <td>Frontend</td>
+                            <td class="effort">3h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P2-019</td>
+                            <td>Create Bulk Import page with file upload</td>
+                            <td>Frontend</td>
+                            <td class="effort">4h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P2-020</td>
+                            <td>Import client's 180+ items via bulk import</td>
+                            <td>Data</td>
+                            <td class="effort">4h</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>Client Data Structure</h4>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Item Code</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                                <th>Attributes (JSONB)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>R001</code></td>
+                                <td>RAW_MATERIAL</td>
+                                <td>Cardamom RM - Auction</td>
+                                <td><code>{"source": "auction"}</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>SF013BA</code></td>
+                                <td>INTERMEDIATE</td>
+                                <td>Grade-Cardamom 7.0-8.0mm</td>
+                                <td><code>{"size": "7.0-8.0mm", "stage": "graded"}</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>SF013BA01</code></td>
+                                <td>INTERMEDIATE</td>
+                                <td>Sort-Cardamom 7.0-8.0mm</td>
+                                <td><code>{"size": "7.0-8.0mm", "quality": "main"}</code></td>
+                            </tr>
+                            <tr>
+                                <td><code>CN013BA01</code></td>
+                                <td>FINISHED_GOOD</td>
+                                <td>Cardamom 7.0-8.0mm</td>
+                                <td><code>{"size": "7.0-8.0mm", "quality": "main", "packed": true}</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="margin-top: 16px; padding: 12px; background: #fef3c7; border-radius: 8px;">
+                    <strong>Phase 2 Summary:</strong> 5 tables, 13 endpoints, 8 screens | <strong>Total: ~54 hours</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- PHASE 3: DETAILED -->
+        <!-- ============================================ -->
+        <h2>Phase 3: Manufacturing - BOMs & Production</h2>
+
+        <div class="phase-card phase-3">
+            <div class="phase-header">
+                <div class="phase-number">3</div>
+                <div class="phase-info">
+                    <h3>Manufacturing - BOMs & Production</h3>
+                    <p>Split-type BOMs, production orders, and execution tracking</p>
+                </div>
+                <div class="phase-duration">~3 weeks</div>
+            </div>
+            <div class="phase-body">
+                <div class="mvp-highlight">
+                    <h3>Client-Critical: Production Workflow</h3>
+                    <p>This phase enables grading and sorting workflows. SPLIT BOMs allow one input to produce multiple outputs with yield percentages - exactly what the client needs for size grading (e.g., 100kg input → 20kg 8mm + 35kg 7-8mm + 30kg 6-7mm + 15kg seed).</p>
+                </div>
+
+                <!-- Week breakdown -->
+                <div class="week-box">
+                    <h5>Week 6 Goals</h5>
+                    <ul>
+                        <li>Create all manufacturing database tables</li>
+                        <li>Implement procedures and BOM foundation</li>
+                        <li>Begin BOM management APIs</li>
+                    </ul>
+                </div>
+                <div class="week-box">
+                    <h5>Week 7 Goals</h5>
+                    <ul>
+                        <li>Complete BOM APIs with split-type support</li>
+                        <li>Build BOM management frontend</li>
+                        <li>Implement production order creation</li>
+                    </ul>
+                </div>
+                <div class="week-box">
+                    <h5>Week 8 Goals</h5>
+                    <ul>
+                        <li>Complete production execution tracking</li>
+                        <li>Create client's grading and sorting BOMs</li>
+                        <li>Testing and integration with items module</li>
+                    </ul>
+                </div>
+
+                <!-- Modules -->
+                <div class="module-section">
+                    <h4><span class="module-badge">MODULE</span> Procedures</h4>
+                    <div class="grid-3">
+                        <div class="summary-box">
+                            <h5>Database Tables</h5>
+                            <ul class="summary-list">
+                                <li><code>procedures</code> - Process definitions</li>
+                            </ul>
+                        </div>
+                        <div class="summary-box">
+                            <h5>API Endpoints</h5>
+                            <ul class="summary-list">
+                                <li><code>GET /procedures</code></li>
+                                <li><code>POST /procedures</code></li>
+                                <li><code>PUT /procedures/:id</code></li>
+                            </ul>
+                        </div>
+                        <div class="summary-box">
+                            <h5>UI Screens</h5>
+                            <ul class="summary-list">
+                                <li>Procedures List</li>
+                                <li>Procedure Form</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="module-section">
+                    <h4><span class="module-badge">MODULE</span> Bill of Materials</h4>
+                    <div class="grid-3">
+                        <div class="summary-box">
+                            <h5>Database Tables</h5>
+                            <ul class="summary-list">
+                                <li><code>boms</code> - BOM header</li>
+                                <li><code>bom_inputs</code> - Input items</li>
+                                <li><code>bom_outputs</code> - Output items with yield</li>
+                            </ul>
+                        </div>
+                        <div class="summary-box">
+                            <h5>API Endpoints</h5>
+                            <ul class="summary-list">
+                                <li><code>GET /boms</code></li>
+                                <li><code>GET /boms/:id</code></li>
+                                <li><code>POST /boms</code></li>
+                                <li><code>PUT /boms/:id</code></li>
+                                <li><code>DELETE /boms/:id</code></li>
+                            </ul>
+                        </div>
+                        <div class="summary-box">
+                            <h5>UI Screens</h5>
+                            <ul class="summary-list">
+                                <li>BOM List</li>
+                                <li>BOM Builder (visual)</li>
+                                <li>BOM Detail View</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="module-section">
+                    <h4><span class="module-badge">MODULE</span> Production Orders</h4>
+                    <div class="grid-3">
+                        <div class="summary-box">
+                            <h5>Database Tables</h5>
+                            <ul class="summary-list">
+                                <li><code>production_orders</code> - Order header</li>
+                                <li><code>production_outputs</code> - Actual outputs</li>
+                            </ul>
+                        </div>
+                        <div class="summary-box">
+                            <h5>API Endpoints</h5>
+                            <ul class="summary-list">
+                                <li><code>GET /production-orders</code></li>
+                                <li><code>POST /production-orders</code></li>
+                                <li><code>PUT /production-orders/:id</code></li>
+                                <li><code>POST /production-orders/:id/start</code></li>
+                                <li><code>POST /production-orders/:id/complete</code></li>
+                                <li><code>POST /production-orders/:id/record-output</code></li>
+                            </ul>
+                        </div>
+                        <div class="summary-box">
+                            <h5>UI Screens</h5>
+                            <ul class="summary-list">
+                                <li>Production Orders List</li>
+                                <li>Create Production Order</li>
+                                <li>Production Execution</li>
+                                <li>Record Outputs Form</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detailed Tasks -->
+                <h4>Detailed Task Breakdown</h4>
+                <table class="task-table">
+                    <thead>
+                        <tr>
+                            <th>Task ID</th>
+                            <th>Task</th>
+                            <th>Type</th>
+                            <th>Effort</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="task-id">P3-001</td>
+                            <td>Create procedures table with type enum (SPLIT, TRANSFORM, COMBINE, COMPLEX)</td>
+                            <td>Database</td>
+                            <td class="effort">1h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P3-002</td>
+                            <td>Create boms table</td>
+                            <td>Database</td>
+                            <td class="effort">0.5h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P3-003</td>
+                            <td>Create bom_inputs table (FK to items)</td>
+                            <td>Database</td>
+                            <td class="effort">0.5h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P3-004</td>
+                            <td>Create bom_outputs table with yield_percentage</td>
+                            <td>Database</td>
+                            <td class="effort">0.5h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P3-005</td>
+                            <td>Create production_orders table with status enum</td>
+                            <td>Database</td>
+                            <td class="effort">1h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P3-006</td>
+                            <td>Create production_outputs table for actual results</td>
+                            <td>Database</td>
+                            <td class="effort">0.5h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P3-007</td>
+                            <td>Implement procedures service and controller</td>
+                            <td>Backend</td>
+                            <td class="effort">2h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P3-008</td>
+                            <td>Implement BOMs service (create with inputs/outputs)</td>
+                            <td>Backend</td>
+                            <td class="effort">4h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P3-009</td>
+                            <td>Implement BOMs controller with validation</td>
+                            <td>Backend</td>
+                            <td class="effort">2h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P3-010</td>
+                            <td>Implement production orders service</td>
+                            <td>Backend</td>
+                            <td class="effort">4h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P3-011</td>
+                            <td>Implement production status workflow (DRAFT → APPROVED → IN_PROGRESS → COMPLETED)</td>
+                            <td>Backend</td>
+                            <td class="effort">3h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P3-012</td>
+                            <td>Implement record output API with batch creation</td>
+                            <td>Backend</td>
+                            <td class="effort">4h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P3-013</td>
+                            <td>Create Procedures list and form pages</td>
+                            <td>Frontend</td>
+                            <td class="effort">3h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P3-014</td>
+                            <td>Create BOM list page</td>
+                            <td>Frontend</td>
+                            <td class="effort">3h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P3-015</td>
+                            <td>Create BOM builder (visual input/output editor)</td>
+                            <td>Frontend</td>
+                            <td class="effort">8h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P3-016</td>
+                            <td>Create BOM detail view</td>
+                            <td>Frontend</td>
+                            <td class="effort">3h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P3-017</td>
+                            <td>Create Production Orders list with status filters</td>
+                            <td>Frontend</td>
+                            <td class="effort">4h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P3-018</td>
+                            <td>Create Production Order form (select BOM, input batch, quantity)</td>
+                            <td>Frontend</td>
+                            <td class="effort">4h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P3-019</td>
+                            <td>Create Production Execution screen (start, record outputs)</td>
+                            <td>Frontend</td>
+                            <td class="effort">6h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P3-020</td>
+                            <td>Create Record Outputs form with yield calculation</td>
+                            <td>Frontend</td>
+                            <td class="effort">4h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P3-021</td>
+                            <td>Create client's Grading BOMs (R013 → SF013AA, SF013BA, etc.)</td>
+                            <td>Data</td>
+                            <td class="effort">3h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P3-022</td>
+                            <td>Create client's Sorting BOMs (SF013BA → SF013BA01, SF013BA02, etc.)</td>
+                            <td>Data</td>
+                            <td class="effort">3h</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>Example: Grading BOM</h4>
+                <div class="process-flow" style="flex-direction: column; align-items: stretch;">
+                    <div style="text-align: center; margin-bottom: 12px;">
+                        <strong>BOM: Grade Normal Cardamom (R013)</strong>
+                    </div>
+                    <div style="display: flex; justify-content: center; align-items: center; gap: 24px; flex-wrap: wrap;">
+                        <div class="process-box rm" style="min-width: 150px;">
+                            <div class="type">Input</div>
+                            <div>R013 - Normal</div>
+                            <div style="font-size: 0.85rem; font-weight: 600;">100 kg</div>
+                        </div>
+                        <span class="process-arrow">→</span>
+                        <div style="display: flex; flex-direction: column; gap: 8px;">
+                            <div class="process-box sfg" style="padding: 8px 16px;">
+                                <span style="font-size: 0.8rem;">SF013AA (8.5mm Bold)</span>
+                                <span style="font-weight: 600; margin-left: 8px;">15%</span>
+                            </div>
+                            <div class="process-box sfg" style="padding: 8px 16px;">
+                                <span style="font-size: 0.8rem;">SF013BA (7-8mm)</span>
+                                <span style="font-weight: 600; margin-left: 8px;">35%</span>
+                            </div>
+                            <div class="process-box sfg" style="padding: 8px 16px;">
+                                <span style="font-size: 0.8rem;">SF013CA (6-7mm)</span>
+                                <span style="font-weight: 600; margin-left: 8px;">30%</span>
+                            </div>
+                            <div class="process-box sfg" style="padding: 8px 16px;">
+                                <span style="font-size: 0.8rem;">SF013DA (5-6mm)</span>
+                                <span style="font-weight: 600; margin-left: 8px;">15%</span>
+                            </div>
+                            <div class="process-box sfg" style="padding: 8px 16px;">
+                                <span style="font-size: 0.8rem;">SF013SD (Seed)</span>
+                                <span style="font-weight: 600; margin-left: 8px;">5%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 16px; padding: 12px; background: #d1fae5; border-radius: 8px;">
+                    <strong>Phase 3 Summary:</strong> 6 tables, 14 endpoints, 9 screens | <strong>Total: ~64 hours</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- PHASE 4: DETAILED -->
+        <!-- ============================================ -->
+        <h2>Phase 4: Inventory & Batch Traceability</h2>
+
+        <div class="phase-card phase-4">
+            <div class="phase-header">
+                <div class="phase-number">4</div>
+                <div class="phase-info">
+                    <h3>Inventory & Batch Traceability</h3>
+                    <p>Stock tracking, batch management, and genealogy for traceability</p>
+                </div>
+                <div class="phase-duration">~2 weeks</div>
+            </div>
+            <div class="phase-body">
+                <div class="mvp-highlight">
+                    <h3>Client-Critical: Lot Traceability</h3>
+                    <p>This phase enables tracking cardamom batches from auction lot to finished product. The client can trace any finished bag back to its source lot, including all intermediate batches created during grading and sorting.</p>
+                </div>
+
+                <!-- Week breakdown -->
+                <div class="week-box">
+                    <h5>Week 9 Goals</h5>
+                    <ul>
+                        <li>Create inventory and batch database tables</li>
+                        <li>Implement batch creation and genealogy APIs</li>
+                        <li>Build stock level tracking</li>
+                    </ul>
+                </div>
+                <div class="week-box">
+                    <h5>Week 10 Goals</h5>
+                    <ul>
+                        <li>Complete traceability APIs (forward/backward)</li>
+                        <li>Build all inventory management screens</li>
+                        <li>Integrate batch creation with production execution</li>
+                        <li>Testing and bug fixes</li>
+                    </ul>
+                </div>
+
+                <!-- Modules -->
+                <div class="module-section">
+                    <h4><span class="module-badge">MODULE</span> Batches</h4>
+                    <div class="grid-3">
+                        <div class="summary-box">
+                            <h5>Database Tables</h5>
+                            <ul class="summary-list">
+                                <li><code>batches</code> - Batch/lot records</li>
+                                <li><code>batch_genealogy</code> - Parent-child links</li>
+                            </ul>
+                        </div>
+                        <div class="summary-box">
+                            <h5>API Endpoints</h5>
+                            <ul class="summary-list">
+                                <li><code>GET /batches</code></li>
+                                <li><code>GET /batches/:id</code></li>
+                                <li><code>POST /batches</code></li>
+                                <li><code>GET /batches/:id/trace-forward</code></li>
+                                <li><code>GET /batches/:id/trace-backward</code></li>
+                            </ul>
+                        </div>
+                        <div class="summary-box">
+                            <h5>UI Screens</h5>
+                            <ul class="summary-list">
+                                <li>Batch List</li>
+                                <li>Batch Detail</li>
+                                <li>Traceability Tree View</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="module-section">
+                    <h4><span class="module-badge">MODULE</span> Inventory</h4>
+                    <div class="grid-3">
+                        <div class="summary-box">
+                            <h5>Database Tables</h5>
+                            <ul class="summary-list">
+                                <li><code>stock_levels</code> - Current stock per batch</li>
+                                <li><code>stock_movements</code> - In/out transactions</li>
+                            </ul>
+                        </div>
+                        <div class="summary-box">
+                            <h5>API Endpoints</h5>
+                            <ul class="summary-list">
+                                <li><code>GET /inventory/stock</code></li>
+                                <li><code>GET /inventory/stock/:itemId</code></li>
+                                <li><code>GET /inventory/movements</code></li>
+                                <li><code>POST /inventory/movements</code></li>
+                                <li><code>POST /inventory/adjust</code></li>
+                            </ul>
+                        </div>
+                        <div class="summary-box">
+                            <h5>UI Screens</h5>
+                            <ul class="summary-list">
+                                <li>Stock Overview</li>
+                                <li>Stock by Item</li>
+                                <li>Movement History</li>
+                                <li>Stock Adjustment Form</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detailed Tasks -->
+                <h4>Detailed Task Breakdown</h4>
+                <table class="task-table">
+                    <thead>
+                        <tr>
+                            <th>Task ID</th>
+                            <th>Task</th>
+                            <th>Type</th>
+                            <th>Effort</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="task-id">P4-001</td>
+                            <td>Create batches table with lot_number, item_id, quantity, expiry_date</td>
+                            <td>Database</td>
+                            <td class="effort">1h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P4-002</td>
+                            <td>Create batch_genealogy table (parent_batch_id, child_batch_id)</td>
+                            <td>Database</td>
+                            <td class="effort">0.5h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P4-003</td>
+                            <td>Create stock_levels table (batch_id, quantity, reserved_qty)</td>
+                            <td>Database</td>
+                            <td class="effort">0.5h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P4-004</td>
+                            <td>Create stock_movements table with movement_type enum</td>
+                            <td>Database</td>
+                            <td class="effort">0.5h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P4-005</td>
+                            <td>Implement batches service (CRUD)</td>
+                            <td>Backend</td>
+                            <td class="effort">3h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P4-006</td>
+                            <td>Implement batch genealogy service</td>
+                            <td>Backend</td>
+                            <td class="effort">2h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P4-007</td>
+                            <td>Implement forward traceability API (recursive query)</td>
+                            <td>Backend</td>
+                            <td class="effort">4h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P4-008</td>
+                            <td>Implement backward traceability API (recursive query)</td>
+                            <td>Backend</td>
+                            <td class="effort">4h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P4-009</td>
+                            <td>Implement stock levels service</td>
+                            <td>Backend</td>
+                            <td class="effort">3h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P4-010</td>
+                            <td>Implement stock movements service</td>
+                            <td>Backend</td>
+                            <td class="effort">3h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P4-011</td>
+                            <td>Implement stock adjustment API</td>
+                            <td>Backend</td>
+                            <td class="effort">2h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P4-012</td>
+                            <td>Integrate batch creation in production execution flow</td>
+                            <td>Backend</td>
+                            <td class="effort">3h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P4-013</td>
+                            <td>Create Batch list page with search/filter</td>
+                            <td>Frontend</td>
+                            <td class="effort">4h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P4-014</td>
+                            <td>Create Batch detail page with genealogy info</td>
+                            <td>Frontend</td>
+                            <td class="effort">4h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P4-015</td>
+                            <td>Create Traceability tree view component</td>
+                            <td>Frontend</td>
+                            <td class="effort">6h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P4-016</td>
+                            <td>Create Stock Overview dashboard</td>
+                            <td>Frontend</td>
+                            <td class="effort">4h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P4-017</td>
+                            <td>Create Stock by Item page</td>
+                            <td>Frontend</td>
+                            <td class="effort">3h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P4-018</td>
+                            <td>Create Movement History page</td>
+                            <td>Frontend</td>
+                            <td class="effort">3h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P4-019</td>
+                            <td>Create Stock Adjustment form</td>
+                            <td>Frontend</td>
+                            <td class="effort">3h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P4-020</td>
+                            <td>Update Production Execution to auto-create batches</td>
+                            <td>Frontend</td>
+                            <td class="effort">4h</td>
+                        </tr>
+                        <tr>
+                            <td class="task-id">P4-021</td>
+                            <td>End-to-end testing of full production + traceability flow</td>
+                            <td>Testing</td>
+                            <td class="effort">4h</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>Traceability Example</h4>
+                <div class="card" style="background: #f8fafc; margin-top: 12px;">
+                    <p style="margin-bottom: 12px;"><strong>Forward Trace:</strong> "Show all products made from Auction Lot #A2024-001"</p>
+                    <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; line-height: 1.8;">
+                        <div>Batch: <strong>A2024-001</strong> (R001 - Auction Lot) - 500 kg</div>
+                        <div style="padding-left: 20px;">├─ Batch: <strong>GR-001</strong> (SF013BA - 7-8mm Graded) - 175 kg</div>
+                        <div style="padding-left: 40px;">├─ Batch: <strong>SR-001</strong> (SF013BA01 - 7-8mm Main) - 140 kg</div>
+                        <div style="padding-left: 60px;">└─ Batch: <strong>PK-001</strong> (CN013BA01 - 7-8mm Packed) - 140 kg</div>
+                        <div style="padding-left: 40px;">├─ Batch: <strong>SR-002</strong> (SF013BA02 - 7-8mm Split) - 20 kg</div>
+                        <div style="padding-left: 40px;">└─ Batch: <strong>SR-003</strong> (SF013BA03 - 7-8mm Sick) - 15 kg</div>
+                        <div style="padding-left: 20px;">├─ Batch: <strong>GR-002</strong> (SF013CA - 6-7mm Graded) - 150 kg</div>
+                        <div style="padding-left: 20px;">├─ Batch: <strong>GR-003</strong> (SF013DA - 5-6mm) - 75 kg</div>
+                        <div style="padding-left: 20px;">└─ Batch: <strong>GR-004</strong> (SF013SD - Seed) - 25 kg</div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 16px; padding: 12px; background: #dbeafe; border-radius: 8px;">
+                    <strong>Phase 4 Summary:</strong> 4 tables, 10 endpoints, 7 screens | <strong>Total: ~62 hours</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- PHASE 5: BRIEF -->
+        <!-- ============================================ -->
+        <h2>Phase 5: Advanced Features (Post-MVP)</h2>
+
+        <div class="phase-card phase-5">
+            <div class="phase-header">
+                <div class="phase-number">5</div>
+                <div class="phase-info">
+                    <h3>Advanced Features</h3>
+                    <p>QC workflows, reporting, analytics, and system enhancements</p>
+                </div>
+                <div class="phase-duration">~2 weeks</div>
+            </div>
+            <div class="phase-body">
+                <p style="color: var(--text-muted); margin-bottom: 16px;">These features can be added after MVP launch based on client feedback and priorities.</p>
+
+                <div class="grid-2">
+                    <div class="module-section">
+                        <h4><span class="module-badge">MODULE</span> Quality Control</h4>
+                        <ul class="summary-list">
+                            <li><code>qc_parameters</code> - Parameter definitions</li>
+                            <li><code>qc_inspections</code> - Inspection records</li>
+                            <li><code>qc_results</code> - Test results</li>
+                        </ul>
+                        <p style="margin-top: 12px; font-size: 0.85rem; color: var(--text-muted);">QC parameters per item, inspections, hold/release workflow, COA generation</p>
+                    </div>
+                    <div class="module-section">
+                        <h4><span class="module-badge">MODULE</span> Reporting & Analytics</h4>
+                        <ul class="summary-list">
+                            <li>Production reports</li>
+                            <li>Yield analysis dashboard</li>
+                            <li>Cost tracking reports</li>
+                            <li>Stock valuation</li>
+                        </ul>
+                        <p style="margin-top: 12px; font-size: 0.85rem; color: var(--text-muted);">Dashboards, charts, export to Excel/PDF</p>
+                    </div>
+                </div>
+
+                <div style="margin-top: 16px; padding: 12px; background: #ede9fe; border-radius: 8px;">
+                    <strong>Phase 5 Summary:</strong> 3 tables, 8 endpoints, 4 screens | <strong>Total: ~50 hours</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- SUMMARY TABLES -->
+        <!-- ============================================ -->
+        <h2>Complete Summary</h2>
+
+        <!-- Effort Summary -->
+        <div class="card">
+            <h3>Effort Summary by Phase</h3>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Phase</th>
+                            <th>Focus</th>
+                            <th>DB Tables</th>
+                            <th>API Endpoints</th>
+                            <th>UI Screens</th>
+                            <th>Est. Hours</th>
+                            <th>Duration</th>
+                            <th>MVP?</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="background: #ecfdf5;">
+                            <td><strong>1</strong></td>
+                            <td>Foundation & Setup</td>
+                            <td>2</td>
+                            <td>4</td>
+                            <td>3</td>
+                            <td>~37h</td>
+                            <td>~2 week</td>
+                            <td style="color: #047857; font-weight: 600;">Yes</td>
+                        </tr>
+                        <tr style="background: #ecfdf5;">
+                            <td><strong>2</strong></td>
+                            <td>Item Master & Categories</td>
+                            <td>5</td>
+                            <td>13</td>
+                            <td>8</td>
+                            <td>~54h</td>
+                            <td>~3 weeks</td>
+                            <td style="color: #047857; font-weight: 600;">Yes</td>
+                        </tr>
+                        <tr style="background: #ecfdf5;">
+                            <td><strong>3</strong></td>
+                            <td>Manufacturing (BOMs & Production)</td>
+                            <td>6</td>
+                            <td>14</td>
+                            <td>9</td>
+                            <td>~64h</td>
+                            <td>~3 weeks</td>
+                            <td style="color: #047857; font-weight: 600;">Yes</td>
+                        </tr>
+                        <tr style="background: #ecfdf5;">
+                            <td><strong>4</strong></td>
+                            <td>Inventory & Batch Traceability</td>
+                            <td>4</td>
+                            <td>10</td>
+                            <td>7</td>
+                            <td>~62h</td>
+                            <td>~2 weeks</td>
+                            <td style="color: #047857; font-weight: 600;">Yes</td>
+                        </tr>
+                        <tr>
+                            <td><strong>5</strong></td>
+                            <td>Advanced Features</td>
+                            <td>3</td>
+                            <td>8</td>
+                            <td>4</td>
+                            <td>~50h</td>
+                            <td>~2 weeks</td>
+                            <td style="color: #94a3b8;">No</td>
+                        </tr>
+                        <tr style="font-weight: 600; background: #d1fae5;">
+                            <td colspan="2">MVP Total (Phases 1-4)</td>
+                            <td>17</td>
+                            <td>41</td>
+                            <td>27</td>
+                            <td>~217h</td>
+                            <td style="color: #047857;">~10 weeks</td>
+                            <td></td>
+                        </tr>
+                        <tr style="font-weight: 600; background: #f1f5f9;">
+                            <td colspan="2">Full System Total</td>
+                            <td>20</td>
+                            <td>49</td>
+                            <td>31</td>
+                            <td>~267h</td>
+                            <td>~12 weeks</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- All Database Tables -->
+        <div class="card">
+            <h3>All Database Tables</h3>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Phase</th>
+                            <th>Table Name</th>
+                            <th>Description</th>
+                            <th>Key Fields</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1</td><td><code>users</code></td><td>User accounts</td><td>id, email, password_hash, role, is_active</td></tr>
+                        <tr><td>1</td><td><code>audit_logs</code></td><td>Activity tracking</td><td>id, user_id, action, entity, entity_id, timestamp</td></tr>
+                        <tr><td>2</td><td><code>categories</code></td><td>Item categories (hierarchical)</td><td>id, name, parent_id, description</td></tr>
+                        <tr><td>2</td><td><code>units</code></td><td>Units of measure</td><td>id, name, symbol, base_unit</td></tr>
+                        <tr><td>2</td><td><code>unit_conversions</code></td><td>Unit conversion factors</td><td>id, from_unit_id, to_unit_id, factor</td></tr>
+                        <tr><td>2</td><td><code>items</code></td><td>Item master</td><td>id, code, name, item_type, category_id, unit_id, attributes (JSONB)</td></tr>
+                        <tr><td>3</td><td><code>procedures</code></td><td>Process definitions</td><td>id, name, type, category, description</td></tr>
+                        <tr><td>3</td><td><code>boms</code></td><td>Bill of Materials header</td><td>id, name, procedure_id, is_active</td></tr>
+                        <tr><td>3</td><td><code>bom_inputs</code></td><td>BOM input items</td><td>id, bom_id, item_id, quantity</td></tr>
+                        <tr><td>3</td><td><code>bom_outputs</code></td><td>BOM output items with yield</td><td>id, bom_id, item_id, yield_percentage</td></tr>
+                        <tr><td>3</td><td><code>production_orders</code></td><td>Production order header</td><td>id, order_number, bom_id, status, planned_qty, actual_qty</td></tr>
+                        <tr><td>3</td><td><code>production_outputs</code></td><td>Actual production outputs</td><td>id, production_order_id, item_id, batch_id, quantity</td></tr>
+                        <tr><td>4</td><td><code>batches</code></td><td>Batch/lot records</td><td>id, lot_number, item_id, quantity, expiry_date, status</td></tr>
+                        <tr><td>4</td><td><code>batch_genealogy</code></td><td>Parent-child batch links</td><td>id, parent_batch_id, child_batch_id, production_order_id</td></tr>
+                        <tr><td>4</td><td><code>stock_levels</code></td><td>Current stock per batch</td><td>id, batch_id, quantity, reserved_qty</td></tr>
+                        <tr><td>4</td><td><code>stock_movements</code></td><td>Stock transactions</td><td>id, batch_id, movement_type, quantity, reference</td></tr>
+                        <tr style="color: #94a3b8;"><td>5</td><td><code>qc_parameters</code></td><td>QC parameter definitions</td><td>id, item_id, name, min_value, max_value</td></tr>
+                        <tr style="color: #94a3b8;"><td>5</td><td><code>qc_inspections</code></td><td>QC inspection records</td><td>id, batch_id, inspector_id, status, inspected_at</td></tr>
+                        <tr style="color: #94a3b8;"><td>5</td><td><code>qc_results</code></td><td>QC test results</td><td>id, inspection_id, parameter_id, value, passed</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- All UI Screens -->
+        <div class="card">
+            <h3>All UI Screens</h3>
+            <div class="grid-2">
+                <div>
+                    <h4>Phase 1: Foundation</h4>
+                    <ul class="summary-list">
+                        <li>Login Page</li>
+                        <li>Main Layout (Shell)</li>
+                        <li>Dashboard (Placeholder)</li>
+                    </ul>
+
+                    <h4 style="margin-top: 20px;">Phase 2: Items</h4>
+                    <ul class="summary-list">
+                        <li>Item List (with type/category filters)</li>
+                        <li>Item Create/Edit Form</li>
+                        <li>Item Detail View</li>
+                        <li>Category Tree Management</li>
+                        <li>Units Management</li>
+                        <li>Bulk Import Page</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Phase 3: Manufacturing</h4>
+                    <ul class="summary-list">
+                        <li>Procedures List & Form</li>
+                        <li>BOM List</li>
+                        <li>BOM Builder (Visual Editor)</li>
+                        <li>BOM Detail View</li>
+                        <li>Production Orders List</li>
+                        <li>Create Production Order</li>
+                        <li>Production Execution Screen</li>
+                        <li>Record Outputs Form</li>
+                    </ul>
+
+                    <h4 style="margin-top: 20px;">Phase 4: Inventory</h4>
+                    <ul class="summary-list">
+                        <li>Batch List</li>
+                        <li>Batch Detail + Genealogy</li>
+                        <li>Traceability Tree View</li>
+                        <li>Stock Overview Dashboard</li>
+                        <li>Stock by Item</li>
+                        <li>Movement History</li>
+                        <li>Stock Adjustment Form</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- MVP Deliverables -->
+        <h2>MVP Deliverables Summary</h2>
+        <div class="card">
+            <p>At the end of Phase 4 (~10 weeks), the client will have:</p>
+            <div class="deliverable-grid">
+                <div class="deliverable-item">
+                    <div class="icon">📦</div>
+                    <div class="name">Item Master</div>
+                    <div class="desc">All 180+ items with attributes</div>
+                </div>
+                <div class="deliverable-item">
+                    <div class="icon">📁</div>
+                    <div class="name">Categories</div>
+                    <div class="desc">Organized item hierarchy</div>
+                </div>
+                <div class="deliverable-item">
+                    <div class="icon">🔧</div>
+                    <div class="name">BOMs</div>
+                    <div class="desc">Grading & sorting workflows</div>
+                </div>
+                <div class="deliverable-item">
+                    <div class="icon">📋</div>
+                    <div class="name">Production Orders</div>
+                    <div class="desc">Daily production tracking</div>
+                </div>
+                <div class="deliverable-item">
+                    <div class="icon">🏷️</div>
+                    <div class="name">Batch Tracking</div>
+                    <div class="desc">Lot-based traceability</div>
+                </div>
+                <div class="deliverable-item">
+                    <div class="icon">📊</div>
+                    <div class="name">Stock Levels</div>
+                    <div class="desc">Real-time inventory</div>
+                </div>
+                <div class="deliverable-item">
+                    <div class="icon">🔍</div>
+                    <div class="name">Traceability</div>
+                    <div class="desc">Forward & backward trace</div>
+                </div>
+                <div class="deliverable-item">
+                    <div class="icon">📈</div>
+                    <div class="name">Yield Tracking</div>
+                    <div class="desc">Actual vs expected yields</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
