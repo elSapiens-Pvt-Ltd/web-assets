@@ -1,0 +1,2563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversation Stage Flow Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 40px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #1a365d;
+            margin-bottom: 40px;
+            font-size: 2.5rem;
+        }
+        h2 {
+            color: #2d3748;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #4299e1;
+        }
+        .flow-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .flow-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .flow-header .icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        .contact-icon { background: #ebf8ff; color: #3182ce; }
+        .opportunity-icon { background: #f0fff4; color: #38a169; }
+
+        /* Stage Pipeline */
+        .stage-pipeline {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        .stage-box {
+            padding: 15px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-align: center;
+            min-width: 120px;
+            position: relative;
+        }
+        .stage-arrow {
+            font-size: 24px;
+            color: #a0aec0;
+            margin: 0 5px;
+        }
+        .stage-new { background: #e2e8f0; color: #4a5568; }
+        .stage-attempted { background: #fed7aa; color: #c05621; }
+        .stage-contacted { background: #bee3f8; color: #2b6cb0; }
+        .stage-nurturing { background: #c6f6d5; color: #276749; }
+        .stage-converted { background: #9ae6b4; color: #22543d; }
+        .stage-unqualified { background: #fed7d7; color: #c53030; }
+
+        /* Stage Details */
+        .stage-details {
+            display: grid;
+            gap: 25px;
+        }
+        .stage-card {
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .stage-card-header {
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .stage-number {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #4299e1;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        .stage-card-header h3 {
+            font-size: 1.25rem;
+            color: #2d3748;
+        }
+        .stage-card-header .badge {
+            margin-left: auto;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .badge-auto { background: #c6f6d5; color: #276749; }
+        .badge-manual { background: #feebc8; color: #c05621; }
+
+        .stage-card-body {
+            padding: 20px;
+            background: #f7fafc;
+        }
+        .trigger-section {
+            margin-bottom: 20px;
+        }
+        .trigger-section h4 {
+            color: #4a5568;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+        .trigger-list {
+            list-style: none;
+        }
+        .trigger-list li {
+            padding: 10px 15px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            border-left: 4px solid #4299e1;
+        }
+        .trigger-list li.whatsapp { border-left-color: #25d366; }
+        .trigger-list li.phone { border-left-color: #805ad5; }
+        .trigger-list li.manual { border-left-color: #ed8936; }
+
+        .trigger-icon {
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+        .trigger-content {
+            flex: 1;
+        }
+        .trigger-content strong {
+            display: block;
+            color: #2d3748;
+            margin-bottom: 4px;
+        }
+        .trigger-content span {
+            font-size: 0.875rem;
+            color: #718096;
+        }
+        .trigger-content code {
+            background: #edf2f7;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: #e53e3e;
+        }
+
+        .fields-updated {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+        }
+        .fields-updated h4 {
+            color: #4a5568;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+        .field-row {
+            display: flex;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .field-row:last-child {
+            border-bottom: none;
+        }
+        .field-name {
+            font-family: monospace;
+            background: #2d3748;
+            color: #68d391;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            min-width: 200px;
+        }
+        .field-value {
+            margin-left: 15px;
+            color: #4a5568;
+        }
+
+        /* Disposition Status Table */
+        .disposition-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .disposition-table th,
+        .disposition-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .disposition-table th {
+            background: #edf2f7;
+            font-weight: 600;
+            color: #4a5568;
+        }
+        .disposition-table td:first-child {
+            font-family: monospace;
+            color: #e53e3e;
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .comparison-table th,
+        .comparison-table td {
+            padding: 15px;
+            text-align: left;
+            border: 1px solid #e2e8f0;
+        }
+        .comparison-table th {
+            background: #2d3748;
+            color: white;
+        }
+        .comparison-table th:first-child {
+            background: #4a5568;
+        }
+        .comparison-table tr:nth-child(even) {
+            background: #f7fafc;
+        }
+        .check { color: #38a169; font-size: 1.25rem; }
+        .cross { color: #e53e3e; font-size: 1.25rem; }
+
+        /* Summary Box */
+        .summary-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+        .summary-box h3 {
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .summary-item {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .summary-item h4 {
+            font-size: 0.875rem;
+            opacity: 0.8;
+            margin-bottom: 8px;
+        }
+        .summary-item p {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        /* File Reference */
+        .file-ref {
+            font-family: monospace;
+            background: #1a202c;
+            color: #68d391;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 768px) {
+            .stage-pipeline {
+                flex-direction: column;
+            }
+            .stage-arrow {
+                transform: rotate(90deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Conversation Stage Flow Documentation</h1>
+
+        <!-- ==================== CONTACT SECTION ==================== -->
+        <div class="flow-section">
+            <div class="flow-header">
+                <div class="icon contact-icon">&#128100;</div>
+                <div>
+                    <h2 style="border: none; margin: 0; padding: 0;">Contact Conversation Flow</h2>
+                    <p style="color: #718096;">Lead qualification from first touch to opportunity creation</p>
+                </div>
+            </div>
+
+            <!-- Stage Pipeline Visual -->
+            <div class="stage-pipeline">
+                <div class="stage-box stage-new">NEW</div>
+                <span class="stage-arrow">&#8594;</span>
+                <div class="stage-box stage-attempted">ATTEMPTED</div>
+                <span class="stage-arrow">&#8594;</span>
+                <div class="stage-box stage-contacted">CONTACTED</div>
+                <span class="stage-arrow">&#8594;</span>
+                <div class="stage-box stage-nurturing">NURTURING</div>
+                <span class="stage-arrow">&#8594;</span>
+                <div class="stage-box stage-converted">CONVERTED</div>
+                <span style="margin: 0 15px; color: #718096;">or</span>
+                <div class="stage-box stage-unqualified">UNQUALIFIED</div>
+            </div>
+
+            <!-- Stage Details -->
+            <div class="stage-details">
+
+                <!-- Stage 1: NEW -->
+                <div class="stage-card">
+                    <div class="stage-card-header stage-new">
+                        <div class="stage-number">1</div>
+                        <h3>NEW - Initial State</h3>
+                        <span class="badge badge-auto">AUTOMATIC</span>
+                    </div>
+                    <div class="stage-card-body">
+                        <div class="trigger-section">
+                            <h4>When is it set?</h4>
+                            <ul class="trigger-list">
+                                <li>
+                                    <span class="trigger-icon">&#128229;</span>
+                                    <div class="trigger-content">
+                                        <strong>Lead comes in from any source</strong>
+                                        <span>WhatsApp, Facebook, JustDial, Instagram, Website, etc.</span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="fields-updated">
+                            <h4>Fields Updated</h4>
+                            <div class="field-row">
+                                <span class="field-name">conversation_stage</span>
+                                <span class="field-value">'new'</span>
+                            </div>
+                            <div class="field-row">
+                                <span class="field-name">conversation_type</span>
+                                <span class="field-value">'contact'</span>
+                            </div>
+                            <div class="field-row">
+                                <span class="field-name">status</span>
+                                <span class="field-value">'open'</span>
+                            </div>
+                            <div class="field-row">
+                                <span class="field-name">created_at</span>
+                                <span class="field-value">Current timestamp</span>
+                            </div>
+                        </div>
+
+                        <!-- Agent Assignment Section -->
+                        <div style="margin-top: 20px; padding: 20px; background: #e0f2fe; border: 2px solid #0284c7; border-radius: 12px;">
+                            <h4 style="color: #0369a1; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                                <span style="font-size: 1.5rem;">&#128101;</span>
+                                Agent Assignment Logic (Priority-Based)
+                            </h4>
+
+                            <p style="color: #0c4a6e; margin-bottom: 15px; line-height: 1.6;">
+                                When a new lead comes in, the system automatically assigns an agent using a <strong>4-level priority system</strong>.
+                                This ensures continuity for existing customers and fair distribution for new leads.
+                            </p>
+
+                            <div style="display: grid; gap: 12px;">
+                                <!-- Priority 1: Account Owner -->
+                                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #16a34a;">
+                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                                        <span style="background: #16a34a; color: white; padding: 3px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600;">PRIORITY 1</span>
+                                        <strong style="color: #15803d;">Account Owner</strong>
+                                    </div>
+                                    <p style="margin: 0; color: #4b5563; font-size: 0.9rem;">
+                                        If the contact's phone/email is linked to an <strong>Account</strong> that has an <code>account_owner_id</code>,
+                                        the conversation is assigned to that account owner.
+                                    </p>
+                                    <p style="margin: 8px 0 0 0; color: #6b7280; font-size: 0.8rem;">
+                                        <strong>Lookup:</strong> phone → temp_tbl_contact_handles → temp_tbl_contacts → temp_tbl_accounts.account_owner_id
+                                    </p>
+                                </div>
+
+                                <!-- Priority 2: Existing Open Conversation -->
+                                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #2563eb;">
+                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                                        <span style="background: #2563eb; color: white; padding: 3px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600;">PRIORITY 2</span>
+                                        <strong style="color: #1d4ed8;">Existing Open Conversation</strong>
+                                    </div>
+                                    <p style="margin: 0; color: #4b5563; font-size: 0.9rem;">
+                                        If there's already an <strong>open conversation</strong> for this handle (phone/email),
+                                        the message goes to the same agent handling that conversation.
+                                    </p>
+                                    <p style="margin: 8px 0 0 0; color: #6b7280; font-size: 0.8rem;">
+                                        <strong>Lookup:</strong> tbl_open_conversations WHERE status='open' AND handle_value=phone
+                                    </p>
+                                </div>
+
+                                <!-- Priority 3: Previous Agent -->
+                                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #9333ea;">
+                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                                        <span style="background: #9333ea; color: white; padding: 3px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600;">PRIORITY 3</span>
+                                        <strong style="color: #7c3aed;">Previous Agent (Last Closed Conversation)</strong>
+                                    </div>
+                                    <p style="margin: 0; color: #4b5563; font-size: 0.9rem;">
+                                        If this handle had a <strong>previous closed conversation</strong>, the system assigns
+                                        to the same agent who handled the last closed conversation.
+                                    </p>
+                                    <p style="margin: 8px 0 0 0; color: #6b7280; font-size: 0.8rem;">
+                                        <strong>Lookup:</strong> tbl_open_conversations WHERE status='closed' ORDER BY closed_at DESC LIMIT 1
+                                    </p>
+                                </div>
+
+                                <!-- Priority 4: Round-Robin -->
+                                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #ea580c;">
+                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                                        <span style="background: #ea580c; color: white; padding: 3px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600;">PRIORITY 4</span>
+                                        <strong style="color: #c2410c;">Round-Robin (For New Contacts)</strong>
+                                    </div>
+                                    <p style="margin: 0; color: #4b5563; font-size: 0.9rem;">
+                                        For completely new contacts, the system uses <strong>round-robin distribution</strong>
+                                        to fairly assign leads among active agents.
+                                    </p>
+                                    <p style="margin: 8px 0 0 0; color: #6b7280; font-size: 0.8rem;">
+                                        <strong>Lookup:</strong> tbl_settings.agent_allocation (JSON with order_no) + last_assigned pointer
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Agent Availability Checks -->
+                            <div style="margin-top: 15px; padding: 12px; background: #fef9c3; border-radius: 8px;">
+                                <h5 style="color: #a16207; margin-bottom: 8px;">&#9888; Agent Availability Checks:</h5>
+                                <ul style="margin: 0; padding-left: 20px; color: #854d0e; font-size: 0.85rem;">
+                                    <li><strong>Active Status:</strong> Agent must be active (tbl_telecommunication_agents.is_active = 1)</li>
+                                    <li><strong>User Status:</strong> User must not be deleted (tbl_users.is_deleted = 0)</li>
+                                    <li><strong>Leave Check:</strong> Agent must not be on leave (full_day, first_half, second_half based on time)</li>
+                                </ul>
+                            </div>
+
+                            <div style="margin-top: 12px; font-size: 0.85rem; color: #64748b;">
+                                <strong>Helper:</strong> <code style="background: #2d3748; color: #68d391; padding: 2px 6px; border-radius: 4px;">application/helpers/agent_assignment_helper.php</code>
+                            </div>
+                        </div>
+
+                        <!-- Existing Account Flow Section -->
+                        <div style="margin-top: 20px; padding: 20px; background: #fce7f3; border: 2px solid #db2777; border-radius: 12px;">
+                            <h4 style="color: #9d174d; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                                <span style="font-size: 1.5rem;">&#128193;</span>
+                                Existing Account Detection Flow
+                            </h4>
+
+                            <p style="color: #831843; margin-bottom: 15px; line-height: 1.6;">
+                                When a lead's phone number is already linked to an existing account in the system,
+                                special handling applies to maintain account continuity.
+                            </p>
+
+                            <div style="display: grid; gap: 12px;">
+                                <!-- Step 1: Handle Check -->
+                                <div style="background: white; padding: 15px; border-radius: 8px; display: flex; gap: 15px;">
+                                    <div style="background: #db2777; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 600;">1</div>
+                                    <div>
+                                        <strong style="color: #9d174d;">Phone/Email Lookup</strong>
+                                        <p style="margin: 5px 0 0 0; color: #4b5563; font-size: 0.9rem;">
+                                            System checks <code>temp_tbl_contact_handles</code> to see if the incoming phone/email exists.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <!-- Step 2: Contact Lookup -->
+                                <div style="background: white; padding: 15px; border-radius: 8px; display: flex; gap: 15px;">
+                                    <div style="background: #db2777; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 600;">2</div>
+                                    <div>
+                                        <strong style="color: #9d174d;">Contact Lookup</strong>
+                                        <p style="margin: 5px 0 0 0; color: #4b5563; font-size: 0.9rem;">
+                                            If handle exists, fetch the linked <code>contact_id</code> from <code>temp_tbl_contacts</code>.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <!-- Step 3: Account Lookup -->
+                                <div style="background: white; padding: 15px; border-radius: 8px; display: flex; gap: 15px;">
+                                    <div style="background: #db2777; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 600;">3</div>
+                                    <div>
+                                        <strong style="color: #9d174d;">Account Lookup</strong>
+                                        <p style="margin: 5px 0 0 0; color: #4b5563; font-size: 0.9rem;">
+                                            Check if contact is linked to an account via <code>temp_tbl_contacts.account_id</code> → <code>temp_tbl_accounts</code>.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <!-- Step 4: Agent Assignment -->
+                                <div style="background: white; padding: 15px; border-radius: 8px; display: flex; gap: 15px;">
+                                    <div style="background: #db2777; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 600;">4</div>
+                                    <div>
+                                        <strong style="color: #9d174d;">Account Owner Assignment</strong>
+                                        <p style="margin: 5px 0 0 0; color: #4b5563; font-size: 0.9rem;">
+                                            If account has <code>account_owner_id</code>, conversation is assigned to that owner
+                                            (skipping round-robin). This ensures all leads for an account go to the same salesperson.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Conversation Created -->
+                            <div style="margin-top: 15px; padding: 12px; background: #ede9fe; border-radius: 8px;">
+                                <h5 style="color: #5b21b6; margin-bottom: 8px;">&#128203; Fields Set on Conversation:</h5>
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; font-size: 0.85rem;">
+                                    <span style="color: #6b21a8;"><code>contact_id</code> = linked contact ID</span>
+                                    <span style="color: #6b21a8;"><code>account_id</code> = linked account ID</span>
+                                    <span style="color: #6b21a8;"><code>agent_id</code> = account_owner_id</span>
+                                    <span style="color: #6b21a8;"><code>conversation_type</code> = 'contact'</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stage 2: ATTEMPTED -->
+                <div class="stage-card">
+                    <div class="stage-card-header stage-attempted">
+                        <div class="stage-number">2</div>
+                        <h3>ATTEMPTED - First Outreach</h3>
+                        <span class="badge badge-auto">AUTOMATIC</span>
+                    </div>
+                    <div class="stage-card-body">
+                        <div class="trigger-section">
+                            <h4>What triggers this?</h4>
+                            <ul class="trigger-list">
+                                <li class="whatsapp">
+                                    <span class="trigger-icon">&#128172;</span>
+                                    <div class="trigger-content">
+                                        <strong>WhatsApp Message Sent</strong>
+                                        <span>Agent sends message &#8594; Meta webhook returns <code>status: 'sent'</code></span>
+                                        <br><span class="file-ref">ConversationMessagesModel.php → setAttemptedAtForMessage()</span>
+                                    </div>
+                                </li>
+                                <li class="phone">
+                                    <span class="trigger-icon">&#128222;</span>
+                                    <div class="trigger-content">
+                                        <strong>Phone Call Initiated</strong>
+                                        <span>Agent calls customer &#8594; Call status becomes <code>'Ringing'</code></span>
+                                        <br><span class="file-ref">TeleCommunicationModel.php → setAttemptedAtForCall()</span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="fields-updated">
+                            <h4>Fields Updated</h4>
+                            <div class="field-row">
+                                <span class="field-name">conversation_stage</span>
+                                <span class="field-value">'attempted'</span>
+                            </div>
+                            <div class="field-row">
+                                <span class="field-name">attempted_at</span>
+                                <span class="field-value">Current timestamp (FRT ends here)</span>
+                            </div>
+                            <div class="field-row">
+                                <span class="field-name">first_reached_attempted_at</span>
+                                <span class="field-value">Current date (via DB trigger)</span>
+                            </div>
+                        </div>
+
+                        <!-- RNR Flow Section -->
+                        <div style="margin-top: 20px; padding: 20px; background: #fff5f5; border: 2px solid #fc8181; border-radius: 10px;">
+                            <h4 style="color: #c53030; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                                <span style="font-size: 1.3rem;">&#128222;</span>
+                                RNR (Ring No Response) - Auto Follow-up Flow
+                            </h4>
+
+                            <p style="color: #742a2a; margin-bottom: 15px; font-size: 0.95rem;">
+                                When an agent calls but customer doesn't answer (call missed), the system automatically tracks RNR attempts and schedules follow-ups.
+                            </p>
+
+                            <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 15px;">
+                                <!-- RNR 1 -->
+                                <div style="flex: 1; min-width: 200px; background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #f6ad55;">
+                                    <h5 style="color: #c05621; margin-bottom: 8px;">RNR 1 (1st Missed Call)</h5>
+                                    <ul style="margin: 0; padding-left: 20px; color: #744210; font-size: 0.85rem;">
+                                        <li>Status → <code>'RNR 1'</code></li>
+                                        <li><strong>Auto follow-up scheduled</strong></li>
+                                        <li>Next working day, first available slot</li>
+                                    </ul>
+                                </div>
+
+                                <!-- RNR 2 -->
+                                <div style="flex: 1; min-width: 200px; background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #ed8936;">
+                                    <h5 style="color: #9c4221; margin-bottom: 8px;">RNR 2 (2nd Missed Call)</h5>
+                                    <ul style="margin: 0; padding-left: 20px; color: #744210; font-size: 0.85rem;">
+                                        <li>Status → <code>'RNR 2'</code></li>
+                                        <li><strong>Auto follow-up scheduled</strong></li>
+                                        <li>Another attempt scheduled</li>
+                                    </ul>
+                                </div>
+
+                                <!-- RNR 3 -->
+                                <div style="flex: 1; min-width: 200px; background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #e53e3e;">
+                                    <h5 style="color: #9b2c2c; margin-bottom: 8px;">RNR 3 (3rd Missed Call)</h5>
+                                    <ul style="margin: 0; padding-left: 20px; color: #742a2a; font-size: 0.85rem;">
+                                        <li>Status → <code>'RNR 3'</code></li>
+                                        <li><strong>NO follow-up scheduled</strong></li>
+                                        <li><strong>All pending tasks DROPPED</strong></li>
+                                        <li>Considered unreachable</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div style="background: white; padding: 12px; border-radius: 6px; margin-bottom: 10px;">
+                                <strong style="color: #c53030;">Follow-up Note:</strong>
+                                <span style="color: #742a2a; font-size: 0.9rem;"> "Auto-generated follow-up because the customer missed a call earlier. Status changed from [old] to [new]."</span>
+                            </div>
+
+                            <span class="file-ref">TeleCommunicationModel.php → scheduleFollowupTask() → getTypeOfContact() → dropAllScheduledTasks()</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stage 3: CONTACTED -->
+                <div class="stage-card">
+                    <div class="stage-card-header stage-contacted">
+                        <div class="stage-number">3</div>
+                        <h3>CONTACTED - Customer Engaged</h3>
+                        <span class="badge badge-auto">AUTOMATIC</span>
+                    </div>
+                    <div class="stage-card-body">
+                        <div class="trigger-section">
+                            <h4>What triggers this?</h4>
+                            <ul class="trigger-list">
+                                <li class="whatsapp">
+                                    <span class="trigger-icon">&#9989;</span>
+                                    <div class="trigger-content">
+                                        <strong>WhatsApp Message Delivered</strong>
+                                        <span>Meta webhook returns <code>status: 'delivered'</code> (message reached customer's phone)</span>
+                                        <br><span class="file-ref">ConversationMessagesModel.php → setContactedAtForMessage()</span>
+                                    </div>
+                                </li>
+                                <li class="whatsapp">
+                                    <span class="trigger-icon">&#128172;</span>
+                                    <div class="trigger-content">
+                                        <strong>Customer Replies</strong>
+                                        <span>Incoming message received after agent had already attempted contact</span>
+                                        <br><span class="file-ref">ConversationMessagesModel.php → setContactedAtForMessage()</span>
+                                    </div>
+                                </li>
+                                <li class="phone">
+                                    <span class="trigger-icon">&#128222;</span>
+                                    <div class="trigger-content">
+                                        <strong>Call Answered</strong>
+                                        <span>Customer picks up the phone &#8594; Call status becomes <code>'On Call'</code></span>
+                                        <br><span class="file-ref">TeleCommunicationModel.php → setContactedAtForCall()</span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="fields-updated">
+                            <h4>Fields Updated</h4>
+                            <div class="field-row">
+                                <span class="field-name">conversation_stage</span>
+                                <span class="field-value">'contacted'</span>
+                            </div>
+                            <div class="field-row">
+                                <span class="field-name">contacted_at</span>
+                                <span class="field-value">Current timestamp</span>
+                            </div>
+                            <div class="field-row">
+                                <span class="field-name">first_reached_contacted_at</span>
+                                <span class="field-value">Current date (via DB trigger)</span>
+                            </div>
+                            <div class="field-row">
+                                <span class="field-name">requires_followup_action</span>
+                                <span class="field-value">1 (set automatically)</span>
+                            </div>
+                        </div>
+
+                        <!-- Mandatory Follow-up Section -->
+                        <div style="margin-top: 20px; padding: 20px; background: #fef3c7; border: 2px solid #d97706; border-radius: 12px;">
+                            <h4 style="color: #92400e; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                                <span style="font-size: 1.5rem;">&#128197;</span>
+                                Mandatory Follow-up Enforcement
+                            </h4>
+
+                            <p style="color: #b45309; margin-bottom: 15px; line-height: 1.6;">
+                                When a conversation enters the <strong>CONTACTED</strong> stage <strong>via a CALL</strong>, the system enforces mandatory follow-up scheduling. The agent <strong>cannot switch to another conversation</strong> until they schedule a follow-up.
+                            </p>
+
+                            <div style="display: grid; gap: 15px;">
+                                <!-- Important Note -->
+                                <div style="background: #fed7d7; padding: 12px 15px; border-radius: 8px; border-left: 4px solid #c53030;">
+                                    <p style="margin: 0; color: #c53030; font-size: 0.9rem;">
+                                        <strong>Important:</strong> Mandatory follow-up is triggered <strong>only for CALLS</strong>, not for chat messages.
+                                        If contacted via chat, no follow-up modal is shown.
+                                    </p>
+                                </div>
+
+                                <!-- How it works -->
+                                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #d97706;">
+                                    <h5 style="color: #92400e; margin-bottom: 10px;">How it works:</h5>
+                                    <ol style="margin: 0; padding-left: 20px; color: #744210; font-size: 0.9rem;">
+                                        <li>When conversation moves to <strong>contacted via CALL</strong>, <code>requires_followup_action = 1</code> is set</li>
+                                        <li>On page load, system fetches all pending followup conversations for the agent</li>
+                                        <li>Modal is shown for each pending conversation (queue-based, latest first)</li>
+                                        <li>Agent must schedule follow-up before modal closes</li>
+                                        <li>After scheduling, next pending conversation modal is shown (if any)</li>
+                                    </ol>
+                                </div>
+
+                                <!-- Trigger Points -->
+                                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #3182ce;">
+                                    <h5 style="color: #2b6cb0; margin-bottom: 10px;">When modal is triggered:</h5>
+                                    <ul style="margin: 0; padding-left: 20px; color: #4a5568; font-size: 0.9rem;">
+                                        <li><strong>Page Load:</strong> All pending followups fetched via <code>getCallStatuses</code> API</li>
+                                        <li><strong>Real-time:</strong> WebSocket event when conversation moves to contacted</li>
+                                        <li><strong>Switching:</strong> When agent tries to switch to another conversation</li>
+                                    </ul>
+                                </div>
+
+                                <!-- Modal Action Flows -->
+                                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #38a169;">
+                                    <h5 style="color: #276749; margin-bottom: 10px;">Modal Action Flows (3 Options):</h5>
+
+                                    <!-- Flow 1: Schedule Follow-up -->
+                                    <div style="margin-bottom: 12px;">
+                                        <strong style="color: #2b6cb0;">1. Schedule Follow-up</strong>
+                                        <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px;">
+                                            <span style="background: #3182ce; color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem;">
+                                                Schedule &amp; Stay in Contacted
+                                            </span>
+                                            <span style="background: #805ad5; color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem;">
+                                                Schedule &amp; Move to Nurturing
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Flow 2: Create Profile/Opportunity -->
+                                    <div style="margin-bottom: 12px;">
+                                        <strong style="color: #38a169;">2. Create Profile / Opportunity</strong>
+                                        <p style="margin: 6px 0 8px 0; color: #4a5568; font-size: 0.85rem;">No <strong>Account Id</strong>:</p>
+                                        <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px;">
+                                            <span style="background: #38a169; color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem;">
+                                                Create New Account → navigates to /accounts/create-new-profile
+                                            </span>
+                                            <span style="background: #2b6cb0; color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem;">
+                                                Link to Existing Account → opens account search dialog
+                                            </span>
+                                        </div>
+                                        <p style="margin: 6px 0 8px 0; color: #4a5568; font-size: 0.85rem;">Has <strong>Account Id</strong>:</p>
+                                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                            <span style="background: #dd6b20; color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem;">
+                                                Create Opportunity → navigates to /businessopportunities/:account_id/:uuid
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Flow 3: Mark Unqualified -->
+                                    <div>
+                                        <strong style="color: #c53030;">3. Mark as Unqualified</strong>
+                                        <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px;">
+                                            <span style="background: #c53030; color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem;">
+                                                Select reason → Mark Unqualified (closes conversation)
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Auto-switch behavior -->
+                                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #ed8936;">
+                                    <h5 style="color: #c05621; margin-bottom: 10px;">Auto-Switch to Next Conversation:</h5>
+                                    <p style="margin: 0 0 10px 0; color: #744210; font-size: 0.9rem;">
+                                        When a conversation is <strong>closed</strong> (unqualified or linked to account), the system automatically switches to the next available conversation and updates the URL.
+                                    </p>
+                                    <ul style="margin: 0; padding-left: 20px; color: #4a5568; font-size: 0.9rem;">
+                                        <li><strong>Mark Unqualified:</strong> After marking, switches to next conversation</li>
+                                        <li><strong>Link to Existing Account:</strong> After successful linking, switches to next conversation</li>
+                                        <li><strong>No conversations left:</strong> Navigates to /communications/conversations base route</li>
+                                    </ul>
+                                </div>
+
+                                <!-- System Message on Close -->
+                                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #38a169;">
+                                    <h5 style="color: #276749; margin-bottom: 10px;">System Message on Conversation Close:</h5>
+                                    <p style="margin: 0 0 10px 0; color: #2f855a; font-size: 0.9rem;">
+                                        When a conversation is closed, a system message is automatically added to the conversation history with:
+                                    </p>
+                                    <ul style="margin: 0; padding-left: 20px; color: #4a5568; font-size: 0.9rem;">
+                                        <li><strong>Who closed:</strong> Agent name who performed the action</li>
+                                        <li><strong>What status:</strong> Unqualified (with reason) or Converted</li>
+                                        <li><strong>When closed:</strong> Timestamp of the closure</li>
+                                    </ul>
+                                    <div style="margin-top: 10px; padding: 10px; background: #f7fafc; border-radius: 6px; font-family: monospace; font-size: 0.8rem;">
+                                        <div style="color: #c53030;">🚫 Conversation marked as Unqualified by John Doe.</div>
+                                        <div style="color: #4a5568;">📋 Reason: Not Interested</div>
+                                        <div style="color: #718096;">📅 Closed on: Jan 02, 2026 10:30 AM</div>
+                                    </div>
+                                </div>
+
+                                <!-- Flag Clearing -->
+                                <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #805ad5;">
+                                    <h5 style="color: #6b46c1; margin-bottom: 10px;">When <code>requires_followup_action</code> is cleared (set to 0):</h5>
+                                    <ul style="margin: 0; padding-left: 20px; color: #4a5568; font-size: 0.9rem;">
+                                        <li>When follow-up is scheduled via modal</li>
+                                        <li>When profile/opportunity is created (navigates away)</li>
+                                        <li>When marked as unqualified</li>
+                                        <li>When conversation moves to <strong>nurturing</strong>, <strong>converted</strong>, or <strong>unqualified</strong></li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div style="margin-top: 15px; font-size: 0.85rem; color: #718096;">
+                                <strong>Backend:</strong> <code style="background: #2d3748; color: #68d391; padding: 2px 6px; border-radius: 4px;">OpenConversationsModel.php</code>
+                                &nbsp;|&nbsp;
+                                <strong>Frontend:</strong> <code style="background: #2d3748; color: #68d391; padding: 2px 6px; border-radius: 4px;">conversations-list.component.ts</code>
+                                &nbsp;|&nbsp;
+                                <strong>Modal:</strong> <code style="background: #2d3748; color: #68d391; padding: 2px 6px; border-radius: 4px;">schedule-followup.component.ts (mandatory mode)</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stage 4: NURTURING -->
+                <div class="stage-card">
+                    <div class="stage-card-header stage-nurturing">
+                        <div class="stage-number">4</div>
+                        <h3>NURTURING - Long-term Follow-up</h3>
+                        <span class="badge badge-auto">AUTOMATIC</span>
+                    </div>
+                    <div class="stage-card-body">
+                        <div class="trigger-section">
+                            <h4>What triggers this?</h4>
+                            <ul class="trigger-list">
+                                <li style="border-left-color: #38a169;">
+                                    <span class="trigger-icon">&#128197;</span>
+                                    <div class="trigger-content">
+                                        <strong>Agent Schedules Follow-up Task</strong>
+                                        <span>When agent schedules a follow-up, conversation <strong>automatically</strong> moves to nurturing</span>
+                                        <br><span class="file-ref">WhatsappModel.php → setConversationToNurturing()</span>
+                                    </div>
+                                </li>
+                                <li style="border-left-color: #3182ce;">
+                                    <span class="trigger-icon">&#128100;</span>
+                                    <div class="trigger-content">
+                                        <strong>Contact Profiled (Account Created/Linked)</strong>
+                                        <span>When contact is linked to an account or a new account is created - conversation stays open for continued engagement</span>
+                                        <br><span class="file-ref">WhatsappModel.php → setConversationToNurturingOnProfile()</span>
+                                        <br><span class="file-ref">Accounts.php → _handlePostCreation()</span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="fields-updated">
+                            <h4>Fields Updated</h4>
+                            <div class="field-row">
+                                <span class="field-name">conversation_stage</span>
+                                <span class="field-value">'nurturing'</span>
+                            </div>
+                            <div class="field-row">
+                                <span class="field-name">nurturing_at</span>
+                                <span class="field-value">Current timestamp</span>
+                            </div>
+                            <div class="field-row">
+                                <span class="field-name">first_reached_nurturing_at</span>
+                                <span class="field-value">Current date (via DB trigger)</span>
+                            </div>
+                        </div>
+
+                        <!-- Follow-up Task Integration -->
+                        <div style="margin-top: 20px; padding: 20px; background: #f0fff4; border: 2px solid #38a169; border-radius: 12px;">
+                            <h4 style="color: #276749; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                                <span style="font-size: 1.5rem;">&#128197;</span>
+                                Follow-up Task Integration
+                            </h4>
+
+                            <p style="color: #2f855a; margin-bottom: 15px;">
+                                When an agent schedules a follow-up task, the system automatically:
+                            </p>
+
+                            <div style="display: grid; gap: 10px;">
+                                <div style="background: white; padding: 12px 15px; border-radius: 8px; display: flex; align-items: center; gap: 10px;">
+                                    <span style="background: #38a169; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold;">1</span>
+                                    <span>Creates record in <code style="background: #edf2f7; padding: 2px 6px; border-radius: 4px;">tbl_followup_schedules</code></span>
+                                </div>
+                                <div style="background: white; padding: 12px 15px; border-radius: 8px; display: flex; align-items: center; gap: 10px;">
+                                    <span style="background: #38a169; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold;">2</span>
+                                    <span>Moves conversation to <strong>NURTURING</strong> stage</span>
+                                </div>
+                                <div style="background: white; padding: 12px 15px; border-radius: 8px; display: flex; align-items: center; gap: 10px;">
+                                    <span style="background: #38a169; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold;">3</span>
+                                    <span>Sets <code style="background: #edf2f7; padding: 2px 6px; border-radius: 4px;">nurturing_at</code> timestamp</span>
+                                </div>
+                            </div>
+
+                            <div style="margin-top: 15px; padding: 15px; background: #c6f6d5; border-radius: 8px;">
+                                <strong style="color: #276749;">&#128337; Cron Job (Every 5-10 minutes):</strong>
+                                <ul style="margin: 10px 0 0 20px; color: #2f855a;">
+                                    <li>Finds due follow-ups (past due_date + schedule_time)</li>
+                                    <li>Creates conversation if none exists</li>
+                                    <li>Creates system message: "Follow-up scheduled"</li>
+                                    <li>Marks follow-up as 'done'</li>
+                                </ul>
+                            </div>
+
+                            <div style="margin-top: 15px;">
+                                <strong style="color: #276749;">Follow-up Types:</strong>
+                                <div style="display: flex; gap: 10px; margin-top: 8px; flex-wrap: wrap;">
+                                    <span style="background: #25d366; color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.85rem;">&#128172; WhatsApp</span>
+                                    <span style="background: #805ad5; color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.85rem;">&#128222; Call</span>
+                                    <span style="background: #3182ce; color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.85rem;">&#9993; Mail</span>
+                                </div>
+                            </div>
+
+                            <div style="margin-top: 15px; font-size: 0.85rem; color: #718096;">
+                                <strong>Table:</strong> <code style="background: #2d3748; color: #68d391; padding: 2px 6px; border-radius: 4px;">tbl_followup_schedules</code>
+                                &nbsp;|&nbsp;
+                                <strong>UI:</strong> <code style="background: #2d3748; color: #68d391; padding: 2px 6px; border-radius: 4px;">schedule-followup.component.ts</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stage 5a: CONVERTED -->
+                <div class="stage-card">
+                    <div class="stage-card-header stage-converted">
+                        <div class="stage-number">5A</div>
+                        <h3>CONVERTED - Lead Qualified (Success)</h3>
+                        <span class="badge badge-auto">AUTOMATIC</span>
+                    </div>
+                    <div class="stage-card-body">
+                        <div class="trigger-section">
+                            <h4>What triggers this?</h4>
+                            <ul class="trigger-list">
+                                <li style="border-left-color: #d69e2e;">
+                                    <span class="trigger-icon">&#128176;</span>
+                                    <div class="trigger-content">
+                                        <strong>Opportunity Created</strong>
+                                        <span>When an opportunity is created for the contact (requires account)</span>
+                                        <br><span class="file-ref">Whatsapp.php → saveOpportunityItems() → WhatsappModel.php → setConversationToConvertedAndClose()</span>
+                                    </div>
+                                </li>
+                                <li style="border-left-color: #2563eb;">
+                                    <span class="trigger-icon">&#128722;</span>
+                                    <div class="trigger-content">
+                                        <strong>Order Created</strong>
+                                        <span>When an order is placed for the contact</span>
+                                        <br><span class="file-ref">Orders.php → handleConversationAfterOrder() → closeAsConverted()</span>
+                                    </div>
+                                </li>
+                            </ul>
+                            <div style="background: #fef3c7; padding: 10px 15px; border-radius: 6px; margin-top: 10px; border: 1px solid #f59e0b;">
+                                <strong style="color: #92400e;">Note:</strong>
+                                <span style="color: #78350f; font-size: 0.9rem;"> Account Created/Linked (profiling) now moves to <strong>NURTURING</strong>, not CONVERTED. See NURTURING stage for details.</span>
+                            </div>
+                        </div>
+                        <div class="fields-updated">
+                            <h4>Fields Updated</h4>
+                            <div class="field-row">
+                                <span class="field-name">conversation_stage</span>
+                                <span class="field-value">'converted'</span>
+                            </div>
+                            <div class="field-row">
+                                <span class="field-name">converted_at</span>
+                                <span class="field-value">Current timestamp</span>
+                            </div>
+                            <div class="field-row">
+                                <span class="field-name">first_reached_converted_at</span>
+                                <span class="field-value">Current date (via DB trigger)</span>
+                            </div>
+                            <div class="field-row">
+                                <span class="field-name">status</span>
+                                <span class="field-value">'closed'</span>
+                            </div>
+                        </div>
+
+                        <!-- Terminology Clarification -->
+                        <div style="margin-top: 20px; padding: 15px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px;">
+                            <h4 style="color: #475569; margin-bottom: 10px; font-size: 0.95rem;">Key Terminology:</h4>
+                            <div style="display: grid; gap: 8px; font-size: 0.9rem;">
+                                <div style="display: flex; gap: 10px; align-items: center;">
+                                    <code style="background: #e2e8f0; padding: 3px 8px; border-radius: 4px; font-weight: 600;">conversation_type = 'contact'</code>
+                                    <span style="color: #64748b;">→ Lead/prospect conversation (no opportunity yet)</span>
+                                </div>
+                                <div style="display: flex; gap: 10px; align-items: center;">
+                                    <code style="background: #e2e8f0; padding: 3px 8px; border-radius: 4px; font-weight: 600;">conversation_type = 'opportunity'</code>
+                                    <span style="color: #64748b;">→ NEW conversation created when opportunity is made (waiting for order)</span>
+                                </div>
+                                <div style="display: flex; gap: 10px; align-items: center;">
+                                    <code style="background: #fed7aa; padding: 3px 8px; border-radius: 4px; font-weight: 600;">account_id = NULL</code>
+                                    <span style="color: #64748b;">→ Contact not profiled (no account linked)</span>
+                                </div>
+                                <div style="display: flex; gap: 10px; align-items: center;">
+                                    <code style="background: #bfdbfe; padding: 3px 8px; border-radius: 4px; font-weight: 600;">account_id = [value]</code>
+                                    <span style="color: #64748b;">→ Contact profiled (account linked)</span>
+                                </div>
+                            </div>
+                            <div style="margin-top: 12px; padding: 10px; background: #fef3c7; border-radius: 6px; font-size: 0.85rem;">
+                                <strong style="color: #92400e;">Note:</strong>
+                                <span style="color: #78350f;"> When an opportunity is created, the original 'contact' conversation closes as CONVERTED, and a NEW 'opportunity' conversation is created to track the deal until order.</span>
+                            </div>
+                        </div>
+
+                        <!-- Two Scenarios: With vs Without Account -->
+                        <div style="margin-top: 20px; padding: 20px; background: #f0fdf4; border: 2px solid #16a34a; border-radius: 12px;">
+                            <h4 style="color: #15803d; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                                <span style="font-size: 1.5rem;">&#128101;</span>
+                                Conversion Flow Differences: Contact Without vs With Account
+                            </h4>
+
+                            <p style="color: #166534; margin-bottom: 20px; line-height: 1.6;">
+                                The conversion process differs significantly based on whether the contact already has an account linked in the system.
+                            </p>
+
+                            <div style="display: grid; gap: 20px;">
+                                <!-- Scenario 1: Contact WITHOUT Account -->
+                                <div style="background: white; padding: 20px; border-radius: 10px; border-left: 4px solid #ea580c;">
+                                    <h5 style="color: #c2410c; margin-bottom: 12px; display: flex; align-items: center; gap: 10px;">
+                                        <span style="background: #ea580c; color: white; padding: 4px 12px; border-radius: 15px; font-size: 0.75rem;">SCENARIO 1</span>
+                                        Contact WITHOUT Account (Unprofiled)
+                                    </h5>
+                                    <p style="color: #7c2d12; margin-bottom: 12px; font-size: 0.95rem;">
+                                        <code style="background: #fed7aa; padding: 2px 6px; border-radius: 4px;">account_id = NULL</code> — When a lead comes in from WhatsApp/Facebook/etc. and has no account linked yet. The agent must <strong>profile</strong> the contact first.
+                                    </p>
+
+                                    <div style="background: #fff7ed; padding: 15px; border-radius: 8px; margin-bottom: 12px;">
+                                        <strong style="color: #9a3412;">Profiling Steps (Moves to NURTURING):</strong>
+                                        <ol style="margin: 10px 0 0 20px; color: #7c2d12; font-size: 0.9rem;">
+                                            <li><strong>Create Account</strong> OR <strong>Link to Existing Account</strong>
+                                                <br><code style="background: #2d3748; color: #68d391; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem;">Accounts.php → createAccount()</code>
+                                                <br><code style="background: #2d3748; color: #68d391; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem;">Whatsapp.php → linkContactToAccount()</code>
+                                            </li>
+                                            <li>Contact's <code>account_id</code> is updated in <code>temp_tbl_contacts</code></li>
+                                            <li>Conversation's <code>account_id</code> is set
+                                                <br><code style="background: #2d3748; color: #68d391; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem;">Accounts.php → _handlePostCreation()</code>
+                                            </li>
+                                            <li>Conversation moves to <span style="background: #fbd38d; padding: 2px 8px; border-radius: 4px; font-weight: 600;">NURTURING</span> (stays open)
+                                                <br><code style="background: #2d3748; color: #68d391; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem;">WhatsappModel.php → setConversationToNurturingOnProfile()</code>
+                                            </li>
+                                            <li>Agent continues engagement to create opportunity</li>
+                                        </ol>
+                                    </div>
+
+                                    <div style="background: #fef3c7; padding: 10px 15px; border-radius: 6px; border: 1px solid #f59e0b; margin-bottom: 12px;">
+                                        <strong style="color: #92400e;">Important:</strong>
+                                        <span style="color: #78350f; font-size: 0.9rem;"> Profiling alone does NOT close the conversation. Agent must create an Opportunity (→ CONVERTED) or mark as Unqualified (→ UNQUALIFIED) to close it.</span>
+                                    </div>
+
+                                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                        <span style="background: #f59e0b; color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem;">
+                                            <strong>After Profiling:</strong> Continue engagement in NURTURING stage
+                                        </span>
+                                        <span style="background: #16a34a; color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem;">
+                                            <strong>Create Opportunity:</strong> Moves to CONVERTED & closes
+                                        </span>
+                                        <span style="background: #dc2626; color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem;">
+                                            <strong>Mark Unqualified:</strong> Moves to UNQUALIFIED & closes
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <!-- Scenario 2: Contact WITH Account -->
+                                <div style="background: white; padding: 20px; border-radius: 10px; border-left: 4px solid #2563eb;">
+                                    <h5 style="color: #1d4ed8; margin-bottom: 12px; display: flex; align-items: center; gap: 10px;">
+                                        <span style="background: #2563eb; color: white; padding: 4px 12px; border-radius: 15px; font-size: 0.75rem;">SCENARIO 2</span>
+                                        Contact WITH Account (Profiled / Existing Customer)
+                                    </h5>
+                                    <p style="color: #1e40af; margin-bottom: 12px; font-size: 0.95rem;">
+                                        <code style="background: #bfdbfe; padding: 2px 6px; border-radius: 4px;">account_id = [value]</code> — When a lead comes in from a phone/email that's already linked to an account in our system. This could be an existing account (profiled but no orders yet) or a repeat customer (has order history).
+                                    </p>
+
+                                    <div style="background: #eff6ff; padding: 15px; border-radius: 8px; margin-bottom: 12px;">
+                                        <strong style="color: #1e40af;">Conversion Steps:</strong>
+                                        <ol style="margin: 10px 0 0 20px; color: #1e3a8a; font-size: 0.9rem;">
+                                            <li><strong>Create Opportunity</strong> directly (no account creation needed)
+                                                <br><code style="background: #2d3748; color: #68d391; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem;">Whatsapp.php → saveOpportunityItems()</code>
+                                            </li>
+                                            <li>Opportunity is linked to existing account
+                                                <br><code style="background: #2d3748; color: #68d391; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem;">WhatsappModel.php → createOpportunity()</code>
+                                            </li>
+                                            <li>Contact conversation is closed as <span style="background: #9ae6b4; padding: 2px 8px; border-radius: 4px; font-weight: 600;">CONVERTED</span>
+                                                <br><code style="background: #2d3748; color: #68d391; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem;">WhatsappModel.php → setConversationToConvertedAndClose()</code>
+                                            </li>
+                                            <li><strong>New OPPORTUNITY conversation</strong> is created automatically
+                                                <br><code style="background: #2d3748; color: #68d391; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem;">OpenConversationsModel.php → createConversation('opportunity')</code>
+                                            </li>
+                                        </ol>
+                                    </div>
+
+                                    <div style="background: #dbeafe; padding: 10px 15px; border-radius: 6px;">
+                                        <strong style="color: #1e40af;">Key Difference:</strong>
+                                        <span style="color: #1e3a8a; font-size: 0.9rem;"> No profiling needed - agent can directly create opportunity/quote since account already exists.</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Comparison Table -->
+                            <div style="margin-top: 20px; overflow-x: auto;">
+                                <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+                                    <thead>
+                                        <tr style="background: #166534; color: white;">
+                                            <th style="padding: 12px; text-align: left; border: 1px solid #15803d;">Aspect</th>
+                                            <th style="padding: 12px; text-align: left; border: 1px solid #15803d;">Without Account</th>
+                                            <th style="padding: 12px; text-align: left; border: 1px solid #15803d;">With Existing Account</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr style="background: white;">
+                                            <td style="padding: 10px; border: 1px solid #d1d5db;"><strong>First Step</strong></td>
+                                            <td style="padding: 10px; border: 1px solid #d1d5db;">Create/Link Account (profiling)</td>
+                                            <td style="padding: 10px; border: 1px solid #d1d5db;">Create Opportunity directly</td>
+                                        </tr>
+                                        <tr style="background: #f9fafb;">
+                                            <td style="padding: 10px; border: 1px solid #d1d5db;"><strong>Primary Function</strong></td>
+                                            <td style="padding: 10px; border: 1px solid #d1d5db;"><code>Accounts.php → createAccount()</code></td>
+                                            <td style="padding: 10px; border: 1px solid #d1d5db;"><code>Whatsapp.php → saveOpportunityItems()</code></td>
+                                        </tr>
+                                        <tr style="background: white;">
+                                            <td style="padding: 10px; border: 1px solid #d1d5db;"><strong>Conversion Trigger</strong></td>
+                                            <td style="padding: 10px; border: 1px solid #d1d5db;">Account creation/linking</td>
+                                            <td style="padding: 10px; border: 1px solid #d1d5db;">Opportunity creation</td>
+                                        </tr>
+                                        <tr style="background: #f9fafb;">
+                                            <td style="padding: 10px; border: 1px solid #d1d5db;"><strong>Conversion Method</strong></td>
+                                            <td style="padding: 10px; border: 1px solid #d1d5db;"><code>setConversationToConvertedAndClose(handle, null, account_id)</code></td>
+                                            <td style="padding: 10px; border: 1px solid #d1d5db;"><code>setConversationToConvertedAndClose(null, conversation_id)</code></td>
+                                        </tr>
+                                        <tr style="background: white;">
+                                            <td style="padding: 10px; border: 1px solid #d1d5db;"><strong>Next Conversation</strong></td>
+                                            <td style="padding: 10px; border: 1px solid #d1d5db;">Opportunity (if created) OR None (with follow-up)</td>
+                                            <td style="padding: 10px; border: 1px solid #d1d5db;">Opportunity conversation always created</td>
+                                        </tr>
+                                        <tr style="background: #f9fafb;">
+                                            <td style="padding: 10px; border: 1px solid #d1d5db;"><strong>Auto Follow-up</strong></td>
+                                            <td style="padding: 10px; border: 1px solid #d1d5db;">Yes (if no opportunity created)</td>
+                                            <td style="padding: 10px; border: 1px solid #d1d5db;">No (opportunity already exists)</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 15px; padding: 15px; background: #c6f6d5; border-radius: 8px;">
+                            <strong>&#8594; Next Step:</strong> New OPPORTUNITY conversation is created for this customer (to track deal/order)
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Account Linking Section -->
+                <div style="margin: 30px 0; padding: 25px; background: linear-gradient(135deg, #ebf8ff 0%, #e0f2fe 100%); border: 2px solid #3182ce; border-radius: 12px;">
+                    <h3 style="color: #2b6cb0; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 1.5rem;">&#128279;</span>
+                        Account Linking - Auto Conversion Trigger
+                    </h3>
+
+                    <p style="color: #4a5568; margin-bottom: 20px; font-size: 1rem; line-height: 1.6;">
+                        When a contact has <strong>no account linked</strong>, the UI shows: <em>"No Account Linked - Link this contact to an account to create orders and opportunities"</em>
+                        <br>Agent can either <strong>Create Account</strong> or <strong>Link to Existing</strong>.
+                    </p>
+
+                    <div style="display: grid; gap: 20px;">
+                        <!-- Option 1: Link to Existing Account -->
+                        <div style="background: white; padding: 20px; border-radius: 10px; border-left: 4px solid #3182ce;">
+                            <h4 style="color: #2d3748; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                                <span style="background: #3182ce; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold;">1</span>
+                                Link to Existing Account
+                            </h4>
+                            <p style="color: #718096; margin-bottom: 12px;">Agent searches and selects an existing account to link the contact</p>
+                            <div style="background: #f7fafc; padding: 12px; border-radius: 6px; margin-bottom: 10px;">
+                                <strong style="color: #276749;">What happens automatically:</strong>
+                                <ul style="margin: 8px 0 0 20px; color: #4a5568;">
+                                    <li>Contact's <code>account_id</code> is updated</li>
+                                    <li>Conversation's <code>account_id</code> is updated</li>
+                                    <li>Conversation moves to <span style="background: #fbd38d; padding: 2px 8px; border-radius: 4px; font-weight: 600;">NURTURING</span> stage</li>
+                                    <li>Conversation <strong>stays open</strong> for continued engagement</li>
+                                    <li><code>nurturing_at</code> timestamp is set</li>
+                                    <li>System message: "Contact profiled by [Agent]. Linked to account: [Account Name]"</li>
+                                </ul>
+                            </div>
+                            <div style="background: #fffbeb; padding: 12px; border-radius: 6px; margin-bottom: 10px; border: 1px solid #f6e05e;">
+                                <strong style="color: #975a16;">Note:</strong>
+                                <span style="color: #744210;">Profiling (linking to account) keeps the conversation open. Agent should continue engagement and eventually create an opportunity or mark as unqualified.</span>
+                            </div>
+                            <span class="file-ref">Whatsapp.php → linkContactToAccount() → WhatsappModel.php → linkContactToAccount() → setConversationToNurturingOnProfile()</span>
+                        </div>
+
+                        <!-- Option 2: Create New Account -->
+                        <div style="background: white; padding: 20px; border-radius: 10px; border-left: 4px solid #38a169;">
+                            <h4 style="color: #2d3748; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                                <span style="background: #38a169; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold;">2</span>
+                                Create New Account
+                            </h4>
+                            <p style="color: #718096; margin-bottom: 12px;">Agent fills in account details (name, addresses, GST) and creates a new account</p>
+                            <div style="background: #f7fafc; padding: 12px; border-radius: 6px; margin-bottom: 10px;">
+                                <strong style="color: #276749;">What happens automatically:</strong>
+                                <ul style="margin: 8px 0 0 20px; color: #4a5568;">
+                                    <li>New account is created in <code>tbl_accounts</code></li>
+                                    <li>Contact is linked to the new account</li>
+                                    <li>Conversation's <code>account_id</code> is updated</li>
+                                    <li>Conversation moves to <span style="background: #fbd38d; padding: 2px 8px; border-radius: 4px; font-weight: 600;">NURTURING</span> stage</li>
+                                    <li>Conversation <strong>stays open</strong> for continued engagement</li>
+                                    <li><code>nurturing_at</code> timestamp is set</li>
+                                    <li>System message: "Contact profiled by [Agent]. Linked to account: [Account Name]"</li>
+                                </ul>
+                            </div>
+                            <div style="background: #fffbeb; padding: 12px; border-radius: 6px; margin-bottom: 10px; border: 1px solid #f6e05e;">
+                                <strong style="color: #975a16;">Note:</strong>
+                                <span style="color: #744210;">Profiling (creating account) keeps the conversation open. Agent should continue engagement and create an opportunity when ready.</span>
+                            </div>
+                            <span class="file-ref">Accounts.php → createAccount() → _handlePostCreation() → WhatsappModel.php → setConversationToNurturingOnProfile()</span>
+                        </div>
+
+                        <!-- Option 3: Create Account + Opportunity -->
+                        <div style="background: white; padding: 20px; border-radius: 10px; border-left: 4px solid #d69e2e;">
+                            <h4 style="color: #2d3748; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                                <span style="background: #d69e2e; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold;">3</span>
+                                Create Account + Opportunity (Together)
+                            </h4>
+                            <p style="color: #718096; margin-bottom: 12px;">Agent creates account AND adds opportunity items in the same flow</p>
+                            <div style="background: #f7fafc; padding: 12px; border-radius: 6px; margin-bottom: 10px;">
+                                <strong style="color: #276749;">What happens automatically:</strong>
+                                <ul style="margin: 8px 0 0 20px; color: #4a5568;">
+                                    <li>New account is created in <code>tbl_accounts</code></li>
+                                    <li>Opportunity is created in <code>tbl_opportunities</code> with items</li>
+                                    <li>Contact conversation is <strong>closed as CONVERTED</strong></li>
+                                    <li><strong>NEW Opportunity conversation is created</strong> (type = 'opportunity')</li>
+                                    <li>System message added: "Opportunity Created - Value: ₹X,XXX"</li>
+                                    <li><strong>NO follow-up is scheduled</strong> (opportunity already exists)</li>
+                                </ul>
+                            </div>
+                            <span class="file-ref">Whatsapp.php → saveOpportunityItems() → setConversationToConvertedAndClose() → OpenConversationsModel.php → createConversation('opportunity')</span>
+                        </div>
+                    </div>
+
+                    <!-- Auto Follow-up Explanation -->
+                    <div style="margin-top: 20px; padding: 20px; background: #faf5ff; border: 2px solid #9f7aea; border-radius: 10px;">
+                        <h4 style="color: #6b46c1; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                            <span style="font-size: 1.3rem;">&#128197;</span>
+                            Auto Follow-up Scheduling (When No Opportunity Created)
+                        </h4>
+
+                        <p style="color: #553c9a; margin-bottom: 15px; line-height: 1.6;">
+                            When an agent creates/links an account but does <strong>NOT</strong> immediately create an opportunity, the system automatically schedules a follow-up task to remind the agent to create one later.
+                        </p>
+
+                        <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                            <strong style="color: #6b46c1;">What gets scheduled:</strong>
+                            <ul style="margin: 10px 0 0 20px; color: #4a5568;">
+                                <li><strong>Type:</strong> Call follow-up</li>
+                                <li><strong>Due Date:</strong> <strong>Next working day</strong> (tomorrow or later if weekend/holiday)</li>
+                                <li><strong>Time:</strong> First available 10-minute slot within shift hours (from <code>tbl_company_work_hours</code>)</li>
+                                <li><strong>Notes:</strong> "Auto-generated follow-up to create an opportunity for this account"</li>
+                                <li><strong>Assigned to:</strong> Same agent who created the account</li>
+                            </ul>
+                        </div>
+
+                        <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                            <strong style="color: #6b46c1;">Scheduling Logic:</strong>
+                            <ol style="margin: 10px 0 0 20px; color: #4a5568; font-size: 0.9rem;">
+                                <li>Starts from <strong>tomorrow at shift start time</strong> (never same day)</li>
+                                <li>Checks if it's a <strong>working day</strong> (Mon-Sat by default, excludes holidays)</li>
+                                <li>Checks if agent is <strong>not on leave</strong> (full day, first half, or second half)</li>
+                                <li>Finds a <strong>10-minute slot</strong> with no existing follow-ups for that agent</li>
+                                <li>If no slot available, moves to next day and repeats (max 90 days search)</li>
+                            </ol>
+                        </div>
+
+                        <div style="background: white; padding: 15px; border-radius: 8px;">
+                            <strong style="color: #6b46c1;">Why this happens:</strong>
+                            <p style="margin: 8px 0 0 0; color: #718096; font-size: 0.9rem;">
+                                The goal of profiling a contact (creating an account) is usually to create an opportunity and eventually an order.
+                                If the agent doesn't create an opportunity immediately, this auto-follow-up ensures no profiled account gets forgotten.
+                            </p>
+                        </div>
+
+                        <div style="margin-top: 12px;">
+                            <span class="file-ref">Accounts.php → _scheduleOpportunityFollowup() → SchedulingHelper.php → getNextScheduleTime()</span>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 20px; padding: 15px; background: #fef3c7; border-radius: 8px; border: 1px solid #d97706;">
+                        <strong style="color: #92400e;">&#9888; Important:</strong>
+                        <span style="color: #b45309;"> Both actions automatically close the Contact conversation as "Qualified". This is the primary way contacts get converted - by linking them to an account (profiling). The manual "Convert" button is less commonly used.</span>
+                    </div>
+                </div>
+
+                <!-- Stage 5b: UNQUALIFIED -->
+                <div class="stage-card">
+                    <div class="stage-card-header stage-unqualified">
+                        <div class="stage-number">5B</div>
+                        <h3>UNQUALIFIED - Lead Rejected</h3>
+                        <span class="badge badge-manual">MANUAL</span>
+                    </div>
+                    <div class="stage-card-body">
+                        <div class="trigger-section">
+                            <h4>What triggers this?</h4>
+                            <ul class="trigger-list">
+                                <li class="manual">
+                                    <span class="trigger-icon">&#10060;</span>
+                                    <div class="trigger-content">
+                                        <strong>Agent Disqualifies with Reason</strong>
+                                        <span>Agent clicks "Disqualify" and selects a disposition reason</span>
+                                        <br><span class="file-ref">OpenConversations.php → updateStage() → OpenConversationsModel.php → updateConversationStage()</span>
+                                        <br><span style="color: #718096; font-size: 0.8rem;">Also calls: OpenConversationsModel.php → closeConversation()</span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="fields-updated">
+                            <h4>Fields Updated</h4>
+                            <div class="field-row">
+                                <span class="field-name">conversation_stage</span>
+                                <span class="field-value">'unqualified'</span>
+                            </div>
+                            <div class="field-row">
+                                <span class="field-name">unqualified_at</span>
+                                <span class="field-value">Current timestamp</span>
+                            </div>
+                            <div class="field-row">
+                                <span class="field-name">first_reached_unqualified_at</span>
+                                <span class="field-value">Current date (via DB trigger)</span>
+                            </div>
+                            <div class="field-row">
+                                <span class="field-name">disposition_status</span>
+                                <span class="field-value">Selected reason (required)</span>
+                            </div>
+                            <div class="field-row">
+                                <span class="field-name">status</span>
+                                <span class="field-value">'closed' (auto by DB trigger)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ==================== OPPORTUNITY SECTION ==================== -->
+        <div class="flow-section">
+            <div class="flow-header">
+                <div class="icon opportunity-icon">&#128176;</div>
+                <div>
+                    <h2 style="border: none; margin: 0; padding: 0;">Opportunity Conversation Flow</h2>
+                    <p style="color: #718096;">Sales pipeline from opportunity to order (NO NURTURING STAGE)</p>
+                </div>
+            </div>
+
+            <!-- Stage Pipeline Visual -->
+            <div class="stage-pipeline">
+                <div class="stage-box stage-new">NEW</div>
+                <span class="stage-arrow">&#8594;</span>
+                <div class="stage-box stage-attempted">ATTEMPTED</div>
+                <span class="stage-arrow">&#8594;</span>
+                <div class="stage-box stage-contacted">CONTACTED</div>
+                <span class="stage-arrow">&#8594;</span>
+                <div class="stage-box stage-converted">CONVERTED</div>
+                <span style="margin: 0 15px; color: #718096;">or</span>
+                <div class="stage-box stage-unqualified">UNQUALIFIED</div>
+            </div>
+
+            <!-- Stage Details -->
+            <div class="stage-details">
+
+                <!-- Stage 1: NEW -->
+                <div class="stage-card">
+                    <div class="stage-card-header stage-new">
+                        <div class="stage-number">1</div>
+                        <h3>NEW - Opportunity Created</h3>
+                        <span class="badge badge-auto">AUTOMATIC</span>
+                    </div>
+                    <div class="stage-card-body">
+                        <div class="trigger-section">
+                            <h4>When is it set?</h4>
+                            <ul class="trigger-list">
+                                <li>
+                                    <span class="trigger-icon">&#128279;</span>
+                                    <div class="trigger-content">
+                                        <strong>Contact Converted</strong>
+                                        <span>When a Contact is marked as converted, an Opportunity is auto-created</span>
+                                    </div>
+                                </li>
+                                <li>
+                                    <span class="trigger-icon">&#128221;</span>
+                                    <div class="trigger-content">
+                                        <strong>Manual Creation</strong>
+                                        <span>Agent manually creates opportunity for existing customer</span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="fields-updated">
+                            <h4>Fields Updated</h4>
+                            <div class="field-row">
+                                <span class="field-name">conversation_stage</span>
+                                <span class="field-value">'new'</span>
+                            </div>
+                            <div class="field-row">
+                                <span class="field-name">conversation_type</span>
+                                <span class="field-value">'opportunity'</span>
+                            </div>
+                            <div class="field-row">
+                                <span class="field-name">contact_id</span>
+                                <span class="field-value">Linked contact ID</span>
+                            </div>
+                            <div class="field-row">
+                                <span class="field-name">account_id</span>
+                                <span class="field-value">Linked account (if exists)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stage 2: ATTEMPTED -->
+                <div class="stage-card">
+                    <div class="stage-card-header stage-attempted">
+                        <div class="stage-number">2</div>
+                        <h3>ATTEMPTED - Sales Outreach Started</h3>
+                        <span class="badge badge-auto">AUTOMATIC</span>
+                    </div>
+                    <div class="stage-card-body">
+                        <div class="trigger-section">
+                            <h4>What triggers this?</h4>
+                            <ul class="trigger-list">
+                                <li class="whatsapp">
+                                    <span class="trigger-icon">&#128172;</span>
+                                    <div class="trigger-content">
+                                        <strong>WhatsApp Message Sent</strong>
+                                        <span>Agent sends quote/proposal &#8594; <code>status: 'sent'</code></span>
+                                        <br><span class="file-ref">ConversationMessagesModel.php → setAttemptedAtForMessage()</span>
+                                    </div>
+                                </li>
+                                <li class="phone">
+                                    <span class="trigger-icon">&#128222;</span>
+                                    <div class="trigger-content">
+                                        <strong>Phone Call Initiated</strong>
+                                        <span>Agent calls to discuss deal &#8594; <code>'Ringing'</code></span>
+                                        <br><span class="file-ref">TeleCommunicationModel.php → setAttemptedAtForCall()</span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="fields-updated">
+                            <h4>Fields Updated</h4>
+                            <div class="field-row">
+                                <span class="field-name">conversation_stage</span>
+                                <span class="field-value">'attempted'</span>
+                            </div>
+                            <div class="field-row">
+                                <span class="field-name">attempted_at</span>
+                                <span class="field-value">Current timestamp</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stage 3: CONTACTED -->
+                <div class="stage-card">
+                    <div class="stage-card-header stage-contacted">
+                        <div class="stage-number">3</div>
+                        <h3>CONTACTED - Active Deal Negotiation</h3>
+                        <span class="badge badge-auto">AUTOMATIC</span>
+                    </div>
+                    <div class="stage-card-body">
+                        <div class="trigger-section">
+                            <h4>What triggers this?</h4>
+                            <ul class="trigger-list">
+                                <li class="whatsapp">
+                                    <span class="trigger-icon">&#9989;</span>
+                                    <div class="trigger-content">
+                                        <strong>WhatsApp Delivered</strong>
+                                        <span>Quote/proposal delivered to customer</span>
+                                        <br><span class="file-ref">ConversationMessagesModel.php → setContactedAtForMessage()</span>
+                                    </div>
+                                </li>
+                                <li class="whatsapp">
+                                    <span class="trigger-icon">&#128172;</span>
+                                    <div class="trigger-content">
+                                        <strong>Customer Replies</strong>
+                                        <span>Customer responds to quote/proposal</span>
+                                        <br><span class="file-ref">ConversationMessagesModel.php → setContactedAtForMessage()</span>
+                                    </div>
+                                </li>
+                                <li class="phone">
+                                    <span class="trigger-icon">&#128222;</span>
+                                    <div class="trigger-content">
+                                        <strong>Call Answered</strong>
+                                        <span>Customer available for discussion &#8594; <code>'On Call'</code></span>
+                                        <br><span class="file-ref">TeleCommunicationModel.php → setContactedAtForCall()</span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="fields-updated">
+                            <h4>Fields Updated</h4>
+                            <div class="field-row">
+                                <span class="field-name">conversation_stage</span>
+                                <span class="field-value">'contacted'</span>
+                            </div>
+                            <div class="field-row">
+                                <span class="field-name">contacted_at</span>
+                                <span class="field-value">Current timestamp</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NO NURTURING FOR OPPORTUNITY -->
+                <div style="background: #fef3c7; border: 2px dashed #d97706; border-radius: 12px; padding: 20px; text-align: center;">
+                    <h3 style="color: #92400e; margin-bottom: 10px;">&#9888; NO NURTURING STAGE FOR OPPORTUNITIES</h3>
+                    <p style="color: #b45309;">Opportunities go directly from CONTACTED to either CONVERTED or UNQUALIFIED.<br>Deals are either actively worked or closed - no long-term nurturing.</p>
+                </div>
+
+                <!-- Stage 4a: CONVERTED -->
+                <div class="stage-card">
+                    <div class="stage-card-header stage-converted">
+                        <div class="stage-number">4A</div>
+                        <h3>CONVERTED - Deal Won (Order Placed)</h3>
+                        <span class="badge badge-auto">AUTOMATIC</span>
+                    </div>
+                    <div class="stage-card-body">
+                        <div class="trigger-section">
+                            <h4>What triggers this?</h4>
+                            <ul class="trigger-list">
+                                <li style="border-left-color: #38a169;">
+                                    <span class="trigger-icon">&#128722;</span>
+                                    <div class="trigger-content">
+                                        <strong>Order Created</strong>
+                                        <span>When an order is created from this opportunity</span>
+                                        <br><span class="file-ref">Orders.php → handleConversationAfterOrder() → OpenConversationsModel.php → closeAsConverted()</span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="fields-updated">
+                            <h4>Fields Updated</h4>
+                            <div class="field-row">
+                                <span class="field-name">conversation_stage</span>
+                                <span class="field-value">'converted'</span>
+                            </div>
+                            <div class="field-row">
+                                <span class="field-name">converted_at</span>
+                                <span class="field-value">Current timestamp</span>
+                            </div>
+                            <div class="field-row">
+                                <span class="field-name">status</span>
+                                <span class="field-value">'closed'</span>
+                            </div>
+                            <div class="field-row">
+                                <span class="field-name">unread</span>
+                                <span class="field-value">0</span>
+                            </div>
+                        </div>
+
+                        <!-- Order Creation Flow -->
+                        <div style="margin-top: 20px; padding: 20px; background: #f0fdf4; border: 2px solid #16a34a; border-radius: 12px;">
+                            <h4 style="color: #15803d; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                                <span style="font-size: 1.5rem;">&#128722;</span>
+                                Order Creation Flow (Auto-Conversion)
+                            </h4>
+
+                            <p style="color: #166534; margin-bottom: 15px; line-height: 1.6;">
+                                When an order is created from an opportunity conversation, the conversion happens automatically.
+                            </p>
+
+                            <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 12px;">
+                                <strong style="color: #15803d;">Conversion Steps:</strong>
+                                <ol style="margin: 10px 0 0 20px; color: #166534; font-size: 0.9rem;">
+                                    <li>Agent creates order from the opportunity
+                                        <br><code style="background: #2d3748; color: #68d391; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem;">Orders.php → save()</code>
+                                    </li>
+                                    <li>System checks if <code>conversation_id</code> was passed with order</li>
+                                    <li>If conversation type is <strong>opportunity</strong>:
+                                        <br><code style="background: #2d3748; color: #68d391; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem;">OpenConversationsModel.php → closeAsConverted()</code>
+                                        <br>&#8594; Sets stage to 'converted', status to 'closed'
+                                    </li>
+                                    <li>System message added: "Order Created - Order #: XXX"
+                                        <br><code style="background: #2d3748; color: #68d391; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem;">ConversationMessagesModel.php → createSystemMessage()</code>
+                                    </li>
+                                </ol>
+                            </div>
+
+                            <div style="background: #dcfce7; padding: 12px; border-radius: 8px;">
+                                <strong style="color: #166534;">Note:</strong>
+                                <span style="color: #15803d; font-size: 0.9rem;"> For opportunity conversations, NO new conversation is created after order. The opportunity conversation simply closes as converted.</span>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 15px; padding: 15px; background: #c6f6d5; border-radius: 8px;">
+                            <strong>&#8594; Next Step:</strong> Order is created in order management system. Opportunity conversation is closed.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stage 4b: UNQUALIFIED -->
+                <div class="stage-card">
+                    <div class="stage-card-header stage-unqualified">
+                        <div class="stage-number">4B</div>
+                        <h3>UNQUALIFIED - Deal Lost</h3>
+                        <span class="badge badge-manual">MANUAL</span>
+                    </div>
+                    <div class="stage-card-body">
+                        <div class="trigger-section">
+                            <h4>What triggers this?</h4>
+                            <ul class="trigger-list">
+                                <li class="manual">
+                                    <span class="trigger-icon">&#10060;</span>
+                                    <div class="trigger-content">
+                                        <strong>Agent Marks as Lost</strong>
+                                        <span>Deal falls through &#8594; Agent selects loss reason</span>
+                                        <br><span class="file-ref">OpenConversations.php → updateStage() → OpenConversationsModel.php → updateConversationStage()</span>
+                                        <br><span style="color: #718096; font-size: 0.8rem;">Also calls: OpenConversationsModel.php → closeConversation()</span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="fields-updated">
+                            <h4>Fields Updated</h4>
+                            <div class="field-row">
+                                <span class="field-name">conversation_stage</span>
+                                <span class="field-value">'unqualified'</span>
+                            </div>
+                            <div class="field-row">
+                                <span class="field-name">unqualified_at</span>
+                                <span class="field-value">Current timestamp</span>
+                            </div>
+                            <div class="field-row">
+                                <span class="field-name">disposition_status</span>
+                                <span class="field-value">Loss reason (required)</span>
+                            </div>
+                            <div class="field-row">
+                                <span class="field-name">status</span>
+                                <span class="field-value">'closed' (auto)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ==================== DISPOSITION STATUS SECTION ==================== -->
+        <div class="flow-section">
+            <h2>&#128203; Disposition Status (Unqualified Reasons)</h2>
+            <p style="color: #718096; margin-bottom: 20px;">When marking a conversation as unqualified, agents must select one of these reasons:</p>
+
+            <table class="disposition-table">
+                <thead>
+                    <tr>
+                        <th>Status Code</th>
+                        <th>Display Label</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>rnr1</td>
+                        <td>RNR Attempt 1</td>
+                        <td>Ring No Response - First attempt</td>
+                    </tr>
+                    <tr>
+                        <td>rnr2</td>
+                        <td>RNR Attempt 2</td>
+                        <td>Ring No Response - Second attempt</td>
+                    </tr>
+                    <tr>
+                        <td>rnr3</td>
+                        <td>RNR Attempt 3</td>
+                        <td>Ring No Response - Third attempt (final)</td>
+                    </tr>
+                    <tr>
+                        <td>not_interested</td>
+                        <td>Not Interested</td>
+                        <td>Customer explicitly declined</td>
+                    </tr>
+                    <tr>
+                        <td>price_too_high</td>
+                        <td>Price Too High</td>
+                        <td>Customer finds pricing unacceptable</td>
+                    </tr>
+                    <tr>
+                        <td>wrong_timing</td>
+                        <td>Wrong Timing</td>
+                        <td>Customer not ready right now</td>
+                    </tr>
+                    <tr>
+                        <td>need_approval</td>
+                        <td>Need Approval</td>
+                        <td>Customer needs internal approval</td>
+                    </tr>
+                    <tr>
+                        <td>competitor_chosen</td>
+                        <td>Competitor Chosen</td>
+                        <td>Customer went with a competitor</td>
+                    </tr>
+                    <tr>
+                        <td>budget_issues</td>
+                        <td>Budget Issues</td>
+                        <td>Customer has budget constraints</td>
+                    </tr>
+                    <tr>
+                        <td>decision_maker_unavailable</td>
+                        <td>Decision Maker Unavailable</td>
+                        <td>Cannot reach the decision maker</td>
+                    </tr>
+                    <tr>
+                        <td>need_discount</td>
+                        <td>Need Discount</td>
+                        <td>Customer wants discount we can't offer</td>
+                    </tr>
+                    <tr>
+                        <td>credit_needed</td>
+                        <td>Credit Needed</td>
+                        <td>Customer needs credit terms</td>
+                    </tr>
+                    <tr>
+                        <td>need_more_time</td>
+                        <td>Need More Time</td>
+                        <td>Customer needs more time to decide</td>
+                    </tr>
+                    <tr>
+                        <td>non_contact</td>
+                        <td>Non-Contactable</td>
+                        <td>Invalid/unreachable phone number</td>
+                    </tr>
+                    <tr>
+                        <td>invalid</td>
+                        <td>Invalid Contact</td>
+                        <td>Fake/wrong contact information</td>
+                    </tr>
+                    <tr>
+                        <td>other</td>
+                        <td>Other</td>
+                        <td>Other reasons not listed</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ==================== COMPARISON SECTION ==================== -->
+        <div class="flow-section">
+            <h2>&#128200; Contact vs Opportunity Comparison</h2>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Aspect</th>
+                        <th>Contact</th>
+                        <th>Opportunity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Number of Stages</strong></td>
+                        <td>5 stages (includes Nurturing)</td>
+                        <td>4 stages (no Nurturing)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Created From</strong></td>
+                        <td>External lead sources (WhatsApp, FB, etc.)</td>
+                        <td>Contact conversion or manual creation</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Purpose</strong></td>
+                        <td>Qualify leads</td>
+                        <td>Close deals / Get orders</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Has Nurturing Stage</strong></td>
+                        <td><span class="check">&#10004;</span> Yes - for long-term follow-up</td>
+                        <td><span class="cross">&#10008;</span> No - deals are active or lost</td>
+                    </tr>
+                    <tr>
+                        <td><strong>"Converted" Means</strong></td>
+                        <td>Lead becomes an Opportunity</td>
+                        <td>Order is placed (deal won)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Success Metric</strong></td>
+                        <td>Contact &#8594; Opportunity conversion rate</td>
+                        <td>Opportunity &#8594; Order win rate</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Typical Duration</strong></td>
+                        <td>Days to weeks</td>
+                        <td>Days to months</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ==================== SUMMARY BOX ==================== -->
+        <div class="summary-box">
+            <h3>Quick Reference: Automatic vs Manual Triggers</h3>
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <h4>&#128994; AUTOMATIC</h4>
+                    <p>attempted_at<br><small>WhatsApp 'sent' or Call 'ringing'</small></p>
+                </div>
+                <div class="summary-item">
+                    <h4>&#128994; AUTOMATIC</h4>
+                    <p>contacted_at<br><small>WhatsApp 'delivered' or Customer replies</small></p>
+                </div>
+                <div class="summary-item">
+                    <h4>&#128994; AUTOMATIC</h4>
+                    <p>nurturing_at<br><small>When follow-up is scheduled</small></p>
+                </div>
+                <div class="summary-item">
+                    <h4>&#128994; AUTOMATIC</h4>
+                    <p>converted_at<br><small>Account created/linked or Order placed</small></p>
+                </div>
+                <div class="summary-item">
+                    <h4>&#128992; MANUAL</h4>
+                    <p>unqualified_at<br><small>Agent disqualifies with reason (only manual stage)</small></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== CRM REPORTS SECTION ==================== -->
+        <div class="flow-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border: 2px solid #0284c7;">
+            <div class="flow-header">
+                <div class="icon" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);">&#128202;</div>
+                <div>
+                    <h2 style="border: none; margin: 0; padding: 0; color: #0c4a6e;">CRM Reports</h2>
+                    <p style="color: #0369a1;">Analytics and insights for conversation performance tracking</p>
+                </div>
+            </div>
+
+            <!-- View Types Explanation -->
+            <div style="margin-bottom: 30px; padding: 20px; background: white; border-radius: 12px; border-left: 4px solid #0284c7;">
+                <h3 style="color: #0c4a6e; margin-bottom: 15px;">Understanding Report View Types</h3>
+                <p style="color: #334155; margin-bottom: 20px;">Most reports offer three different views to analyze data from different perspectives:</p>
+
+                <div style="display: grid; gap: 15px;">
+                    <div style="background: #f0f9ff; padding: 15px; border-radius: 8px;">
+                        <h4 style="color: #0369a1; margin: 0 0 8px 0; display: flex; align-items: center; gap: 8px;">
+                            <span style="background: #0284c7; color: white; padding: 4px 10px; border-radius: 4px; font-size: 0.75rem;">COHORT</span>
+                            Cohort View
+                        </h4>
+                        <p style="margin: 0; color: #334155;">Tracks a specific group of records <strong>created in the selected date range</strong> and follows their journey to see final outcomes.</p>
+                        <p style="margin: 8px 0 0 0; color: #64748b; font-size: 0.9rem;"><strong>Example:</strong> Select Jan 1-31: See how all contacts created in January eventually performed (even if they converted in February)</p>
+                    </div>
+
+                    <div style="background: #f0f9ff; padding: 15px; border-radius: 8px;">
+                        <h4 style="color: #0369a1; margin: 0 0 8px 0; display: flex; align-items: center; gap: 8px;">
+                            <span style="background: #059669; color: white; padding: 4px 10px; border-radius: 4px; font-size: 0.75rem;">ACTIVITY</span>
+                            Activity View
+                        </h4>
+                        <p style="margin: 0; color: #334155;">Counts all activities/transitions that <strong>happened during the selected date range</strong>, regardless of when records were created.</p>
+                        <p style="margin: 8px 0 0 0; color: #64748b; font-size: 0.9rem;"><strong>Example:</strong> Select Jan 1-31: See how many contacts were moved from "New" to "Contacted" stage during January</p>
+                    </div>
+
+                    <div style="background: #f0f9ff; padding: 15px; border-radius: 8px;">
+                        <h4 style="color: #0369a1; margin: 0 0 8px 0; display: flex; align-items: center; gap: 8px;">
+                            <span style="background: #7c3aed; color: white; padding: 4px 10px; border-radius: 4px; font-size: 0.75rem;">STAGE</span>
+                            Stage / Current View
+                        </h4>
+                        <p style="margin: 0; color: #334155;">Shows a <strong>real-time snapshot</strong> of where all open records currently sit, ignoring the date filter.</p>
+                        <p style="margin: 8px 0 0 0; color: #64748b; font-size: 0.9rem;"><strong>Example:</strong> Right now: 100 contacts at New, 50 at Contacted, 30 at Nurturing - your current pipeline</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Database Architecture Section -->
+            <div style="margin-bottom: 30px; padding: 20px; background: #fefce8; border-radius: 12px; border: 2px solid #ca8a04;">
+                <h3 style="color: #854d0e; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 1.3rem;">&#128451;</span>
+                    Database Architecture & Triggers
+                </h3>
+                <p style="color: #713f12; margin-bottom: 20px;">Reports are powered by pre-calculated summary tables updated in real-time via MySQL triggers. This ensures fast API responses even with millions of conversations.</p>
+
+                <!-- Summary Tables -->
+                <h4 style="color: #854d0e; margin-bottom: 12px;">Summary Tables</h4>
+                <div style="display: grid; gap: 15px; margin-bottom: 20px;">
+
+                    <!-- Cohort Summary Table -->
+                    <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #0284c7;">
+                        <h5 style="color: #0c4a6e; margin: 0 0 8px 0;">
+                            <code style="background: #e0f2fe; padding: 2px 8px; border-radius: 4px;">crm_conversation_cohort_summary</code>
+                        </h5>
+                        <p style="margin: 0 0 10px 0; color: #334155; font-size: 0.9rem;">Groups by conversation <strong>creation date</strong>. Tracks first-time stage transitions only (no double-counting).</p>
+                        <div style="background: #f8fafc; padding: 10px; border-radius: 6px; font-size: 0.85rem;">
+                            <strong>Key Columns:</strong> cohort_date, agent_id, source_id, conversation_type, total_created, first_attempted, first_contacted, first_nurturing, first_converted, first_unqualified
+                        </div>
+                        <p style="margin: 10px 0 0 0; color: #64748b; font-size: 0.85rem;"><strong>When count increases:</strong> Only when conversation reaches a stage for the <em>first time</em> (uses first_reached_*_at columns)</p>
+                    </div>
+
+                    <!-- Activity Summary Table -->
+                    <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #059669;">
+                        <h5 style="color: #047857; margin: 0 0 8px 0;">
+                            <code style="background: #d1fae5; padding: 2px 8px; border-radius: 4px;">crm_conversation_activity_summary</code>
+                        </h5>
+                        <p style="margin: 0 0 10px 0; color: #334155; font-size: 0.9rem;">Groups by <strong>event date</strong>. Counts every stage transition on each day.</p>
+                        <div style="background: #f8fafc; padding: 10px; border-radius: 6px; font-size: 0.85rem;">
+                            <strong>Key Columns:</strong> activity_date, agent_id, source_id, conversation_type, activity_new, activity_attempted, activity_contacted, activity_nurturing, activity_converted, activity_unqualified
+                        </div>
+                        <p style="margin: 10px 0 0 0; color: #64748b; font-size: 0.85rem;"><strong>When count increases:</strong> Every time a conversation moves to any stage (even if it moved to that stage before)</p>
+                    </div>
+
+                    <!-- Stage Summary Table -->
+                    <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #7c3aed;">
+                        <h5 style="color: #6d28d9; margin: 0 0 8px 0;">
+                            <code style="background: #ede9fe; padding: 2px 8px; border-radius: 4px;">crm_conversation_stage_summary</code>
+                        </h5>
+                        <p style="margin: 0 0 10px 0; color: #334155; font-size: 0.9rem;">Shows <strong>current stage</strong> of conversations (where they are NOW). Groups by creation date.</p>
+                        <div style="background: #f8fafc; padding: 10px; border-radius: 6px; font-size: 0.85rem;">
+                            <strong>Key Columns:</strong> cohort_date, agent_id, source_id, conversation_type, current_new, current_attempted, current_contacted, current_nurturing, current_converted, current_unqualified
+                        </div>
+                        <p style="margin: 10px 0 0 0; color: #64748b; font-size: 0.85rem;"><strong>When count changes:</strong> Stage change = decrement old stage, increment new stage</p>
+                    </div>
+
+                    <!-- Unqualified Summary Table -->
+                    <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #dc2626;">
+                        <h5 style="color: #b91c1c; margin: 0 0 8px 0;">
+                            <code style="background: #fee2e2; padding: 2px 8px; border-radius: 4px;">crm_unqualified_summary</code>
+                        </h5>
+                        <p style="margin: 0 0 10px 0; color: #334155; font-size: 0.9rem;">Tracks disposition reasons for unqualified conversations.</p>
+                        <div style="background: #f8fafc; padding: 10px; border-radius: 6px; font-size: 0.85rem;">
+                            <strong>Key Columns:</strong> summary_date, conversation_type, agent_id, source_id, disposition_status, count
+                        </div>
+                        <p style="margin: 10px 0 0 0; color: #64748b; font-size: 0.85rem;"><strong>When count increases:</strong> When conversation moves to unqualified with a disposition reason</p>
+                    </div>
+
+                    <!-- Aging Snapshot Table -->
+                    <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #f59e0b;">
+                        <h5 style="color: #b45309; margin: 0 0 8px 0;">
+                            <code style="background: #fef3c7; padding: 2px 8px; border-radius: 4px;">crm_conversation_aging_snapshot</code>
+                        </h5>
+                        <p style="margin: 0 0 10px 0; color: #334155; font-size: 0.9rem;">Daily snapshot of conversation aging. Calculated by cron job (not triggers).</p>
+                        <div style="background: #f8fafc; padding: 10px; border-radius: 6px; font-size: 0.85rem;">
+                            <strong>Key Columns:</strong> snapshot_date, conversation_type, conversation_stage, source_id, agent_id, age_0_2, age_3_7, age_8_14, age_15_30, age_30_plus
+                        </div>
+                        <p style="margin: 10px 0 0 0; color: #64748b; font-size: 0.85rem;"><strong>Populated by:</strong> ConversationAgingModel::calculateDailySnapshot() - runs daily via cron</p>
+                    </div>
+
+                    <!-- Contacts vs Accounts Summary -->
+                    <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #06b6d4;">
+                        <h5 style="color: #0891b2; margin: 0 0 8px 0;">
+                            <code style="background: #cffafe; padding: 2px 8px; border-radius: 4px;">crm_contacts_accounts_summary</code>
+                        </h5>
+                        <p style="margin: 0 0 10px 0; color: #334155; font-size: 0.9rem;">Tracks new contacts vs existing accounts by source.</p>
+                        <div style="background: #f8fafc; padding: 10px; border-radius: 6px; font-size: 0.85rem;">
+                            <strong>Key Columns:</strong> summary_date, source_id, new_contacts, existing_accounts
+                        </div>
+                        <p style="margin: 10px 0 0 0; color: #64748b; font-size: 0.85rem;"><strong>When count increases:</strong> New contact conversation created (checks had_account_at_start flag)</p>
+                    </div>
+
+                    <!-- Revenue Summary -->
+                    <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #84cc16;">
+                        <h5 style="color: #4d7c0f; margin: 0 0 8px 0;">
+                            <code style="background: #ecfccb; padding: 2px 8px; border-radius: 4px;">crm_revenue_summary</code>
+                        </h5>
+                        <p style="margin: 0 0 10px 0; color: #334155; font-size: 0.9rem;">Tracks order revenue by source and customer type (new vs existing).</p>
+                        <div style="background: #f8fafc; padding: 10px; border-radius: 6px; font-size: 0.85rem;">
+                            <strong>Key Columns:</strong> summary_date, source_id, new_customer_orders, new_customer_grand_total, existing_customer_orders, existing_customer_grand_total
+                        </div>
+                        <p style="margin: 10px 0 0 0; color: #64748b; font-size: 0.85rem;"><strong>When count increases:</strong> Order created (trigger on tbl_orders)</p>
+                    </div>
+                </div>
+
+                <!-- Triggers Section -->
+                <h4 style="color: #854d0e; margin-bottom: 12px;">MySQL Triggers on tbl_open_conversations</h4>
+                <div style="overflow-x: auto; margin-bottom: 20px;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; background: white;">
+                        <thead>
+                            <tr style="background: #854d0e; color: white;">
+                                <th style="padding: 10px; text-align: left; border: 1px solid #a16207;">Trigger</th>
+                                <th style="padding: 10px; text-align: left; border: 1px solid #a16207;">Timing</th>
+                                <th style="padding: 10px; text-align: left; border: 1px solid #a16207;">What It Does</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 8px; border: 1px solid #e5e7eb;"><code>trg_conversation_before_insert</code></td>
+                                <td style="padding: 8px; border: 1px solid #e5e7eb;">BEFORE INSERT</td>
+                                <td style="padding: 8px; border: 1px solid #e5e7eb;">Sets <code>had_account_at_start</code> flag (1 if account_id exists, 0 otherwise)</td>
+                            </tr>
+                            <tr style="background: #fef3c7;">
+                                <td style="padding: 8px; border: 1px solid #e5e7eb;"><code>trg_conversation_after_insert</code></td>
+                                <td style="padding: 8px; border: 1px solid #e5e7eb;">AFTER INSERT</td>
+                                <td style="padding: 8px; border: 1px solid #e5e7eb;">
+                                    <ul style="margin: 0; padding-left: 20px;">
+                                        <li>Increments <code>total_created</code> in cohort summary</li>
+                                        <li>Increments <code>activity_new</code> in activity summary</li>
+                                        <li>Increments <code>current_new</code> in stage summary</li>
+                                        <li><strong>For contacts:</strong> Updates <code>crm_contacts_accounts_summary</code> (new_contacts or existing_accounts based on had_account_at_start)</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px; border: 1px solid #e5e7eb;"><code>trg_conversation_before_update</code></td>
+                                <td style="padding: 8px; border: 1px solid #e5e7eb;">BEFORE UPDATE</td>
+                                <td style="padding: 8px; border: 1px solid #e5e7eb;">
+                                    <ul style="margin: 0; padding-left: 20px;">
+                                        <li>Sets <code>first_reached_*_at</code> timestamp when stage changes (only if NULL)</li>
+                                        <li>Auto-closes unqualified conversations (sets status='closed')</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr style="background: #fef3c7;">
+                                <td style="padding: 8px; border: 1px solid #e5e7eb;"><code>trg_conversation_after_update</code></td>
+                                <td style="padding: 8px; border: 1px solid #e5e7eb;">AFTER UPDATE</td>
+                                <td style="padding: 8px; border: 1px solid #e5e7eb;">
+                                    <strong>On stage change:</strong>
+                                    <ul style="margin: 0; padding-left: 20px;">
+                                        <li><strong>Stage Summary:</strong> Decrement old stage, increment new stage</li>
+                                        <li><strong>Activity Summary:</strong> Increment new stage counter</li>
+                                        <li><strong>Cohort Summary:</strong> Increment first_* counter (only if first_reached_*_at was just set)</li>
+                                        <li><strong>Unqualified Summary:</strong> Track disposition reason if moving to unqualified</li>
+                                    </ul>
+                                    <strong>On profiling (account_id set for first time):</strong>
+                                    <ul style="margin: 0; padding-left: 20px;">
+                                        <li>Increments <code>cohort_profiled</code> and <code>activity_profiled</code> in outcome summary</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Order Triggers -->
+                <h4 style="color: #854d0e; margin-bottom: 12px;">MySQL Triggers on tbl_orders (Revenue Tracking)</h4>
+                <div style="overflow-x: auto; margin-bottom: 20px;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; background: white;">
+                        <thead>
+                            <tr style="background: #854d0e; color: white;">
+                                <th style="padding: 10px; text-align: left; border: 1px solid #a16207;">Trigger</th>
+                                <th style="padding: 10px; text-align: left; border: 1px solid #a16207;">Timing</th>
+                                <th style="padding: 10px; text-align: left; border: 1px solid #a16207;">What It Does</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 8px; border: 1px solid #e5e7eb;"><code>trg_revenue_summary_insert</code></td>
+                                <td style="padding: 8px; border: 1px solid #e5e7eb;">AFTER INSERT</td>
+                                <td style="padding: 8px; border: 1px solid #e5e7eb;">
+                                    <ul style="margin: 0; padding-left: 20px;">
+                                        <li>Checks if customer is NEW (order_count = 0) or EXISTING (order_count > 0)</li>
+                                        <li>Gets source_id from opportunity → conversation chain (defaults to "Direct" if not found)</li>
+                                        <li>Updates <code>crm_revenue_summary</code> with order count and grand_total</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr style="background: #fef3c7;">
+                                <td style="padding: 8px; border: 1px solid #e5e7eb;"><code>trg_revenue_summary_update</code></td>
+                                <td style="padding: 8px; border: 1px solid #e5e7eb;">AFTER UPDATE</td>
+                                <td style="padding: 8px; border: 1px solid #e5e7eb;">
+                                    <ul style="margin: 0; padding-left: 20px;">
+                                        <li><strong>On soft delete (order_deleted=1):</strong> Decrements order count and revenue from summary</li>
+                                        <li><strong>On undelete (order_deleted=0):</strong> Adds back to summary</li>
+                                        <li><strong>On grand_total change:</strong> Updates revenue difference (+/- amount)</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Key Fields Used by Triggers -->
+                <h4 style="color: #854d0e; margin-bottom: 12px;">Key Fields in tbl_open_conversations Used by Triggers</h4>
+                <div style="display: grid; gap: 10px; margin-bottom: 20px;">
+                    <div style="background: white; padding: 12px; border-radius: 8px; display: grid; grid-template-columns: 200px 1fr; gap: 10px; font-size: 0.85rem;">
+                        <code style="background: #f1f5f9; padding: 4px 8px; border-radius: 4px;">had_account_at_start</code>
+                        <span>1 if contact already had account when conversation created, 0 otherwise. Used for Contacts vs Accounts report.</span>
+                    </div>
+                    <div style="background: white; padding: 12px; border-radius: 8px; display: grid; grid-template-columns: 200px 1fr; gap: 10px; font-size: 0.85rem;">
+                        <code style="background: #f1f5f9; padding: 4px 8px; border-radius: 4px;">first_reached_*_at</code>
+                        <span>Date when conversation first reached each stage (attempted, contacted, nurturing, converted, unqualified). NULL = never reached. Prevents double-counting in cohort reports.</span>
+                    </div>
+                    <div style="background: white; padding: 12px; border-radius: 8px; display: grid; grid-template-columns: 200px 1fr; gap: 10px; font-size: 0.85rem;">
+                        <code style="background: #f1f5f9; padding: 4px 8px; border-radius: 4px;">source_id</code>
+                        <span>Lead source (WhatsApp, Website, JustDial, Facebook, etc.). Used for source breakdown reports. Foreign key to tbl_contact_sources.</span>
+                    </div>
+                    <div style="background: white; padding: 12px; border-radius: 8px; display: grid; grid-template-columns: 200px 1fr; gap: 10px; font-size: 0.85rem;">
+                        <code style="background: #f1f5f9; padding: 4px 8px; border-radius: 4px;">disposition_status</code>
+                        <span>Reason for unqualified (rnr1, rnr2, rnr3, not_interested, price_too_high, budget_issues, etc.). Used for Unqualified/Lost Analysis report.</span>
+                    </div>
+                    <div style="background: white; padding: 12px; border-radius: 8px; display: grid; grid-template-columns: 200px 1fr; gap: 10px; font-size: 0.85rem;">
+                        <code style="background: #f1f5f9; padding: 4px 8px; border-radius: 4px;">allocated_at</code>
+                        <span>Date conversation was assigned to agent. Used as cohort_date for grouping in reports.</span>
+                    </div>
+                    <div style="background: white; padding: 12px; border-radius: 8px; display: grid; grid-template-columns: 200px 1fr; gap: 10px; font-size: 0.85rem;">
+                        <code style="background: #f1f5f9; padding: 4px 8px; border-radius: 4px;">conversation_stage</code>
+                        <span>Current stage: new, attempted, contacted, nurturing, converted, unqualified. Changes trigger summary table updates.</span>
+                    </div>
+                </div>
+
+                <!-- Count Increase/Decrease Logic -->
+                <h4 style="color: #854d0e; margin: 20px 0 12px 0;">When Do Counts Change?</h4>
+                <div style="display: grid; gap: 12px;">
+                    <div style="background: #dcfce7; padding: 12px; border-radius: 8px; border-left: 4px solid #16a34a;">
+                        <strong style="color: #15803d;">Count INCREASES when:</strong>
+                        <ul style="margin: 8px 0 0 20px; color: #166534; font-size: 0.9rem;">
+                            <li><strong>New conversation created:</strong> +1 to total_created (cohort), activity_new (activity), current_new (stage)</li>
+                            <li><strong>Stage changes to X:</strong> +1 to activity_X (activity), current_X (stage)</li>
+                            <li><strong>First time reaching stage X:</strong> +1 to first_X (cohort) - only if first_reached_X_at was NULL</li>
+                        </ul>
+                    </div>
+                    <div style="background: #fee2e2; padding: 12px; border-radius: 8px; border-left: 4px solid #dc2626;">
+                        <strong style="color: #b91c1c;">Count DECREASES when:</strong>
+                        <ul style="margin: 8px 0 0 20px; color: #991b1b; font-size: 0.9rem;">
+                            <li><strong>Stage changes FROM X:</strong> -1 from current_X (stage summary only)</li>
+                            <li><strong>Disposition status changes:</strong> -1 from old disposition in unqualified summary</li>
+                        </ul>
+                    </div>
+                    <div style="background: #e0f2fe; padding: 12px; border-radius: 8px; border-left: 4px solid #0284c7;">
+                        <strong style="color: #0369a1;">Count NEVER decreases for:</strong>
+                        <ul style="margin: 8px 0 0 20px; color: #0c4a6e; font-size: 0.9rem;">
+                            <li><strong>Cohort counters (first_*):</strong> Once a stage is reached, it's counted forever</li>
+                            <li><strong>Activity counters:</strong> Every transition is counted, never undone</li>
+                            <li><strong>total_created:</strong> Conversations are never "uncreated"</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Overview Reports -->
+            <h3 style="color: #0c4a6e; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #0284c7;">&#127760; Overview Reports</h3>
+            <div style="display: grid; gap: 20px; margin-bottom: 30px;">
+
+                <!-- Outcome Report -->
+                <div style="background: white; padding: 20px; border-radius: 12px; border-left: 4px solid #0284c7;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                        <span style="background: #0284c7; color: white; width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">&#128200;</span>
+                        <div>
+                            <h4 style="margin: 0; color: #0c4a6e;">Outcome Report</h4>
+                            <span style="color: #64748b; font-size: 0.85rem;">/crmreports/outcome-report</span>
+                        </div>
+                    </div>
+                    <p style="color: #334155; margin-bottom: 12px;">Track the complete journey from contact creation to order placement. Visualizes the conversion funnel showing how contacts progress through each stage.</p>
+                    <div style="background: #f8fafc; padding: 12px; border-radius: 8px; margin-bottom: 10px;">
+                        <strong style="color: #0369a1;">Views:</strong>
+                        <ul style="margin: 8px 0 0 20px; color: #475569; font-size: 0.9rem;">
+                            <li><strong>Cohort:</strong> Of contacts created in date range, how many reached each outcome (profiled, opportunity, order)</li>
+                            <li><strong>Activity:</strong> How many stage transitions happened in the date range - useful for measuring team activity</li>
+                            <li><strong>Stage:</strong> Current snapshot showing distribution of all open contacts by their current stage</li>
+                        </ul>
+                    </div>
+                    <div style="background: #ecfdf5; padding: 10px 12px; border-radius: 6px;">
+                        <strong style="color: #059669;">Example:</strong>
+                        <span style="color: #047857; font-size: 0.9rem;"> If 100 contacts were created last month, Cohort shows 60 got profiled, 30 became opportunities, 10 placed orders</span>
+                    </div>
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #e2e8f0;">
+                        <span style="color: #64748b; font-size: 0.8rem;"><strong>Backend:</strong> OutcomeReportModel.php</span>
+                    </div>
+                </div>
+
+                <!-- Contacts vs Accounts -->
+                <div style="background: white; padding: 20px; border-radius: 12px; border-left: 4px solid #0284c7;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                        <span style="background: #0284c7; color: white; width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">&#8596;</span>
+                        <div>
+                            <h4 style="margin: 0; color: #0c4a6e;">Contacts vs Accounts</h4>
+                            <span style="color: #64748b; font-size: 0.85rem;">/crmreports/lead-customer-mix</span>
+                        </div>
+                    </div>
+                    <p style="color: #334155; margin-bottom: 12px;">Understand the mix between new contacts (leads) and contacts from existing accounts. Helps identify if growth is coming from new business or existing accounts.</p>
+                    <div style="background: #ecfdf5; padding: 10px 12px; border-radius: 6px;">
+                        <strong style="color: #059669;">Example:</strong>
+                        <span style="color: #047857; font-size: 0.9rem;"> 70% new contacts vs 30% from existing accounts indicates healthy new lead generation</span>
+                    </div>
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #e2e8f0;">
+                        <span style="color: #64748b; font-size: 0.8rem;"><strong>Backend:</strong> ContactAccountMixReportModel.php</span>
+                    </div>
+                </div>
+
+                <!-- Revenue Contribution -->
+                <div style="background: white; padding: 20px; border-radius: 12px; border-left: 4px solid #0284c7;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                        <span style="background: #0284c7; color: white; width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">&#128176;</span>
+                        <div>
+                            <h4 style="margin: 0; color: #0c4a6e;">Revenue Contribution</h4>
+                            <span style="color: #64748b; font-size: 0.85rem;">/crmreports/revenue-contribution</span>
+                        </div>
+                    </div>
+                    <p style="color: #334155; margin-bottom: 12px;">Analyze order revenue broken down by source channel and customer type (new vs existing). Identifies which lead sources generate the most valuable customers.</p>
+                    <div style="background: #ecfdf5; padding: 10px 12px; border-radius: 6px;">
+                        <strong style="color: #059669;">Example:</strong>
+                        <span style="color: #047857; font-size: 0.9rem;"> WhatsApp leads contribute 40% of revenue but only 25% of volume - higher value per lead</span>
+                    </div>
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #e2e8f0;">
+                        <span style="color: #64748b; font-size: 0.8rem;"><strong>Backend:</strong> RevenueContributionModel.php</span>
+                    </div>
+                </div>
+
+                <!-- Conversation Trend -->
+                <div style="background: white; padding: 20px; border-radius: 12px; border-left: 4px solid #0284c7;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                        <span style="background: #0284c7; color: white; width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">&#128200;</span>
+                        <div>
+                            <h4 style="margin: 0; color: #0c4a6e;">Conversation Trend</h4>
+                            <span style="color: #64748b; font-size: 0.85rem;">/crmreports/trend-report</span>
+                        </div>
+                    </div>
+                    <p style="color: #334155; margin-bottom: 12px;">Daily trend of all conversations (contacts + opportunities) showing creation, stage progression, and drop-offs. Comprehensive view of funnel health over time.</p>
+                    <div style="background: #f8fafc; padding: 12px; border-radius: 8px; margin-bottom: 10px;">
+                        <strong style="color: #0369a1;">Views:</strong>
+                        <ul style="margin: 8px 0 0 20px; color: #475569; font-size: 0.9rem;">
+                            <li><strong>Overview:</strong> Stage trend over time showing new, attempted, contacted, converted, and dropped</li>
+                            <li><strong>By Agent:</strong> Agent-wise breakdown with conversion rates</li>
+                            <li><strong>By Source:</strong> Source-wise performance comparison</li>
+                            <li><strong>Loss Analysis:</strong> Breakdown of drop-off reasons</li>
+                        </ul>
+                    </div>
+                    <div style="background: #ecfdf5; padding: 10px 12px; border-radius: 6px;">
+                        <strong style="color: #059669;">Example:</strong>
+                        <span style="color: #047857; font-size: 0.9rem;"> New conversations up 15% but conversions flat - investigate bottlenecks in attempted stage</span>
+                    </div>
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #e2e8f0;">
+                        <span style="color: #64748b; font-size: 0.8rem;"><strong>Backend:</strong> ConversationFunnelModel.php → getEnhancedTrendData()</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Reports -->
+            <h3 style="color: #0c4a6e; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #3b82f6;">&#128100; Contact Reports</h3>
+            <div style="display: grid; gap: 20px; margin-bottom: 30px;">
+
+                <!-- Contact Conversations -->
+                <div style="background: white; padding: 20px; border-radius: 12px; border-left: 4px solid #3b82f6;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                        <span style="background: #3b82f6; color: white; width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">&#128101;</span>
+                        <div>
+                            <h4 style="margin: 0; color: #1e40af;">Contact Conversations (Agent Summary)</h4>
+                            <span style="color: #64748b; font-size: 0.85rem;">/crmreports/contact/conversations</span>
+                        </div>
+                    </div>
+                    <p style="color: #334155; margin-bottom: 12px;">Contact conversation summary by agent. Shows stage progression and conversion rates with three views.</p>
+                    <div style="background: #f8fafc; padding: 12px; border-radius: 8px; margin-bottom: 10px;">
+                        <strong style="color: #1e40af;">Views:</strong>
+                        <ul style="margin: 8px 0 0 20px; color: #475569; font-size: 0.9rem;">
+                            <li><strong>Cohort:</strong> Tracks contacts created in date range and follows their journey to final outcomes</li>
+                            <li><strong>Activity:</strong> Counts all stage transitions during date range, regardless of creation date</li>
+                            <li><strong>Current Status:</strong> Real-time snapshot of where open contacts currently sit</li>
+                        </ul>
+                    </div>
+                    <div style="background: #ecfdf5; padding: 10px 12px; border-radius: 6px;">
+                        <strong style="color: #059669;">Example:</strong>
+                        <span style="color: #047857; font-size: 0.9rem;"> Agent A has 80% contact-to-conversion rate vs Agent B at 50% - identifies coaching opportunities</span>
+                    </div>
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #e2e8f0;">
+                        <span style="color: #64748b; font-size: 0.8rem;"><strong>Backend:</strong> ConversationFunnelModel.php → getFunnelReport()</span>
+                    </div>
+                </div>
+
+                <!-- Contact FRT Summary -->
+                <div style="background: white; padding: 20px; border-radius: 12px; border-left: 4px solid #3b82f6;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                        <span style="background: #3b82f6; color: white; width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">&#9201;</span>
+                        <div>
+                            <h4 style="margin: 0; color: #1e40af;">Contact FRT Summary</h4>
+                            <span style="color: #64748b; font-size: 0.85rem;">/crmreports/contact/frt-summary</span>
+                        </div>
+                    </div>
+                    <p style="color: #334155; margin-bottom: 12px;">First Response Time measures how quickly agents respond to new contact conversations. Critical metric for lead quality - faster response = higher conversion.</p>
+                    <div style="background: #ecfdf5; padding: 10px 12px; border-radius: 6px;">
+                        <strong style="color: #059669;">Example:</strong>
+                        <span style="color: #047857; font-size: 0.9rem;"> Average FRT of 15 minutes has 3x higher conversion than 2-hour FRT</span>
+                    </div>
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #e2e8f0;">
+                        <span style="color: #64748b; font-size: 0.8rem;"><strong>Backend:</strong> AgentFRTReportModel.php</span>
+                    </div>
+                </div>
+
+                <!-- Contact Source Breakdown -->
+                <div style="background: white; padding: 20px; border-radius: 12px; border-left: 4px solid #3b82f6;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                        <span style="background: #3b82f6; color: white; width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">&#128205;</span>
+                        <div>
+                            <h4 style="margin: 0; color: #1e40af;">Contact Source Breakdown</h4>
+                            <span style="color: #64748b; font-size: 0.85rem;">/crmreports/contact/source-wise</span>
+                        </div>
+                    </div>
+                    <p style="color: #334155; margin-bottom: 12px;">Contact distribution by lead source (WhatsApp, Website, Referral, JustDial, Facebook, Instagram, etc.). Shows which channels generate the most contacts and best conversion rates.</p>
+                    <div style="background: #ecfdf5; padding: 10px 12px; border-radius: 6px;">
+                        <strong style="color: #059669;">Example:</strong>
+                        <span style="color: #047857; font-size: 0.9rem;"> Referral leads convert at 35% vs Website at 15% - prioritize referral programs</span>
+                    </div>
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #e2e8f0;">
+                        <span style="color: #64748b; font-size: 0.8rem;"><strong>Backend:</strong> ConversationFunnelModel.php → getSourceBreakdownWithViews()</span>
+                    </div>
+                </div>
+
+                <!-- Contact Aging -->
+                <div style="background: white; padding: 20px; border-radius: 12px; border-left: 4px solid #3b82f6;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                        <span style="background: #3b82f6; color: white; width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">&#9203;</span>
+                        <div>
+                            <h4 style="margin: 0; color: #1e40af;">Contact Aging</h4>
+                            <span style="color: #64748b; font-size: 0.85rem;">/crmreports/contact/conversation-aging</span>
+                        </div>
+                    </div>
+                    <p style="color: #334155; margin-bottom: 12px;">Identifies stale contacts that haven't progressed. Shows how long contacts have been sitting at each stage without movement.</p>
+                    <div style="background: #ecfdf5; padding: 10px 12px; border-radius: 6px;">
+                        <strong style="color: #059669;">Example:</strong>
+                        <span style="color: #047857; font-size: 0.9rem;"> 50 contacts stuck at "Attempted" for >7 days need immediate follow-up</span>
+                    </div>
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #e2e8f0;">
+                        <span style="color: #64748b; font-size: 0.8rem;"><strong>Backend:</strong> ConversationAgingModel.php</span>
+                    </div>
+                </div>
+
+                <!-- Contact Unqualified -->
+                <div style="background: white; padding: 20px; border-radius: 12px; border-left: 4px solid #3b82f6;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                        <span style="background: #3b82f6; color: white; width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">&#10060;</span>
+                        <div>
+                            <h4 style="margin: 0; color: #1e40af;">Contact Unqualified Analysis</h4>
+                            <span style="color: #64748b; font-size: 0.85rem;">/crmreports/contact/unqualified-analysis</span>
+                        </div>
+                    </div>
+                    <p style="color: #334155; margin-bottom: 12px;">Analysis of contacts marked as unqualified. Shows disqualification reasons and which sources produce the most unqualified leads.</p>
+                    <div style="background: #ecfdf5; padding: 10px 12px; border-radius: 6px;">
+                        <strong style="color: #059669;">Example:</strong>
+                        <span style="color: #047857; font-size: 0.9rem;"> 30% of Facebook leads are unqualified (wrong location) - adjust targeting</span>
+                    </div>
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #e2e8f0;">
+                        <span style="color: #64748b; font-size: 0.8rem;"><strong>Backend:</strong> UnqualifiedAnalysisModel.php</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Opportunity Reports -->
+            <h3 style="color: #0c4a6e; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #059669;">&#128176; Opportunity Reports</h3>
+            <div style="display: grid; gap: 20px; margin-bottom: 30px;">
+
+                <!-- Opportunity Conversations -->
+                <div style="background: white; padding: 20px; border-radius: 12px; border-left: 4px solid #059669;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                        <span style="background: #059669; color: white; width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">&#128101;</span>
+                        <div>
+                            <h4 style="margin: 0; color: #047857;">Opportunity Conversations (Agent Summary)</h4>
+                            <span style="color: #64748b; font-size: 0.85rem;">/crmreports/opportunity/conversations</span>
+                        </div>
+                    </div>
+                    <p style="color: #334155; margin-bottom: 12px;">Opportunity conversation summary by agent. Shows stage progression and win rates with three views.</p>
+                    <div style="background: #f8fafc; padding: 12px; border-radius: 8px; margin-bottom: 10px;">
+                        <strong style="color: #047857;">Views:</strong>
+                        <ul style="margin: 8px 0 0 20px; color: #475569; font-size: 0.9rem;">
+                            <li><strong>Cohort:</strong> Tracks opportunities created in date range and follows their journey to final outcomes</li>
+                            <li><strong>Activity:</strong> Counts all stage transitions during date range, regardless of creation date</li>
+                            <li><strong>Current Status:</strong> Real-time snapshot of where open opportunities currently sit</li>
+                        </ul>
+                    </div>
+                    <div style="background: #ecfdf5; padding: 10px 12px; border-radius: 6px;">
+                        <strong style="color: #059669;">Example:</strong>
+                        <span style="color: #047857; font-size: 0.9rem;"> Agent A closes 40% of opportunities vs Agent B at 25% - share winning strategies</span>
+                    </div>
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #e2e8f0;">
+                        <span style="color: #64748b; font-size: 0.8rem;"><strong>Backend:</strong> ConversationFunnelModel.php → getFunnelReport('opportunity')</span>
+                    </div>
+                </div>
+
+                <!-- Opportunity FRT Summary -->
+                <div style="background: white; padding: 20px; border-radius: 12px; border-left: 4px solid #059669;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                        <span style="background: #059669; color: white; width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">&#9201;</span>
+                        <div>
+                            <h4 style="margin: 0; color: #047857;">Opportunity FRT Summary</h4>
+                            <span style="color: #64748b; font-size: 0.85rem;">/crmreports/opportunity/frt-summary</span>
+                        </div>
+                    </div>
+                    <p style="color: #334155; margin-bottom: 12px;">First Response Time for opportunity conversations. Measures how quickly agents engage with qualified opportunities.</p>
+                    <div style="background: #ecfdf5; padding: 10px 12px; border-radius: 6px;">
+                        <strong style="color: #059669;">Example:</strong>
+                        <span style="color: #047857; font-size: 0.9rem;"> Opportunities responded to within 1 hour have 2x higher close rate</span>
+                    </div>
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #e2e8f0;">
+                        <span style="color: #64748b; font-size: 0.8rem;"><strong>Backend:</strong> AgentFRTReportModel.php</span>
+                    </div>
+                </div>
+
+                <!-- Opportunity Source Breakdown -->
+                <div style="background: white; padding: 20px; border-radius: 12px; border-left: 4px solid #059669;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                        <span style="background: #059669; color: white; width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">&#128205;</span>
+                        <div>
+                            <h4 style="margin: 0; color: #047857;">Opportunity Source Breakdown</h4>
+                            <span style="color: #64748b; font-size: 0.85rem;">/crmreports/opportunity/source-wise</span>
+                        </div>
+                    </div>
+                    <p style="color: #334155; margin-bottom: 12px;">Opportunity distribution by original lead source. Tracks which channels produce opportunities with highest win rates and deal values.</p>
+                    <div style="background: #ecfdf5; padding: 10px 12px; border-radius: 6px;">
+                        <strong style="color: #059669;">Example:</strong>
+                        <span style="color: #047857; font-size: 0.9rem;"> Trade show leads have 45% win rate and 2x average deal size vs cold calls</span>
+                    </div>
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #e2e8f0;">
+                        <span style="color: #64748b; font-size: 0.8rem;"><strong>Backend:</strong> ConversationFunnelModel.php → getSourceBreakdownWithViews('opportunity')</span>
+                    </div>
+                </div>
+
+                <!-- Opportunity Aging -->
+                <div style="background: white; padding: 20px; border-radius: 12px; border-left: 4px solid #059669;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                        <span style="background: #059669; color: white; width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">&#9203;</span>
+                        <div>
+                            <h4 style="margin: 0; color: #047857;">Opportunity Aging</h4>
+                            <span style="color: #64748b; font-size: 0.85rem;">/crmreports/opportunity/conversation-aging</span>
+                        </div>
+                    </div>
+                    <p style="color: #334155; margin-bottom: 12px;">Identifies stalled opportunities sitting too long at each stage. Aging deals often have lower win probability.</p>
+                    <div style="background: #ecfdf5; padding: 10px 12px; border-radius: 6px;">
+                        <strong style="color: #059669;">Example:</strong>
+                        <span style="color: #047857; font-size: 0.9rem;"> Opportunities in "Contacted" for >14 days close at only 10% vs 60% for <7 days</span>
+                    </div>
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #e2e8f0;">
+                        <span style="color: #64748b; font-size: 0.8rem;"><strong>Backend:</strong> ConversationAgingModel.php</span>
+                    </div>
+                </div>
+
+                <!-- Opportunity Lost Analysis -->
+                <div style="background: white; padding: 20px; border-radius: 12px; border-left: 4px solid #059669;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                        <span style="background: #059669; color: white; width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">&#10060;</span>
+                        <div>
+                            <h4 style="margin: 0; color: #047857;">Opportunity Lost Analysis</h4>
+                            <span style="color: #64748b; font-size: 0.85rem;">/crmreports/opportunity/unqualified-analysis</span>
+                        </div>
+                    </div>
+                    <p style="color: #334155; margin-bottom: 12px;">Analysis of lost opportunities by reason, source, and agent. Identifies patterns in why deals are lost to improve win rates.</p>
+                    <div style="background: #ecfdf5; padding: 10px 12px; border-radius: 6px;">
+                        <strong style="color: #059669;">Example:</strong>
+                        <span style="color: #047857; font-size: 0.9rem;"> 40% lost to "Price too high" - consider competitive pricing or value messaging</span>
+                    </div>
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #e2e8f0;">
+                        <span style="color: #64748b; font-size: 0.8rem;"><strong>Backend:</strong> UnqualifiedAnalysisModel.php</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reports Summary Table -->
+            <div style="margin-top: 30px; overflow-x: auto;">
+                <h3 style="color: #0c4a6e; margin-bottom: 15px;">Quick Reference: All Reports</h3>
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+                    <thead>
+                        <tr style="background: #0284c7; color: white;">
+                            <th style="padding: 12px; text-align: left; border: 1px solid #0369a1;">Report</th>
+                            <th style="padding: 12px; text-align: left; border: 1px solid #0369a1;">Category</th>
+                            <th style="padding: 12px; text-align: left; border: 1px solid #0369a1;">Views</th>
+                            <th style="padding: 12px; text-align: left; border: 1px solid #0369a1;">Key Metric</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="background: white;">
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;"><strong>Outcome Report</strong></td>
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;">Overview</td>
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;">Cohort, Activity, Stage</td>
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;">Conversion funnel</td>
+                        </tr>
+                        <tr style="background: #f8fafc;">
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;"><strong>Contacts vs Accounts</strong></td>
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;">Overview</td>
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;">Single</td>
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;">New vs existing mix</td>
+                        </tr>
+                        <tr style="background: white;">
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;"><strong>Revenue Contribution</strong></td>
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;">Overview</td>
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;">Single</td>
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;">Revenue by source</td>
+                        </tr>
+                        <tr style="background: #f8fafc;">
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;"><strong>Conversation Trend</strong></td>
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;">Overview</td>
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;">Overview, Agent, Source, Loss</td>
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;">Daily trends</td>
+                        </tr>
+                        <tr style="background: white;">
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;"><strong>Contact Conversations</strong></td>
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;">Contact</td>
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;">Cohort, Activity, Stage</td>
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;">Agent performance</td>
+                        </tr>
+                        <tr style="background: #f8fafc;">
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;"><strong>Contact FRT</strong></td>
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;">Contact</td>
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;">Single</td>
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;">Response time</td>
+                        </tr>
+                        <tr style="background: white;">
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;"><strong>Contact Source</strong></td>
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;">Contact</td>
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;">Single</td>
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;">Source conversion</td>
+                        </tr>
+                        <tr style="background: #f8fafc;">
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;"><strong>Contact Aging</strong></td>
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;">Contact</td>
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;">Single</td>
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;">Stale contacts</td>
+                        </tr>
+                        <tr style="background: white;">
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;"><strong>Contact Unqualified</strong></td>
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;">Contact</td>
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;">Single</td>
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;">Drop-off reasons</td>
+                        </tr>
+                        <tr style="background: #f8fafc;">
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;"><strong>Opp Conversations</strong></td>
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;">Opportunity</td>
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;">Cohort, Activity, Stage</td>
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;">Win rates</td>
+                        </tr>
+                        <tr style="background: white;">
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;"><strong>Opp FRT</strong></td>
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;">Opportunity</td>
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;">Single</td>
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;">Response time</td>
+                        </tr>
+                        <tr style="background: #f8fafc;">
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;"><strong>Opp Source</strong></td>
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;">Opportunity</td>
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;">Single</td>
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;">Source win rate</td>
+                        </tr>
+                        <tr style="background: white;">
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;"><strong>Opp Aging</strong></td>
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;">Opportunity</td>
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;">Single</td>
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;">Stale deals</td>
+                        </tr>
+                        <tr style="background: #f8fafc;">
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;"><strong>Opp Lost</strong></td>
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;">Opportunity</td>
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;">Single</td>
+                            <td style="padding: 10px; border: 1px solid #e2e8f0;">Loss reasons</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

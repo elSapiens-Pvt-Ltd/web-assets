@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversation Flow Guide - Simple Overview</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 30px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: #5a67d8;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title .icon {
+            font-size: 1.8rem;
+        }
+
+        /* Status Cards */
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .status-card {
+            padding: 20px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .status-card .status-icon {
+            font-size: 2.5rem;
+        }
+
+        .status-card .status-info h4 {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+
+        .status-card .status-info p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .status-new { background: linear-gradient(135deg, #dbeafe, #bfdbfe); }
+        .status-new .status-info h4 { color: #1d4ed8; }
+        .status-new .status-info p { color: #3b82f6; }
+
+        .status-attempted { background: linear-gradient(135deg, #ede9fe, #ddd6fe); }
+        .status-attempted .status-info h4 { color: #6d28d9; }
+        .status-attempted .status-info p { color: #8b5cf6; }
+
+        .status-contacted { background: linear-gradient(135deg, #fce7f3, #fbcfe8); }
+        .status-contacted .status-info h4 { color: #be185d; }
+        .status-contacted .status-info p { color: #ec4899; }
+
+        .status-nurturing { background: linear-gradient(135deg, #fef3c7, #fde68a); }
+        .status-nurturing .status-info h4 { color: #b45309; }
+        .status-nurturing .status-info p { color: #d97706; }
+
+        .status-converted { background: linear-gradient(135deg, #d1fae5, #a7f3d0); }
+        .status-converted .status-info h4 { color: #047857; }
+        .status-converted .status-info p { color: #10b981; }
+
+        .status-unqualified { background: linear-gradient(135deg, #fee2e2, #fecaca); }
+        .status-unqualified .status-info h4 { color: #b91c1c; }
+        .status-unqualified .status-info p { color: #ef4444; }
+
+        /* Flow Diagram */
+        .flow-diagram {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            padding: 20px 0;
+        }
+
+        .flow-box {
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-weight: 600;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .flow-arrow {
+            font-size: 1.5rem;
+            color: #94a3b8;
+        }
+
+        .flow-box.new { background: #dbeafe; color: #1d4ed8; }
+        .flow-box.attempted { background: #ede9fe; color: #6d28d9; }
+        .flow-box.contacted { background: #fce7f3; color: #be185d; }
+        .flow-box.nurturing { background: #fef3c7; color: #b45309; }
+        .flow-box.converted { background: #d1fae5; color: #047857; }
+        .flow-box.unqualified { background: #fee2e2; color: #b91c1c; }
+
+        .branch-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .branch-label {
+            font-size: 0.75rem;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Two Flows Section */
+        .flows-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .flows-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .flow-card {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 25px;
+            border-top: 5px solid;
+        }
+
+        .flow-card.no-account {
+            border-color: #f59e0b;
+        }
+
+        .flow-card.with-account {
+            border-color: #3b82f6;
+        }
+
+        .flow-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .flow-card .subtitle {
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .flow-steps {
+            list-style: none;
+        }
+
+        .flow-steps li {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px dashed #e2e8f0;
+        }
+
+        .flow-steps li:last-child {
+            border-bottom: none;
+        }
+
+        .step-num {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .no-account .step-num { background: #f59e0b; }
+        .with-account .step-num { background: #3b82f6; }
+
+        .step-content h4 {
+            font-size: 1rem;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+
+        .step-content p {
+            color: #64748b;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .step-result {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .result-nurturing { background: #fef3c7; color: #b45309; }
+        .result-converted { background: #d1fae5; color: #047857; }
+        .result-unqualified { background: #fee2e2; color: #b91c1c; }
+        .result-open { background: #e0e7ff; color: #4338ca; }
+
+        /* Actions Guide */
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .action-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 12px;
+        }
+
+        .action-icon {
+            font-size: 2rem;
+            background: white;
+            padding: 12px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .action-details h4 {
+            font-size: 1rem;
+            color: #1e293b;
+            margin-bottom: 6px;
+        }
+
+        .action-details p {
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        /* Tips Section */
+        .tips-section {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .tips-section h2 {
+            color: #92400e;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.3rem;
+        }
+
+        .tip-item {
+            background: white;
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .tip-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .tip-icon {
+            font-size: 1.3rem;
+        }
+
+        .tip-text {
+            color: #78350f;
+            line-height: 1.5;
+        }
+
+        .tip-text strong {
+            color: #92400e;
+        }
+
+        /* Key Point Box */
+        .key-point {
+            background: #fffbeb;
+            border: 2px solid #f59e0b;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .key-point h4 {
+            color: #b45309;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .key-point p {
+            color: #92400e;
+            line-height: 1.6;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .flow-diagram {
+                flex-direction: column;
+            }
+
+            .flow-arrow {
+                transform: rotate(90deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Conversation Flow Guide</h1>
+            <p>Understanding how leads move through our system - Made Simple</p>
+        </div>
+
+        <!-- Visual Flow Diagram -->
+        <div class="section">
+            <h2 class="section-title">
+                <span class="icon">&#128736;</span>
+                The Journey at a Glance
+            </h2>
+            <div class="flow-diagram">
+                <div class="flow-box new">NEW</div>
+                <span class="flow-arrow">&#10140;</span>
+                <div class="flow-box attempted">ATTEMPTED</div>
+                <span class="flow-arrow">&#10140;</span>
+                <div class="flow-box contacted">CONTACTED</div>
+                <span class="flow-arrow">&#10140;</span>
+                <div class="flow-box nurturing">NURTURING</div>
+                <span class="flow-arrow">&#10140;</span>
+                <div class="branch-container">
+                    <div class="flow-box converted">CONVERTED</div>
+                    <span class="branch-label">or</span>
+                    <div class="flow-box unqualified">UNQUALIFIED</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- What Each Stage Means -->
+        <div class="section">
+            <h2 class="section-title">
+                <span class="icon">&#128218;</span>
+                What Each Stage Means
+            </h2>
+            <div class="status-grid">
+                <div class="status-card status-new">
+                    <span class="status-icon">&#128229;</span>
+                    <div class="status-info">
+                        <h4>NEW</h4>
+                        <p>A fresh lead just came in. Nobody has tried to contact them yet.</p>
+                    </div>
+                </div>
+                <div class="status-card status-attempted">
+                    <span class="status-icon">&#128222;</span>
+                    <div class="status-info">
+                        <h4>ATTEMPTED</h4>
+                        <p>We tried to reach out (called or messaged) but haven't connected yet.</p>
+                    </div>
+                </div>
+                <div class="status-card status-contacted">
+                    <span class="status-icon">&#128172;</span>
+                    <div class="status-info">
+                        <h4>CONTACTED</h4>
+                        <p>We've had a conversation! The customer replied or we spoke to them.</p>
+                    </div>
+                </div>
+                <div class="status-card status-nurturing">
+                    <span class="status-icon">&#127793;</span>
+                    <div class="status-info">
+                        <h4>NURTURING</h4>
+                        <p>We're building a relationship. Following up, waiting for the right time.</p>
+                    </div>
+                </div>
+                <div class="status-card status-converted">
+                    <span class="status-icon">&#127881;</span>
+                    <div class="status-info">
+                        <h4>CONVERTED</h4>
+                        <p>Success! They created an opportunity or placed an order.</p>
+                    </div>
+                </div>
+                <div class="status-card status-unqualified">
+                    <span class="status-icon">&#128683;</span>
+                    <div class="status-info">
+                        <h4>UNQUALIFIED</h4>
+                        <p>Not a good fit. Maybe not interested, wrong timing, or invalid contact.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- JOURNEY 1: Contact Conversation -->
+        <div class="section">
+            <h2 class="section-title">
+                <span class="icon">&#128172;</span>
+                Journey 1: Contact Conversation
+            </h2>
+            <p style="color: #64748b; margin-bottom: 10px; font-size: 1.05rem;">
+                <code style="background: #e2e8f0; padding: 4px 10px; border-radius: 6px; font-weight: 600;">conversation_type = 'contact'</code>
+            </p>
+            <p style="color: #64748b; margin-bottom: 25px;">
+                This is for new leads and prospects. The goal is to profile them and eventually create an opportunity.
+            </p>
+
+            <div class="flows-container">
+                <!-- Flow 1: No Account -->
+                <div class="flow-card no-account">
+                    <h3 style="color: #b45309;">
+                        <span>&#128100;</span>
+                        Contact WITHOUT Account
+                    </h3>
+                    <p class="subtitle">New lead - We don't have their business details yet</p>
+
+                    <ul class="flow-steps">
+                        <li>
+                            <span class="step-num">1</span>
+                            <div class="step-content">
+                                <h4>Lead Arrives</h4>
+                                <p>Someone messages us on WhatsApp, fills a form, or calls.</p>
+                                <span class="step-result result-open">Stage: NEW</span>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="step-num">2</span>
+                            <div class="step-content">
+                                <h4>You Reach Out</h4>
+                                <p>Call them or send a message to start the conversation.</p>
+                                <span class="step-result result-open">Stage: ATTEMPTED</span>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="step-num">3</span>
+                            <div class="step-content">
+                                <h4>They Respond</h4>
+                                <p>Great! They replied or you spoke to them.</p>
+                                <span class="step-result result-open">Stage: CONTACTED</span>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="step-num">4</span>
+                            <div class="step-content">
+                                <h4>Create Their Profile</h4>
+                                <p>Add their business details (company name, address, GST). This is called "profiling".</p>
+                                <span class="step-result result-nurturing">Stage: NURTURING (stays open)</span>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="step-num">5</span>
+                            <div class="step-content">
+                                <h4>Create Opportunity</h4>
+                                <p>When they're ready to buy, create a quote for them.</p>
+                                <span class="step-result result-converted">Stage: CONVERTED (closes)</span>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <div class="key-point">
+                        <h4>&#128161; Key Point</h4>
+                        <p>Creating a profile does NOT close the conversation. You continue talking to them until you create an opportunity or mark as unqualified.</p>
+                    </div>
+                </div>
+
+                <!-- Flow 2: With Account -->
+                <div class="flow-card with-account">
+                    <h3 style="color: #1d4ed8;">
+                        <span>&#127970;</span>
+                        Contact WITH Account
+                    </h3>
+                    <p class="subtitle">Existing customer - We already have their business details</p>
+
+                    <ul class="flow-steps">
+                        <li>
+                            <span class="step-num">1</span>
+                            <div class="step-content">
+                                <h4>Lead Arrives</h4>
+                                <p>Someone we already know contacts us again.</p>
+                                <span class="step-result result-open">Stage: NEW</span>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="step-num">2</span>
+                            <div class="step-content">
+                                <h4>You Reach Out</h4>
+                                <p>Call them or send a message.</p>
+                                <span class="step-result result-open">Stage: ATTEMPTED</span>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="step-num">3</span>
+                            <div class="step-content">
+                                <h4>They Respond</h4>
+                                <p>You're now in conversation with them.</p>
+                                <span class="step-result result-open">Stage: CONTACTED</span>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="step-num">4</span>
+                            <div class="step-content">
+                                <h4>Create Opportunity Directly</h4>
+                                <p>No need to profile - just create a quote! Their details are already in the system.</p>
+                                <span class="step-result result-converted">Stage: CONVERTED (closes)</span>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <div class="key-point">
+                        <h4>&#128161; Key Point</h4>
+                        <p>When you create an opportunity, this conversation closes and a NEW "opportunity" conversation opens to track the deal until order.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- JOURNEY 2: Opportunity Conversation -->
+        <div class="section">
+            <h2 class="section-title">
+                <span class="icon">&#128176;</span>
+                Journey 2: Opportunity Conversation
+            </h2>
+            <p style="color: #64748b; margin-bottom: 10px; font-size: 1.05rem;">
+                <code style="background: #d1fae5; padding: 4px 10px; border-radius: 6px; font-weight: 600; color: #047857;">conversation_type = 'opportunity'</code>
+            </p>
+            <p style="color: #64748b; margin-bottom: 25px;">
+                This is for tracking active deals/quotes. The goal is to close the sale and place an order.
+            </p>
+
+            <!-- How Opportunity Conversation is Created -->
+            <div style="background: #ecfdf5; border: 2px solid #10b981; border-radius: 12px; padding: 25px; margin-bottom: 25px;">
+                <h4 style="color: #047857; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 1.5rem;">&#9889;</span>
+                    How is an Opportunity Conversation Created?
+                </h4>
+                <p style="color: #065f46; margin-bottom: 15px; line-height: 1.6;">
+                    An Opportunity Conversation is <strong>automatically created by the system</strong> when you create an opportunity/quote from a Contact Conversation.
+                </p>
+                <div style="background: white; padding: 15px; border-radius: 8px;">
+                    <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+                        <div style="background: #fef3c7; padding: 10px 15px; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 1.5rem;">&#128172;</div>
+                            <div style="font-size: 0.85rem; color: #92400e; font-weight: 600;">Contact Conv.</div>
+                        </div>
+                        <div style="font-size: 1.5rem; color: #10b981;">&#10132;</div>
+                        <div style="background: #fef3c7; padding: 10px 15px; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 1.2rem;">&#128176;</div>
+                            <div style="font-size: 0.85rem; color: #92400e; font-weight: 600;">Create Opportunity</div>
+                        </div>
+                        <div style="font-size: 1.5rem; color: #10b981;">&#10132;</div>
+                        <div style="background: #d1fae5; padding: 10px 15px; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 1.5rem;">&#128176;</div>
+                            <div style="font-size: 0.85rem; color: #047857; font-weight: 600;">NEW Opportunity Conv.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Opportunity Journey Flow -->
+            <div class="flow-card" style="border-color: #10b981; background: #f0fdf4;">
+                <h3 style="color: #047857;">
+                    <span>&#128176;</span>
+                    Opportunity Conversation Journey
+                </h3>
+                <p class="subtitle">Track the deal from quote to order</p>
+
+                <ul class="flow-steps">
+                    <li>
+                        <span class="step-num" style="background: #10b981;">1</span>
+                        <div class="step-content">
+                            <h4>Opportunity Conversation Created</h4>
+                            <p>When you create an opportunity from a Contact conversation, a NEW conversation is automatically created with type = 'opportunity'.</p>
+                            <span class="step-result result-open">Stage: NEW</span>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="step-num" style="background: #10b981;">2</span>
+                        <div class="step-content">
+                            <h4>Follow Up on Quote</h4>
+                            <p>Call or message the customer to follow up on the quote you sent.</p>
+                            <span class="step-result result-open">Stage: ATTEMPTED</span>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="step-num" style="background: #10b981;">3</span>
+                        <div class="step-content">
+                            <h4>Customer Responds</h4>
+                            <p>They reply about the quote - maybe asking questions, negotiating price, or ready to order.</p>
+                            <span class="step-result result-open">Stage: CONTACTED</span>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="step-num" style="background: #10b981;">4</span>
+                        <div class="step-content">
+                            <h4>Place Order</h4>
+                            <p>Customer is ready! Create the order to complete the sale.</p>
+                            <span class="step-result result-converted">Stage: CONVERTED (closes)</span>
+                        </div>
+                    </li>
+                </ul>
+
+                <div class="key-point" style="border-color: #10b981; background: #ecfdf5;">
+                    <h4 style="color: #047857;">&#128161; Key Point</h4>
+                    <p style="color: #065f46;">Opportunity conversations are shorter - they skip profiling since the customer already has an account. The only goal is to close the sale!</p>
+                </div>
+            </div>
+
+            <!-- Comparison Table -->
+            <div style="margin-top: 25px; overflow-x: auto;">
+                <h4 style="color: #1e293b; margin-bottom: 15px;">Contact vs Opportunity Conversation</h4>
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.95rem;">
+                    <thead>
+                        <tr style="background: #1e293b; color: white;">
+                            <th style="padding: 15px; text-align: left; border-radius: 8px 0 0 0;">Aspect</th>
+                            <th style="padding: 15px; text-align: left;">Contact Conversation</th>
+                            <th style="padding: 15px; text-align: left; border-radius: 0 8px 0 0;">Opportunity Conversation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="background: #f8fafc;">
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;"><strong>Type</strong></td>
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;"><code style="background: #e2e8f0; padding: 2px 8px; border-radius: 4px;">conversation_type = 'contact'</code></td>
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;"><code style="background: #d1fae5; padding: 2px 8px; border-radius: 4px; color: #047857;">conversation_type = 'opportunity'</code></td>
+                        </tr>
+                        <tr style="background: white;">
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;"><strong>Created When</strong></td>
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;">Customer sends first message/call</td>
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;">Agent creates an opportunity/quote</td>
+                        </tr>
+                        <tr style="background: #f8fafc;">
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;"><strong>Purpose</strong></td>
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;">Qualify lead, profile, create opportunity</td>
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;">Track deal until order is placed</td>
+                        </tr>
+                        <tr style="background: white;">
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;"><strong>Account Needed?</strong></td>
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;">May or may not have account</td>
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;">Always has account (required for opportunity)</td>
+                        </tr>
+                        <tr style="background: #f8fafc;">
+                            <td style="padding: 15px;"><strong>Closes When</strong></td>
+                            <td style="padding: 15px;">Opportunity created OR marked unqualified</td>
+                            <td style="padding: 15px;">Order placed OR marked unqualified</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- What Your Actions Do -->
+        <div class="section">
+            <h2 class="section-title">
+                <span class="icon">&#128073;</span>
+                What Your Actions Do
+            </h2>
+
+            <div class="action-grid">
+                <div class="action-item">
+                    <span class="action-icon">&#128197;</span>
+                    <div class="action-details">
+                        <h4>Schedule a Follow-up</h4>
+                        <p>Set a reminder to contact them later. Maybe they need time to think.</p>
+                        <span class="step-result result-nurturing">&#10140; Moves to NURTURING</span>
+                    </div>
+                </div>
+
+                <div class="action-item">
+                    <span class="action-icon">&#128100;</span>
+                    <div class="action-details">
+                        <h4>Create Profile / Link Account</h4>
+                        <p>Save their business details. Now we know who they are!</p>
+                        <span class="step-result result-nurturing">&#10140; Moves to NURTURING (stays open)</span>
+                    </div>
+                </div>
+
+                <div class="action-item">
+                    <span class="action-icon">&#128176;</span>
+                    <div class="action-details">
+                        <h4>Create Opportunity / Quote</h4>
+                        <p>They're interested in buying! Create a quote with products and prices.</p>
+                        <span class="step-result result-converted">&#10140; CONVERTED (closes)</span>
+                    </div>
+                </div>
+
+                <div class="action-item">
+                    <span class="action-icon">&#128722;</span>
+                    <div class="action-details">
+                        <h4>Create Order</h4>
+                        <p>They're buying! Convert the opportunity into an actual order.</p>
+                        <span class="step-result result-converted">&#10140; CONVERTED (closes)</span>
+                    </div>
+                </div>
+
+                <div class="action-item">
+                    <span class="action-icon">&#128683;</span>
+                    <div class="action-details">
+                        <h4>Mark as Unqualified</h4>
+                        <p>Not a good fit. Select a reason: not interested, wrong number, etc.</p>
+                        <span class="step-result result-unqualified">&#10140; UNQUALIFIED (closes)</span>
+                    </div>
+                </div>
+
+                <div class="action-item">
+                    <span class="action-icon">&#128257;</span>
+                    <div class="action-details">
+                        <h4>Transfer to Another Agent</h4>
+                        <p>Hand over the conversation to a colleague. Your conversation closes, a new one opens for them.</p>
+                        <span class="step-result" style="background: #e0f2fe; color: #0369a1;">&#10140; TRANSFERRED (closes yours)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Simple Summary -->
+        <div class="section">
+            <h2 class="section-title">
+                <span class="icon">&#128221;</span>
+                Simple Summary
+            </h2>
+
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.95rem;">
+                    <thead>
+                        <tr style="background: #5a67d8; color: white;">
+                            <th style="padding: 15px; text-align: left; border-radius: 8px 0 0 0;">Action</th>
+                            <th style="padding: 15px; text-align: left;">What Happens</th>
+                            <th style="padding: 15px; text-align: left; border-radius: 0 8px 0 0;">Conversation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="background: #f8fafc;">
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;"><strong>Schedule Follow-up</strong></td>
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;">Moves to NURTURING</td>
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;"><span style="color: #16a34a; font-weight: 600;">Stays Open</span></td>
+                        </tr>
+                        <tr style="background: white;">
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;"><strong>Create Profile</strong></td>
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;">Moves to NURTURING</td>
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;"><span style="color: #16a34a; font-weight: 600;">Stays Open</span></td>
+                        </tr>
+                        <tr style="background: #f8fafc;">
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;"><strong>Create Opportunity</strong></td>
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;">Moves to CONVERTED</td>
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;"><span style="color: #dc2626; font-weight: 600;">Closes</span></td>
+                        </tr>
+                        <tr style="background: white;">
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;"><strong>Create Order</strong></td>
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;">Moves to CONVERTED</td>
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;"><span style="color: #dc2626; font-weight: 600;">Closes</span></td>
+                        </tr>
+                        <tr style="background: #f8fafc;">
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;"><strong>Mark Unqualified</strong></td>
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;">Moves to UNQUALIFIED</td>
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;"><span style="color: #dc2626; font-weight: 600;">Closes</span></td>
+                        </tr>
+                        <tr style="background: #f0f9ff;">
+                            <td style="padding: 15px;"><strong>Transfer</strong></td>
+                            <td style="padding: 15px;">Closes yours, NEW for target agent</td>
+                            <td style="padding: 15px;"><span style="color: #dc2626; font-weight: 600;">Closes (yours)</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Conversation Types -->
+        <div class="section">
+            <h2 class="section-title">
+                <span class="icon">&#128196;</span>
+                Two Types of Conversations
+            </h2>
+            <p style="color: #64748b; margin-bottom: 25px;">
+                When you create an opportunity, the system creates a NEW conversation to track that deal separately.
+            </p>
+
+            <div class="flows-container">
+                <div class="flow-card no-account" style="border-color: #8b5cf6;">
+                    <h3 style="color: #6d28d9;">
+                        <span>&#128172;</span>
+                        Contact Conversation
+                    </h3>
+                    <p class="subtitle">For new leads and prospects</p>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="padding: 10px 0; border-bottom: 1px dashed #e2e8f0; color: #475569;">
+                            <strong style="color: #1e293b;">Purpose:</strong> First contact with a lead, profiling, qualification
+                        </li>
+                        <li style="padding: 10px 0; border-bottom: 1px dashed #e2e8f0; color: #475569;">
+                            <strong style="color: #1e293b;">Goal:</strong> Get their details, understand needs, create opportunity
+                        </li>
+                        <li style="padding: 10px 0; color: #475569;">
+                            <strong style="color: #1e293b;">Ends when:</strong> Opportunity is created OR marked unqualified
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="flow-card with-account" style="border-color: #10b981;">
+                    <h3 style="color: #047857;">
+                        <span>&#128176;</span>
+                        Opportunity Conversation
+                    </h3>
+                    <p class="subtitle">For active deals waiting for order</p>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="padding: 10px 0; border-bottom: 1px dashed #e2e8f0; color: #475569;">
+                            <strong style="color: #1e293b;">Purpose:</strong> Track a specific deal/quote until order is placed
+                        </li>
+                        <li style="padding: 10px 0; border-bottom: 1px dashed #e2e8f0; color: #475569;">
+                            <strong style="color: #1e293b;">Goal:</strong> Follow up on the quote, negotiate, close the sale
+                        </li>
+                        <li style="padding: 10px 0; color: #475569;">
+                            <strong style="color: #1e293b;">Ends when:</strong> Order is placed OR marked unqualified
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Automatic Triggers -->
+        <div class="section">
+            <h2 class="section-title">
+                <span class="icon">&#9889;</span>
+                Automatic Stage Changes
+            </h2>
+            <p style="color: #64748b; margin-bottom: 25px;">
+                The system automatically moves conversations through stages based on what happens. You don't need to manually change stages!
+            </p>
+
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.95rem;">
+                    <thead>
+                        <tr style="background: #1e293b; color: white;">
+                            <th style="padding: 15px; text-align: left; border-radius: 8px 0 0 0;">When This Happens...</th>
+                            <th style="padding: 15px; text-align: left;">Stage Becomes...</th>
+                            <th style="padding: 15px; text-align: left; border-radius: 0 8px 0 0;">Conversation Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="background: #dbeafe;">
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;">New message/call comes in</td>
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;"><span style="background: #3b82f6; color: white; padding: 4px 12px; border-radius: 20px; font-weight: 600;">NEW</span></td>
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;"><span style="color: #16a34a; font-weight: 600;">Opens</span></td>
+                        </tr>
+                        <tr style="background: #ede9fe;">
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;">You send a message or make a call</td>
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;"><span style="background: #8b5cf6; color: white; padding: 4px 12px; border-radius: 20px; font-weight: 600;">ATTEMPTED</span></td>
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;"><span style="color: #16a34a; font-weight: 600;">Stays Open</span></td>
+                        </tr>
+                        <tr style="background: #fce7f3;">
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;">Customer replies or call is answered</td>
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;"><span style="background: #ec4899; color: white; padding: 4px 12px; border-radius: 20px; font-weight: 600;">CONTACTED</span></td>
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;"><span style="color: #16a34a; font-weight: 600;">Stays Open</span></td>
+                        </tr>
+                        <tr style="background: #fef3c7;">
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;">You schedule a follow-up</td>
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;"><span style="background: #f59e0b; color: white; padding: 4px 12px; border-radius: 20px; font-weight: 600;">NURTURING</span></td>
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;"><span style="color: #16a34a; font-weight: 600;">Stays Open</span></td>
+                        </tr>
+                        <tr style="background: #fef3c7;">
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;">You create profile / link account</td>
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;"><span style="background: #f59e0b; color: white; padding: 4px 12px; border-radius: 20px; font-weight: 600;">NURTURING</span></td>
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;"><span style="color: #16a34a; font-weight: 600;">Stays Open</span></td>
+                        </tr>
+                        <tr style="background: #d1fae5;">
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;">You create an opportunity/quote</td>
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;"><span style="background: #10b981; color: white; padding: 4px 12px; border-radius: 20px; font-weight: 600;">CONVERTED</span></td>
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;"><span style="color: #dc2626; font-weight: 600;">Closes</span></td>
+                        </tr>
+                        <tr style="background: #d1fae5;">
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;">Order is placed</td>
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;"><span style="background: #10b981; color: white; padding: 4px 12px; border-radius: 20px; font-weight: 600;">CONVERTED</span></td>
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;"><span style="color: #dc2626; font-weight: 600;">Closes</span></td>
+                        </tr>
+                        <tr style="background: #fee2e2;">
+                            <td style="padding: 15px;">You mark as unqualified</td>
+                            <td style="padding: 15px;"><span style="background: #ef4444; color: white; padding: 4px 12px; border-radius: 20px; font-weight: 600;">UNQUALIFIED</span></td>
+                            <td style="padding: 15px;"><span style="color: #dc2626; font-weight: 600;">Closes</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Conversation Transfer -->
+        <div class="section">
+            <h2 class="section-title">
+                <span class="icon">&#128257;</span>
+                Conversation Transfer
+            </h2>
+            <p style="color: #64748b; margin-bottom: 25px;">
+                Transfer a conversation to another agent when you can't handle it or the customer needs someone else's expertise.
+            </p>
+
+            <!-- Transfer Flow Diagram -->
+            <div style="background: #f0f9ff; border: 2px solid #0ea5e9; border-radius: 12px; padding: 25px; margin-bottom: 25px;">
+                <h4 style="color: #0369a1; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 1.5rem;">&#128260;</span>
+                    How Transfer Works (Close-and-Create Flow)
+                </h4>
+                <div style="background: white; padding: 20px; border-radius: 8px;">
+                    <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap; justify-content: center;">
+                        <div style="background: #fee2e2; padding: 15px; border-radius: 8px; text-align: center; min-width: 140px;">
+                            <div style="font-size: 1.5rem;">&#128172;</div>
+                            <div style="font-size: 0.85rem; color: #b91c1c; font-weight: 600;">Your Conversation</div>
+                            <div style="font-size: 0.75rem; color: #dc2626;">Status: CLOSED</div>
+                        </div>
+                        <div style="font-size: 1.5rem; color: #0ea5e9;">&#10132;</div>
+                        <div style="background: #fef3c7; padding: 15px; border-radius: 8px; text-align: center; min-width: 120px;">
+                            <div style="font-size: 1.2rem;">&#128257;</div>
+                            <div style="font-size: 0.85rem; color: #92400e; font-weight: 600;">Transfer</div>
+                        </div>
+                        <div style="font-size: 1.5rem; color: #0ea5e9;">&#10132;</div>
+                        <div style="background: #d1fae5; padding: 15px; border-radius: 8px; text-align: center; min-width: 140px;">
+                            <div style="font-size: 1.5rem;">&#128172;</div>
+                            <div style="font-size: 0.85rem; color: #047857; font-weight: 600;">NEW Conversation</div>
+                            <div style="font-size: 0.75rem; color: #10b981;">For Target Agent</div>
+                        </div>
+                    </div>
+                </div>
+                <p style="color: #0369a1; margin-top: 15px; font-size: 0.9rem; line-height: 1.6;">
+                    <strong>Important:</strong> When you transfer, your original conversation is <strong>CLOSED</strong> (not deleted - it's preserved for history).
+                    A <strong>NEW conversation</strong> is created for the receiving agent. Both conversations are linked for tracking the transfer chain.
+                </p>
+            </div>
+
+            <!-- What Gets Transferred -->
+            <div style="background: #f8fafc; border-radius: 12px; padding: 25px; margin-bottom: 25px;">
+                <h4 style="color: #1e293b; margin-bottom: 15px;">What Gets Transferred</h4>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                    <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #3b82f6;">
+                        <div style="font-size: 1.3rem; margin-bottom: 5px;">&#128172;</div>
+                        <strong style="color: #1e293b;">Conversation</strong>
+                        <p style="color: #64748b; font-size: 0.85rem; margin: 5px 0 0 0;">The chat history and context</p>
+                    </div>
+                    <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #8b5cf6;">
+                        <div style="font-size: 1.3rem; margin-bottom: 5px;">&#127970;</div>
+                        <strong style="color: #1e293b;">Account</strong>
+                        <p style="color: #64748b; font-size: 0.85rem; margin: 5px 0 0 0;">If linked, account ownership transfers</p>
+                    </div>
+                    <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #f59e0b;">
+                        <div style="font-size: 1.3rem; margin-bottom: 5px;">&#128176;</div>
+                        <strong style="color: #1e293b;">Opportunities</strong>
+                        <p style="color: #64748b; font-size: 0.85rem; margin: 5px 0 0 0;">All open opportunities for the account</p>
+                    </div>
+                    <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #10b981;">
+                        <div style="font-size: 1.3rem; margin-bottom: 5px;">&#128197;</div>
+                        <strong style="color: #1e293b;">Follow-ups</strong>
+                        <p style="color: #64748b; font-size: 0.85rem; margin: 5px 0 0 0;">Pending tasks (you choose what happens)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Follow-up Options -->
+            <div style="background: #fffbeb; border: 2px solid #f59e0b; border-radius: 12px; padding: 25px; margin-bottom: 25px;">
+                <h4 style="color: #b45309; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 1.5rem;">&#128197;</span>
+                    What Happens to Pending Follow-ups?
+                </h4>
+                <p style="color: #92400e; margin-bottom: 15px;">When transferring, you choose what happens to your scheduled follow-ups:</p>
+                <div style="display: grid; gap: 12px;">
+                    <div style="background: white; padding: 12px 15px; border-radius: 8px; display: flex; align-items: center; gap: 12px;">
+                        <span style="background: #d1fae5; padding: 8px; border-radius: 6px; font-size: 1.2rem;">&#128257;</span>
+                        <div>
+                            <strong style="color: #1e293b;">Transfer to new agent</strong>
+                            <p style="color: #64748b; font-size: 0.85rem; margin: 0;">Follow-ups will be reassigned to the receiving agent</p>
+                        </div>
+                    </div>
+                    <div style="background: white; padding: 12px 15px; border-radius: 8px; display: flex; align-items: center; gap: 12px;">
+                        <span style="background: #dbeafe; padding: 8px; border-radius: 6px; font-size: 1.2rem;">&#9989;</span>
+                        <div>
+                            <strong style="color: #1e293b;">Mark as done</strong>
+                            <p style="color: #64748b; font-size: 0.85rem; margin: 0;">Follow-ups will be marked as completed</p>
+                        </div>
+                    </div>
+                    <div style="background: white; padding: 12px 15px; border-radius: 8px; display: flex; align-items: center; gap: 12px;">
+                        <span style="background: #fee2e2; padding: 8px; border-radius: 6px; font-size: 1.2rem;">&#128465;</span>
+                        <div>
+                            <strong style="color: #1e293b;">Delete</strong>
+                            <p style="color: #64748b; font-size: 0.85rem; margin: 0;">Follow-ups will be permanently deleted</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transfer vs Other Terminal Actions -->
+            <div style="overflow-x: auto;">
+                <h4 style="color: #1e293b; margin-bottom: 15px;">Transfer vs Other Closing Actions</h4>
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.95rem;">
+                    <thead>
+                        <tr style="background: #1e293b; color: white;">
+                            <th style="padding: 15px; text-align: left; border-radius: 8px 0 0 0;">Action</th>
+                            <th style="padding: 15px; text-align: left;">Stage</th>
+                            <th style="padding: 15px; text-align: left;">What Happens</th>
+                            <th style="padding: 15px; text-align: left; border-radius: 0 8px 0 0;">Removed from List?</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="background: #f0f9ff;">
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;"><strong>Transfer</strong></td>
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;"><span style="background: #0ea5e9; color: white; padding: 4px 12px; border-radius: 20px; font-weight: 600;">TRANSFERRED</span></td>
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;">Closes yours, opens new for another agent</td>
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;"><span style="color: #16a34a; font-weight: 600;">Yes</span></td>
+                        </tr>
+                        <tr style="background: #d1fae5;">
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;"><strong>Create Opportunity</strong></td>
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;"><span style="background: #10b981; color: white; padding: 4px 12px; border-radius: 20px; font-weight: 600;">CONVERTED</span></td>
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;">Closes conversation, lead is qualified</td>
+                            <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;"><span style="color: #16a34a; font-weight: 600;">Yes</span></td>
+                        </tr>
+                        <tr style="background: #fee2e2;">
+                            <td style="padding: 15px;"><strong>Mark Unqualified</strong></td>
+                            <td style="padding: 15px;"><span style="background: #ef4444; color: white; padding: 4px 12px; border-radius: 20px; font-weight: 600;">UNQUALIFIED</span></td>
+                            <td style="padding: 15px;">Closes conversation, lead not a fit</td>
+                            <td style="padding: 15px;"><span style="color: #16a34a; font-weight: 600;">Yes</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="key-point" style="margin-top: 25px; border-color: #0ea5e9; background: #f0f9ff;">
+                <h4 style="color: #0369a1;">&#128161; Transfer Chain</h4>
+                <p style="color: #0369a1;">
+                    All transferred conversations are linked together. You can view the full transfer history to see who handled the conversation before and after you.
+                    This helps maintain context and accountability across the team.
+                </p>
+            </div>
+        </div>
+
+        <!-- Mandatory Action Popup -->
+        <div class="section">
+            <h2 class="section-title">
+                <span class="icon">&#128680;</span>
+                Mandatory Action Popup
+            </h2>
+            <p style="color: #64748b; margin-bottom: 25px;">
+                When you try to switch to another conversation, the system may ask you to take action first.
+            </p>
+
+            <!-- Why popup appears -->
+            <div style="background: #fef2f2; border: 2px solid #ef4444; border-radius: 12px; padding: 25px;">
+                <h4 style="color: #b91c1c; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 1.5rem;">&#9888;</span>
+                    Why do I see this popup?
+                </h4>
+                <p style="color: #7f1d1d; margin-bottom: 15px; line-height: 1.6;">
+                    The popup appears when you try to switch to another conversation and the current conversation is in <strong>CONTACTED</strong> stage <strong>set via a call</strong> (outgoing call answered or incoming call answered).
+                </p>
+                <p style="color: #7f1d1d; margin-bottom: 10px; line-height: 1.6;">
+                    <strong>Important:</strong> This popup only appears for call-based contact, NOT for message replies.
+                </p>
+                <p style="color: #7f1d1d; margin-bottom: 20px; line-height: 1.6;">
+                    Since you already spoke to this customer on a call, you <strong>must</strong> take one of these actions before moving to another lead:
+                </p>
+
+                <div style="display: grid; gap: 15px;">
+                    <div style="background: white; padding: 15px; border-radius: 8px; display: flex; align-items: center; gap: 15px;">
+                        <span style="font-size: 1.5rem;">&#128197;</span>
+                        <div>
+                            <strong style="color: #1e293b;">Schedule Follow-up</strong>
+                            <p style="color: #64748b; font-size: 0.9rem; margin: 0;">Set a reminder to contact them later (moves to NURTURING)</p>
+                        </div>
+                    </div>
+                    <div style="background: white; padding: 15px; border-radius: 8px; display: flex; align-items: center; gap: 15px;">
+                        <span style="font-size: 1.5rem;">&#128100;</span>
+                        <div>
+                            <strong style="color: #1e293b;">Create Profile / Link Account</strong>
+                            <p style="color: #64748b; font-size: 0.9rem; margin: 0;">Save their business details if no account yet (moves to NURTURING)</p>
+                        </div>
+                    </div>
+                    <div style="background: white; padding: 15px; border-radius: 8px; display: flex; align-items: center; gap: 15px;">
+                        <span style="font-size: 1.5rem;">&#128683;</span>
+                        <div>
+                            <strong style="color: #1e293b;">Mark as Unqualified</strong>
+                            <p style="color: #64748b; font-size: 0.9rem; margin: 0;">Close the conversation if they're not a good fit (moves to UNQUALIFIED)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px; padding: 15px; background: #fef3c7; border-radius: 8px; border: 1px solid #f59e0b;">
+                    <p style="color: #92400e; font-size: 0.9rem; margin: 0;">
+                        <strong>Why is this mandatory?</strong> When you've had actual contact with a customer, we need to track what happens next. This ensures no leads fall through the cracks and every conversation has a clear outcome.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div style="text-align: center; color: white; opacity: 0.8; padding: 20px;">
+            <p>Questions? Ask your team lead or check the detailed technical documentation.</p>
+        </div>
+    </div>
+</body>
+</html>
