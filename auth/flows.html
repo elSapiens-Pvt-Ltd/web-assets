@@ -1920,7 +1920,7 @@ Instead: Add <span class="highlight">hidden: true</span> to that handle
         │
         ▼
 ┌─────────────────────────────────────┐
-│   <span class="highlight">Step 1:</span> Check EMAIL in Contact Lib │
+│   <span class="highlight">Step 1:</span> Check EMAIL in Contact Lib│
 └─────────────────────────────────────┘
         │
         ├── <span class="success">EMAIL EXISTS</span> → Use this contact_id
@@ -1963,14 +1963,14 @@ Instead: Add <span class="highlight">hidden: true</span> to that handle
                         │       │
                         │       ▼
                         │   ┌─────────────────────────────────────┐
-                        │   │   <span class="success">Add new email to Contact A</span>       │
-                        │   │   • email.verified = true (click)  │
-                        │   │   • Add tag: workspace_employee    │
-                        │   │   • Use Contact A's contact_id     │
-                        │   │                                    │
-                        │   │   <span class="warn">If email matches different</span>       │
-                        │   │   <span class="warn">Contact B → AUTO-MERGE!</span>          │
-                        │   │   (See Merge Contact tab)          │
+                        │   │   <span class="success">Add new email to Contact A</span>        │
+                        │   │   • email.verified = true (click)   │
+                        │   │   • Add tag: workspace_employee     │
+                        │   │   • Use Contact A's contact_id      │
+                        │   │                                     │
+                        │   │   <span class="warn">If email matches different</span>        │
+                        │   │   <span class="warn">Contact B → AUTO-MERGE!</span>           │
+                        │   │   (See Merge Contact tab)           │
                         │   └─────────────────────────────────────┘
                         │
                         └── <span class="warn">OTP FAILED</span> → Different person
@@ -2101,7 +2101,7 @@ User clicks link →
         │ valid
         ▼
 ┌───────────────────────────────────────┐
-│ CHECK 3: <span class="highlight">Is user already member?</span>       │
+│ CHECK 3: <span class="highlight">Is user already member?</span>      │
 │ IF member → "You're already a member" │
 │ → Redirect to signin                  │
 └───────────────────────────────────────┘
@@ -2112,13 +2112,13 @@ User clicks link →
 <span class="keyword">EXPIRY DURING FLOW:</span>
 
 ┌───────────────────────────────────────────────────────────────┐
-│ <span class="success">WHAT WE PRESERVE (even if token expires):</span>                   │
+│ <span class="success">WHAT WE PRESERVE (even if token expires):</span>                     │
 │ ✓ Phone verification (Contact Library updated)                │
 │ ✓ Email verification (clicked link = verified)                │
 │ ✓ Password (stored in ElAuth)                                 │
 │ ✓ Any data already entered                                    │
 ├───────────────────────────────────────────────────────────────┤
-│ <span class="warn">WHAT REQUIRES FRESH TOKEN:</span>                                  │
+│ <span class="warn">WHAT REQUIRES FRESH TOKEN:</span>                                    │
 │ ✗ Adding user to workspace                                    │
 │ ✗ Creating workspace contact record                           │
 │ ✗ Assigning role                                              │
@@ -2421,14 +2421,14 @@ User verifies phone +91-111 → enters email <span class="warn">john@example.com
         │
         ▼
 ┌─────────────────────────────────────────────────────────────┐
-│   <span class="keyword">HANDLING:</span>                                                  │
+│   <span class="keyword">HANDLING:</span>                                                 │
 │                                                             │
 │   1. <span class="warn">BLOCK registration</span> with this email                     │
 │   2. Show message: "This email is linked to another account"│
 │   3. Options for user:                                      │
 │      a) Use different email                                 │
 │      b) "This is my email" → Verify via OTP sent to email   │
-│         → If verified: <span class="success">AUTO-MERGE Contact A + B</span>            │
+│         → If verified: <span class="success">AUTO-MERGE Contact A + B</span>             │
 │         → User now has combined contact                     │
 └─────────────────────────────────────────────────────────────┘
 
@@ -2446,7 +2446,7 @@ User has PROVEN ownership of BOTH:
 ┌─────────────────────────────────────────────────────────────┐
 │   Contact Library:                                          │
 │   • contact_id: "abc123" (created on phone input)           │
-│   • phone: +91-xxx (<span class="success">VERIFIED</span>)                              │
+│   • phone: +91-xxx (<span class="success">VERIFIED</span>)                               │
 │   • email: (not entered yet)                                │
 │   • workspace_relationships: [] (empty)                     │
 │   • NO workspace created yet                                │
@@ -2924,7 +2924,7 @@ What if user returns after 30 days?
 │   <span class="keyword">Call ElAuth logout API</span>            │
 │   POST /v1/auth/logout              │
 │   • Log analytics event             │
-│   • <span class="warn">Clear server-side cache</span>        │
+│   • <span class="warn">Clear server-side cache</span>         │
 └─────────────────────────────────────┘
         │
         ▼
