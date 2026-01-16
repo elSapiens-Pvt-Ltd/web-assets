@@ -3067,14 +3067,14 @@ What if user returns after 30 days?
             <div class="codeBlock"><span class="keyword">LOGOUT RESILIENCE STRATEGY:</span>
 
 ┌─────────────────────────────────────────────────────────────┐
-│ PRIORITY 1: <span class="success">ALWAYS SUCCEED</span>                                │
+│ PRIORITY 1: <span class="success">ALWAYS SUCCEED</span>                                  │
 │ • Delete cookie (client-side) ✓                             │
 │ • Return success to user ✓                                  │
 └─────────────────────────────────────────────────────────────┘
                     │
                     ▼
 ┌─────────────────────────────────────────────────────────────┐
-│ PRIORITY 2: <span class="highlight">BEST EFFORT</span>                                   │
+│ PRIORITY 2: <span class="highlight">BEST EFFORT</span>                                     │
 │ • Clear Redis cache                                         │
 │   └─ If fails → Log error, continue                         │
 │ • Log analytics                                             │
@@ -3085,7 +3085,7 @@ What if user returns after 30 days?
                     │
                     ▼
 ┌─────────────────────────────────────────────────────────────┐
-│ FALLBACK: <span class="warn">SAFETY NETS</span>                                     │
+│ FALLBACK: <span class="warn">SAFETY NETS</span>                                       │
 │ • Cache TTL ensures auto-expiry                             │
 │ • Login overwrites stale cache                              │
 │ • Background job retries failed deletions                   │
