@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Structure</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #3498db;
+            font-size: 2.5em;
+        }
+
+        h2 {
+            color: #34495e;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #95a5a6;
+            font-size: 2em;
+        }
+
+        h3 {
+            color: #2980b9;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        h3 code {
+            background-color: #ecf0f1;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        p {
+            margin-bottom: 15px;
+            color: #555;
+        }
+
+        strong {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        ul {
+            margin: 10px 0 20px 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        code {
+            background-color: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9em;
+            color: #e74c3c;
+        }
+
+        .field-list {
+            background-color: #fafafa;
+            padding: 20px;
+            border-radius: 6px;
+            border-left: 4px solid #3498db;
+            margin: 15px 0;
+        }
+
+        .field-list ul {
+            list-style-type: none;
+            margin-left: 0;
+        }
+
+        .field-list > ul > li {
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .field-list > ul > li:last-child {
+            border-bottom: none;
+        }
+
+        .field-list ul ul {
+            margin-left: 30px;
+            margin-top: 8px;
+            list-style-type: circle;
+        }
+
+        .section-divider {
+            margin: 50px 0;
+            border: 0;
+            height: 2px;
+            background: linear-gradient(to right, transparent, #bdc3c7, transparent);
+        }
+
+        .database-section {
+            margin-bottom: 50px;
+        }
+
+        .collection-description {
+            font-style: italic;
+            color: #7f8c8d;
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #ecf0f1;
+            border-radius: 4px;
+        }
+
+        .proposed {
+            background-color: #fff9e6;
+            border-left-color: #f39c12;
+        }
+
+        .proposed h3::before {
+            content: "🚧 ";
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Database Structure</h1>
+
+        <div class="database-section">
+            <h2>Accounts API Database (MongoDB)</h2>
+
+            <section>
+                <h3><code>person</code> collection</h3>
+                <p class="collection-description">stores personla details of each customer</p>
+
+                <div class="field-list">
+                    <strong>Fields:</strong>
+                    <ul>
+                        <li><code>_id</code>: ObjectId (internal MongoDB ID)</li>
+                        <li><code>uuid</code>: string (UUID v4 for external API exposure)</li>
+                        <li><code>display_name</code>: string (required)</li>
+                        <li><code>photo</code>: string</li>
+                        <li><code>name</code>: object
+                            <ul>
+                                <li><code>salutation</code>: string</li>
+                                <li><code>first_name</code>: string</li>
+                                <li><code>middle_name</code>: string</li>
+                                <li><code>last_name</code>: string</li>
+                            </ul>
+                        </li>
+                        <li><code>handles</code>: array
+                            <ul>
+                                <li><code>type</code>: "email" | "phone"</li>
+                                <li><code>value</code>: string | object (phone: {country_code, phone_number})</li>
+                                <li><code>verified</code>: boolean</li>
+                                <li><code>is_primary</code>: boolean</li>
+                                <li><code>is_hidden</code>: boolean</li>
+                            </ul>
+                        </li>
+                        <li><code>status</code>: "active" | "inactive" | "pending"</li>
+                        <li><code>date_of_birth</code>: Date</li>
+                        <li><code>gender</code>: string</li>
+                        <li><code>pet_name</code>: string (nickname)</li>
+                        <li><code>nationality</code>: string</li>
+                        <li><code>marital_status</code>: string</li>
+                        <li><code>place_of_birth</code>: string</li>
+                        <li><code>preferred_language</code>: string</li>
+                        <li><code>notes</code>: string</li>
+                        <li><code>role_history</code>: array</li>
+                        <li><code>tags</code>: string[]</li>
+                        <li><code>official_identifiers</code>: array
+                            <ul>
+                                <li><code>type</code>: string</li>
+                                <li><code>value</code>: string</li>
+                            </ul>
+                        </li>
+                        <li><code>workspace_relationships</code>: array
+                            <ul>
+                                <li><code>workspace_id</code>: string</li>
+                                <li><code>reseller_id</code>: string</li>
+                                <li><code>tag</code>: "creator" | "employee" | "customer"</li>
+                            </ul>
+                        </li>
+                        <li><code>last_login</code>: Date</li>
+                        <li><code>custom_data</code>: object[]</li>
+                        <li><code>created_at</code>: Date</li>
+                        <li><code>updated_at</code>: Date</li>
+                        <li><code>deleted_at</code>: Date</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section>
+                <h3><code>entity</code> collection</h3>
+                <p class="collection-description">either an organization/shop or a personalentity (for each person, atleast one entity will be stored. person adderss will be storedin that "personal" entity)</p>
+
+                <div class="field-list">
+                    <strong>Fields:</strong>
+                    <ul>
+                        <li><code>_id</code>: ObjectId (internal MongoDB ID)</li>
+                        <li><code>uuid</code>: string (UUID v4 for external API exposure)</li>
+                        <li><code>entity_code</code>: string (optional customer-specific code)</li>
+                        <li><code>name</code>: string (required)</li>
+                        <li><code>entity_type</code>: "individual" | "org"</li>
+                        <li><code>trade_name</code>: string (DBA name)</li>
+                        <li><code>website</code>: string</li>
+                        <li><code>normalized_name</code>: string (lowercase, no spaces/special chars)</li>
+                        <li><code>country_code</code>: string (ISO 3166-1 alpha-2, e.g., "IN", "AU", "US")</li>
+                        <li><code>business_identifiers</code>: array
+                            <ul>
+                                <li><code>type</code>: string (e.g., "abn", "ein", "gstin", "pan")</li>
+                                <li><code>value</code>: string</li>
+                                <li><code>country_code</code>: string</li>
+                                <li><code>verified</code>: boolean</li>
+                            </ul>
+                        </li>
+                        <li><code>contact_handles</code>: array
+                            <ul>
+                                <li><code>type</code>: string (email, phone, mobile, fax, website)</li>
+                                <li><code>value</code>: string</li>
+                                <li><code>label</code>: string</li>
+                                <li><code>is_primary</code>: boolean</li>
+                            </ul>
+                        </li>
+                        <li><code>contact_uuids</code>: string[] (references to Contact documents)</li>
+                        <li><code>addresses</code>: array
+                            <ul>
+                                <li><code>uuid</code>: string (UUID v4)</li>
+                                <li><code>label</code>: string (e.g., "Head Office", "Warehouse")</li>
+                                <li><code>type</code>: string (office, residential, warehouse, etc.)</li>
+                                <li><code>line1</code>: string</li>
+                                <li><code>line2</code>: string</li>
+                                <li><code>city</code>: string</li>
+                                <li><code>state</code>: string</li>
+                                <li><code>state_code</code>: string</li>
+                                <li><code>state_identifier</code>: string</li>
+                                <li><code>postal_code</code>: string</li>
+                                <li><code>country</code>: string</li>
+                                <li><code>country_code</code>: string</li>
+                                <li><code>gstin</code>: string</li>
+                                <li><code>company_code</code>: string</li>
+                                <li><code>is_primary</code>: boolean</li>
+                            </ul>
+                        </li>
+                        <li><code>tags</code>: string[]</li>
+                        <li><code>status</code>: "active" | "inactive" | "archived"</li>
+                        <li><code>is_test_account</code>: boolean</li>
+                        <li><code>created_at</code>: Date</li>
+                        <li><code>updated_at</code>: Date</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section>
+                <h3><code>memberships</code> collection</h3>
+                <p class="collection-description">maps a entity with person. this is where relationships between entities and persons are defined. it is a mapping table. roles are assigned to membership ids.</p>
+
+                <div class="field-list">
+                    <strong>Fields:</strong>
+                    <ul>
+                        <li><code>_id</code>: ObjectId (internal MongoDB ID)</li>
+                        <li><code>person_id</code>: string (UUID reference to person)</li>
+                        <li><code>entity_id</code>: string (UUID reference to entity)</li>
+                        <li><code>role_in_entity</code>: string (owner, employee, manager, student, admin, etc.)</li>
+                        <li><code>status</code>: "active" | "inactive" | "suspended"</li>
+                        <li><code>department</code>: string (engineering, sales, operations, HR)</li>
+                        <li><code>reports_to</code>: string (UUID of manager/supervisor person)</li>
+                        <li><code>ownership_percentage</code>: number (0-100)</li>
+                        <li><code>legal_authority</code>: boolean (has signing/decision-making authority)</li>
+                        <li><code>joined_via</code>: string ("invite" | "self" | "admin")</li>
+                        <li><code>ended_at</code>: Date (when membership ends)</li>
+                        <li><code>created_at</code>: Date</li>
+                        <li><code>updated_at</code>: Date</li>
+                    </ul>
+                </div>
+
+                <div class="field-list">
+                    <strong>Indexes:</strong>
+                    <ul>
+                        <li><code>person_id + entity_id</code> (compound)</li>
+                        <li><code>entity_id</code></li>
+                    </ul>
+                </div>
+            </section>
+
+            <hr class="section-divider">
+
+            <section class="proposed">
+                <h3><code>workspace_person</code> collection</h3>
+                <p class="collection-description">stores a workspace's version of person data</p>
+
+                <div class="field-list proposed">
+                    <ul>
+                        <li><code>workspace_contact_id</code>: ObjectId (internal MongoDB ID)</li>
+                        <li><code>workspace_id</code>: string (UUID reference to workspace)</li>
+                        <li><code>reseller_id</code>: string (UUID reference to reseller)</li>
+                        <li><code>status</code>: TEXT()</li>
+                        <li><code>data</code>: {name, preffered language}</li>
+                        <li><code>entities</code>: // to be expanded later</li>
+                        <li><code>created_at</code>: "..."</li>
+                        <li><code>updated_at</code>: "..."</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="proposed">
+                <h3><code>reseller</code> collection</h3>
+                <p class="collection-description">basic details about reseller</p>
+
+                <div class="field-list proposed">
+                    <ul>
+                        <li><code>_id</code>: ObjectId (internal MongoDB ID)</li>
+                        <li><code>short_id</code>: string</li>
+                        <li><code>name</code>: string</li>
+                        <li><code>is_ecosystem_owner</code>: boolean</li>
+                        <li><code>commission_percentage</code>: number</li>
+                        <li><code>has_custom_domain</code>: boolean</li>
+                        <li><code>config_file</code>: string</li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+
+        <div class="database-section">
+            <h2>ElAuth Database (PostgreSQL)</h2>
+
+            <section>
+                <h3><code>auth_identifiers</code> table</h3>
+                <p class="collection-description">user login identifiers</p>
+
+                <div class="field-list">
+                    <strong>Columns:</strong>
+                    <ul>
+                        <li><code>identifier_id</code>: UUID (primary key)</li>
+                        <li><code>person_id</code>: UUID (references MongoDB person.uuid)</li>
+                        <li><code>reseller_id</code>: UUID (references MongoDb reseller.uuid)</li>
+                        <li><code>type</code>: TEXT ("username" | "email" | "phone")</li>
+                        <li><code>value</code>: TEXT</li>
+                        <li><code>last_login</code>: TIMESTAMPTZ</li>
+                        <li><code>verified</code>: BOOLEAN (default false)</li>
+                        <li><code>created_at</code>: TIMESTAMPTZ</li>
+                    </ul>
+                    <p><strong>Constraints:</strong> UNIQUE (reseller_id, type, value)</p>
+                </div>
+            </section>
+
+            <section>
+                <h3><code>auth_credentials</code> table</h3>
+                <p class="collection-description">user passwords</p>
+
+                <div class="field-list">
+                    <strong>Columns:</strong>
+                    <ul>
+                        <li><code>password_id</code>: UUID (primary key)</li>
+                        <li><code>person_id</code>: UUID (primary key, references MongoDB person.uuid)</li>
+                        <li><code>reseller_id</code>: UUID (references MongoDb reseller.uuid)</li>
+                        <li><code>password_hash</code>: TEXT</li>
+                        <li><code>password_changed_at</code>: TIMESTAMPTZ</li>
+                        <li><code>created_at</code>: TIMESTAMPTZ</li>
+                        <li><code>updated_at</code>: TIMESTAMPTZ</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section>
+                <h3><code>auth_password_history</code> table</h3>
+                <p class="collection-description">password change history</p>
+
+                <div class="field-list">
+                    <strong>Columns:</strong>
+                    <ul>
+                        <li><code>history_id</code>: UUID (primary key)</li>
+                        <li><code>person_id</code>: UUID (references MongoDB person.uuid)</li>
+                        <li><code>reseller_id</code>: UUID (references MongoDb reseller.uuid)</li>
+                        <li><code>password_hash</code>: TEXT</li>
+                        <li><code>changed_at</code>: TIMESTAMPTZ</li>
+                        <li><code>change_reason</code>: TEXT</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section>
+                <h3><code>auth_password_resets</code> table</h3>
+                <p class="collection-description">OTP-based password reset flow</p>
+
+                <div class="field-list">
+                    <strong>Columns:</strong>
+                    <ul>
+                        <li><code>reset_id</code>: UUID (primary key)</li>
+                        <li><code>person_id</code>: UUID (references MongoDB person.uuid)</li>
+                        <li><code>reseller_id</code>: UUID (references MongoDb reseller.uuid)</li>
+                        <li><code>identifier_type</code>: TEXT</li>
+                        <li><code>identifier_value</code>: TEXT</li>
+                        <li><code>otp_code_hash</code>: TEXT</li>
+                        <li><code>otp_code_plain</code>: TEXT (for dev/testing)</li>
+                        <li><code>expires_at</code>: TIMESTAMPTZ</li>
+                        <li><code>consumed_at</code>: TIMESTAMPTZ</li>
+                        <li><code>created_at</code>: TIMESTAMPTZ</li>
+                        <li><code>attempt_count</code>: INT (default 0)</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section>
+                <h3><code>auth_handle_verifications</code> table</h3>
+                <p class="collection-description">OTP-based handle (email/phone) verification</p>
+
+                <div class="field-list">
+                    <strong>Columns:</strong>
+                    <ul>
+                        <li><code>verification_id</code>: UUID (primary key)</li>
+                        <li><code>person_id</code>: UUID (references MongoDB person.uuid)</li>
+                        <li><code>handle_type</code>: TEXT ("email" | "phone")</li>
+                        <li><code>handle_value</code>: TEXT</li>
+                        <li><code>otp_code_hash</code>: TEXT</li>
+                        <li><code>otp_code_plain</code>: TEXT (for dev/testing)</li>
+                        <li><code>expires_at</code>: TIMESTAMPTZ</li>
+                        <li><code>consumed_at</code>: TIMESTAMPTZ</li>
+                        <li><code>created_at</code>: TIMESTAMPTZ</li>
+                        <li><code>attempt_count</code>: INT (default 0)</li>
+                        <li><code>verification_reason</code>: TEXT ("registration" | "update" | "verification")</li>
+                    </ul>
+                    <p><strong>Constraints:</strong> UNIQUE constraint on (person_id, handle_type, handle_value)</p>
+                </div>
+
+                <div class="field-list">
+                    <strong>Indexes:</strong>
+                    <ul>
+                        <li><code>person_id + handle_type</code></li>
+                        <li><code>expires_at</code></li>
+                    </ul>
+                </div>
+            </section>
+
+            <section>
+                <h3><code>auth_magic_links</code> table</h3>
+                <p class="collection-description">token-based passwordless authentication</p>
+
+                <div class="field-list">
+                    <strong>Columns:</strong>
+                    <ul>
+                        <li><code>magic_link_id</code>: UUID (primary key)</li>
+                        <li><code>person_id</code>: UUID (references MongoDB person.uuid)</li>
+                        <li><code>reseller_id</code>: UUID (references MongoDb reseller.uuid)</li>
+                        <li><code>handle_type</code>: TEXT ("email" | "phone")</li>
+                        <li><code>handle_value</code>: TEXT</li>
+                        <li><code>token</code>: TEXT (unique)</li>
+                        <li><code>token_hash</code>: TEXT</li>
+                        <li><code>expires_at</code>: TIMESTAMPTZ</li>
+                        <li><code>consumed_at</code>: TIMESTAMPTZ</li>
+                        <li><code>created_at</code>: TIMESTAMPTZ</li>
+                        <li><code>verification_reason</code>: TEXT</li>
+                    </ul>
+                </div>
+
+                <div class="field-list">
+                    <strong>Indexes:</strong>
+                    <ul>
+                        <li><code>token_hash</code></li>
+                        <li><code>expires_at</code></li>
+                    </ul>
+                </div>
+            </section>
+
+            <section>
+                <h3><code>auth_mfa_methods</code> table</h3>
+                <p class="collection-description">multi-factor authentication methods</p>
+
+                <div class="field-list">
+                    <strong>Columns:</strong>
+                    <ul>
+                        <li><code>mfa_id</code>: UUID (primary key)</li>
+                        <li><code>person_id</code>: UUID (references MongoDB person.uuid)</li>
+                        <li><code>reseller_id</code>: UUID (references MongoDb reseller.uuid)</li>
+                        <li><code>type</code>: TEXT</li>
+                        <li><code>secret</code>: TEXT</li>
+                        <li><code>config</code>: JSONB</li>
+                        <li><code>enabled</code>: BOOLEAN (default false)</li>
+                        <li><code>created_at</code>: TIMESTAMPTZ</li>
+                        <li><code>verified_at</code>: TIMESTAMPTZ</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section>
+                <h3><code>oauth_identities</code> table</h3>
+                <p class="collection-description">social login integrations</p>
+
+                <div class="field-list">
+                    <strong>Columns:</strong>
+                    <ul>
+                        <li><code>oauth_id</code>: UUID (primary key)</li>
+                        <li><code>person_id</code>: UUID (references MongoDB person.uuid)</li>
+                        <li><code>reseller_id</code>: UUID (references MongoDb reseller.uuid)</li>
+                        <li><code>provider</code>: TEXT (google, facebook, etc.)</li>
+                        <li><code>provider_user_id</code>: TEXT</li>
+                        <li><code>email</code>: TEXT</li>
+                        <li><code>display_name</code>: TEXT</li>
+                        <li><code>profile_data</code>: JSONB</li>
+                        <li><code>is_primary</code>: BOOLEAN</li>
+                        <li><code>last_login_at</code>: TIMESTAMPTZ</li>
+                        <li><code>last_token_issued_at</code>: TIMESTAMPTZ</li>
+                        <li><code>created_at</code>: TIMESTAMPTZ</li>
+                        <li><code>deleted_at</code>: TIMESTAMPTZ</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section>
+                <h3><code>auth_refresh_tokens</code> table</h3>
+                <p class="collection-description">JWT refresh token storage</p>
+
+                <div class="field-list">
+                    <strong>Columns:</strong>
+                    <ul>
+                        <li><code>token_id</code>: UUID (primary key)</li>
+                        <li><code>token_hash</code>: TEXT</li>
+                        <li><code>membership_id</code>: UUID (references MongoDB membership._id)</li>
+                        <li><code>reseller_id</code>: UUID (references MongoDb reseller.uuid)</li>
+                        <li><code>client_id</code>: TEXT</li>
+                        <li><code>last_used_at</code>: TIMESTAMPTZ</li>
+                        <li><code>created_at</code>: TIMESTAMPTZ</li>
+                        <li><code>expires_at</code>: TIMESTAMPTZ</li>
+                        <li><code>revoked_at</code>: TIMESTAMPTZ</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="proposed">
+                <h3><code>workspaces</code> table (ElAuth)</h3>
+                <p class="collection-description">workspace will be a table in elauth.</p>
+
+                <div class="field-list proposed">
+                    <strong>Columns:</strong>
+                    <ul>
+                        <li><code>workspace_id</code>: UUID (primary key)</li>
+                        <li><code>name</code>: TEXT (optional)</li>
+                        <li><code>short_id</code>: TEXT (unique, human-readable identifier)</li>
+                        <li><code>creator_person_id</code>: UUID (references MongoDB person.uuid)</li>
+                        <li><code>reseller_id</code>: UUID (references MongoDb reseller.uuid)</li>
+                        <li><code>status</code>: TEXT ("active" | "inactive" | "suspended")</li>
+                        <li><code>created_at</code>: TIMESTAMPTZ</li>
+                        <li><code>updated_at</code>: TIMESTAMPTZ</li>
+                        <li><code>deleted_at</code>: TIMESTAMPTZ</li>
+                    </ul>
+                </div>
+
+                <div class="field-list proposed">
+                    <strong>Indexes:</strong>
+                    <ul>
+                        <li><code>short_id</code> (unique)</li>
+                        <li><code>creator_person_id</code></li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+    </div>
+</body>
+</html>
