@@ -883,6 +883,101 @@
                 </div>
                 <p>A Price List is a reusable pricing configuration that determines how prices are calculated. Instead of setting individual prices on each item, create price lists applied to groups of items.</p>
 
+                <!-- Pricing Policy Flowchart -->
+                <div style="background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin: 20px 0;">
+                    <div style="font-weight: 600; margin-bottom: 16px;">Pricing Policy Flow</div>
+
+                    <!-- Data Sources -->
+                    <div style="display: flex; justify-content: center; gap: 12px; margin-bottom: 12px; flex-wrap: wrap;">
+                        <div style="background: white; border: 1px solid var(--border); border-radius: 4px; padding: 8px 12px; text-align: center;">
+                            <div style="font-weight: 500;">INVENTORY</div>
+                            <div style="font-size: 12px;">Purchase Cost</div>
+                        </div>
+                        <div style="background: white; border: 1px solid var(--border); border-radius: 4px; padding: 8px 12px; text-align: center;">
+                            <div style="font-weight: 500;">ITEM</div>
+                            <div style="font-size: 12px;">Expenses</div>
+                        </div>
+                        <div style="background: white; border: 1px solid var(--border); border-radius: 4px; padding: 8px 12px; text-align: center;">
+                            <div style="font-weight: 500;">PRICING POLICY</div>
+                            <div style="font-size: 12px;">Margin Type</div>
+                        </div>
+                    </div>
+
+                    <div style="text-align: center; margin: 8px 0;">↓</div>
+
+                    <!-- Step 1 -->
+                    <div style="background: white; border: 1px solid var(--border); border-radius: 4px; padding: 12px; margin-bottom: 8px;">
+                        <div style="font-weight: 500; margin-bottom: 8px;">Step 1: Landed Cost</div>
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; font-size: 13px;">
+                            <span>Purchase Cost ($100)</span>
+                            <span>+</span>
+                            <span>Expenses ($20)</span>
+                            <span>=</span>
+                            <span style="font-weight: 600;">Landed Cost ($120)</span>
+                        </div>
+                    </div>
+
+                    <div style="text-align: center; margin: 8px 0;">↓</div>
+
+                    <!-- Step 2 -->
+                    <div style="background: white; border: 1px solid var(--border); border-radius: 4px; padding: 12px; margin-bottom: 8px;">
+                        <div style="font-weight: 500; margin-bottom: 8px;">Step 2: Apply Margin (from Pricing Policy)</div>
+                        <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; font-size: 13px;">
+                            <div style="border: 1px solid var(--border); border-radius: 4px; padding: 8px; text-align: center;">
+                                <div style="font-weight: 500;">Markup %</div>
+                                <div>$120 + 25% = $150</div>
+                            </div>
+                            <div style="border: 1px solid var(--border); border-radius: 4px; padding: 8px; text-align: center;">
+                                <div style="font-weight: 500;">Markdown %</div>
+                                <div>$120 - 10% = $108</div>
+                            </div>
+                            <div style="border: 1px solid var(--border); border-radius: 4px; padding: 8px; text-align: center;">
+                                <div style="font-weight: 500;">Tiered</div>
+                                <div>1-10: +30% | 11-50: +20% | 51+: +10%</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="text-align: center; margin: 8px 0;">↓</div>
+
+                    <!-- Step 3 -->
+                    <div style="background: white; border: 1px solid var(--border); border-radius: 4px; padding: 12px; margin-bottom: 8px;">
+                        <div style="font-weight: 500; margin-bottom: 8px;">Step 3: Round Off (Optional)</div>
+                        <div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; font-size: 13px;">
+                            <span>Never mind: $150.45</span>
+                            <span>Nearest whole: $150</span>
+                            <span>.99 ending: $150.99</span>
+                            <span>.50 ending: $150.50</span>
+                        </div>
+                    </div>
+
+                    <div style="text-align: center; margin: 8px 0;">↓</div>
+
+                    <!-- List Price -->
+                    <div style="text-align: center; margin-bottom: 8px;">
+                        <span style="border: 1px solid var(--border); padding: 6px 16px; border-radius: 4px; background: white; font-weight: 500;">LIST PRICE: $150</span>
+                    </div>
+
+                    <div style="text-align: center; margin: 8px 0;">↓</div>
+
+                    <!-- Step 4 -->
+                    <div style="background: white; border: 1px solid var(--border); border-radius: 4px; padding: 12px; margin-bottom: 12px;">
+                        <div style="font-weight: 500; margin-bottom: 8px;">Step 4: Store Discounts (1 active offer set per store)</div>
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; font-size: 13px;">
+                            <span>[ ] Summer Sale</span>
+                            <span style="font-weight: 500;">[x] Diwali Sale (-10%)</span>
+                            <span>[ ] Clearance</span>
+                            <span>→</span>
+                            <span style="font-weight: 600;">Customer Pays: $135</span>
+                        </div>
+                    </div>
+
+                    <!-- Summary -->
+                    <div style="background: white; border: 1px solid var(--border); border-radius: 4px; padding: 10px; text-align: center; font-size: 13px;">
+                        <strong>Summary:</strong> $100 (Purchase) + $20 (Expenses) = $120 (Landed) → +25% Margin = $150 (List) → -10% Discount = <strong>$135 (Final)</strong>
+                    </div>
+                </div>
+
                 <h4 style="margin: 20px 0 12px; color: var(--primary-dark);">Pricing Formula</h4>
                 <div class="flow">
                     <div class="flow-box">Purchase Cost<small>Base cost</small></div>
