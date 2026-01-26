@@ -322,17 +322,20 @@
                 <button class="nav-item" onclick="showTab('commodity', this)">
                     <span class="nav-num">3</span> Commodity
                 </button>
+                <button class="nav-item" onclick="showTab('commodity-library', this)">
+                    <span class="nav-num">4</span> Commodity Library
+                </button>
                 <button class="nav-item" onclick="showTab('financial', this)">
-                    <span class="nav-num">4</span> Financial
+                    <span class="nav-num">5</span> Financial
                 </button>
                 <button class="nav-item" onclick="showTab('stores', this)">
-                    <span class="nav-num">5</span> Stores
+                    <span class="nav-num">6</span> Stores
                 </button>
                 <button class="nav-item" onclick="showTab('media', this)">
-                    <span class="nav-num">6</span> Media
+                    <span class="nav-num">7</span> Media
                 </button>
                 <button class="nav-item" onclick="showTab('documents', this)">
-                    <span class="nav-num">7</span> Documents
+                    <span class="nav-num">8</span> Documents
                 </button>
             </nav>
         </div>
@@ -914,13 +917,337 @@
         </div>
 
         <!-- ============================================== -->
-        <!-- TAB 4: FINANCIAL -->
+        <!-- TAB 4: COMMODITY LIBRARY -->
         <!-- ============================================== -->
-        <div class="panel" id="financial">
-            <!-- 4.0 Core Concept -->
+        <div class="panel" id="commodity-library">
             <div class="section">
                 <div class="section-header">
                     <div class="section-num">4</div>
+                    <div class="section-title">Commodity Library Overview</div>
+                </div>
+                <p>The Commodity Library is a centralized repository of industry-standard product schemas that define what attributes and parameters should be captured for different product types.</p>
+
+                <div class="policy-box" style="border-color: var(--warning); background: var(--warning-light);">
+                    <h4 style="color: #b45309;">Why Commodity Library Matters</h4>
+                    <p style="font-size: 13px; margin-top: 8px;">
+                        Different products need different data. A <strong>Green Cardamom</strong> needs Moisture %, Grade Distribution, and Harvest Year. A <strong>Laptop</strong> needs RAM, Storage, and Processor specs. Without a commodity library, every business would manually configure these fields - leading to inconsistency, missing data, and wasted effort. The library provides ready-to-use schemas that can be forked and customized.
+                    </p>
+                </div>
+
+                <div class="flow" style="margin-top: 20px;">
+                    <div class="flow-box" style="background: var(--text);">Ecosystem Library<small>Master schemas</small></div>
+                    <span class="flow-arrow">&#8594;</span>
+                    <div class="flow-box warning">Workspace Fork<small>Customize</small></div>
+                    <span class="flow-arrow">&#8594;</span>
+                    <div class="flow-box">Item Creation<small>Auto-populated fields</small></div>
+                    <span class="flow-arrow">&#8594;</span>
+                    <div class="flow-box success">PDP Display<small>Specs shown</small></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-num">4.1</div>
+                    <div class="section-title">Ecosystem vs Workspace Level</div>
+                </div>
+                <p>The library operates at two levels with a fork-and-extend model.</p>
+
+                <div class="cards">
+                    <div class="card" style="border-left: 4px solid var(--text);">
+                        <h4>Ecosystem Library (Master)</h4>
+                        <p>Centrally maintained by the platform. Contains industry-standard schemas for hundreds of commodities.</p>
+                        <ul style="font-size: 11px; margin: 8px 0 0 14px; padding: 0; color: var(--text-light);">
+                            <li>Read-only for workspaces</li>
+                            <li>Updated by platform team</li>
+                            <li>Industry best practices</li>
+                            <li>Covers all major categories</li>
+                        </ul>
+                    </div>
+                    <div class="card" style="border-left: 4px solid var(--warning);">
+                        <h4>Workspace Fork (Custom)</h4>
+                        <p>Your copy of the ecosystem schema that you can customize for your business needs.</p>
+                        <ul style="font-size: 11px; margin: 8px 0 0 14px; padding: 0; color: var(--text-light);">
+                            <li>Show/hide ecosystem fields</li>
+                            <li>Add custom parameters</li>
+                            <li>Make fields required</li>
+                            <li>Add dropdown options</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <strong>Fork & Extend Rules</strong>
+                    <ul style="margin: 8px 0 0 16px; padding: 0; font-size: 12px;">
+                        <li><strong>Can:</strong> Hide ecosystem fields, add new fields, make optional fields required, add dropdown options</li>
+                        <li><strong>Cannot:</strong> Delete ecosystem fields (only hide), change field data types, remove required flags from ecosystem</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-num">4.2</div>
+                    <div class="section-title">Schema Structure</div>
+                </div>
+                <p>Each commodity schema contains organized groups of parameters.</p>
+
+                <div class="policy-box">
+                    <h4>Example: Green Cardamom Schema</h4>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 16px;">
+                        <div style="background: var(--bg); padding: 12px; border-radius: 8px;">
+                            <strong style="color: var(--primary-dark); font-size: 12px;">Quality Parameters</strong>
+                            <ul style="font-size: 11px; margin: 8px 0 0 14px; padding: 0; color: var(--text-light);">
+                                <li>Moisture Content (%) - Decimal</li>
+                                <li>Oil Content (%) - Decimal</li>
+                                <li>Foreign Matter (%) - Decimal</li>
+                                <li>Volatile Oil (%) - Decimal</li>
+                            </ul>
+                        </div>
+                        <div style="background: var(--bg); padding: 12px; border-radius: 8px;">
+                            <strong style="color: var(--primary-dark); font-size: 12px;">Origin & Source</strong>
+                            <ul style="font-size: 11px; margin: 8px 0 0 14px; padding: 0; color: var(--text-light);">
+                                <li>Country of Origin - Dropdown</li>
+                                <li>Region/State - Dropdown</li>
+                                <li>Harvest Year - Number</li>
+                                <li>Auction Center - Dropdown</li>
+                            </ul>
+                        </div>
+                        <div style="background: var(--bg); padding: 12px; border-radius: 8px;">
+                            <strong style="color: var(--primary-dark); font-size: 12px;">Grading</strong>
+                            <ul style="font-size: 11px; margin: 8px 0 0 14px; padding: 0; color: var(--text-light);">
+                                <li>Size Grade - Dropdown (AGEB, AGB, AGS...)</li>
+                                <li>Color Grade - Dropdown</li>
+                                <li>Grade Distribution - Matrix</li>
+                            </ul>
+                        </div>
+                        <div style="background: var(--bg); padding: 12px; border-radius: 8px;">
+                            <strong style="color: var(--primary-dark); font-size: 12px;">Certification</strong>
+                            <ul style="font-size: 11px; margin: 8px 0 0 14px; padding: 0; color: var(--text-light);">
+                                <li>Is Organic - Boolean</li>
+                                <li>Certifications - Multi-select</li>
+                                <li>Lab Test Date - Date</li>
+                                <li>Lab Name - Text</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-num">4.3</div>
+                    <div class="section-title">Field Types Available</div>
+                </div>
+
+                <div class="cards" style="grid-template-columns: repeat(2, 1fr);">
+                    <div class="card" style="border-left: 4px solid var(--primary);">
+                        <h4>1D Fields (Single Value)</h4>
+                        <table style="font-size: 11px; margin-top: 8px;">
+                            <tr><td style="width: 100px;"><strong>Text</strong></td><td>Lot Number, Lab Name, Model</td></tr>
+                            <tr><td><strong>Number</strong></td><td>Harvest Year, Shelf Life Days</td></tr>
+                            <tr><td><strong>Decimal</strong></td><td>Moisture %, Weight, Dimension</td></tr>
+                            <tr><td><strong>Boolean</strong></td><td>Is Organic?, Export Grade?</td></tr>
+                            <tr><td><strong>Date</strong></td><td>Lab Test Date, Manufacture Date</td></tr>
+                            <tr><td><strong>Dropdown</strong></td><td>Country, Processing Type</td></tr>
+                            <tr><td><strong>Multi-select</strong></td><td>Certifications, Features</td></tr>
+                        </table>
+                    </div>
+                    <div class="card" style="border-left: 4px solid var(--success);">
+                        <h4>2D Fields (Matrix)</h4>
+                        <p style="font-size: 12px;">User-defined grids for distributions and multi-dimensional data.</p>
+                        <div style="font-size: 11px; margin-top: 8px;">
+                            <strong>How Matrix Works:</strong>
+                            <ol style="margin: 6px 0 0 16px; padding: 0; line-height: 1.6;">
+                                <li>User specifies rows x columns</li>
+                                <li>User names each row and column</li>
+                                <li>User fills values in cells</li>
+                                <li>System validates totals</li>
+                            </ol>
+                        </div>
+                        <div style="font-size: 10px; color: var(--text-light); margin-top: 8px;">
+                            <strong>Validations:</strong> Total = 100%, Row totals, Column totals, Cell min/max
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-num">4.4</div>
+                    <div class="section-title">User Journey: Forking a Commodity Schema</div>
+                </div>
+                <p>Step-by-step process when a workspace wants to use a commodity from the library.</p>
+
+                <div style="background: var(--bg); padding: 20px; border-radius: 12px;">
+                    <div style="display: flex; gap: 16px; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border);">
+                        <div style="background: var(--primary); color: white; min-width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600;">1</div>
+                        <div>
+                            <strong style="color: var(--primary-dark);">Browse Ecosystem Library</strong>
+                            <p style="font-size: 12px; color: var(--text-light); margin: 4px 0 0;">Admin navigates to Commodity Library and searches/browses available schemas. Sees "Green Cardamom" with 28 pre-defined parameters.</p>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 16px; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border);">
+                        <div style="background: var(--primary); color: white; min-width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600;">2</div>
+                        <div>
+                            <strong style="color: var(--primary-dark);">Fork to Workspace</strong>
+                            <p style="font-size: 12px; color: var(--text-light); margin: 4px 0 0;">Clicks "Fork to Workspace". System creates a copy linked to the master. All ecosystem fields are included by default.</p>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 16px; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border);">
+                        <div style="background: var(--warning); color: white; min-width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600;">3</div>
+                        <div>
+                            <strong style="color: var(--primary-dark);">Customize Schema</strong>
+                            <p style="font-size: 12px; color: var(--text-light); margin: 4px 0 0;">Admin hides "Auction Center" (not relevant for their business), makes "Lab Test Date" required, adds custom field "Internal Lot Code".</p>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 16px; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border);">
+                        <div style="background: var(--warning); color: white; min-width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600;">4</div>
+                        <div>
+                            <strong style="color: var(--primary-dark);">Add Dropdown Options</strong>
+                            <p style="font-size: 12px; color: var(--text-light); margin: 4px 0 0;">Admin adds their specific suppliers to "Supplier" dropdown, adds regional auction centers relevant to their market.</p>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 16px;">
+                        <div style="background: var(--success); color: white; min-width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600;">5</div>
+                        <div>
+                            <strong style="color: var(--primary-dark);">Schema Active</strong>
+                            <p style="font-size: 12px; color: var(--text-light); margin: 4px 0 0;">Workspace now has "Green Cardamom" available. When users create items and select this commodity, the customized fields appear automatically.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-box success" style="margin-top: 16px;">
+                    <strong>Sync with Ecosystem</strong>
+                    When the ecosystem updates a schema (adds new industry-standard fields), workspaces are notified and can pull the updates while preserving their customizations.
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-num">4.5</div>
+                    <div class="section-title">Available Commodity Categories</div>
+                </div>
+                <p>The ecosystem library covers major industry verticals.</p>
+
+                <div class="cards" style="grid-template-columns: repeat(3, 1fr);">
+                    <div class="card" style="border-top: 3px solid var(--success);">
+                        <h4>Agriculture & Food</h4>
+                        <ul style="font-size: 11px; margin: 8px 0 0 14px; padding: 0; color: var(--text-light);">
+                            <li>Spices (Cardamom, Pepper, Turmeric...)</li>
+                            <li>Grains & Pulses</li>
+                            <li>Fresh Produce</li>
+                            <li>Dairy Products</li>
+                            <li>Processed Foods</li>
+                        </ul>
+                    </div>
+                    <div class="card" style="border-top: 3px solid var(--primary);">
+                        <h4>Electronics & Tech</h4>
+                        <ul style="font-size: 11px; margin: 8px 0 0 14px; padding: 0; color: var(--text-light);">
+                            <li>Computers & Laptops</li>
+                            <li>Mobile Devices</li>
+                            <li>Home Appliances</li>
+                            <li>Audio/Video Equipment</li>
+                            <li>Components & Parts</li>
+                        </ul>
+                    </div>
+                    <div class="card" style="border-top: 3px solid var(--warning);">
+                        <h4>Fashion & Apparel</h4>
+                        <ul style="font-size: 11px; margin: 8px 0 0 14px; padding: 0; color: var(--text-light);">
+                            <li>Clothing (Men, Women, Kids)</li>
+                            <li>Footwear</li>
+                            <li>Accessories</li>
+                            <li>Jewelry</li>
+                            <li>Textiles & Fabrics</li>
+                        </ul>
+                    </div>
+                    <div class="card" style="border-top: 3px solid var(--error);">
+                        <h4>Industrial & B2B</h4>
+                        <ul style="font-size: 11px; margin: 8px 0 0 14px; padding: 0; color: var(--text-light);">
+                            <li>Raw Materials</li>
+                            <li>Machinery & Equipment</li>
+                            <li>Chemicals</li>
+                            <li>Packaging Materials</li>
+                            <li>Industrial Supplies</li>
+                        </ul>
+                    </div>
+                    <div class="card" style="border-top: 3px solid #8b5cf6;">
+                        <h4>Home & Living</h4>
+                        <ul style="font-size: 11px; margin: 8px 0 0 14px; padding: 0; color: var(--text-light);">
+                            <li>Furniture</li>
+                            <li>Home Decor</li>
+                            <li>Kitchen & Dining</li>
+                            <li>Bedding & Bath</li>
+                            <li>Garden & Outdoor</li>
+                        </ul>
+                    </div>
+                    <div class="card" style="border-top: 3px solid var(--text-light);">
+                        <h4>Services</h4>
+                        <ul style="font-size: 11px; margin: 8px 0 0 14px; padding: 0; color: var(--text-light);">
+                            <li>Professional Services</li>
+                            <li>Maintenance & Repair</li>
+                            <li>Installation Services</li>
+                            <li>Consulting</li>
+                            <li>Training Programs</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-num">4.6</div>
+                    <div class="section-title">Matrix Example: Grade Distribution</div>
+                </div>
+                <p>Example of a 2D matrix field for capturing complex distribution data.</p>
+
+                <div class="policy-box">
+                    <h4>Green Cardamom Grade Distribution Matrix</h4>
+                    <p style="font-size: 12px; color: var(--text-light);">User defines size grades as rows and color grades as columns. Each cell captures the percentage of that combination in the lot.</p>
+                    <table style="font-size: 11px; margin-top: 12px;">
+                        <thead>
+                            <tr><th>Size Grade</th><th>Clean Green</th><th>Light Green</th><th>Yellowish</th><th>Splits</th><th style="background: var(--primary-dark);">Row Total</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>8.5mm (AGEB)</td><td>12%</td><td>8%</td><td>5%</td><td>5%</td><td><strong>30%</strong></td></tr>
+                            <tr><td>8mm+ (AGB)</td><td>10%</td><td>7%</td><td>4%</td><td>4%</td><td><strong>25%</strong></td></tr>
+                            <tr><td>7-8mm (AGS)</td><td>9%</td><td>6%</td><td>5%</td><td>5%</td><td><strong>25%</strong></td></tr>
+                            <tr><td>6-7mm (AGS1)</td><td>6%</td><td>5%</td><td>5%</td><td>4%</td><td><strong>20%</strong></td></tr>
+                            <tr style="background: var(--success-light);"><td><strong>Column Total</strong></td><td>37%</td><td>26%</td><td>19%</td><td>18%</td><td style="background: var(--success); color: white;"><strong>100%</strong></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="info-box warning">
+                    <strong>Validation Rules:</strong> System validates that all cells sum to 100% (or whatever total is configured). Individual rows and columns can also have min/max constraints.
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-num">4.7</div>
+                    <div class="section-title">Key Takeaways</div>
+                </div>
+                <div style="background: var(--warning-light); padding: 20px; border-radius: 12px; border: 2px solid var(--warning);">
+                    <ul style="margin: 0; padding-left: 20px; font-size: 13px; line-height: 1.8;">
+                        <li><strong>Ecosystem Library</strong> provides ready-to-use schemas for hundreds of commodities</li>
+                        <li><strong>Fork & Extend</strong> lets workspaces customize without breaking the link to master</li>
+                        <li><strong>Field Types</strong> include text, numbers, dropdowns, multi-select, dates, booleans, and matrices</li>
+                        <li><strong>Matrix Fields</strong> capture complex distributions like grade breakdowns</li>
+                        <li><strong>Validation Rules</strong> ensure data quality (required fields, totals, ranges)</li>
+                        <li><strong>Auto-Display</strong> - commodity params appear automatically on item forms and PDPs</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- TAB 5: FINANCIAL -->
+        <!-- ============================================== -->
+        <div class="panel" id="financial">
+            <!-- 5.0 Core Concept -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-num">5</div>
                     <div class="section-title">Financial Parameters</div>
                 </div>
                 <p>Items are commercial definitions. The <strong>transaction context</strong> determines how they're treated financially. This is event-driven accounting.</p>
@@ -1497,12 +1824,12 @@
         </div>
 
         <!-- ============================================== -->
-        <!-- TAB 5: STORES -->
+        <!-- TAB 6: STORES -->
         <!-- ============================================== -->
         <div class="panel" id="stores">
             <div class="section">
                 <div class="section-header">
-                    <div class="section-num">5</div>
+                    <div class="section-num">6</div>
                     <div class="section-title">Stores</div>
                 </div>
                 <p>Stores are your selling channels - where customers interact with and purchase your products. A store can be a physical retail location or an online storefront.</p>
@@ -1973,12 +2300,12 @@
         </div>
 
         <!-- ============================================== -->
-        <!-- TAB 6: MEDIA -->
+        <!-- TAB 7: MEDIA -->
         <!-- ============================================== -->
         <div class="panel" id="media">
             <div class="section">
                 <div class="section-header">
-                    <div class="section-num">6</div>
+                    <div class="section-num">7</div>
                     <div class="section-title">Media</div>
                 </div>
                 <p>Manage product images and videos for visual presentation.</p>
@@ -2024,12 +2351,12 @@
         </div>
 
         <!-- ============================================== -->
-        <!-- TAB 7: DOCUMENTS -->
+        <!-- TAB 8: DOCUMENTS -->
         <!-- ============================================== -->
         <div class="panel" id="documents">
             <div class="section">
                 <div class="section-header">
-                    <div class="section-num">7</div>
+                    <div class="section-num">8</div>
                     <div class="section-title">Documents</div>
                 </div>
                 <p>Documents are files and certifications collected at the item level. These flow through the system and can be displayed to customers or used internally.</p>
