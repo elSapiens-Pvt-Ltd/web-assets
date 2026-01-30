@@ -624,104 +624,6 @@
                         <div style="margin-top: 8px; font-size: 11px; color: var(--text-light);"><em>E.g., Installation, Consulting, Repair</em></div>
                     </div>
                 </div>
-
-                <!-- Item Code Section -->
-                <div class="policy-box" style="margin-top: 16px; border-color: var(--primary); padding: 20px;">
-                    <h4 style="color: var(--primary-dark); font-size: 16px; margin-bottom: 12px;">Item Code Structure</h4>
-                    <p style="font-size: 12px; margin-bottom: 16px;">Item Code = <strong>Commodity</strong> + <strong>Item</strong> + <strong>Variants</strong></p>
-
-                    <!-- Code Structure Visual -->
-                    <div style="background: var(--bg); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
-                        <div style="text-align: center; margin-bottom: 16px;">
-                            <span style="font-family: monospace; font-size: 18px; letter-spacing: 1px;">
-                                <span style="background: #dbeafe; padding: 8px 12px; border-radius: 6px; border: 2px solid #3b82f6;">CDM</span>
-                                <span style="color: var(--text-light); margin: 0 4px;">-</span>
-                                <span style="background: var(--warning-light); padding: 8px 12px; border-radius: 6px; border: 2px solid var(--warning);">001</span>
-                                <span style="color: var(--text-light); margin: 0 4px;">-</span>
-                                <span style="background: var(--success-light); padding: 8px 12px; border-radius: 6px; border: 2px solid var(--success);">AC01</span>
-                            </span>
-                        </div>
-
-                        <!-- Three Part Breakdown -->
-                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px;">
-                            <div style="background: #eff6ff; padding: 12px; border-radius: 8px; border-top: 3px solid #3b82f6;">
-                                <strong style="color: #1e40af; font-size: 12px;">Commodity Code</strong>
-                                <div style="font-size: 11px; color: var(--text-light); margin-top: 6px;">
-                                    User-defined in Commodity Master
-                                </div>
-                                <div style="font-size: 10px; margin-top: 8px; padding: 6px; background: white; border-radius: 4px;">
-                                    <code>CDM</code> = Cardamom<br>
-                                    <code>PEP</code> = Pepper<br>
-                                    <code>OIL</code> = Essential Oils
-                                </div>
-                            </div>
-                            <div style="background: var(--warning-light); padding: 12px; border-radius: 8px; border-top: 3px solid var(--warning);">
-                                <strong style="color: #b45309; font-size: 12px;">Item Sequence</strong>
-                                <div style="font-size: 11px; color: var(--text-light); margin-top: 6px;">
-                                    Sequential number within commodity
-                                </div>
-                                <div style="font-size: 10px; margin-top: 8px; padding: 6px; background: white; border-radius: 4px;">
-                                    <code>001</code> = First item<br>
-                                    <code>002</code> = Second item<br>
-                                    <code>003</code> = Third item
-                                </div>
-                            </div>
-                            <div style="background: var(--success-light); padding: 12px; border-radius: 8px; border-top: 3px solid var(--success);">
-                                <strong style="color: var(--success); font-size: 12px;">Variant Codes</strong>
-                                <div style="font-size: 11px; color: var(--text-light); margin-top: 6px;">
-                                    From Attribute Options (Item Groups only)
-                                </div>
-                                <div style="font-size: 10px; margin-top: 8px; padding: 6px; background: white; border-radius: 4px;">
-                                    <code>AC</code> = Grade (8-8.4MM)<br>
-                                    <code>01</code> = Sort (Normal)<br>
-                                    <span style="color: var(--text-light);">Empty for Single Items</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Examples Table -->
-                    <table style="font-size: 11px; width: 100%;">
-                        <thead>
-                            <tr>
-                                <th style="width: 20%;">Item Code</th>
-                                <th style="width: 30%;">Description</th>
-                                <th>Breakdown</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr style="background: var(--success-light);">
-                                <td><code style="font-weight: bold;">CDM-001-AC01</code></td>
-                                <td>Cardamom 8-8.4MM Normal</td>
-                                <td style="font-size: 10px;"><span style="color: #3b82f6;">CDM</span> + <span style="color: #b45309;">001</span> + <span style="color: var(--success);">AC + 01</span></td>
-                            </tr>
-                            <tr>
-                                <td><code style="font-weight: bold;">CDM-001-BA02</code></td>
-                                <td>Cardamom 7-8MM Split</td>
-                                <td style="font-size: 10px;"><span style="color: #3b82f6;">CDM</span> + <span style="color: #b45309;">001</span> + <span style="color: var(--success);">BA + 02</span></td>
-                            </tr>
-                            <tr style="background: var(--warning-light);">
-                                <td><code style="font-weight: bold;">PEP-001</code></td>
-                                <td>Black Pepper (Single Item)</td>
-                                <td style="font-size: 10px;"><span style="color: #3b82f6;">PEP</span> + <span style="color: #b45309;">001</span> <span style="color: var(--text-light);">(no variants)</span></td>
-                            </tr>
-                            <tr>
-                                <td><code style="font-weight: bold;">OIL-003</code></td>
-                                <td>Cardamom Oil (Single Item)</td>
-                                <td style="font-size: 10px;"><span style="color: #3b82f6;">OIL</span> + <span style="color: #b45309;">003</span> <span style="color: var(--text-light);">(no variants)</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <div class="info-box" style="margin-top: 12px;">
-                        <strong>Single Items vs Item Groups:</strong> Single items have no variant suffix (e.g., <code>PEP-001</code>). Item Groups with variants include attribute codes (e.g., <code>CDM-001-AC01</code>).
-                    </div>
-
-                    <div class="info-box warning" style="margin-top: 8px;">
-                        <strong>Workspace Override:</strong> This is the default structure. Users can override the Item Code format in their Workspace settings to match their business requirements.
-                    </div>
-                </div>
-
             </div>
 
             <!-- Item Groups Section -->
@@ -858,10 +760,110 @@
                 </div>
             </div>
 
-            <!-- Item Creation Flow Section -->
+            <!-- Item Code Structure Section -->
             <div class="section">
                 <div class="section-header">
                     <div class="section-num">1.4</div>
+                    <div class="section-title">Item Code Structure</div>
+                </div>
+                <p>Item Code = <strong>Commodity</strong> + <strong>Item</strong> + <strong>Variants</strong></p>
+
+                <!-- Code Structure Visual -->
+                <div style="background: var(--bg); padding: 16px; border-radius: 8px; margin-top: 16px;">
+                    <div style="text-align: center; margin-bottom: 16px;">
+                        <span style="font-family: monospace; font-size: 18px; letter-spacing: 1px;">
+                            <span style="background: #dbeafe; padding: 8px 12px; border-radius: 6px; border: 2px solid #3b82f6;">CDM</span>
+                            <span style="color: var(--text-light); margin: 0 4px;">-</span>
+                            <span style="background: var(--warning-light); padding: 8px 12px; border-radius: 6px; border: 2px solid var(--warning);">001</span>
+                            <span style="color: var(--text-light); margin: 0 4px;">-</span>
+                            <span style="background: var(--success-light); padding: 8px 12px; border-radius: 6px; border: 2px solid var(--success);">AC01</span>
+                        </span>
+                    </div>
+
+                    <!-- Three Part Breakdown -->
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px;">
+                        <div style="background: #eff6ff; padding: 12px; border-radius: 8px; border-top: 3px solid #3b82f6;">
+                            <strong style="color: #1e40af; font-size: 12px;">Commodity Code</strong>
+                            <div style="font-size: 11px; color: var(--text-light); margin-top: 6px;">
+                                User-defined in Commodity Master
+                            </div>
+                            <div style="font-size: 10px; margin-top: 8px; padding: 6px; background: white; border-radius: 4px;">
+                                <code>CDM</code> = Cardamom<br>
+                                <code>PEP</code> = Pepper<br>
+                                <code>OIL</code> = Essential Oils
+                            </div>
+                        </div>
+                        <div style="background: var(--warning-light); padding: 12px; border-radius: 8px; border-top: 3px solid var(--warning);">
+                            <strong style="color: #b45309; font-size: 12px;">Item Sequence</strong>
+                            <div style="font-size: 11px; color: var(--text-light); margin-top: 6px;">
+                                Sequential number within commodity
+                            </div>
+                            <div style="font-size: 10px; margin-top: 8px; padding: 6px; background: white; border-radius: 4px;">
+                                <code>001</code> = First item<br>
+                                <code>002</code> = Second item<br>
+                                <code>003</code> = Third item
+                            </div>
+                        </div>
+                        <div style="background: var(--success-light); padding: 12px; border-radius: 8px; border-top: 3px solid var(--success);">
+                            <strong style="color: var(--success); font-size: 12px;">Variant Codes</strong>
+                            <div style="font-size: 11px; color: var(--text-light); margin-top: 6px;">
+                                From Attribute Options (Item Groups only)
+                            </div>
+                            <div style="font-size: 10px; margin-top: 8px; padding: 6px; background: white; border-radius: 4px;">
+                                <code>AC</code> = Grade (8-8.4MM)<br>
+                                <code>01</code> = Sort (Normal)<br>
+                                <span style="color: var(--text-light);">Empty for Single Items</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Examples Table -->
+                <table style="font-size: 11px; width: 100%; margin-top: 16px;">
+                    <thead>
+                        <tr>
+                            <th style="width: 20%;">Item Code</th>
+                            <th style="width: 30%;">Description</th>
+                            <th>Breakdown</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="background: var(--success-light);">
+                            <td><code style="font-weight: bold;">CDM-001-AC01</code></td>
+                            <td>Cardamom 8-8.4MM Normal</td>
+                            <td style="font-size: 10px;"><span style="color: #3b82f6;">CDM</span> + <span style="color: #b45309;">001</span> + <span style="color: var(--success);">AC + 01</span></td>
+                        </tr>
+                        <tr>
+                            <td><code style="font-weight: bold;">CDM-001-BA02</code></td>
+                            <td>Cardamom 7-8MM Split</td>
+                            <td style="font-size: 10px;"><span style="color: #3b82f6;">CDM</span> + <span style="color: #b45309;">001</span> + <span style="color: var(--success);">BA + 02</span></td>
+                        </tr>
+                        <tr style="background: var(--warning-light);">
+                            <td><code style="font-weight: bold;">PEP-001</code></td>
+                            <td>Black Pepper (Single Item)</td>
+                            <td style="font-size: 10px;"><span style="color: #3b82f6;">PEP</span> + <span style="color: #b45309;">001</span> <span style="color: var(--text-light);">(no variants)</span></td>
+                        </tr>
+                        <tr>
+                            <td><code style="font-weight: bold;">OIL-003</code></td>
+                            <td>Cardamom Oil (Single Item)</td>
+                            <td style="font-size: 10px;"><span style="color: #3b82f6;">OIL</span> + <span style="color: #b45309;">003</span> <span style="color: var(--text-light);">(no variants)</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="info-box" style="margin-top: 12px;">
+                    <strong>Single Items vs Item Groups:</strong> Single items have no variant suffix (e.g., <code>PEP-001</code>). Item Groups with variants include attribute codes (e.g., <code>CDM-001-AC01</code>).
+                </div>
+
+                <div class="info-box warning" style="margin-top: 8px;">
+                    <strong>Workspace Override:</strong> This is the default structure. Users can override the Item Code format in their Workspace settings to match their business requirements.
+                </div>
+            </div>
+
+            <!-- Item Creation Flow Section -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-num">1.5</div>
                     <div class="section-title">Item Creation Flow</div>
                 </div>
                 <p>Progressive form that starts minimal for quick creation. Additional fields appear dynamically based on user interactions.</p>
