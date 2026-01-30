@@ -551,7 +551,7 @@
                     <span class="nav-num">5</span> Financial
                 </button>
                 <button class="nav-item" onclick="showTab('accounting', this)">
-                    <span class="nav-num">6</span> Accounting
+                    <span class="nav-num">6</span> Accounting Setup
                 </button>
                 <button class="nav-item" onclick="showTab('stores', this)">
                     <span class="nav-num">7</span> Stores
@@ -2401,91 +2401,36 @@
         </div>
 
         <!-- ============================================== -->
-        <!-- TAB 6: ACCOUNTING -->
+        <!-- TAB 6: ACCOUNTING SETUP -->
         <!-- ============================================== -->
         <div class="panel" id="accounting">
             <div class="section">
                 <div class="section-header">
                     <div class="section-num">6</div>
-                    <div class="section-title">Accounting</div>
+                    <div class="section-title">Accounting Setup</div>
                 </div>
-                <p>How Item module integrates with Accounting App for ledger configuration and transaction posting.</p>
+                <p>Define default ledgers for each item. These determine where transactions are posted.</p>
 
-                <!-- Accounting App Integration -->
-                <div class="policy-box" style="margin-top: 16px; border-color: #3b82f6;">
-                    <h4 style="color: #3b82f6;">Accounting App Integration</h4>
-
-                    <div class="flow" style="margin-top: 12px; background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);">
-                        <div class="flow-box" style="background: #3b82f6; min-width: 120px;">
-                            Item Module
-                            <small>Transactions</small>
-                        </div>
-                        <div style="display: flex; flex-direction: column; align-items: center; gap: 2px;">
-                            <span style="color: #3b82f6; font-size: 11px;">Sends &#8594;</span>
-                            <span style="color: #3b82f6; font-size: 11px;">&#8592; Receives</span>
-                        </div>
-                        <div class="flow-box" style="background: #1e40af; min-width: 120px;">
-                            Accounting App
-                            <small>Ledger Config</small>
-                        </div>
+                <!-- Default Ledgers -->
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 20px;">
+                    <div style="background: var(--warning-light); padding: 20px; border-radius: 10px; text-align: center; border: 2px solid var(--warning);">
+                        <div style="font-size: 28px; margin-bottom: 8px;">&#128722;</div>
+                        <strong style="color: #b45309; font-size: 14px;">Purchase Ledger</strong>
+                        <p style="font-size: 11px; color: var(--text-light); margin-top: 8px;">Where purchase costs are recorded</p>
                     </div>
-
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px;">
-                        <div style="background: #eff6ff; padding: 12px; border-radius: 8px; border: 1px solid #bfdbfe;">
-                            <strong style="color: #1e40af; font-size: 11px;">&#8594; SENDS</strong>
-                            <div style="font-size: 10px; color: var(--text-light); margin-top: 6px;">Sale/Purchase/Adjustment transactions with item, qty, amount, tax</div>
-                        </div>
-                        <div style="background: #f0fdf4; padding: 12px; border-radius: 8px; border: 1px solid #bbf7d0;">
-                            <strong style="color: #166534; font-size: 11px;">&#8592; RECEIVES</strong>
-                            <div style="font-size: 10px; color: var(--text-light); margin-top: 6px;">Ledger mappings, account codes, validation status</div>
-                        </div>
+                    <div style="background: var(--primary-lighter); padding: 20px; border-radius: 10px; text-align: center; border: 2px solid var(--primary);">
+                        <div style="font-size: 28px; margin-bottom: 8px;">&#128230;</div>
+                        <strong style="color: var(--primary-dark); font-size: 14px;">Inventory Ledger</strong>
+                        <p style="font-size: 11px; color: var(--text-light); margin-top: 8px;">Where stock value is tracked</p>
+                    </div>
+                    <div style="background: var(--success-light); padding: 20px; border-radius: 10px; text-align: center; border: 2px solid var(--success);">
+                        <div style="font-size: 28px; margin-bottom: 8px;">&#128176;</div>
+                        <strong style="color: var(--success); font-size: 14px;">Sales Ledger</strong>
+                        <p style="font-size: 11px; color: var(--text-light); margin-top: 8px;">Where revenue is recorded</p>
                     </div>
                 </div>
 
-                <!-- Item Default Ledgers -->
-                <div class="policy-box" style="margin-top: 16px; border-color: #1e40af;">
-                    <h4 style="color: #1e40af;">Item Default Ledgers</h4>
-                    <p style="font-size: 12px; color: var(--text-light); margin-top: 4px;">Each Item defines its default accounting ledgers. These are used when transactions are posted.</p>
-
-                    <table style="font-size: 11px; width: 100%; margin-top: 12px;">
-                        <thead>
-                            <tr style="background: #1e40af;">
-                                <th style="width: 25%;">Ledger Type</th>
-                                <th style="width: 40%;">Purpose</th>
-                                <th>Used In</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr style="background: var(--warning-light);">
-                                <td><strong style="color: #b45309;">Purchase Ledger</strong></td>
-                                <td>Account for recording purchase costs</td>
-                                <td>Purchase Orders, Bills</td>
-                            </tr>
-                            <tr style="background: var(--primary-lighter);">
-                                <td><strong style="color: var(--primary-dark);">Inventory Ledger</strong></td>
-                                <td>Account for tracking stock value</td>
-                                <td>Stock movements, Adjustments</td>
-                            </tr>
-                            <tr style="background: var(--success-light);">
-                                <td><strong style="color: var(--success);">Sales Ledger</strong></td>
-                                <td>Account for recording revenue</td>
-                                <td>Sales Orders, Invoices</td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <div class="info-box" style="margin-top: 12px; background: #fefce8; border-left-color: #eab308;">
-                        <strong style="color: #a16207;">Key Point:</strong> Default ledgers are defined at the Item level. When a transaction occurs, the system uses the Item's configured ledger unless overridden by the Accounting App's transaction-specific rules.
-                    </div>
-
-                    <div class="info-box" style="margin-top: 8px; background: #eff6ff; border-left-color: #3b82f6;">
-                        <strong style="color: #1e40af;">Single vs Multi-Ledger:</strong> Business configures ledger structure in Accounting App. Item module respects that configuration when posting.
-                    </div>
-
-                    <div class="info-box success" style="margin-top: 8px;">
-                        <strong>Store-wise Account Books:</strong> Each store maintains its own account book. This allows you to view store-specific accounting, track revenue and expenses per store, and generate store-level financial reports.
-                    </div>
-                </div>
+                <p style="font-size: 12px; color: var(--text-light); margin-top: 20px; text-align: center;">Each store maintains its own account book for store-level reporting.</p>
             </div>
         </div>
 
