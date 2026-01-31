@@ -687,13 +687,13 @@
                 <p style="font-size: 12px; color: var(--text-light); margin-bottom: 12px;">System generates a row for each variant combination with individual pricing:</p>
                 <table style="font-size: 11px;">
                     <thead>
-                        <tr><th>Item Name</th><th>SKU</th><th>Cost Price</th><th>Selling Price</th><th>UPC</th><th>EAN</th><th>Reorder Point</th></tr>
+                        <tr><th>Item Name</th><th>Cost Price</th><th>Selling Price</th><th>UPC</th><th>EAN</th></tr>
                     </thead>
                     <tbody>
-                        <tr><td>T-Shirt - S - Red</td><td>TSH-S-RED</td><td>&#8377;200</td><td>&#8377;499</td><td>-</td><td>-</td><td>10</td></tr>
-                        <tr><td>T-Shirt - S - Blue</td><td>TSH-S-BLU</td><td>&#8377;200</td><td>&#8377;499</td><td>-</td><td>-</td><td>10</td></tr>
-                        <tr><td>T-Shirt - M - Red</td><td>TSH-M-RED</td><td>&#8377;200</td><td>&#8377;499</td><td>-</td><td>-</td><td>10</td></tr>
-                        <tr style="color: var(--text-light);"><td colspan="7">... more variants auto-generated</td></tr>
+                        <tr><td>T-Shirt - S - Red</td><td>&#8377;200</td><td>&#8377;499</td><td>-</td><td>-</td></tr>
+                        <tr><td>T-Shirt - S - Blue</td><td>&#8377;200</td><td>&#8377;499</td><td>-</td><td>-</td></tr>
+                        <tr><td>T-Shirt - M - Red</td><td>&#8377;200</td><td>&#8377;499</td><td>-</td><td>-</td></tr>
+                        <tr style="color: var(--text-light);"><td colspan="5">... more variants auto-generated</td></tr>
                     </tbody>
                 </table>
 
@@ -920,14 +920,38 @@
                     </tbody>
                 </table>
 
-                <div class="info-box success" style="margin-top: 12px;">
-                    <strong>Why Sequence Numbers?</strong>
-                    <ul style="margin: 8px 0 0 0; padding-left: 20px; font-size: 12px;">
-                        <li><strong>Batch/Lot Tracking:</strong> Track items from different production batches separately</li>
-                        <li><strong>Expiry Management:</strong> Different batches may have different expiry dates</li>
-                        <li><strong>FIFO/LIFO:</strong> Enables accurate costing based on receipt order</li>
-                        <li><strong>Traceability:</strong> Trace specific units back to supplier/shipment</li>
-                    </ul>
+                <h4 style="margin: 24px 0 12px; color: var(--primary-dark);">When Sequence Numbers Apply</h4>
+                <p style="font-size: 12px; color: var(--text-light); margin-bottom: 12px;">Sequence numbers are appended only when tracking is enabled:</p>
+
+                <div class="cards">
+                    <!-- Serialized -->
+                    <div class="card" style="border-top: 3px solid var(--primary);">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                            <code style="background: var(--primary); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px;">can_serialise = TRUE</code>
+                        </div>
+                        <h4 style="color: var(--primary-dark);">Serial Tracking</h4>
+                        <p style="font-size: 11px; margin: 8px 0;">Sequence for <strong>each item</strong>. Every unit gets a unique number.</p>
+                        <div style="background: var(--bg); padding: 8px; border-radius: 6px; font-size: 10px;">
+                            <strong>Example: Computer</strong><br>
+                            <code>ACMCDMAAAACNM<span style="color: var(--error);">0001</span></code> → Unit 1<br>
+                            <code>ACMCDMAAAACNM<span style="color: var(--error);">0002</span></code> → Unit 2<br>
+                            <code>ACMCDMAAAACNM<span style="color: var(--error);">0003</span></code> → Unit 3
+                        </div>
+                    </div>
+
+                    <!-- Batch -->
+                    <div class="card" style="border-top: 3px solid var(--warning);">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                            <code style="background: var(--warning); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px;">can_batch_track = TRUE</code>
+                        </div>
+                        <h4 style="color: #b45309;">Batch Tracking</h4>
+                        <p style="font-size: 11px; margin: 8px 0;">Sequence for <strong>each batch</strong>. Multiple units share the same batch sequence.</p>
+                        <div style="background: var(--bg); padding: 8px; border-radius: 6px; font-size: 10px;">
+                            <strong>Example: Medicine</strong><br>
+                            <code>ACMCDMAAAACNM<span style="color: var(--error);">0001</span></code> → Batch 1 (500 units, Exp: 2026-05)<br>
+                            <code>ACMCDMAAAACNM<span style="color: var(--error);">0002</span></code> → Batch 2 (300 units, Exp: 2026-08)
+                        </div>
+                    </div>
                 </div>
 
                 <div class="info-box warning" style="margin-top: 8px;">
@@ -985,7 +1009,7 @@
                         </tr>
                         <tr>
                             <td><strong>Check "Track Inventory"</strong></td>
-                            <td>Inventory Valuation Method, Reorder Point</td>
+                            <td>Inventory Valuation Method</td>
                         </tr>
                         <tr>
                             <td><strong>Select Commodity</strong></td>
@@ -1006,11 +1030,6 @@
                             <td>Dropdown</td>
                             <td>FIFO, LIFO, Weighted Average, etc.</td>
                         </tr>
-                        <tr>
-                            <td><strong>Reorder Point</strong></td>
-                            <td>Number</td>
-                            <td>Minimum stock level to trigger reorder</td>
-                        </tr>
                     </tbody>
                 </table>
 
@@ -1024,7 +1043,6 @@
                 <ul style="font-size: 12px; margin: 0 0 16px 20px; color: var(--text);">
                     <li>Commodity-specific parameter fields appear (e.g., Size, Color, Fabric for Apparel)</li>
                     <li>Commodity-based validations apply automatically</li>
-                    <li>HSN/SAC code auto-populated from commodity</li>
                 </ul>
 
                 <h4 style="margin: 24px 0 12px; color: var(--primary-dark);">Form Flow Visualization</h4>
@@ -1202,7 +1220,7 @@
                     </thead>
                     <tbody>
                         <tr><td><strong>Tenant Hierarchy</strong></td><td>id, reseller_id, workspace_id, organisation_ids, is_shared</td><td>Multi-tenant structure</td></tr>
-                        <tr><td><strong>Product & SKU</strong></td><td>item_code, product_code*, sku</td><td>Identification</td></tr>
+                        <tr><td><strong>Product Code</strong></td><td>item_code</td><td>Identification</td></tr>
                         <tr><td><strong>Basic Info</strong></td><td>name*, short_name, description, internal_notes</td><td>Display information</td></tr>
                         <tr><td><strong>Classification</strong></td><td>item_type*, item_nature*, tax_code, category_id, commodity_id</td><td>Categorization</td></tr>
                         <tr><td><strong>UOM</strong></td><td>primary_uom*, base_uom, conversion_factor</td><td>Units of measure</td></tr>
@@ -1300,12 +1318,6 @@
                         <tr><th>Field</th><th>Type</th><th>Description</th></tr>
                     </thead>
                     <tbody>
-                        <tr><td>net_weight</td><td>Decimal</td><td>Product weight without packaging</td></tr>
-                        <tr><td>gross_weight</td><td>Decimal</td><td>Weight with packaging</td></tr>
-                        <tr><td>tare_weight</td><td>Decimal</td><td>Packaging weight only</td></tr>
-                        <tr><td>weight_unit</td><td>Enum</td><td>g, kg, lb, oz</td></tr>
-                        <tr><td>length, width, height</td><td>Decimal</td><td>Dimensions</td></tr>
-                        <tr><td>dimension_unit</td><td>Enum</td><td>cm, m, in, ft</td></tr>
                         <tr><td>manufacturer_id</td><td>UUID</td><td>Manufacturer reference</td></tr>
                         <tr><td>brand_id</td><td>UUID</td><td>Brand reference</td></tr>
                     </tbody>
@@ -1313,7 +1325,7 @@
 
                 <div class="info-box">
                     <strong>Hidden for Services/Utilities</strong>
-                    These 12 fields are hidden when item_nature is 'service' or 'utility' since they don't apply to intangible items.
+                    These fields are hidden when item_nature is 'service' or 'utility' since they don't apply to intangible items.
                 </div>
             </div>
 
@@ -1519,7 +1531,7 @@
                         <li><strong>Consistency:</strong> All items of same type have same fields - no missing data</li>
                         <li><strong>Speed:</strong> Relevant fields auto-appear when commodity selected - no hunting through forms</li>
                         <li><strong>Validation:</strong> Built-in rules ensure correct data (e.g., RAM must be number, Color from predefined list)</li>
-                        <li><strong>Tax Compliance:</strong> HSN/SAC codes inherited from commodity - automatic tax calculation</li>
+                        <li><strong>Tax Compliance:</strong> HSN/SAC codes set at item level - automatic tax calculation</li>
                     </ul>
                 </div>
 
@@ -1607,7 +1619,7 @@
                 <div class="flow">
                     <div class="flow-box">Ecosystem Library<small>Master schema</small></div>
                     <span class="flow-arrow">&#8594;</span>
-                    <div class="flow-box warning">Workspace Fork<small>Customize</small></div>
+                    <div class="flow-box warning">Workspace Copy<small>Customize</small></div>
                     <span class="flow-arrow">&#8594;</span>
                     <div class="flow-box success">Item Entry<small>User fills data</small></div>
                 </div>
@@ -1660,7 +1672,7 @@
                 </div>
 
                 <div class="info-box success">
-                    <strong>Fork & Extend Model</strong>
+                    <strong>Copy & Customize Model</strong>
                     Ecosystem defines master schema. Workspaces can: show/hide fields, make optional fields required, add dropdown options, create workspace-specific parameters. Cannot delete ecosystem fields, only hide them.
                 </div>
 
@@ -1685,14 +1697,14 @@
                 <div class="policy-box" style="border-color: var(--warning); background: var(--warning-light);">
                     <h4 style="color: #b45309;">Why Commodity Library Matters</h4>
                     <p style="font-size: 13px; margin-top: 8px;">
-                        Different products need different data. A <strong>Green Cardamom</strong> needs Moisture %, Grade Distribution, and Harvest Year. A <strong>Laptop</strong> needs RAM, Storage, and Processor specs. Without a commodity library, every business would manually configure these fields - leading to inconsistency, missing data, and wasted effort. The library provides ready-to-use schemas that can be forked and customized.
+                        Different products need different data. A <strong>Green Cardamom</strong> needs Moisture %, Grade Distribution, and Harvest Year. A <strong>Laptop</strong> needs RAM, Storage, and Processor specs. Without a commodity library, every business would manually configure these fields - leading to inconsistency, missing data, and wasted effort. The library provides ready-to-use schemas that can be added to your workspace and customized.
                     </p>
                 </div>
 
                 <div class="flow" style="margin-top: 20px;">
                     <div class="flow-box" style="background: var(--text);">Ecosystem Library<small>Master schemas</small></div>
                     <span class="flow-arrow">&#8594;</span>
-                    <div class="flow-box warning">Workspace Fork<small>Customize</small></div>
+                    <div class="flow-box warning">Workspace Copy<small>Customize</small></div>
                     <span class="flow-arrow">&#8594;</span>
                     <div class="flow-box">Item Creation<small>Auto-populated fields</small></div>
                     <span class="flow-arrow">&#8594;</span>
@@ -1705,7 +1717,7 @@
                     <div class="section-num">4.1</div>
                     <div class="section-title">Ecosystem vs Workspace Level</div>
                 </div>
-                <p>The library operates at two levels with a fork-and-extend model.</p>
+                <p>The library operates at two levels with a copy-and-customize model.</p>
 
                 <div class="cards">
                     <div class="card" style="border-left: 4px solid var(--text);">
@@ -1719,7 +1731,7 @@
                         </ul>
                     </div>
                     <div class="card" style="border-left: 4px solid var(--warning);">
-                        <h4>Workspace Fork (Custom)</h4>
+                        <h4>Workspace Copy (Custom)</h4>
                         <p>Your copy of the ecosystem schema that you can customize for your business needs.</p>
                         <ul style="font-size: 11px; margin: 8px 0 0 14px; padding: 0; color: var(--text-light);">
                             <li>Show/hide ecosystem fields</li>
@@ -1731,7 +1743,7 @@
                 </div>
 
                 <div class="info-box">
-                    <strong>Fork & Extend Rules</strong>
+                    <strong>Customization Rules</strong>
                     <ul style="margin: 8px 0 0 16px; padding: 0; font-size: 12px;">
                         <li><strong>Can:</strong> Hide ecosystem fields, add new fields, make optional fields required, add dropdown options</li>
                         <li><strong>Cannot:</strong> Delete ecosystem fields (only hide), change field data types, remove required flags from ecosystem</li>
@@ -1829,7 +1841,7 @@
             <div class="section">
                 <div class="section-header">
                     <div class="section-num">4.4</div>
-                    <div class="section-title">User Journey: Forking a Commodity Schema</div>
+                    <div class="section-title">User Journey: Adding a Commodity from Library</div>
                 </div>
                 <p>Step-by-step process when a workspace wants to use a commodity from the library.</p>
 
@@ -1837,43 +1849,36 @@
                     <div style="display: flex; gap: 16px; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border);">
                         <div style="background: var(--primary); color: white; min-width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600;">1</div>
                         <div>
-                            <strong style="color: var(--primary-dark);">Browse Ecosystem Library</strong>
-                            <p style="font-size: 12px; color: var(--text-light); margin: 4px 0 0;">Admin navigates to Commodity Library and searches/browses available schemas. Sees "Green Cardamom" with 28 pre-defined parameters.</p>
+                            <strong style="color: var(--primary-dark);">Browse & Select from Library</strong>
+                            <p style="font-size: 12px; color: var(--text-light); margin: 4px 0 0;">Admin navigates to Commodity Library, searches/browses available commodities, and clicks "Add to Workspace". System automatically adds a copy with all pre-defined fields.</p>
                         </div>
                     </div>
                     <div style="display: flex; gap: 16px; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border);">
-                        <div style="background: var(--primary); color: white; min-width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600;">2</div>
+                        <div style="background: var(--warning); color: white; min-width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600;">2</div>
                         <div>
-                            <strong style="color: var(--primary-dark);">Fork to Workspace</strong>
-                            <p style="font-size: 12px; color: var(--text-light); margin: 4px 0 0;">Clicks "Fork to Workspace". System creates a copy linked to the master. All ecosystem fields are included by default.</p>
+                            <strong style="color: var(--primary-dark);">Customize Fields (Optional)</strong>
+                            <p style="font-size: 12px; color: var(--text-light); margin: 4px 0 0;">Admin can hide fields not relevant to their business, make certain fields required, or add custom fields specific to their needs.</p>
                         </div>
                     </div>
                     <div style="display: flex; gap: 16px; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border);">
                         <div style="background: var(--warning); color: white; min-width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600;">3</div>
                         <div>
-                            <strong style="color: var(--primary-dark);">Customize Schema</strong>
-                            <p style="font-size: 12px; color: var(--text-light); margin: 4px 0 0;">Admin hides "Auction Center" (not relevant for their business), makes "Lab Test Date" required, adds custom field "Internal Lot Code".</p>
-                        </div>
-                    </div>
-                    <div style="display: flex; gap: 16px; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border);">
-                        <div style="background: var(--warning); color: white; min-width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600;">4</div>
-                        <div>
-                            <strong style="color: var(--primary-dark);">Add Dropdown Options</strong>
-                            <p style="font-size: 12px; color: var(--text-light); margin: 4px 0 0;">Admin adds their specific suppliers to "Supplier" dropdown, adds regional auction centers relevant to their market.</p>
+                            <strong style="color: var(--primary-dark);">Add Dropdown Options (Optional)</strong>
+                            <p style="font-size: 12px; color: var(--text-light); margin: 4px 0 0;">Admin adds their specific suppliers, regional options, or other dropdown values relevant to their market.</p>
                         </div>
                     </div>
                     <div style="display: flex; gap: 16px;">
-                        <div style="background: var(--success); color: white; min-width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600;">5</div>
+                        <div style="background: var(--success); color: white; min-width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600;">4</div>
                         <div>
-                            <strong style="color: var(--primary-dark);">Schema Active</strong>
-                            <p style="font-size: 12px; color: var(--text-light); margin: 4px 0 0;">Workspace now has "Green Cardamom" available. When users create items and select this commodity, the customized fields appear automatically.</p>
+                            <strong style="color: var(--primary-dark);">Ready to Use</strong>
+                            <p style="font-size: 12px; color: var(--text-light); margin: 4px 0 0;">Commodity is now available in the workspace. When users create items and select this commodity, the configured fields appear automatically.</p>
                         </div>
                     </div>
                 </div>
 
                 <div class="info-box success" style="margin-top: 16px;">
-                    <strong>Sync with Ecosystem</strong>
-                    When the ecosystem updates a schema (adds new industry-standard fields), workspaces are notified and can pull the updates while preserving their customizations.
+                    <strong>Automatic Updates</strong>
+                    When the ecosystem adds new industry-standard fields, workspaces are notified and can pull the updates while preserving their customizations.
                 </div>
             </div>
 
@@ -1985,7 +1990,7 @@
                 <div style="background: var(--warning-light); padding: 20px; border-radius: 12px; border: 2px solid var(--warning);">
                     <ul style="margin: 0; padding-left: 20px; font-size: 13px; line-height: 1.8;">
                         <li><strong>Ecosystem Library</strong> provides ready-to-use schemas for hundreds of commodities</li>
-                        <li><strong>Fork & Extend</strong> lets workspaces customize without breaking the link to master</li>
+                        <li><strong>Copy & Customize</strong> lets workspaces customize without breaking the link to master</li>
                         <li><strong>Field Types</strong> include text, numbers, dropdowns, multi-select, dates, booleans, and matrices</li>
                         <li><strong>Matrix Fields</strong> capture complex distributions like grade breakdowns</li>
                         <li><strong>Validation Rules</strong> ensure data quality (required fields, totals, ranges)</li>
@@ -2571,74 +2576,10 @@
                 </div>
             </div>
 
-            <!-- 4.5 Reorder Point -->
+            <!-- 4.5 Fixed Assets & Depreciation -->
             <div class="section">
                 <div class="section-header">
                     <div class="section-num">4.5</div>
-                    <div class="section-title">Reorder Point</div>
-                </div>
-                <p>Set the <strong>minimum stock level</strong> at which the system triggers a reorder alert or automatic purchase order. Prevents stockouts while avoiding excess inventory.</p>
-
-                <div class="policy-box" style="border-color: var(--primary); margin-top: 16px;">
-                    <h4>Where to Set Reorder Point</h4>
-                    <table style="margin-top: 12px;">
-                        <thead>
-                            <tr><th>Item Type</th><th>Reorder Point Setting</th><th>Notes</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>Items (Standalone)</strong></td>
-                                <td>Set at item level (Goods only)</td>
-                                <td>Services do not have inventory; reorder point not applicable</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Item Groups (Variants)</strong></td>
-                                <td>Set individually for each variant</td>
-                                <td>Each size/color combination can have different reorder thresholds based on demand</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Composite Items</strong></td>
-                                <td>Set individually for each component</td>
-                                <td>Track reorder points at component level to ensure bundle availability</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="cards" style="grid-template-columns: repeat(3, 1fr); margin-top: 16px;">
-                    <div class="card" style="border-top: 3px solid var(--success);">
-                        <h4>Items (Goods)</h4>
-                        <p style="font-size: 11px; color: var(--text-light);">Single reorder point per item</p>
-                        <div style="font-size: 10px; background: var(--bg); padding: 6px; border-radius: 4px; margin-top: 8px;">
-                            <strong>Example:</strong> Laptop reorder at 5 units
-                        </div>
-                    </div>
-                    <div class="card" style="border-top: 3px solid var(--primary);">
-                        <h4>Item Groups</h4>
-                        <p style="font-size: 11px; color: var(--text-light);">Per-variant reorder points</p>
-                        <div style="font-size: 10px; background: var(--bg); padding: 6px; border-radius: 4px; margin-top: 8px;">
-                            <strong>Example:</strong> T-Shirt M: 20, T-Shirt XL: 10
-                        </div>
-                    </div>
-                    <div class="card" style="border-top: 3px solid var(--warning);">
-                        <h4>Composite Items</h4>
-                        <p style="font-size: 11px; color: var(--text-light);">Per-component reorder points</p>
-                        <div style="font-size: 10px; background: var(--bg); padding: 6px; border-radius: 4px; margin-top: 8px;">
-                            <strong>Example:</strong> Gift Basket: Wine at 15, Cheese at 25
-                        </div>
-                    </div>
-                </div>
-
-                <div class="info-box success" style="margin-top: 16px;">
-                    <strong>Best Practice</strong>
-                    <p style="margin-top: 4px; font-size: 12px;">Set reorder points based on lead time and average daily sales. Formula: <strong>Reorder Point = (Lead Time in Days × Daily Sales) + Safety Stock</strong>. Review and adjust quarterly based on seasonal demand patterns.</p>
-                </div>
-            </div>
-
-            <!-- 4.6 Fixed Assets & Depreciation -->
-            <div class="section">
-                <div class="section-header">
-                    <div class="section-num">4.6</div>
                     <div class="section-title">Fixed Assets & Depreciation</div>
                 </div>
                 <p>When items are purchased/produced for long-term internal use (not resale), they become <strong>Fixed Assets</strong> that lose value over time through depreciation.</p>
@@ -2802,7 +2743,6 @@
                         <li><strong>Multiple price lists per item</strong> - retail, wholesale, employee, clearance, etc.</li>
                         <li><strong>Discounts apply on top</strong> - store-level promotions after price list calculation</li>
                         <li><strong>Asset Categories define defaults</strong> - depreciation rules can be overridden per asset</li>
-                        <li><strong>Reorder points prevent stockouts</strong> - set per item (goods), per variant (item groups), or per component (composites)</li>
                     </ul>
                 </div>
             </div>
