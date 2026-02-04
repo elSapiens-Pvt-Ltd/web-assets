@@ -1,0 +1,1640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRM Platform Release Notes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+.section-intro p {
+    margin: 0 0 14px 0;
+    line-height: 1.6;
+}
+
+.section-intro p:last-child {
+    margin-bottom: 0;
+}
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #222E44;
+            background: linear-gradient(135deg, #EEF1F6 0%, #DDE3EE 100%);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 10px 40px rgba(17, 23, 34, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #334566 0%, #222E44 100%);
+            color: white;
+            padding: 60px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="none"/><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            letter-spacing: -0.5px;
+        }
+
+        .header .subtitle {
+            font-size: 1.2em;
+            color: #BBC7DD;
+            font-weight: 300;
+        }
+
+        .content {
+            padding: 50px 40px;
+        }
+
+        .intro {
+            background: linear-gradient(135deg, #EEF1F6 0%, #DDE3EE 100%);
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+            border-left: 4px solid #5573AA;
+        }
+
+        .intro p {
+            font-size: 1.1em;
+            line-height: 1.8;
+            color: #334566;
+        }
+
+        .summary {
+            background: white;
+            border: 2px solid #DDE3EE;
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 50px;
+        }
+
+        .summary h2 {
+            color: #222E44;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .summary h2::before {
+            content: '';
+            display: inline-block;
+            width: 6px;
+            height: 30px;
+            background: #5573AA;
+            margin-right: 15px;
+            border-radius: 3px;
+        }
+
+        .summary ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .summary li {
+            padding: 12px 0 12px 30px;
+            position: relative;
+            color: #445C88;
+            font-size: 1.05em;
+        }
+
+        .summary li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #5573AA;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .section {
+            margin-bottom: 50px;
+        }
+
+        .section-header {
+            background: linear-gradient(135deg, #445C88 0%, #334566 100%);
+            color: white;
+            padding: 25px 30px;
+            border-radius: 8px 8px 0 0;
+            margin-bottom: 0;
+        }
+
+        .section-header h2 {
+            font-size: 2em;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-header .icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 1.3em;
+        }
+
+        .section-content {
+            border: 2px solid #DDE3EE;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            padding: 30px;
+            background: white;
+        }
+
+        .section-intro {
+            font-size: 1.1em;
+            color: #445C88;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #EEF1F6;
+            border-radius: 6px;
+            border-left: 3px solid #778FBB;
+        }
+
+        .feature {
+            margin-bottom: 35px;
+            padding-bottom: 35px;
+            border-bottom: 1px solid #DDE3EE;
+        }
+
+        .feature:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .feature h3 {
+            color: #222E44;
+            font-size: 1.4em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .feature h3::before {
+            content: '▸';
+            color: #5573AA;
+            margin-right: 10px;
+            font-size: 0.9em;
+        }
+
+        .feature-description {
+            color: #445C88;
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+
+        .feature-description p {
+            margin-bottom: 12px;
+        }
+
+        .instruction-box {
+            background: #F8F9FB;
+            border-left: 3px solid #99ABCC;
+            padding: 20px;
+            margin-top: 15px;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .instruction-box h4 {
+            color: #334566;
+            font-size: 0.95em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .instruction-box ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .instruction-box li {
+            padding: 8px 0 8px 25px;
+            position: relative;
+            color: #445C88;
+            line-height: 1.6;
+        }
+
+        .instruction-box li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: #778FBB;
+            font-weight: bold;
+        }
+
+        .tag {
+            display: inline-block;
+            background: #5573AA;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: 500;
+            margin-left: 10px;
+        }
+
+        .tag.new {
+            background: #5573AA;
+        }
+
+        .tag.enhanced {
+            background: #778FBB;
+        }
+
+        .footer {
+            background: #111722;
+            color: #BBC7DD;
+            text-align: center;
+            padding: 30px;
+            font-size: 0.95em;
+        }
+
+        .lifecycle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            margin: 20px 0;
+            background: white;
+            border-radius: 8px;
+            border: 2px solid #DDE3EE;
+            flex-wrap: wrap;
+        }
+
+        .lifecycle-stage {
+            background: #EEF1F6;
+            color: #334566;
+            padding: 12px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            margin: 5px;
+            border: 2px solid #BBC7DD;
+        }
+
+        .lifecycle-arrow {
+            color: #778FBB;
+            font-size: 1.5em;
+            margin: 0 10px;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 40px 20px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .content {
+                padding: 30px 20px;
+            }
+
+            .section-header h2 {
+                font-size: 1.5em;
+            }
+
+            .lifecycle {
+                flex-direction: column;
+            }
+
+            .lifecycle-arrow {
+                transform: rotate(90deg);
+            }
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #EEF1F6 0%, #DDE3EE 100%);
+            border: 2px solid #99ABCC;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .highlight-box strong {
+            color: #222E44;
+        }
+
+        .report-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .report-category {
+            background: #F8F9FB;
+            border: 2px solid #DDE3EE;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .report-category h4 {
+            color: #334566;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .report-category ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .report-category li {
+            padding: 8px 0;
+            color: #445C88;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .report-category li::before {
+            content: '◆';
+            position: absolute;
+            left: 0;
+            color: #778FBB;
+            font-size: 0.8em;
+        }
+
+        .image-comparison-container {
+            margin: 30px 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            background: white;
+            border: 2px solid #DDE3EE;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .image-comparison-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .image-comparison-item h4 {
+            color: #334566;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .image-comparison-item img {
+            width: 100%;
+            height: 500px;
+            object-fit: contain;
+            object-position: top;
+            border: 1px solid #DDE3EE;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(34, 46, 68, 0.1);
+        }
+
+        @media (max-width: 968px) {
+            .image-comparison-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .comparison-table-container {
+            margin: 30px 0;
+            overflow-x: auto;
+            background: white;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95em;
+        }
+
+        .comparison-table thead {
+            background: linear-gradient(135deg, #445C88 0%, #334566 100%);
+            color: white;
+        }
+
+        .comparison-table th {
+            padding: 15px 12px;
+            text-align: left;
+            font-weight: 600;
+            border: 1px solid #334566;
+        }
+
+        .comparison-table td {
+            padding: 12px;
+            border: 1px solid #DDE3EE;
+            color: #445C88;
+            line-height: 1.6;
+            vertical-align: top;
+        }
+
+        .comparison-table tbody tr:nth-child(even) {
+            background: #F8F9FB;
+        }
+
+        .comparison-table tbody tr:hover {
+            background: #EEF1F6;
+        }
+
+        .comparison-table td:first-child {
+            font-weight: 600;
+            color: #334566;
+            background: #F8F9FB;
+        }
+
+        .comparison-table strong,
+        .comparison-table em {
+            color: #222E44;
+        }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; max-width: 100%; }
+            .header { page-break-after: avoid; }
+            .section { page-break-inside: avoid; page-break-after: auto; }
+            .feature { page-break-inside: avoid; }
+            .section-header { page-break-after: avoid; }
+            .section-intro { page-break-inside: avoid; }
+            .image-comparison-container { page-break-inside: avoid; display: block; width: 100%; }
+            .image-comparison-item { display: inline-block; width: 48%; vertical-align: top; margin: 0 1% 20px 0; }
+            .image-comparison-item img { max-width: 100%; height: auto; page-break-inside: avoid; }
+            .comparison-table-container { page-break-inside: avoid; overflow: visible; }
+            .comparison-table { page-break-inside: auto; }
+            .comparison-table tr { page-break-inside: avoid; page-break-after: auto; }
+            .comparison-table thead { display: table-header-group; }
+            .lifecycle { page-break-inside: avoid; }
+            .instruction-box { page-break-inside: avoid; }
+            .report-categories { page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <h1>CRM Platform Release Notes</h1>
+                <p class="subtitle">Major Update: Enhanced Operational Experience</p>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="intro">
+                <p>We are pleased to announce the release of the latest CRM update, introducing new operational capabilities across <strong>Conversations</strong>, <strong>Accounts</strong>, and <strong>CRM Reports</strong>.</p>
+                
+            </div>
+
+            <div class="summary">
+                <h2>Release Summary</h2>
+                <p style="margin-bottom: 20px; color: #445C88;">This release delivers major functional enhancements to the CRM platform focused on:</p>
+                <ul>
+                    <li>Streamlining real-time customer communication and lead handling through a unified Conversations workspace</li>
+                    <li>Standardizing customer and business account creation and linking to eliminate duplicate records and ensure ownership continuity</li>
+                    <li>Enabling actionable performance and pipeline intelligence through a consolidated CRM reporting framework</li>
+                </ul>
+                <p style="margin-top: 20px; color: #445C88; font-style: italic;">These updates significantly strengthen operational efficiency, execution discipline, and reporting reliability across the sales and customer engagement lifecycle.</p>
+            </div>
+
+            <!-- CONVERSATIONS MODULE -->
+            <div class="section">
+                <div class="section-header">
+                    <h2> Conversations – Unified Sales Engagement Workspace</h2>
+                </div>
+                <div class="section-content">
+                    <div class="section-intro">
+                        This release introduces the new Conversations module as a unified operational workspace for lead handling,
+                        qualification, engagement, and conversion.
+                    
+                        The module centralizes communication, lead lifecycle control, follow-ups, opportunity creation, and historical
+                        customer context into a single guided flow, enabling agents to work faster while maintaining consistent sales
+                        processes and improved managerial visibility across teams.
+                    <p style="margin-top: 15px;">
+                        The new Conversations module represents a fundamental shift in how agents handle customer enquiries inside the
+                        platform.
+                        The previous communication experience was functionally complete, but agents were required to move across multiple
+                        screens and sections to perform basic actions such as calling, updating status, creating follow-ups, creating
+                        opportunities and viewing customer information.
+                        Through observation of real agent workflows, call handling behaviour and lead progression patterns, it became clear
+                        that the main source of friction was frequent context switching during live customer interactions.
+                        This caused delays, missed actions and incomplete follow-ups, especially when agents had to leave the conversation
+                        view to complete operational steps and then return back to continue the discussion.
+                    </p>
+
+                    
+                        <p style="margin-top: 15px;">The new Conversations workspace has therefore been designed as an operational execution
+                            layer, not a messaging screen. Instead of separating WhatsApp, calling, lead actions and commercial actions into
+                            parallel flows, the interface now places the agent's real working priorities at the centre of the screen —
+                            contact, qualify, progress and convert — while keeping every supporting action immediately available in the same
+                            context.</p>
+                    
+                        <p style="margin-top: 15px;">Calling has been made an explicit primary action, rather than a secondary channel
+                            option, because real conversion in this business is driven predominantly through live voice interaction. This
+                            removes ambiguity for agents and eliminates delay between engagement intent and execution. Similarly,
+                            high-impact actions such as Create Profile and Create Opportunity are surfaced directly in the conversation
+                            header to remove discovery friction and ensure that critical commercial steps are taken at the moment of
+                            customer engagement, not deferred due to navigation complexity.</p>
+                    
+                        <p style="margin-top: 15px;">Small interaction decisions were intentionally introduced to improve execution accuracy
+                            and reduce cognitive load during live handling. For example, displaying participant names directly inside the
+                            conversation stream allows agents to immediately identify who is speaking when multiple handles or contacts
+                            exist under the same account. While visually minimal, this materially reduces misinterpretation and follow-up
+                            errors in multi-contact scenarios. Handle-level filtering inside a conversation enables agents to isolate
+                            specific contact streams without losing the overall customer context, which is essential when a single business
+                            is represented through multiple numbers or messaging endpoints.</p>
+                    
+                        <p style="margin-top: 15px;">The overall layout, interaction hierarchy and action placement were derived from
+                            analysing how agents actually move through leads — from first contact to qualification, nurturing and conversion
+                            — and restructuring the interface to follow that real operational flow rather than module boundaries.</p>
+                    </div>
+
+                    <div class="image-comparison-container">
+                        <div class="image-comparison-item">
+                            <h4>Old Communication Module (Contact-centric)</h4>
+                            <img src="old-communication.png" alt="Old Communication Module - Contact-centric interface showing the legacy contact management system with contact records, cold lead statuses, and disposition tracking" style="max-width: 100%; height: auto;" />
+                        </div>
+                        <div class="image-comparison-item">
+                            <h4>New Conversation Module (Conversation-centric)</h4>
+                            <img src="new-conversation.png" alt="New Conversation Module - Modern conversation-centric interface with unified workspace, lifecycle stages, and embedded call controls" style="max-width: 100%; height: auto;" />
+                        </div>
+                    </div>
+
+                    <div class="comparison-table-container">
+                        <table class="comparison-table">
+                            <thead>
+                                <tr>
+                                    <th>Dimension</th>
+                                    <th>Old Communication Module (Contact-centric)</th>
+                                    <th>New Conversation Module (Conversation-centric)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Primary business object</td>
+                                    <td>Contact</td>
+                                    <td>Conversation (each enquiry is its own record)</td>
+                                </tr>
+                                <tr>
+                                    <td>How a new enquiry is handled</td>
+                                    <td>A new enquiry from an existing customer updates the same contact</td>
+                                    <td>Every new enquiry creates a new conversation</td>
+                                </tr>
+                                <tr>
+                                    <td>Where status is stored</td>
+                                    <td>Disposition status is stored against the contact</td>
+                                    <td>Stage is stored against the conversation</td>
+                                </tr>
+                                <tr>
+                                    <td>Effect of multiple enquiries from the same customer</td>
+                                    <td>Each new enquiry overwrites the previous disposition status of the contact</td>
+                                    <td>Each enquiry keeps its own lifecycle and outcome independently</td>
+                                </tr>
+                                <tr>
+                                    <td>Example impact</td>
+                                    <td>First enquiry marked <em>Interested</em>, second enquiry marked <em>Prices Too High</em> → contact status becomes <em>Prices Too High</em> and the first positive enquiry is lost</td>
+                                    <td>First enquiry remains tracked as its own conversation; second enquiry is tracked separately with its own stage and outcome</td>
+                                </tr>
+                                <tr>
+                                    <td>Core status model</td>
+                                    <td>Large flat disposition list mixing intent, objection, contactability and outcome (Untouched, Potential, RNR, Need Discount, Prices Too High, Dropped, etc.)</td>
+                                    <td>Small controlled lifecycle stages: New → Attempted → Contacted → Nurturing → Converted</td>
+                                </tr>
+                                <tr>
+                                    <td>Meaning of status</td>
+                                    <td>Mixed meaning (execution progress + objection + outcome in one field)</td>
+                                    <td>Pure execution lifecycle only</td>
+                                </tr>
+                                <tr>
+                                    <td>Who controls status movement</td>
+                                    <td>Mostly manual by the agent</td>
+                                    <td>System-driven and rule-based (except final conversion actions)</td>
+                                </tr>
+                                <tr>
+                                    <td>When agent calls and the customer does not answer</td>
+                                    <td>Agent manually sets disposition to RNR 1 / RNR 2 / RNR 3</td>
+                                    <td>System automatically moves the conversation to Attempted</td>
+                                </tr>
+                                <tr>
+                                    <td>Task creation after no answer</td>
+                                    <td>Task is created but contact disposition becomes RNR</td>
+                                    <td>Scheduled follow-up task is created and the conversation remains active in Attempted stage</td>
+                                </tr>
+                                <tr>
+                                    <td>When agent successfully connects with the customer</td>
+                                    <td>Agent manually changes disposition to Contacted</td>
+                                    <td>System automatically moves the stage from Attempted to Contacted</td>
+                                </tr>
+                                <tr>
+                                    <td>After a successful contact</td>
+                                    <td>Agent may or may not create opportunity, follow-up or mark unqualified</td>
+                                    <td>System forces the agent to take a next action through a mandatory popup</td>
+                                </tr>
+                                <tr>
+                                    <td>Enforcement of next step after contact</td>
+                                    <td>No enforcement – the agent can end the interaction without any business outcome being recorded</td>
+                                    <td>Mandatory choice: create follow-up task, mark unqualified, or profile / proceed for opportunity</td>
+                                </tr>
+                                <tr>
+                                    <td>Ability to control execution discipline</td>
+                                    <td>Not controlled by the system</td>
+                                    <td>Actively controlled and enforced by the system</td>
+                                </tr>
+                                <tr>
+                                    <td>Ability to track attempts per enquiry</td>
+                                    <td>Not possible (attempts are flattened into the contact record)</td>
+                                    <td>Fully possible per conversation</td>
+                                </tr>
+                                <tr>
+                                    <td>Ability to measure contact rate (attempted → contacted)</td>
+                                    <td>Not reliable</td>
+                                    <td>Directly measurable per conversation</td>
+                                </tr>
+                                <tr>
+                                    <td>Ability to measure conversion per enquiry</td>
+                                    <td>Not possible</td>
+                                    <td>Directly supported</td>
+                                </tr>
+                                <tr>
+                                    <td>Ability to analyse objection patterns (price, discount, credit, etc.)</td>
+                                    <td>Distorted, because dispositions overwrite each other on the contact</td>
+                                    <td>Accurate, because each conversation carries its own outcome context</td>
+                                </tr>
+                                <tr>
+                                    <td>Pipeline and sales flow visibility</td>
+                                    <td>Limited and inconsistent</td>
+                                    <td>End-to-end lifecycle visibility per enquiry</td>
+                                </tr>
+                                <tr>
+                                    <td>Reporting reliability</td>
+                                    <td>Low – multiple business events are collapsed into a single state</td>
+                                    <td>High – each business event is represented as its own lifecycle</td>
+                                </tr>
+                                <tr>
+                                    <td>Core design assumption</td>
+                                    <td>One customer equals one sales outcome</td>
+                                    <td>One enquiry equals one sales lifecycle</td>
+                                </tr>
+                                <tr>
+                                    <td>Business impact</td>
+                                    <td>Data loss, overwritten intent, inaccurate reports and weak execution control</td>
+                                    <td>Accurate sales analytics, enforced follow-up discipline and reliable conversion reporting</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="feature">
+                        <h3>Unified Conversations Execution Workspace <span class="tag new">NEW</span></h3>
+                        <div class="feature-description">
+                            <p>The Conversations module is delivered as a consolidated execution workspace that enables agents to handle customer communication, pipeline movement, opportunity creation, and order execution from a single operational screen.</p>
+                            <p>The workspace unifies conversation handling, customer context, commercial actions, and lifecycle control without requiring navigation across multiple modules. This directly reduces operational latency, tool switching, and execution errors during active customer engagement.</p>
+                            <p>The left panel provides a controlled working queue through <strong>Open Conversations</strong>, while historical and closed customer interactions are operationally isolated under <strong>Accounts</strong>, ensuring agents focus only on active and revenue-relevant conversations.</p>
+                        </div>
+                        <div class="instruction-box">
+                            <h4>Usage Instructions</h4>
+                            <ul>
+                                <li>Agents work from the <strong>Open Conversations</strong> tab to handle all active conversations</li>
+                                <li>Closed and historical conversations are available under the <strong>Accounts</strong> tab</li>
+                            </ul>
+                        </div>
+<div class="feature" style="margin-top: 16px;">
+    <h3>Agent-Oriented Conversation Filters for Execution Focus <span class="tag new">NEW</span></h3>
+    <div class="feature-description">
+        <p>
+            The conversation list includes a structured set of filters that allow agents to dynamically narrow down
+            conversations based on how they actually execute their daily work.
+            Instead of browsing a flat inbox, agents can isolate conversations by operational context such as source,
+            stage, type and lead status.
+        </p>
+
+        <p>
+            This filtering layer was designed after observing that agents typically organise their work around execution
+            priorities — such as pending follow-ups, fresh enquiries, active negotiations or nurturing conversations —
+            rather than around customer profiles.
+            In the previous communication flow, agents were required to manually scan long mixed lists, which increased
+            response delays and caused missed follow-ups.
+        </p>
+
+        <p>
+            By aligning filters directly with conversation attributes, the system enables agents to instantly build a
+            focused execution view that matches their working style, workload and daily targets.
+            This significantly reduces cognitive load, context switching and queue scanning time during live operations.
+        </p>
+    </div>
+
+    <div class="feature-description">
+        <p>
+            This design ensures that agents work from a continuously prioritised execution queue rather than from a
+            static inbox, improving follow-up discipline, response speed and stage progression consistency across teams.
+        </p>
+    </div>
+</div>
+
+                    </div>
+
+                    <div class="feature">
+                        <h3>End-to-End Conversation Lifecycle with Nurturing Stage <span class="tag new">NEW</span></h3>
+                        <div class="feature-description">
+                            <p>The conversation lifecycle is standardized and executed directly from the conversation header:</p>
+                            
+                            <div class="lifecycle">
+                                <span class="lifecycle-stage">New</span>
+                                <span class="lifecycle-arrow">→</span>
+                                <span class="lifecycle-stage">Attempted</span>
+                                <span class="lifecycle-arrow">→</span>
+                                <span class="lifecycle-stage">Contacted</span>
+                                <span class="lifecycle-arrow">→</span>
+                                <span class="lifecycle-stage">Nurturing</span>
+                                <span class="lifecycle-arrow">→</span>
+                                <span class="lifecycle-stage">Converted</span>
+                            </div>
+
+                            <p>The introduction of the <strong>Nurturing</strong> stage establishes a formal operational state for leads that are actively being worked but are not yet ready for conversion. This eliminates ambiguity between "contact completed" and "deal progressing" and provides a more accurate and controllable pipeline.</p>
+                            <p>From a reporting and governance standpoint, this prevents artificial inflation of contacted or converted stages and significantly improves pipeline quality.</p>
+                        </div>
+                        <div class="instruction-box">
+                            <h4>Usage Instructions</h4>
+                            <ul>
+                                <li>Stages are progressed automatically based on call outcomes</li>
+                                <li>Can be moved to Nurturing when continued engagement is required before conversion</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <h3>Embedded Call Control with Automatic Stage Progression <span class="tag enhanced">ENHANCED</span></h3>
+                        <div class="feature-description">
+                            <p>Calling is embedded directly within the conversation header and is fully integrated with the lifecycle engine. The system automatically updates conversation stages based on call results, ensuring that pipeline progression is driven by actual engagement behavior rather than manual status updates.</p>
+                            <p>This enforces operational discipline and protects data accuracy across sales performance and activity reports.</p>
+                        </div>
+                        <div class="instruction-box">
+                            <h4>Usage Instructions</h4>
+                            <ul>
+                                <li>Initiate calls using the <strong>Call</strong> button in the conversation header</li>
+                                <li>If the call is not answered, the stage is set to <strong>Attempted</strong></li>
+                                <li>If the call is answered, the stage is set to <strong>Contacted</strong></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                <div class="feature">
+                    <h3>Conversation-Centric Communication with Explicit Call Execution <span class="tag new">NEW</span></h3>
+                    <div class="feature-description">
+                        <p>The Conversations workspace no longer separates communication into independent channels. Instead, all
+                            customer interactions are managed through a single conversation context, with calling exposed as a primary
+                            execution action.</p>
+                        <p>The <strong>Call</strong> action is placed directly in the conversation header to reflect its operational
+                            importance in real sales workflows, enabling agents to initiate voice interactions immediately without
+                            navigating between modules or modes.</p>
+                        <p>WhatsApp messaging remains embedded inside the same conversation stream, ensuring that all customer
+                            communication—regardless of medium—remains unified under one continuous engagement and execution context.
+                        </p>
+                        <p>This design removes channel-driven workflows and replaces them with a conversation-driven execution model,
+                            significantly reducing context switching, operational friction, and delays during live customer handling.
+                        </p>
+                    </div>
+                    <div class="instruction-box">
+                        <h4>Usage Instructions</h4>
+                        <ul>
+                            <li>Use the <strong>Call</strong> button in the conversation header to initiate a voice interaction</li>
+                            <li>Use the message composer to continue WhatsApp communication within the same conversation</li>
+                            <li>All communication activity is recorded and tracked under the same conversation timeline</li>
+                        </ul>
+                    </div>
+                </div>
+
+
+                    <div class="feature">
+                        <h3>Direct Opportunity and Order Execution from Conversation <span class="tag new">NEW</span></h3>
+                        <div class="feature-description">
+                            <p>Agents can initiate both opportunity creation and order creation directly from the conversation header. This removes cross-module navigation and ensures that commercial execution happens immediately while the customer context is still active, significantly improving conversion turnaround time.</p>
+                            <p>From an operational standpoint, this also reduces data re-entry, pricing mismatches, and order initiation delays.</p>
+                        </div>
+                        <div class="instruction-box">
+                            <h4>Usage Instructions</h4>
+                            <ul>
+                                <li>Use <strong>Create Opportunity</strong> or <strong>Create Order</strong> in the conversation header to initiate commercial actions for the active customer</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <h3>Multi-Handle and Existing Customer Account Linking with Ownership Control <span class="tag new">NEW</span></h3>
+                        <div class="feature-description">
+                            <p>The Conversations workspace supports linking multiple contact handles (such as multiple phone numbers or messaging
+                                handles) to a single customer and business account directly from the active conversation.</p>
+                            <p>In addition to consolidating multiple handles, the system also supports linking a newly contacted person to an
+                                existing business/customer account when the contact already belongs to an existing customer in the system. This
+                                ensures that all conversations, historical interactions, and commercial activity are maintained under a single
+                                business entity instead of creating fragmented or duplicate customer records.</p>
+                           
+                            
+                            <div class="highlight-box">
+                                <strong>Ownership Control:</strong> To protect ownership integrity and avoid parallel handling of the same customer by multiple agents, account linking is governed by agent ownership rules:
+                                <ul style="margin-top: 10px; padding-left: 20px;">
+                                    <li style="margin: 5px 0;">If the existing customer account is already handled by the same agent, the linking can be
+                                        completed instantly</li>
+                                    <li style="margin: 5px 0;">If the existing customer account is owned by a different agent, the system enforces a
+                                        controlled handover by requiring the conversation to be transferred to the owning agent</li>
+                                    <li style="margin: 5px 0;">
+                                        In addition, when an agent raises a merge request to link a contact or conversation to an existing customer account,
+                                        the request must be approved by an administrator before the merge is completed
+                                    </li>
+                                </ul>
+                      
+                            </div>
+
+                            <p>This design prevents conflicting follow-ups, duplicated negotiations, and inconsistent pricing or commitments for the same business, while preserving a clean customer ownership model across the sales organization.</p>
+                        </div>
+                        <div class="instruction-box">
+                            <h4>Usage Instructions</h4>
+                            <ul>
+                                <li>Click <strong>Add Handle</strong> to link additional contact numbers or communication handles to the same customer</li>
+                                <li>When the contacted person belongs to an existing business/customer account:
+                                    <ul style="padding-left: 20px; margin-top: 8px;">
+                                        <li>If the existing customer is owned by the same agent, the contact can be linked directly to that business</li>
+                                        <li>If the existing customer is owned by another agent, the system shows the <strong>Transfer</strong> option and the conversation must be transferred to complete the linking</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <h3>Controlled Conversation and Account Transfer with Follow-Up Governance <span class="tag new">NEW</span></h3>
+                        <div class="feature-description">
+                            <p>Conversations can be transferred to another agent along with the associated customer account, linked opportunities, and pending follow-ups. This creates a structured handover mechanism that eliminates loss of ownership, dropped follow-ups, and broken accountability during agent reassignments.</p>
+                            <p>The explicit handling of pending follow-ups introduces operational discipline and ensures that outstanding activities are either reassigned, closed, or intentionally removed, supporting auditability and operational transparency.</p>
+                        </div>
+                        <div class="instruction-box">
+                            <h4>Usage Instructions</h4>
+                            <ul>
+                                <li>When transferring a conversation, select the target agent and choose how to handle pending follow-ups:
+                                    <ul style="padding-left: 20px; margin-top: 8px;">
+                                        <li>Transfer to new agent</li>
+                                        <li>Mark as done</li>
+                                        <li>Delete</li>
+                                    </ul>
+                                </li>
+                                <li>The conversation, customer account, linked opportunities, and follow-ups are included in the transfer</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                 <div class="feature">
+    <h3>Internal Notes for Operational Context <span class="tag new">NEW</span></h3>
+    <div class="feature-description">
+        <p>
+            Internal notes can be added directly inside a conversation and are visible only to internal users.
+            This allows agents and supervisors to capture negotiation context, qualification insights and
+            operational remarks that must persist across follow-ups and ownership changes, without exposing
+            any internal information to customers.
+        </p>
+        <p>
+            When the Notes option is accessed, a dedicated side panel opens within the conversation workspace,
+            displaying the complete history of notes related to that conversation in one place. This enables
+            agents to quickly review past context before continuing communication and prevents loss of
+            important operational information across multiple interactions.
+        </p>
+    </div>
+    <div class="instruction-box">
+        <h4>Usage Instructions</h4>
+        <ul>
+            <li>Click the <strong>Note</strong> option in the conversation header to open the notes side panel</li>
+            <li>View all previously added notes in the panel and add new internal remarks as required</li>
+        </ul>
+    </div>
+</div>
+
+
+                    <div class="feature">
+                        <h3>Inline Qualification Control for Non-Buyers <span class="tag new">NEW</span></h3>
+                        <div class="feature-description">
+                            <p>Conversations that do not represent genuine commercial opportunities can be immediately marked as unqualified. This removes non-revenue interactions from the active execution pipeline and protects sales capacity by ensuring agents focus only on valid opportunities.</p>
+                            <p>It also improves data quality for pipeline and performance reporting.</p>
+                        </div>
+                        <div class="instruction-box">
+                            <h4>Usage Instructions</h4>
+                            <ul>
+                                <li>Click <strong>Mark as Unqualified</strong> to exclude the conversation from active sales workflows</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <h3>Handle-Level Filtering within a Conversation <span class="tag new">NEW</span></h3>
+                        <div class="feature-description">
+                            <p>The conversation workspace supports filtering activity and messages by individual contact handles. This allows agents to clearly track communication streams when a customer has multiple linked contact points, avoiding confusion during follow-ups.</p>
+                        </div>
+                        <div class="instruction-box">
+                            <h4>Usage Instructions</h4>
+                            <ul>
+                                <li>Use <strong>Filter by Handle</strong> to view messages and activities for a selected contact handle</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <h3>Embedded Messaging with Templates and Rate Sharing <span class="tag enhanced">ENHANCED</span></h3>
+                        <div class="feature-description">
+                            <p>The message composer is integrated directly into the execution workspace and supports sending predefined templates and live rate information. This enforces standardized communication formats, reduces response preparation time, and prevents inconsistent or outdated pricing communication during active negotiations.</p>
+                        </div>
+                        <div class="instruction-box">
+                            <h4>Usage Instructions</h4>
+                            <ul>
+                                <li>Use <strong>Template</strong> to send predefined responses</li>
+                                <li>Use <strong>Rates</strong> to select and send current rate information to the customer</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <h3>Integrated Customer Panel (Right-Side Panel) <span class="tag new">NEW</span></h3>
+                        <div class="feature-description">
+                            <p>The right-side customer panel provides a real-time operational view of the customer and the ongoing sales process. It
+                                consolidates:</p>
+                            <p>
+                                Some inbound lead sources do not provide a country code along with the phone number. In the previous system, agents
+                                were required to create a new contact entry with the correct country code in order to proceed, which frequently
+                                resulted in duplicated contacts for the same customer.
+                            </p>
+                            
+                            <p>
+                                In the updated Conversations workspace, agents can directly edit an existing contact handle and add or correct the
+                                country code without creating a new contact or duplicating the handle.
+                                This ensures that contact identity remains consistent while still allowing agents to normalise phone numbers for
+                                calling and WhatsApp communication.
+                            </p>
+                            <ul style="margin: 15px 0; padding-left: 30px; color: #445C88;">
+                                <li style="margin: 8px 0;">Customer profile and ownership</li>
+                                <li style="margin: 8px 0;">Conversation status</li>
+                                <li style="margin: 8px 0;">Scheduled follow-ups</li>
+                                <li style="margin: 8px 0;">Order history</li>
+                                <li style="margin: 8px 0;">Opportunity items and deal values</li>
+                            </ul>
+                            <p>This removes the need to navigate across multiple modules during active engagement and enables agents to make informed decisions while communicating with the customer. From a managerial and governance perspective, this enforces a standardized view of customer data and deal context across all agents.</p>
+                        </div>
+                        <div class="instruction-box">
+                            <h4>Usage Instructions</h4>
+                            <ul>
+                                <li>Click the <strong>green arrow button</strong> to open the customer panel and view profile details, conversation status, follow-ups, order history, and opportunities</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="feature">
+                        <h3>Smart Account Matching During Profile Creation <span class="tag new">NEW</span></h3>
+                    
+                        <div class="feature-description">
+                            <p>
+                                When an agent creates a customer profile from a conversation, the system automatically checks for existing
+                                accounts with the same or similar name and presents matching account suggestions in real time.
+                            </p>
+                    
+                            <p>
+                                This behaviour was introduced to prevent duplicate customer profiles and to eliminate manual account
+                                clean-up and post-facto merging. In the earlier flow, agents frequently created separate customer records
+                                for the same business or person because no contextual visibility of existing profiles was provided during
+                                profile creation.
+                            </p>
+                    
+                            <p>
+                                By surfacing existing accounts at the moment of profiling, the system allows agents to immediately associate
+                                the conversation with the correct existing account and continue execution without breaking context.
+                            </p>
+                    
+                            <p>
+                                At the same time, the workflow does not force merging. If the enquiry genuinely belongs to a different
+                                customer or a separate business entity, agents can intentionally create a new account profile and keep the
+                                lead isolated as an independent profile.
+                            </p>
+                    
+                            <p>
+                                This controlled matching approach maintains data quality without blocking valid new customer creation,
+                                ensuring both
+                                operational flexibility and long-term account accuracy.
+                            </p>
+                    
+                            <p>
+                                In the previous system, GST information was collected independently and was not structurally linked to the
+                                customer
+                                profiling workflow. As a result, GST details were often missing, incomplete or stored without a clear
+                                association to
+                                the customer’s business identity.
+                            </p>
+                    
+                            <p>
+                                In the new profiling workflow, GST details are captured as part of profile creation itself and are directly
+                                linked
+                                to the business profile along with the registered business address. This ensures that statutory and
+                                commercial
+                                identity data is created at the same time as the customer account, rather than as a disconnected data entry
+                                step.
+                            </p>
+                    
+                            <p>
+                                GST and business address fields are displayed only when the lead is being profiled as a
+                                <strong>Business</strong>
+                                account. For <strong>Individual</strong> profiles, these fields are intentionally hidden to avoid collecting
+                                irrelevant regulatory information and to keep the profiling flow minimal and accurate.
+                            </p>
+                            <p>
+                                In addition to name-based matching, the profiling flow also allows agents to merge a customer with an existing
+                                account that may be present in the system under a different name or business variation.
+                                This supports real-world scenarios where the same customer may appear with multiple naming formats across enquiries.
+                            </p>
+                            
+                            <p>
+                                For data ownership and operational control, merging is permitted only when the existing account belongs to the
+                                current agent.
+                                If the matched account is owned by another agent, the system displays a transfer request option directly within the
+                                profiling flow.
+                                The agent must request ownership transfer before the merge can be completed.
+                            </p>
+                            
+                            <p>
+                                This ownership-aware merge mechanism prevents unauthorised account modifications while still enabling controlled
+                                consolidation of duplicate customer records.
+                            </p>
+                    
+                        </div>
+
+    <div style="margin: 20px 0; text-align: center;">
+        <img src="address-form.png" alt="Address form showing billing and shipping address fields with GST number validation" style="max-width: 100%; height: auto; border: 1px solid #DDE3EE; border-radius: 6px; box-shadow: 0 2px 8px rgba(34, 46, 68, 0.1);" />
+    </div>
+
+    <div style="margin: 20px 0; text-align: center;">
+        <img src="account-creation-form.png" alt="Account creation form showing Individual and Business account type selection with smart account matching" style="max-width: 100%; height: auto; border: 1px solid #DDE3EE; border-radius: 6px; box-shadow: 0 2px 8px rgba(34, 46, 68, 0.1);" />
+    </div>
+
+    <div class="instruction-box">
+        <h4>Usage Instructions</h4>
+        <ul>
+            <li>Click <strong>Create Profile</strong> from a conversation after the customer is contacted</li>
+            <li>If similar account names already exist, the system displays suggested existing accounts</li>
+            <li>Select an existing account to associate and merge the conversation with that account</li>
+            <li>Or select <strong>Create New Profile</strong> to create a separate account for this customer</li>
+        </ul>
+    </div>
+</div>
+
+
+                    <div class="feature">
+                        <h3>Guided Sales Execution Through Next Steps <span class="tag new">NEW</span></h3>
+                        <div class="feature-description">
+                            <p>The <strong>Next Steps</strong> section provides system-driven guidance to the agent by recommending concrete actions such as creating an order, scheduling follow-ups, or updating products and pricing.</p>
+                            <p>This introduces a guided sales execution model that reduces training dependency for new agents and enforces standardized completion of the sales process across teams. From a rollout and adoption perspective, this significantly accelerates onboarding and improves consistency of operational behavior.</p>
+                        </div>
+                        <div class="instruction-box">
+                            <h4>Usage Instructions</h4>
+                            <ul>
+                                <li>Use the <strong>Next Steps</strong> section to follow recommended actions such as order creation, follow-up scheduling, and product or pricing updates</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ACCOUNTS MODULE -->
+            <div class="section">
+                <div class="section-header">
+                    <h2> Accounts – Unified Customer & Business Account Management</h2>
+                </div>
+                <div class="section-content">
+                    <div class="section-intro">
+                        The Accounts module is delivered with a completely redesigned interface to support structured creation and management of both <strong>Individual</strong> and <strong>Business</strong> customer accounts from a single standardized workflow.
+                    </div>
+
+                    <div class="feature">
+                        <h3>Design Context – Why Customers Was Re-engineered into Accounts <span class="tag new">NEW</span></h3>
+                        <div class="feature-description">
+                            <p>The earlier Customers module was built around a flat, contact-centric model. Every new interaction created an independent customer record, even when multiple people were contacting from the same company or business. Over time, this led to multiple parallel entries for the same real-world customer, with no controlled way to consolidate them.</p>
+                            <p>This fragmentation created three structural problems for daily operations:</p>
+                            <ul style="margin: 10px 0 16px 25px; color: #445C88;">
+                                <li style="margin: 4px 0;">Agents were forced to decide manually which record represented the “real” customer</li>
+                                <li style="margin: 4px 0;">Conversation history and orders became scattered across multiple profiles</li>
+                                <li style="margin: 4px 0;">Ownership of the same business could silently diverge between agents</li>
+                            </ul>
+                            <p>The new Accounts module has been introduced as a foundational data and execution layer to remove this ambiguity. Instead of treating each contact as a separate customer, the platform now models a single <strong>Account</strong> as the main operational entity — representing either an individual or a business — under which all contacts, communication handles and future leads are consolidated.</p>
+                            <p>This required a re-design of the underlying customer structure, not just the interface. The account model separates the business or person as the master entity, one or more contacts under that entity, and multiple communication methods per contact (phone, WhatsApp, etc.), while preserving a single ownership and activity history.</p>
+                            <p>A dedicated merge and consolidation workflow has been introduced to allow multiple existing records that belong to the same person or business to be unified into one operational account. This directly resolves one of the most common execution issues in the previous system — parallel records created from different sources or agents.</p>
+                            <p>From an agent’s perspective, this removes the need to mentally reconcile multiple profiles before taking action. From an operational perspective, it guarantees that all conversations, opportunities and orders for a customer are always executed against a single account.</p>
+                            <p>The new structure also enables controlled growth of customer context. When a new person contacts from the same business, the contact and their communication handles can be added to the existing account rather than generating a new customer entry. This allows agents to expand relationship coverage within the same business without fragmenting history.</p>
+                            <p>By explicitly distinguishing Individual and Business accounts, the system now supports real-world selling behaviour where multiple buyers, procurement contacts or decision makers may belong to one organization, while still maintaining a single commercial and ownership view.</p>
+                            <p>This redesign significantly reduces duplicate customer records, incorrect follow-ups on outdated profiles, parallel negotiations with the same business, and reporting distortions caused by split order and conversation histories. Most importantly, the Accounts module now acts as the single, stable customer identity layer across Conversations, Opportunities and Orders.</p>
+                            <p>These changes were not about simply “adding a merge button” or redesigning the customer screen. They were driven by analysing how fragmented customer identity was directly impacting follow-ups, ownership control and deal continuity, and by re-engineering the data and execution model to align with how real customers and businesses are actually engaged.</p>
+                        </div>
+                        <div class="instruction-box">
+                            <h4>Usage Instructions</h4>
+                            <ul>
+                                <li>Select the <strong>Account Type</strong> as <strong>Individual</strong> or <strong>Business</strong></li>
+                                <li>Enter the account information, addresses, and contacts, and click <strong>Create Profile</strong> to create the master customer account</li>
+                                <li>When future leads or conversations belong to the same person or business, they can be linked to this existing account instead of creating a new one</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CRM REPORTS MODULE -->
+            <div class="section">
+                <div class="section-header">
+                    <h2> CRM Reports – Unified Operational & Performance Intelligence Layer</h2>
+                </div>
+                <div class="section-content">
+                    <div class="section-intro">
+                        <p>The CRM Reports module has been delivered as a centralized reporting workspace that consolidates conversation activity, contact lifecycle, opportunity movement, and revenue contribution into a single, structured analytics layer.</p>
+
+                        <p>This module was designed after analysing how operational and leadership teams were consuming reports in the previous system. While multiple reports already existed, they were produced in isolation and followed inconsistent data logic, time windows and entity definitions. As a result, teams were frequently comparing numbers that were technically correct, but analytically incompatible.</p>
+
+                        <p>In practice, this created three recurring execution problems: managers could not reliably correlate agent activity with revenue outcomes, operational teams were unable to distinguish between current pipeline health and historical performance, and performance reviews were driven by static counts rather than execution behaviour and flow quality.</p>
+
+                        <p>To address this, the reporting layer was re-engineered as a unified analytical model rather than a collection of individual reports. Conversations, contacts, opportunities and revenue events are now analysed through a consistent data structure and aligned lifecycle definitions, allowing performance to be interpreted across execution stages instead of disconnected modules.</p>
+
+                        <p>Special emphasis was placed on separating how data is viewed over time. During analysis, it was observed that most reporting errors and misinterpretations originated from mixing record creation dates, activity dates and current stage positions in the same charts. This led to incorrect conclusions about productivity, pipeline health and conversion efficiency.</p>
+
+                        <p>The new CRM Reports module therefore introduces structured multi-view analytical models that explicitly separate cohort behaviour, execution activity and current state. This ensures that management teams can evaluate performance trends, operational execution quality and real-time pipeline conditions independently, without analytical overlap.</p>
+
+                        <p>The result is a reporting layer that is designed to answer operational questions — such as execution delays, follow-up discipline, stage stagnation and source effectiveness — rather than only presenting summary metrics. The module acts as a single intelligence layer for execution monitoring, performance optimisation and revenue planning.</p>
+                    </div>
+
+
+                    <div class="feature">
+                        <h3>Centralized Reporting Dashboard <span class="tag new">NEW</span></h3>
+                        <div class="feature-description">
+                            <p>The module is organized into clearly defined analytical groups, allowing fast navigation between high-level business performance and detailed operational bottlenecks.</p>
+                        </div>
+                        <div class="instruction-box">
+                            <h4>Usage Instructions</h4>
+                            <ul>
+                                <li>Open <strong>CRM Reports</strong> to access all operational and performance reports from a single dashboard</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <h3>Overview Reports – Sales Execution and Revenue Performance <span class="tag new">NEW</span></h3>
+                        <div class="feature-description">
+                            <p>The Overview section provides real-time visibility into conversion outcomes, revenue contribution, response efficiency, conversation trends, and agent activity.</p>
+                            
+                            <div class="report-categories">
+                                <div class="report-category">
+                                    <h4>Available Reports</h4>
+                                    <ul>
+                                        <li>Outcome Report</li>
+                                        <li>Revenue Contribution</li>
+                                        <li>First Response Time (FRT) Summary</li>
+                                        <li>Conversation Trend</li>
+                                        <li>Agent Activity</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <p>This enables leadership and operations teams to directly correlate agent actions and channel behavior with commercial results, helping identify productivity gaps, response delays, and revenue-driving sources.</p>
+                        </div>
+                        <div class="instruction-box">
+                            <h4>Usage Instructions</h4>
+                            <ul>
+                                <li>Open any report from the <strong>Overview Reports</strong> section to view performance by agent and by source</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <h3>Contact Reports – Lead Lifecycle and Qualification Control <span class="tag new">NEW</span></h3>
+                        <div class="feature-description">
+                            <p>The Contact Reports section delivers structured visibility into how contacts move through the lifecycle stages (New, Attempted, Contacted, Nurturing, and Converted).</p>
+                            
+                            <div class="report-categories">
+                                <div class="report-category">
+                                    <h4>Available Reports</h4>
+                                    <ul>
+                                        <li>Contact Conversations</li>
+                                        <li>Contact Source Breakdown</li>
+                                        <li>Contact Aging</li>
+                                        <li>Contact Unqualified</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <p>This provides operational teams with clear insight into lead flow, response delays, source quality, and unqualified patterns, enabling corrective actions on follow-up discipline and channel targeting.</p>
+                        </div>
+                        <div class="instruction-box">
+                            <h4>Usage Instructions</h4>
+                            <ul>
+                                <li>Open a report under <strong>Contact Reports</strong> to analyze contact movement, source performance, and aging across lifecycle stages</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <h3>Opportunity Reports – Pipeline Health and Conversion Risk Analysis <span class="tag new">NEW</span></h3>
+                        <div class="feature-description">
+                            <p>The Opportunity Reports section focuses on opportunity creation, progression, and loss behavior.</p>
+                            
+                            <div class="report-categories">
+                                <div class="report-category">
+                                    <h4>Available Reports</h4>
+                                    <ul>
+                                        <li>Opportunity Conversations</li>
+                                        <li>Opportunity Source Breakdown</li>
+                                        <li>Opportunity Aging</li>
+                                        <li>Lost Analysis</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <p>This allows sales managers to detect stalled deals, weak sources, stage drop-offs, and loss reasons, improving deal prioritization and pipeline reliability.</p>
+                        </div>
+                        <div class="instruction-box">
+                            <h4>Usage Instructions</h4>
+                            <ul>
+                                <li>Open any report under <strong>Opportunity Reports</strong> to review opportunity movement, source performance, and loss patterns</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <h3>Multi-View Analytical Models for Accurate Reporting <span class="tag new">NEW</span></h3>
+                        <div class="feature-description">
+                            <p>Each report supports multiple analytical views to avoid misinterpretation of performance data:</p>
+                            
+                            <div class="highlight-box">
+                                <ul style="padding-left: 20px;">
+                                    <li style="margin: 10px 0;"><strong>Cohort View</strong> – Tracks how a specific group of records created in a selected period progresses over time</li>
+                                    <li style="margin: 10px 0;"><strong>Activity View</strong> – Shows actions and transitions that occurred during a selected date range</li>
+                                    <li style="margin: 10px 0;"><strong>Stage / Current View</strong> – Displays the current real-time state of records irrespective of when they were created</li>
+                                </ul>
+                            </div>
+
+                            <p>This ensures operational and management teams can differentiate between historical performance, recent activity, and current pipeline status.</p>
+                        </div>
+                        <div class="instruction-box">
+                            <h4>Usage Instructions</h4>
+                            <ul>
+                                <li>Select the required view (<strong>Cohort</strong>, <strong>Activity</strong>, or <strong>Stage/Current</strong>) when opening a report to switch the reporting perspective</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- OTHER UPDATES -->
+            <div class="section">
+                <div class="section-header">
+                    <h2> Other Updates</h2>
+                </div>
+                <div class="section-content">
+                    
+                    <div class="feature">
+                        <h3>Holiday Calendar and Working Time Configuration for FRT Calculation <span class="tag new">NEW</span></h3>
+                        <div class="feature-description">
+                            <p>A configurable holiday and working-time calendar has been introduced to ensure accurate First Response Time (FRT) measurement.</p>
+                            <p>Business working hours, working days, official holidays and agent leave schedules can now be defined in the system. FRT is calculated by excluding non-working hours, holidays and agent leave periods, ensuring that response performance reflects real operational availability instead of raw clock time.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <h3>Split Order Status Model in Orders List <span class="tag new">NEW</span></h3>
+                        <div class="feature-description">
+                            <p>The order list now displays independent operational status indicators for each execution phase:</p>
+                            <ul style="margin: 10px 0; padding-left: 30px; color: #445C88;">
+                                <li>Order status</li>
+                                <li>Payment status</li>
+                                <li>Fulfilment status</li>
+                                <li>Shipping status</li>
+                            </ul>
+                            <p>This separation provides clearer visibility into operational bottlenecks and prevents execution delays from being hidden under a single aggregated order status.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <h3>Account Selection During Order Creation <span class="tag new">NEW</span></h3>
+                        <div class="feature-description">
+                            <p>During order creation, agents can now explicitly select the customer account to which the order belongs.</p>
+                            <p>This prevents accidental order placement under incorrect customer records and improves consistency between account history and order data.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <h3>Filters in Call Logs <span class="tag new">NEW</span></h3>
+                        <div class="feature-description">
+                            <p>Filtering capabilities have been added to the call logs view to allow agents and supervisors to quickly narrow down call activity based on operational needs.</p>
+                            <p>This improves review efficiency and simplifies call-level monitoring and auditing.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <h3>Order Details View – UI Update</h3>
+                        <div class="feature-description">
+                            <p>The order details page has been redesigned to improve layout clarity and operational readability across order, payment, fulfilment and shipping information.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <h3>Approval Pages – UI Update</h3>
+                        <div class="feature-description">
+                            <p>User interface updates have been applied to the following approval workflows to improve clarity and processing efficiency:</p>
+                            <ul style="margin: 10px 0; padding-left: 30px; color: #445C88;">
+                                <li>Shipping approval</li>
+                                <li>Order cancellation approval</li>
+                                <li>Wholesaler registration approval</li>
+                                <li>Final invoice approval</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <h3>Agent and Admin Dashboards – UI Update</h3>
+                        <div class="feature-description">
+                            <p>The Agent Dashboard and Admin Dashboard interfaces have been updated to improve visual consistency, data readability and navigation across operational metrics.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <h3>Web Messaging Interface – UI Update</h3>
+                        <div class="feature-description">
+                            <p>The web messaging interface has been updated to improve layout, interaction flow and readability during live conversations.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BUG FIXES AND IMPROVEMENTS -->
+            <!-- BUG FIXES AND IMPROVEMENTS -->
+            <div class="section">
+                <div class="section-header">
+                    <h2><span class="icon">🛠</span> Bug Fixes and Operational Improvements</h2>
+                </div>
+                <div class="section-content">
+                    
+                    <h3 style="color: #334566; font-size: 1.5em; margin-bottom: 20px; margin-top: 10px;">CRM & Conversations Module</h3>
+
+                    <div class="feature">
+                        <h3>1. WhatsApp availability information message</h3>
+                        <div class="feature-description">
+                            <p>In the new handle-based communication model, contacts can have separate handles for Call and WhatsApp. For legacy contacts where only Call handles existed, the system displayed an information message indicating that WhatsApp is not available for that number.</p>
+                            <p>This behaviour is expected due to historical data structure. To enable WhatsApp communication, a WhatsApp handle must be added for the contact. Currently, this may result in two handles for the same number (Call and WhatsApp). This workflow will be simplified in an upcoming update.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <h3>2. Error when adding a handle to an existing contact</h3>
+                        <div class="feature-description">
+                            <p>While adding a new handle to an existing contact, the system incorrectly displayed a duplicate contact error and the country code field mapping was misaligned, causing validation failures.</p>
+                            <p><strong>Status: Fixed</strong></p>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <h3>3. Address mandatory during profile creation</h3>
+                        <div class="feature-description">
+                            <p>In the new Create Profile flow, address was incorrectly marked as mandatory. In real sales workflows, agents may not have the customer address at the profiling stage and typically capture it only during order creation.</p>
+                            <p>The mandatory validation has been removed.</p>
+                            <p><strong>Status: Fixed</strong></p>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <h3>4. Unable to create a new profile when an account with the same name already existed</h3>
+                        <div class="feature-description">
+                            <p>While creating a new customer profile with a name that already existed in the system, the application showed a duplicate entry error and blocked profile creation, even when the agent intended to create a separate account.</p>
+                            <p><strong>Status: Fixed</strong></p>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <h3>5. Automatic stage update issue due to Tata webhook availability</h3>
+                        <div class="feature-description">
+                            <p>At the time of feature release, Tata webhooks were not available in the production environment until 11:50 AM. This caused automatic conversation stage updates to fail.</p>
+                            <p>Webhook configurations were already completed in both Beta and Production environments. However, conflicts were observed when the same configuration existed in both environments. After removing the webhook configuration from the Beta environment, production started functioning correctly.</p>
+                            <p>There are no restrictions documented in Tata's official guidelines explaining this behaviour and the issue is currently under discussion with Tata technical support.</p>
+                            <p><strong>Status:</strong></p>
+                            <ul style="margin: 10px 0 0 25px; color: #445C88;">
+                                <li>Production: Fixed</li>
+                                <li>Beta webhook: Disabled</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <h3>6. Product name and grade missing in Opportunity section inside Conversations</h3>
+                        <div class="feature-description">
+                            <p>The product name and grade fields were not displayed in the opportunity panel within the Conversations page.</p>
+                            <p><strong>Status: Fixed</strong></p>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <h3>7. Database error while scheduling follow-up or marking customer as unqualified</h3>
+                        <div class="feature-description">
+                            <p>A database collation mismatch caused errors when creating follow-up tasks or marking a conversation as unqualified.</p>
+                            <p><strong>Status: Fixed</strong></p>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <h3>8. Price list template download not visible in agent view</h3>
+                        <div class="feature-description">
+                            <p>While sharing the price list with customers, the option to download the template was not visible to agents.</p>
+                            <p><strong>Status: Fixed</strong></p>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <h3>9. Editing contact country code inside Accounts caused validation errors</h3>
+                        <div class="feature-description">
+                            <p>When editing a contact number, the system incorrectly interpreted the first two digits of the mobile number as the country code, resulting in validation errors.</p>
+                            <p><strong>Status: Fixed</strong></p>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <h3>10. Conversation filtering and lead visibility issues</h3>
+                        <div class="feature-description">
+                            <p>Agents were unable to properly identify and filter new and existing leads due to incorrect default filter behaviour.</p>
+                            <p>A new standardized filter set has been introduced as default to align with agent workflows:</p>
+                            <ul style="margin: 15px 0; padding-left: 30px; color: #445C88;">
+                                <li><strong>Fresh</strong> – New conversations from first-time contacts with no account linked</li>
+                                <li><strong>Existing</strong> – Conversations beyond the New stage with no follow-ups scheduled</li>
+                                <li><strong>Scheduled / Follow-up</strong> – Conversations with pending follow-up tasks</li>
+                                <li><strong>Contact</strong> – Contact-level conversations (not yet qualified as opportunities)</li>
+                                <li><strong>Opportunity</strong> – Opportunity-level conversations (qualified leads with potential deals)</li>
+                            </ul>
+                            <p><strong>Status: Fixed</strong></p>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <h3>11. Lead assignment date requirement</h3>
+                        <div class="feature-description">
+                            <p>Requirement raised to use Lead Assign Date instead of Conversation Assigned Date in reporting and views.</p>
+                            <p><strong>Status: Not resolved</strong></p>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <h3>12. Post-call action popup showing repeatedly</h3>
+                        <div class="feature-description">
+                            <p>After completing the post-call action popup (create follow-up / profile / unqualified), the popup continued to appear repeatedly and blocked the agent from proceeding.</p>
+                            <p><strong>Status: Fixed</strong></p>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <h3>13. Notes could not be saved ("No conversation selected" error)</h3>
+                        <div class="feature-description">
+                            <p>Notes were failing to save due to incorrect conversation context binding.</p>
+                            <p><strong>Status: Fixed</strong></p>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <h3>14. Orders not visible in the right-side customer panel</h3>
+                        <div class="feature-description">
+                            <p>The order history view for a specific account was not available in the right-side panel inside the Conversations workspace.</p>
+                            <p><strong>Status: Fixed</strong> (order history option added)</p>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <h3>15. Date filter and confusing date format inside Conversations</h3>
+                        <div class="feature-description">
+                            <p>Agents requested a date filter and clearer date formatting for better operational usage.</p>
+                            <p><strong>Status: Fixed</strong></p>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <h3>16. Mobile number missing while downloading order data</h3>
+                        <div class="feature-description">
+                            <p>While downloading order/customer data, the customer mobile number was missing.</p>
+                            <p><strong>Status: Not resolved</strong></p>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <h3>17. Additional fields required in "Mark as Unqualified" flow</h3>
+                        <div class="feature-description">
+                            <p>Additional fields requested:</p>
+                            <ul style="margin: 10px 0; padding-left: 30px; color: #445C88;">
+                                <li>Farmer</li>
+                                <li>Job</li>
+                                <li>Customer needs COD</li>
+                            </ul>
+                            <p><strong>Status: Resolved</strong></p>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <h3>18. Separate view for notes management</h3>
+                        <div class="feature-description">
+                            <p>A dedicated notes view was requested to improve readability and management when accessing multiple notes.</p>
+                            <p><strong>Status: Resolved</strong></p>
+                        </div>
+                    </div>
+
+                    <h3 style="color: #334566; font-size: 1.5em; margin: 40px 0 20px 0;">🚚 Fulfilment & Order Processing</h3>
+
+                    <div class="feature">
+                        <h3>1. Approval pending not visible after requesting shipment without PAR</h3>
+                        <div class="feature-description">
+                            <p>The approval pending status was not displayed correctly.</p>
+                            <p><strong>Status: Fixed</strong></p>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <h3>2. Country not visible inside address section</h3>
+                        <div class="feature-description">
+                            <p>The country field was not shown correctly in address details.</p>
+                            <p><strong>Status: Fixed</strong></p>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <h3>3. Business name and state missing in older orders</h3>
+                        <div class="feature-description">
+                            <p>In previously created orders, business name and state were not displayed.</p>
+                            <p><strong>Status: Fixed</strong></p>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <h3>4. Dispatch option missing for partially paid orders</h3>
+                        <div class="feature-description">
+                            <p>Due to a recent change in order status logic (single status to split status), the dispatch option was not shown for partially paid orders.</p>
+                            <p><strong>Status: Fixed</strong></p>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <h3>5. Pagination issue</h3>
+                        <div class="feature-description">
+                            <p>Pagination behaviour in listing pages was inconsistent.</p>
+                            <p><strong>Status: Not fixed</strong></p>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <h3>6. Dashboard visibility without role permission</h3>
+                        <div class="feature-description">
+                            <p>Users without the required role permissions were able to access the dashboard through routing.</p>
+                            <p><strong>Status: Fixed</strong></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+          
+
+          
+
+
+        </div>
+
+        <div class="footer">
+            <p>&copy; All rights reserved.</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">For support or questions, please contact your system administrator.</p>
+        </div>
+    </div>
+</body>
+</html>
