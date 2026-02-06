@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scalable Logger Service Documentation</title>
+    <style>
+        :root {
+            --bg: #f5f7fa;
+            --white: #ffffff;
+            --panel: #ffffff;
+            --panel2: #f8fafc;
+            --border: #e2e8f0;
+            --text: #2c3e50;
+            --muted: #64748b;
+            --muted2: #94a3b8;
+            --accent: #5a6f94;
+            --accent2: #8197c0;
+            --primary: #8197c0;
+            --primary-dark: #5a6f94;
+            --primary-light: #a8b9d4;
+            --primary-lighter: #e8edf4;
+            --good: #22c55e;
+            --good-light: #dcfce7;
+            --warn: #f59e0b;
+            --warn-light: #fef3c7;
+            --bad: #ef4444;
+            --bad-light: #fee2e2;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --radius: 12px;
+            --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--sans);
+            line-height: 1.6;
+            color: var(--text);
+            background-color: var(--bg);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 280px;
+            background-color: var(--panel);
+            border-right: 1px solid var(--border);
+            padding: 2rem 1rem;
+            height: 100vh;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+
+        .sidebar h2 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-dark);
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary-lighter);
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .sidebar li {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar a {
+            text-decoration: none;
+            color: var(--muted);
+            font-size: 0.95rem;
+            display: block;
+            padding: 0.75rem;
+            border-radius: var(--radius);
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+            font-weight: 500;
+        }
+
+        .sidebar a:hover {
+            background-color: var(--primary-lighter);
+            color: var(--primary-dark);
+        }
+
+        .sidebar a.active {
+            background-color: var(--primary-lighter);
+            color: var(--primary-dark);
+            border-left: 3px solid var(--primary);
+            box-shadow: none;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 3rem 4rem;
+            overflow-y: auto;
+            background-color: var(--bg);
+            max-width: 100%;
+        }
+
+        /* Section Visibility Logic */
+        section {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            color: var(--text);
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            margin-top: 0;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border);
+            color: var(--primary-dark);
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            padding-bottom: 0.5rem;
+            margin-top: 0;
+            color: var(--accent);
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+
+        ul,
+        ol {
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+            color: var(--text);
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Code Blocks */
+        pre {
+            background-color: var(--panel2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.2rem;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            font-family: var(--mono);
+            font-size: 0.9rem;
+            color: var(--text);
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
+        }
+
+        code {
+            font-family: var(--mono);
+            background-color: var(--panel2);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.85em;
+            color: var(--accent);
+            border: 1px solid var(--border);
+        }
+
+        pre code {
+            background-color: transparent;
+            padding: 0;
+            border: none;
+            color: inherit;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 1.5rem 0;
+            background-color: var(--white);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        th,
+        td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background-color: var(--panel2);
+            font-weight: 600;
+            color: var(--muted);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Layout Cards & Grids */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+        .card h3,
+        .card h4 {
+            margin-top: 0;
+            color: var(--primary-dark);
+            margin-bottom: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        .card p {
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+            color: var(--muted);
+        }
+
+        .card strong {
+            color: var(--text);
+        }
+
+        /* Highlights & Alerts */
+        .alert {
+            padding: 1rem;
+            border-radius: var(--radius);
+            margin: 1.5rem 0;
+            background: var(--white);
+            border-left: 4px solid var(--primary);
+            box-shadow: var(--shadow);
+        }
+
+        .alert-error {
+            background-color: var(--bad-light);
+            border-left-color: var(--bad);
+            color: #7f1d1d;
+        }
+
+        .alert-success {
+            background-color: var(--good-light);
+            border-left-color: var(--good);
+            color: #14532d;
+        }
+
+        .alert-note {
+            background-color: var(--warn-light);
+            border-left-color: var(--warn);
+            color: #78350f;
+        }
+
+        .alert-detail {
+            /* Neutral/Info Style - replaced by card grid mostly, but for standalone usage */
+            background-color: var(--panel2);
+            border-left-color: var(--accent);
+            color: var(--text);
+        }
+
+        .alert-title {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        /* Real World Context - Refined */
+        .real-world-box {
+            background-color: var(--white);
+            border: 1px solid var(--primary-light);
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+            border-radius: var(--radius);
+            position: relative;
+            box-shadow: 0 2px 8px rgba(90, 111, 148, 0.1);
+        }
+
+        .real-world-box::before {
+            content: "👉 Real World Context";
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background: var(--white);
+            padding: 0 10px;
+            color: var(--accent);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            border-radius: 4px;
+        }
+
+        .diagram {
+            background: var(--panel);
+            padding: 2rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-family: var(--mono);
+            white-space: pre;
+            overflow-x: auto;
+            margin: 2rem 0;
+            display: block;
+            line-height: 1.4;
+            color: var(--accent);
+            font-weight: 600;
+            text-align: center;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            body {
+                flex-direction: column;
+                overflow: auto;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+                padding: 1rem;
+            }
+
+            .main-content {
+                padding: 1.5rem;
+                overflow: visible;
+            }
+
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="sidebar">
+        <h2>Logger Service</h2>
+        <ul>
+            <li><a href="#overview" class="active" onclick="showSection('overview')">1. Overview / Purpose</a></li>
+            <li><a href="#goals" onclick="showSection('goals')">2. Goals & Non-Goals</a></li>
+            <li><a href="#architecture" onclick="showSection('architecture')">3. High-Level Architecture</a></li>
+            <li><a href="#producers" onclick="showSection('producers')">4. Log Producers</a></li>
+            <li><a href="#transport" onclick="showSection('transport')">5. Transport Layer</a></li>
+            <li><a href="#migration" onclick="showSection('migration')">6. Migration Path</a></li>
+            <li><a href="#storage" onclick="showSection('storage')">7. Log Storage Strategy</a></li>
+            <li><a href="#failures" onclick="showSection('failures')">8. Failure Scenarios</a></li>
+            <li><a href="#scalability" onclick="showSection('scalability')">9. Scalability Strategy</a></li>
+            <li><a href="#observability" onclick="showSection('observability')">10. Observability</a></li>
+            <li><a href="#security" onclick="showSection('security')">11. Security</a></li>
+            <li><a href="#config" onclick="showSection('config')">12. Configuration</a></li>
+            <li><a href="#future" onclick="showSection('future')">13. Future Improvements</a></li>
+        </ul>
+    </nav>
+
+    <main class="main-content">
+
+        <!-- SECTION 1: OVERVIEW -->
+        <section id="overview" class="active">
+            <h1>Overview / Purpose</h1>
+
+            <p>The <strong>Logger Service</strong> is a centralized system responsible for collecting, processing, and
+                storing application logs from multiple backend services in a reliable and scalable manner.</p>
+            <p>It decouples log generation from log persistence using a message queue to avoid performance bottlenecks
+                and data loss.</p>
+
+            <div class="real-world-box">
+                <p><strong>Real-world reason:</strong></p>
+                <ul>
+                    <li>Your <strong>auth service</strong> shouldn’t slow down just because the disk is slow.</li>
+                    <li>Your <strong>order service</strong> shouldn’t crash if the logging database fails.</li>
+                </ul>
+            </div>
+
+            <div class="alert alert-note">
+                <span class="alert-title">Why a Centralized Logger Service is Needed:</span>
+                To separate logging from business logic so that application performance, reliability, and scalability
+                are not affected by how logs are stored.
+            </div>
+
+            <h3>Key Reasons</h3>
+
+            <div class="card-grid">
+                <div class="card">
+                    <h3>Logging should not slow down APIs</h3>
+                    <p>Writing logs involves disk or network I/O, which is slow and unpredictable. If services write
+                        logs directly, user requests can become slow or fail.</p>
+                    <p>👉 <strong>Solution:</strong> Centralized logging sends logs asynchronously, so services respond
+                        fast.</p>
+                </div>
+
+                <div class="card">
+                    <h3>Logging failures should not crash services</h3>
+                    <p>Disks can fill up, permissions can break, or databases can go down. If logging is tightly
+                        coupled, these failures can crash critical services.</p>
+                    <p>👉 <strong>Solution:</strong> Centralized logging isolates failures and keeps services running.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>Single place to view and search logs</h3>
+                    <p>When each service logs separately, debugging requires checking many servers and files. This
+                        becomes impossible at scale.</p>
+                    <p>👉 <strong>Solution:</strong> Centralized logging provides one source of truth for all logs.</p>
+                </div>
+
+                <div class="card">
+                    <h3>Scales independently</h3>
+                    <p>As traffic grows, logging volume increases. Scaling logging inside services complicates
+                        application design.</p>
+                    <p>👉 <strong>Solution:</strong> Logger service can scale independently without touching business
+                        services.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: GOALS -->
+        <section id="goals">
+            <h1>Goals & Non-Goals</h1>
+
+            <h2>Goals</h2>
+            <div class="card-grid">
+                <div class="card" style="border-top: 4px solid var(--good);">
+                    <h3>1️⃣ High throughput log ingestion</h3>
+                    <p>In production, logs come in bursts (Flash sales, Traffic spikes). Thousands of logs per second
+                        can be generated. High throughput ensures <strong>no log loss during spikes</strong>.</p>
+                </div>
+
+                <div class="card" style="border-top: 4px solid var(--good);">
+                    <h3>2️⃣ Non-blocking for producers</h3>
+                    <p>Logging must never block business APIs. Logs are sent <strong>asynchronously</strong>, so
+                        producer services respond immediately.</p>
+                </div>
+
+                <div class="card" style="border-top: 4px solid var(--good);">
+                    <h3>3️⃣ Fault tolerant</h3>
+                    <p>Failures are normal. With queues and retries, logs survive crashes and processing resumes after
+                        recovery.</p>
+                </div>
+
+                <div class="card" style="border-top: 4px solid var(--good);">
+                    <h3>4️⃣ Horizontally scalable</h3>
+                    <p>Log volume grows with traffic. Horizontal scalability allows multiple logger workers and zero
+                        downtime scaling.</p>
+                </div>
+
+                <div class="card" style="border-top: 4px solid var(--good);">
+                    <h3>5️⃣ Supports multiple languages</h3>
+                    <p>Microservices are often polyglot. Logger uses standard HTTP/Queue and JSON, avoiding
+                        language-specific SDKs.</p>
+                </div>
+            </div>
+
+            <h2>Non-Goals</h2>
+            <div class="card-grid">
+                <div class="card" style="border-top: 4px solid var(--bad);">
+                    <h3>Real-time log analytics (for now)</h3>
+                    <p>Initial focus is reliable ingestion. Analytics adds complexity and cost.</p>
+                </div>
+
+                <div class="card" style="border-top: 4px solid var(--bad);">
+                    <h3>Alerting</h3>
+                    <p>Best handled by external tools like Prometheus + Alertmanager or Cloud monitoring.</p>
+                </div>
+
+                <div class="card" style="border-top: 4px solid var(--bad);">
+                    <h3>Log visualization UI</h3>
+                    <p>Use existing tools like Grafana, Kibana, or Cloud log viewers.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: ARCHITECTURE -->
+        <section id="architecture">
+            <h1>High-Level Architecture</h1>
+            <p>The Logger Service follows an <strong>asynchronous, queue-based architecture</strong> to ensure that
+                logging does not interfere with core application functionality.</p>
+
+            <div class="real-world-box">
+                <p><strong>Big Picture Overview:</strong></p>
+                <p>The system is designed so that the "act of logging" is decoupled from the "act of writing to disk".
+                </p>
+            </div>
+
+            <div class="diagram">
+                [ Producer Services ] (Auth / Order / Payment)
+                |
+                | (HTTP / Queue)
+                vv
+                [ Message Queue ] (SQS / RabbitMQ / Kafka)
+                |
+                | (Async Consume)
+                vv
+                [ Logger Worker ] (Validates, Enriches, Writes)
+                |
+                v
+                [ File Storage ] (Durable Persistence)
+            </div>
+
+            <h2>Components Explained</h2>
+
+            <div class="card-grid">
+                <div class="card">
+                    <h3>1️⃣ Producers</h3>
+                    <p>Backend services (Service A, Service B) that generate logs and send them asynchronously. They do
+                        <strong>not</strong> handle storage or retries.
+                    </p>
+                    <p><em>Why?</em> Keeps services lightweight and prevents logging logic from polluting business code.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>2️⃣ Transport Layer</h3>
+                    <p>Responsible for moving logs from producers to the logger system. The key idea is
+                        <strong>fire-and-forget</strong> via HTTP or Queue.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>3️⃣ Message Queue (Buffer)</h3>
+                    <p>The <strong>safety net</strong>. It stores logs temporarily, absorbs traffic spikes, and
+                        decouples producers from consumers.</p>
+                    <p><em>Why?</em> Producers and consumers run at different speeds. Without a queue, logs are lost
+                        during failures.</p>
+                </div>
+
+                <div class="card">
+                    <h3>4️⃣ Logger Worker</h3>
+                    <p>Consumes messages, validates format, adds metadata (timestamp, traceId), and writes to storage.
+                    </p>
+                    <p><em>Why separate?</em> Can be scaled independently and restarted without impacting producers.</p>
+                </div>
+
+                <div class="card">
+                    <h3>5️⃣ Storage</h3>
+                    <p>Durable persistence (File Storage). Initially file-based for fast writes and simple structure.
+                        Can be rotated and archived easily.</p>
+                </div>
+            </div>
+
+            <h2>Why Asynchronous?</h2>
+            <p><strong>Logging is not part of the request’s critical path.</strong></p>
+            <p><em>Synchronous:</em> API → log write → wait → respond (High latency, risky).</p>
+            <p><em>Asynchronous:</em> API → enqueue log → respond (Minimal latency, isolated failures).</p>
+
+            <h2>Why a Queue?</h2>
+            <ul>
+                <li><strong>Traffic Spikes:</strong> Buffers sudden bursts without dropping logs.</li>
+                <li><strong>Fault Tolerance:</strong> If workers crash, logs remain in the queue.</li>
+                <li><strong>Backpressure:</strong> Producers keep running even if consumers are slow.</li>
+            </ul>
+            <h2>Why SQS / RabbitMQ / Kafka?</h2>
+            <p>Each fits a different scale and complexity level.</p>
+
+            <div class="card-grid">
+                <div class="card" style="border-top: 4px solid var(--good);">
+                    <h3>SQS (Simple Queue Service)</h3>
+                    <ul>
+                        <li>Managed</li>
+                        <li>No infrastructure overhead</li>
+                        <li>Best for early-stage or medium traffic</li>
+                        <li>At-least-once delivery</li>
+                    </ul>
+                    <p>👉 <strong>Ideal starting point.</strong></p>
+                </div>
+
+                <div class="card">
+                    <h3>RabbitMQ</h3>
+                    <ul>
+                        <li>Lower latency</li>
+                        <li>More control</li>
+                        <li>Needs management</li>
+                        <li>Good for moderate throughput</li>
+                    </ul>
+                    <p>👉 <strong>Good for flexibility.</strong></p>
+                </div>
+
+                <div class="card">
+                    <h3>Kafka</h3>
+                    <ul>
+                        <li>Extremely high throughput</li>
+                        <li>Partition-based scaling</li>
+                        <li>Strong ordering guarantees</li>
+                        <li>Designed for streaming</li>
+                    </ul>
+                    <p>👉 <strong>Best for massive scale.</strong></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: PRODUCERS -->
+        <section id="producers">
+            <h1>Log Producers</h1>
+            <p>Producers are any backend services (Node.js, Java, Python, Go) that generate logs.</p>
+            <p>There is <strong>no SDK dependency</strong> — producers only need the ability to send an HTTP request or
+                publish to a queue. This ensures easy adoption.</p>
+
+            <h2>Example Log Payload</h2>
+            <pre><code class="language-json">{
+  "timestamp": "2026-02-06T10:15:30Z",
+  "service": "order-service",
+  "environment": "production",
+  "level": "ERROR",
+  "traceId": "abc-123",
+  "message": "Failed to create order",
+  "metadata": {
+    "userId": "u123", 
+    "orderId": "o456"
+  }
+}</code></pre>
+
+            <h2>Schema Validation</h2>
+            <p>All incoming logs are validated against a standard schema. Required fields:</p>
+            <table>
+                <tr>
+                    <th>Field</th>
+                    <th>Reason</th>
+                </tr>
+                <tr>
+                    <td><code>timestamp</code></td>
+                    <td>Required for ordering and debugging</td>
+                </tr>
+                <tr>
+                    <td><code>service</code></td>
+                    <td>Identifies log source</td>
+                </tr>
+                <tr>
+                    <td><code>environment</code></td>
+                    <td>Prod/Staging/Dev distinction</td>
+                </tr>
+                <tr>
+                    <td><code>level</code></td>
+                    <td>INFO, WARN, ERROR, DEBUG</td>
+                </tr>
+                <tr>
+                    <td><code>message</code></td>
+                    <td>Human-readable context</td>
+                </tr>
+            </table>
+
+            <div class="alert alert-error">
+                <span class="alert-title">What happens if a log is rejected?</span>
+                <p>If a required field is missing, the log is <strong>not stored</strong> in the main log file. It is
+                    either rejected (HTTP 400) or sent to a <strong>Dead-Letter Queue (DLQ)</strong>.</p>
+                <p><em>Why?</em> To prevent malformed data from polluting the pipeline.</p>
+            </div>
+
+            <div class="real-world-box">
+                <p><strong>Real Example - Invalid Log:</strong></p>
+                <p><code>{"service": "order", "message": "fail"}</code> -> Missing Timestamp & Environment.</p>
+                <p><strong>Action:</strong> Logger Worker detects error -> Pushes to DLQ with reason -> Keeps processing
+                    valid logs.</p>
+            </div>
+            <h2>What does “log is rejected” mean?</h2>
+            <p><strong>Rejected = not accepted into the logging pipeline</strong></p>
+            <p>When a log is missing a required field, the logger refuses to process it. It does not reach normal
+                storage.</p>
+
+            <div class="real-world-box">
+                <p><strong>Example (HTTP case):</strong> Service → Logger API ❌ validation fails</p>
+                <p><strong>Result:</strong> API returns 400 Bad Request. Log is dropped.</p>
+                <p><strong>When OK:</strong> Development, strict schema enforcement.</p>
+            </div>
+
+            <h2>What is a Dead-Letter Queue (DLQ)?</h2>
+            <p>A <strong>DLQ is a special queue</strong> where problematic messages are stored instead of being lost.
+                Think of it as a <strong>quarantine area</strong>.</p>
+
+            <div class="alert alert-note">
+                <span class="alert-title">Why not delete bad logs?</span>
+                Because you might need them for debugging. Dropping silently hides problems. DLQ lets you inspect later.
+            </div>
+
+            <h2>Real Example: Invalid Log Flow</h2>
+            <div class="diagram">
+                Service → Queue → Logger Worker
+                ❌ schema invalid
+                ↓
+                Dead-Letter Queue
+            </div>
+
+            <p><strong>Logger Worker Action:</strong> Detects violation → Stops processing → Pushes to DLQ with reason.
+            </p>
+
+            <div class="card-grid">
+                <div class="card">
+                    <h3>Option 1: Reject immediately</h3>
+                    <p>Best for HTTP-based logging. Early feedback to producers.</p>
+                    <p><strong>Downside:</strong> Log is lost. Producer must handle errors.</p>
+                </div>
+                <div class="card">
+                    <h3>Option 2: Send to DLQ</h3>
+                    <p>Best for Queue-based logging. High throughput. Don't block producers.</p>
+                    <p><strong>Downside:</strong> Needs monitoring and cleanup process.</p>
+                </div>
+            </div>
+
+            <div class="alert alert-success">
+                <span class="alert-title">Why this matters:</span> Without DLQ, bad logs retry forever, causing queue
+                bloat. DLQ prevents poison messages.
+            </div>
+        </section>
+
+        <!-- SECTION 5: TRANSPORT -->
+        <section id="transport">
+            <h1>Transport Layer</h1>
+            <p>The transport layer acts as the durable buffer between producers and consumers.</p>
+
+            <h2>Transport Options</h2>
+
+            <div class="card-grid">
+                <div class="card">
+                    <h3>1️⃣ HTTP API</h3>
+                    <p>Simple to integrate, but fragile. Good for early stages.</p>
+                    <p><strong>Con:</strong> Does NOT handle backpressure well.</p>
+                </div>
+
+                <div class="card" style="border-top: 4px solid var(--good);">
+                    <h3>2️⃣ AWS SQS (Recommended)</h3>
+                    <p>Fully managed, zero infrastructure overhead, handles backpressure naturally, at-least-once
+                        delivery.</p>
+                    <p><strong>Pro:</strong> Perfect balance of reliability and simplicity.</p>
+                </div>
+
+                <div class="card">
+                    <h3>3️⃣ Kafka (High Scale)</h3>
+                    <p>Extremely high throughput, partition-based scaling, ordering guarantees.</p>
+                    <p><strong>Con:</strong> High operational overhead. Only use for massive scale.</p>
+                </div>
+            </div>
+
+            <h2>Architecture Mindset</h2>
+            <p>The transport layer protects the system from traffic spikes, failures, and scaling complexity.</p>
+            <hr style="margin: 2rem 0; border: 0; border-top: 1px solid var(--border);">
+
+            <h2>Phase 1: HTTP → Logger Service → SQS → Consumer</h2>
+            <div class="diagram">
+                Producer → HTTP (POST /logs) → Logger Service (API) → SQS → Consumer → Storage
+            </div>
+
+            <div class="card-grid">
+                <div class="card">
+                    <h3>What’s happening here</h3>
+                    <p>Producer only knows "I send logs to an HTTP endpoint". Logger Service acts as validator, auth
+                        layer, and buffer.</p>
+                </div>
+                <div class="card" style="border-top: 4px solid var(--good);">
+                    <h3>Why this exists</h3>
+                    <ul>
+                        <li>Backend language agnostic</li>
+                        <li>Easy onboarding</li>
+                        <li>Central place to reject bad logs & rate limit</li>
+                    </ul>
+                </div>
+                <div class="card" style="border-top: 4px solid var(--bad);">
+                    <h3>Trade-offs</h3>
+                    <ul>
+                        <li>Extra network hop</li>
+                        <li>Slightly higher latency</li>
+                        <li>Logger Service must scale</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h2>Phase 2: Producer → SQS → Consumer (Direct Publish)</h2>
+            <div class="diagram">
+                Producer → AWS SDK / HTTPS → SQS → Consumer → Storage
+            </div>
+
+            <div class="card-grid">
+                <div class="card">
+                    <h3>What’s happening here</h3>
+                    <p>Producer publishes directly to SQS. No Logger API in between. Producer handles auth (IAM) and
+                        retries.</p>
+                </div>
+                <div class="card" style="border-top: 4px solid var(--good);">
+                    <h3>Why this exists</h3>
+                    <ul>
+                        <li>Much higher throughput</li>
+                        <li>Lower latency</li>
+                        <li>Fewer moving parts</li>
+                    </ul>
+                </div>
+                <div class="card" style="border-top: 4px solid var(--bad);">
+                    <h3>Trade-offs</h3>
+                    <ul>
+                        <li>Producers tightly coupled to SQS</li>
+                        <li>Harder to enforce schema centrally</li>
+                        <li>IAM duplicated in every service</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 6: MIGRATION -->
+        <section id="migration">
+            <h1>Migration Path: HTTP → SQS → Kafka</h1>
+            <p>This migration is not random. Each step solves a new problem that appears as scale increases.</p>
+
+            <div class="real-world-box">
+                <p><strong>One-line mental model:</strong></p>
+                <p>Start simple → add buffering → remove bottlenecks → adopt streaming.</p>
+            </div>
+
+            <h3>Phase 0: Direct HTTP Logging</h3>
+            <p><em>Flow:</em> Service → HTTP → Logger API → File</p>
+            <p>❌ Logger API becomes slow. ❌ High traffic overwhelms HTTP servers.</p>
+
+            <h3>Phase 1: HTTP → SQS (Production-ready baseline)</h3>
+            <p><em>Flow:</em> Service → HTTP → Logger API → SQS → Worker</p>
+            <p>✅ SQS acts as a <strong>shock absorber</strong>. Traffic spikes generally increase queue depth rather
+                than crashing the API.</p>
+
+            <h3>Phase 2: Direct SQS Publishing</h3>
+            <p><em>Flow:</em> Service → SQS → Worker</p>
+            <p>Removes the extra HTTP hop for higher throughput.</p>
+
+            <h3>Phase 3: Kafka (Massive Scale)</h3>
+            <p><em>Flow:</em> Service → Kafka → Consumers</p>
+            <p>Chosen when you need millions of logs/sec, ordering, or replay capabilities.</p>
+
+            <div class="alert alert-note">
+                <span class="alert-title">Final Takeaway:</span> You do not jump to Kafka on day one. You earn Kafka
+                when scale forces you.
+            </div>
+            <hr style="margin: 2rem 0; border: 0; border-top: 1px solid var(--border);">
+
+            <h1>How AWS SQS Works (In Detail)</h1>
+            <p>Think of <strong>SQS as a durable buffer</strong> between log producers and logger workers.</p>
+
+            <div class="diagram">
+                Service (Producer) → SendMessage → SQS Queue → ReceiveMessage → Logger Worker → Storage
+            </div>
+
+            <h3>Critical Concepts</h3>
+
+            <div class="card-grid">
+                <div class="card">
+                    <h3>1️⃣ Producer sends log</h3>
+                    <p>Producer sends JSON payload. SQS stores it durably and returns success immediately. Producer does
+                        <strong>not wait</strong>.
+                    </p>
+                </div>
+                <div class="card">
+                    <h3>2️⃣ Visibility Timeout</h3>
+                    <p>When worker reads a message, SQS "hides" it from others (Visibility Timeout). If worker crashes,
+                        timeout expires, and message reappears for retry.</p>
+                </div>
+                <div class="card">
+                    <h3>3️⃣ At-least-once delivery</h3>
+                    <p>SQS guarantees delivery at least once. Duplicates are possible if worker crashes before deleting.
+                        Logger must be idempotent.</p>
+                </div>
+                <div class="card">
+                    <h3>4️⃣ Dead-Letter Queue (DLQ)</h3>
+                    <p>If a message fails N times (MaxReceiveCount), it moves to DLQ. Prevents infinite retries.</p>
+                </div>
+            </div>
+
+            <div class="alert alert-success">
+                <span class="alert-title">SQS in one sentence:</span> SQS stores log messages durably, delivers them
+                asynchronously, retries on failure using visibility timeouts, and isolates bad messages using DLQ.
+            </div>
+
+            <h1>Why NOT HTTP or Kafka in the Beginning?</h1>
+
+            <div class="card-grid">
+                <div class="card" style="border-top: 4px solid var(--bad);">
+                    <h3>Why NOT HTTP initially?</h3>
+                    <ul>
+                        <li><strong>Fragile Dependency:</strong> If Logger API is down, logging fails.</li>
+                        <li><strong>No Backpressure:</strong> Traffic spikes cause timeouts and cascading failures.</li>
+                        <li><strong>Maintenance:</strong> You must build retries/circuit breakers yourself.</li>
+                    </ul>
+                </div>
+                <div class="card" style="border-top: 4px solid var(--bad);">
+                    <h3>Why NOT Kafka initially?</h3>
+                    <ul>
+                        <li><strong>High Ops Overhead:</strong> Managing Zookeeper, partitions, rebalancing is a burden.
+                        </li>
+                        <li><strong>Overkill:</strong> Kafka solves problems you don't have yet (millions of logs/sec,
+                            streaming).</li>
+                        <li><strong>Blast Radius:</strong> Kafka issues affect the entire platform.</li>
+                    </ul>
+                </div>
+                <div class="card" style="border-top: 4px solid var(--good);">
+                    <h3>Why SQS is the winner</h3>
+                    <ul>
+                        <li>Easy to start</li>
+                        <li>Built-in Backpressure</li>
+                        <li>Managed Retries & DLQ</li>
+                        <li>Zero Ops Overhead</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 7: STORAGE -->
+        <section id="storage">
+            <h1>Log Storage Strategy (File-Based)</h1>
+            <p>Your goal here is simple: <strong>Store logs in a way that is easy to write, easy to find, and safe at
+                    scale.</strong></p>
+
+            <div class="card-grid">
+                <div class="card" style="border-top: 4px solid var(--good);">
+                    <h3>Why file-based storage (initially)?</h3>
+                    <ul>
+                        <li>Simple & Cheap</li>
+                        <li>No extra infrastructure</li>
+                        <li>Easy to debug (<code>cat</code>, <code>grep</code>, <code>tail</code>)</li>
+                    </ul>
+                    <p>👉 You can always ship files to S3 / ELK later.</p>
+                </div>
+            </div>
+
+            <h2>File structure (Why it looks like this)</h2>
+            <pre><code>/logs/
+ └── production/
+     └── order-service/
+         └── 2026-02-06.log</code></pre>
+
+            <div class="card-grid">
+                <div class="card">
+                    <h3>Environment separation</h3>
+                    <p><code>production / staging / dev</code></p>
+                    <p>Prevents mixing test logs with prod logs and accidental analysis on wrong data.</p>
+                </div>
+                <div class="card">
+                    <h3>Service separation</h3>
+                    <p><code>order-service / auth-service</code></p>
+                    <p>Makes it easy to debug single services and apply retention rules.</p>
+                </div>
+                <div class="card">
+                    <h3>Date-based files</h3>
+                    <p><code>2026-02-06.log</code></p>
+                    <p>Provides predictable size, easy cleanup, and prevents infinite file growth.</p>
+                </div>
+            </div>
+
+            <h2>Log format: Why JSON</h2>
+            <pre><code class="language-json">{
+  "timestamp": "2026-02-06T10:15:30Z",
+  "level": "ERROR",
+  "service": "order-service",
+  "traceId": "abc-123",
+  "message": "Failed to create order"
+}</code></pre>
+            <div class="alert alert-success">
+                <span class="alert-title">Why JSON?</span> Machine-readable, language-agnostic, and compatible with
+                ELK/Datadog. Plain text is human-friendly, but JSON scales.
+            </div>
+
+            <h2>Log rotation (VERY important)</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <h3>4.1 Daily rotation</h3>
+                    <p><code>2026-02-06.log</code> → <code>2026-02-07.log</code></p>
+                    <p>Best for most services. Predictable lifecycle and natural boundary for analysis.</p>
+                </div>
+                <div class="card">
+                    <h3>4.2 Size-based rotation</h3>
+                    <p><code>2026-02-06.log.1</code> (e.g. at 100MB)</p>
+                    <p>Prevents giant files on high-volume days. Protects disk I/O.</p>
+                </div>
+            </div>
+
+            <h2>Compression & Write Strategy</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <h3>Compression (gzip)</h3>
+                    <p>Logs compress 70-90%. Only compress after rotation (never active files).</p>
+                </div>
+                <div class="card">
+                    <h3>Write Strategy</h3>
+                    <p>Append-only writes. One writer per service. Avoids corruption and race conditions.</p>
+                </div>
+                <div class="card">
+                    <h3>Retention Policy</h3>
+                    <p>Keep uncompressed: 2 days. Compressed: 7-30 days. Old: Delete/S3.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 8: FAILURES -->
+        <section id="failures">
+            <h1>Failure Scenarios & Edge Cases</h1>
+            <div class="real-world-box">
+                <p>A senior system is not one that <em>never fails</em> — it’s one that <strong>fails safely</strong>.
+                </p>
+                <p>In real production: Servers crash, Networks fail, Traffic spikes, Data is messy.</p>
+            </div>
+
+            <div class="card-grid">
+                <div class="card">
+                    <h3>1. Logger Service Crash</h3>
+                    <p>Worker crashes before finishing processing? Log was not deleted from SQS.</p>
+                    <p>👉 <strong>Safety:</strong> Visibility timeout expires. Another worker picks it up. <strong>No
+                            log loss.</strong></p>
+                </div>
+
+                <div class="card">
+                    <h3>2. Duplicate Logs</h3>
+                    <p>SQS guarantees <em>at-least-once</em> delivery. Worker crashing before delete = Duplicate.</p>
+                    <p>👉 <strong>Handling:</strong> Most loggers accept duplicates. Losing logs is worse than
+                        duplicating.</p>
+                </div>
+
+                <div class="card">
+                    <h3>3. Disk Full</h3>
+                    <p>Write fails. Logger stops consuming messages (don't delete!). Raise alert.</p>
+                    <p>👉 <strong>Safety:</strong> Queue buffers logs safely until disk is fixed. No producer impact.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>4. Invalid Schema</h3>
+                    <p>Missing fields? Malformed JSON?</p>
+                    <p>👉 <strong>Handling:</strong> Detect error → Send to <strong>DLQ</strong> → Write to
+                        `invalid-logs.log`. Continue processing.</p>
+                </div>
+
+                <div class="card">
+                    <h3>5. High Traffic Spike 🚀</h3>
+                    <p>Normal: 1k logs/sec. Spike: 50k logs/sec.</p>
+                    <p>👉 <strong>Safety:</strong> Queue absorbs burst. Producers stay fast. Horizontal scaling handles
+                        the load.</p>
+                </div>
+            </div>
+
+            <h2>Summary Table</h2>
+            <table>
+                <tr>
+                    <th>Failure</th>
+                    <th>What protects you</th>
+                    <th>Why it works</th>
+                </tr>
+                <tr>
+                    <td>Worker crash</td>
+                    <td>Visibility timeout</td>
+                    <td>Message retried</td>
+                </tr>
+                <tr>
+                    <td>Duplicates</td>
+                    <td>At-least-once delivery</td>
+                    <td>Logs not lost</td>
+                </tr>
+                <tr>
+                    <td>Disk full</td>
+                    <td>Queue buffering</td>
+                    <td>Pause safely</td>
+                </tr>
+                <tr>
+                    <td>Bad data</td>
+                    <td>DLQ + invalid log file</td>
+                    <td>System stays healthy</td>
+                </tr>
+                <tr>
+                    <td>Traffic spike</td>
+                    <td>Horizontal scaling</td>
+                    <td>Elastic throughput</td>
+                </tr>
+            </table>
+        </section>
+
+        <!-- SECTION 9: SCALABILITY -->
+        <section id="scalability">
+            <h1>9. Scalability Strategy</h1>
+            <div class="alert alert-success">
+                <span class="alert-title">Big Idea:</span> Start simple, scale only when pressure forces you to. Each
+                phase solves a real bottleneck.
+            </div>
+
+            <div class="card-grid">
+                <div class="card">
+                    <h3>Phase 1: Simple & Safe (Early Stage)</h3>
+                    <p><strong>Architecture:</strong> Single logger + SQS + Local files.</p>
+                    <p>👉 <strong>Why:</strong> Cheap, fast to build, minimal ops.</p>
+                    <p><strong>Limitation:</strong> Single disk/CPU bottleneck.</p>
+                </div>
+                <div class="card">
+                    <h3>Phase 2: Horizontal Scaling (Growing)</h3>
+                    <p><strong>Architecture:</strong> Multiple loggers + Shared Storage (EFS) + Same Queue.</p>
+                    <p>👉 <strong>Why:</strong> SQS load balances automatically.</p>
+                    <p><strong>Limitation:</strong> File locking, shared FS limits.</p>
+                </div>
+                <div class="card">
+                    <h3>Phase 3: High-Scale & Streaming (Mature)</h3>
+                    <p><strong>Architecture:</strong> Kafka instead of SQS + Partitioned Topics.</p>
+                    <p>👉 <strong>Why:</strong> Millions of logs/sec, real-time processing.</p>
+                    <p><strong>Limitation:</strong> High operational complexity.</p>
+                </div>
+            </div>
+
+            <hr style="margin: 2rem 0; border: 0; border-top: 1px solid var(--border);">
+
+            <h2>Kafka Partitions (Critical Concept)</h2>
+            <p><strong>Parallelism = number of partitions</strong></p>
+            <div class="diagram">
+                [ Services ] → [ Kafka Topic ] → [ Consumer Group: Logger ] → [ Storage ]
+            </div>
+
+            <div class="card-grid">
+                <div class="card">
+                    <h3>Partitioning Strategy</h3>
+                    <p>Partition by <code>service</code> or <code>traceId</code>.</p>
+                    <p>Ensures logs for a service stay ordered and allows safe parallelism.</p>
+                </div>
+                <div class="card">
+                    <h3>Why Kafka unlocks scale</h3>
+                    <p>Unlike SQS, Kafka allows replay, strict ordering per partition, and massive throughput.</p>
+                </div>
+            </div>
+
+            <div class="alert alert-note">
+                <span class="alert-title">Mental Model 🧠</span>
+                <ul>
+                    <li><strong>SQS</strong> = Shock Absorber (Reliability)</li>
+                    <li><strong>Files</strong> = Cheap Storage</li>
+                    <li><strong>Kafka</strong> = High-speed Conveyor Belt (Throughput)</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- SECTION 10: OBSERVABILITY -->
+        <section id="observability">
+            <h1>Observability & Monitoring</h1>
+            <p>The logger is infrastructure. If it fails silently, everything else loses visibility.</p>
+
+            <h2>Key Metrics to Monitor</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <h3>1. Logs Processed per Second</h3>
+                    <p><strong>Sudden drop:</strong> Worker crash or disk issue.</p>
+                    <p><strong>Sudden spike:</strong> Traffic surge or incident.</p>
+                </div>
+                <div class="card">
+                    <h3>2. Queue Depth (SQS Backlog)</h3>
+                    <p>The <strong>early warning system</strong>.</p>
+                    <p>Depth increasing = consumers can’t keep up. Scale immediately.</p>
+                </div>
+                <div class="card">
+                    <h3>3. Failed Writes</h3>
+                    <p>Potential data loss. Needs immediate alert.</p>
+                    <p>Causes: Disk full, permissions, corrupted data.</p>
+                </div>
+                <div class="card">
+                    <h3>4. Disk Usage</h3>
+                    <p>Alert at 80% and 90%. System remains safe only if alerted early.</p>
+                </div>
+            </div>
+
+            <h2>Tools and Their Roles</h2>
+            <div class="diagram">
+                Logger Service
+                │
+                ├── App Metrics → Prometheus → Grafana (Dashboards)
+                │
+                └── Infra Metrics → CloudWatch → Alerts (Pagers)
+            </div>
+
+            <div class="alert alert-error">
+                <span class="alert-title">What happens without monitoring?</span> Logger stops consuming → Queue fills
+                silently → Disk fills → Logs lost during outage.
+            </div>
+        </section>
+
+        <!-- SECTION 11: SECURITY -->
+        <section id="security">
+            <h1>Security Considerations</h1>
+            <p>Logs may contain sensitive data (emails, tokens). If logs leak, <strong>your entire system
+                    leaks</strong>.</p>
+
+            <div class="card-grid">
+                <div class="card">
+                    <h3>1. Authentication (API Key / IAM)</h3>
+                    <p>Prevents unauthorized services from sending logs.</p>
+                    <p>👉 <strong>IAM Roles:</strong> Best for AWS. No secrets stored in code. Automatic rotation.</p>
+                </div>
+                <div class="card">
+                    <h3>2. HTTPS Only</h3>
+                    <p>Logs often include error messages and user context.</p>
+                    <p>👉 <strong>Rule:</strong> Never send logs over cleartext HTTP. Prevent Man-in-the-Middle attacks.
+                    </p>
+                </div>
+                <div class="card">
+                    <h3>3. PII Masking</h3>
+                    <p><code>user@example.com</code> → <code>u***@example.com</code></p>
+                    <p>👉 <strong>Why:</strong> Logs live longer than DBs and are often shared. Mask early to reduce
+                        blast radius.</p>
+                </div>
+                <div class="card">
+                    <h3>4. Access Control</h3>
+                    <p>If you don't need to read prod logs, you shouldn't have access.</p>
+                    <p>👉 <strong>Policy:</strong> Read-only for most devs. Strict IAM policies.</p>
+                </div>
+            </div>
+
+            <div class="diagram">
+                [ Service ] → (Auth + HTTPS) → [ Logger Service ] → (PII Masking) → [ Secure Storage ]
+            </div>
+        </section>
+
+        <!-- SECTION 12: CONFIG -->
+        <section id="config">
+            <h1>Configuration</h1>
+            <div class="alert alert-success">
+                <span class="alert-title">Why configuration is important:</span> A logger service runs in Dev, Staging,
+                and Production. <strong>Do not change code</strong> to adapt; use configuration.
+            </div>
+
+            <h2>Common Configuration Options</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <h3>LOG_LEVEL</h3>
+                    <p><code>info</code> (default)</p>
+                    <p>Controls minimum severity. Reduce noise in prod, increase verbosity in debug.</p>
+                </div>
+                <div class="card">
+                    <h3>LOG_BASE_PATH</h3>
+                    <p><code>/var/logs</code></p>
+                    <p>Root directory. Different servers have different disks. Makes storage migration easier.</p>
+                </div>
+                <div class="card">
+                    <h3>QUEUE_TYPE</h3>
+                    <p><code>sqs</code> | <code>http</code> | <code>kafka</code></p>
+                    <p>Controls transport layer. Allows evolution without rewriting code (Phase-based scaling).</p>
+                </div>
+                <div class="card">
+                    <h3>MAX_FILE_SIZE</h3>
+                    <p><code>100MB</code></p>
+                    <p>Prevents huge files, improves read performance, protects disk usage.</p>
+                </div>
+            </div>
+
+            <h2>Real-world Configs</h2>
+            <pre><code>ENVIRONMENT=production
+LOG_RETENTION_DAYS=7
+ENABLE_COMPRESSION=true
+BATCH_SIZE=10
+VISIBILITY_TIMEOUT=30</code></pre>
+
+            <div class="alert alert-error">
+                <span class="alert-title">Security Rule:</span> Never hard-code secrets. Use environment variables or
+                Secrets Manager.
+            </div>
+        </section>
+
+        <!-- SECTION 13: FUTURE -->
+        <section id="future">
+            <h1>Future Improvements</h1>
+
+            <div class="card-grid">
+                <div class="card">
+                    <h3>1. Object Storage (S3)</h3>
+                    <p><strong>Why:</strong> Files break at scale (disk limits). S3 offers unlimited, cheap, durable
+                        storage with lifecycle policies.</p>
+                    <p>👉 <strong>Plan:</strong> Rotate locally → Compress → Upload async.</p>
+                </div>
+                <div class="card">
+                    <h3>2. Log Search (ELK / Loki)</h3>
+                    <p><strong>Why:</strong> Grepping files is slow. Querying by <code>traceId</code> or
+                        <code>service</code> turns logs into data.
+                    </p>
+                </div>
+                <div class="card">
+                    <h3>3. Alerting</h3>
+                    <p><strong>Why:</strong> Observability → Action. Alert on Queue Depth, Failed Writes, and Disk
+                        Usage.</p>
+                </div>
+                <div class="card">
+                    <h3>4. Structured Indexing</h3>
+                    <p><strong>Why:</strong> Faster search and correlation across services. Foundation for distributed
+                        tracing.</p>
+                </div>
+            </div>
+
+            <h2>Evolution Story</h2>
+            <div class="diagram">
+                Phase 1 → Files + SQS
+                Phase 2 → Shared Storage
+                Phase 3 → Kafka + Streaming
+                Phase 4 → Search + Alerting + S3
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        function showSection(sectionId) {
+            // Hide all sections
+            const sections = document.querySelectorAll('section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Remove active class from all sidebar links
+            const links = document.querySelectorAll('.sidebar a');
+            links.forEach(link => {
+                link.classList.remove('active');
+            });
+
+            // Show target section
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+
+            // Highlight clicked link
+            const activeLink = document.querySelector(`.sidebar a[href="#${sectionId}"]`);
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
+        }
+
+        // Initialize: Check hash or default to 'overview'
+        window.addEventListener('DOMContentLoaded', () => {
+            const hash = window.location.hash.substring(1);
+            if (hash) {
+                showSection(hash);
+            } else {
+                showSection('overview');
+            }
+        });
+    </script>
+</body>
+
+</html>
