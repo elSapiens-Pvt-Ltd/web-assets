@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Git Branching Strategy</title>
+  <style>
+    :root {
+      --c50:#f0f3f7; --c100:#dce3ee; --c200:#bcc9de; --c300:#8197c0;
+      --c500:#506da0; --c600:#3f5785; --c700:#334669; --c800:#2a3a56; --c900:#1e2b40;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Segoe UI',system-ui,sans-serif; background:var(--c50); color:var(--c900); line-height:1.5; padding:1.5rem; max-width:960px; margin:0 auto; }
+
+    header { text-align:center; padding:1.5rem; background:linear-gradient(135deg,var(--c800),var(--c600)); color:#fff; border-radius:12px; margin-bottom:1.5rem; }
+    header h1 { font-size:1.6rem; margin-bottom:0.2rem; }
+    header p { font-size:0.9rem; opacity:0.8; }
+
+    .card { background:#fff; border-radius:10px; padding:1.2rem 1.4rem; margin-bottom:1.2rem; border:1px solid var(--c200); }
+    .card h2 { font-size:1.05rem; color:var(--c700); margin-bottom:0.8rem; }
+
+    table { width:100%; border-collapse:collapse; font-size:0.88rem; }
+    th { background:var(--c100); color:var(--c800); padding:0.5rem 0.7rem; text-align:left; font-weight:600; }
+    td { padding:0.45rem 0.7rem; border-bottom:1px solid var(--c100); }
+    tr:hover td { background:var(--c50); }
+
+    code, .mono { font-family:'SF Mono','Fira Code',Consolas,monospace; font-size:0.82rem; }
+
+    .b { display:inline-block; padding:0.15rem 0.5rem; border-radius:5px; font-weight:600; font-size:0.82rem; font-family:'SF Mono',Consolas,monospace; }
+    .b-main    { background:#d1fae5; color:#065f46; }
+    .b-beta    { background:#fef3c7; color:#92400e; }
+    .b-alpha   { background:#dbeafe; color:#1e40af; }
+    .b-dev     { background:#ede9fe; color:#5b21b6; }
+    .b-feat    { background:#d1fae5; color:#065f46; }
+    .b-bug     { background:#fef3c7; color:#92400e; }
+    .b-hot     { background:#fee2e2; color:#991b1b; }
+    .b-rel     { background:var(--c100); color:var(--c700); }
+
+    .env { display:inline-block; padding:0.12rem 0.5rem; border-radius:12px; font-size:0.75rem; font-weight:600; color:#fff; }
+    .env-prod { background:#065f46; } .env-pre { background:#92400e; }
+    .env-stg  { background:#1e40af; } .env-dev { background:#5b21b6; }
+
+    /* Flow */
+    .flow { display:flex; align-items:center; justify-content:center; gap:0; flex-wrap:wrap; padding:0.6rem 0; }
+    .fn { padding:0.4rem 0.8rem; border-radius:8px; font-weight:700; font-size:0.82rem; text-align:center; border:2px solid; }
+    .fn-feat { background:#d1fae5; color:#065f46; border-color:#6ee7b7; }
+    .fn-dev  { background:#ede9fe; color:#5b21b6; border-color:#c4b5fd; }
+    .fn-alp  { background:#dbeafe; color:#1e40af; border-color:#93c5fd; }
+    .fn-bet  { background:#fef3c7; color:#92400e; border-color:#fcd34d; }
+    .fn-main { background:#d1fae5; color:#065f46; border-color:#6ee7b7; }
+    .fn-hot  { background:#fee2e2; color:#991b1b; border-color:#fca5a5; }
+
+    .fa { display:flex; flex-direction:column; align-items:center; padding:0 0.2rem; }
+    .fa .arr { font-size:1.3rem; color:var(--c300); font-weight:700; line-height:1; }
+    .pr-tag { font-size:0.6rem; font-weight:700; color:#fff; background:var(--c600); padding:0.1rem 0.35rem; border-radius:3px; }
+    .who-tag { font-size:0.6rem; font-weight:600; padding:0.1rem 0.35rem; border-radius:3px; white-space:nowrap; }
+    .who-dev { background:#ede9fe; color:#5b21b6; }
+    .who-lead { background:#fef3c7; color:#92400e; }
+
+    .flow-section { margin-bottom:1.2rem; }
+    .flow-section:last-child { margin-bottom:0; }
+    .who-legend { display:flex; gap:1rem; justify-content:center; margin-bottom:1rem; font-size:0.78rem; align-items:center; }
+    .who-legend span { display:flex; align-items:center; gap:0.3rem; }
+
+    .flow-label { text-align:center; font-size:0.75rem; font-weight:700; color:var(--c500); text-transform:uppercase; letter-spacing:1px; margin-bottom:0.3rem; }
+
+    /* Examples */
+    .ex { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:0.5rem; margin-top:0.8rem; }
+    .ex-item { display:flex; align-items:center; gap:0.5rem; padding:0.4rem 0.7rem; background:var(--c50); border-radius:6px; border:1px solid var(--c200); }
+    .ex-tag { font-size:0.65rem; font-weight:700; text-transform:uppercase; padding:0.1rem 0.4rem; border-radius:3px; white-space:nowrap; }
+
+    /* Branch list */
+    .bl { display:flex; gap:1.2rem; flex-wrap:wrap; }
+    .bl-g { flex:1; min-width:200px; }
+    .bl-g h4 { font-size:0.75rem; text-transform:uppercase; letter-spacing:1px; color:var(--c500); margin-bottom:0.5rem; border-bottom:2px solid var(--c200); padding-bottom:0.3rem; }
+    .bl-g ul { list-style:none; }
+    .bl-g li { padding:0.2rem 0; font-size:0.88rem; display:flex; align-items:center; gap:0.4rem; }
+    .dot { width:6px; height:6px; border-radius:50%; }
+    .dot-p { background:var(--c500); } .dot-t { background:var(--c300); }
+    .note { font-size:0.75rem; color:var(--c500); font-style:italic; }
+
+    footer { text-align:center; padding:1rem; color:var(--c300); font-size:0.8rem; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Git Branching Strategy</h1>
+    <p>How we branch, merge, and deploy</p>
+  </header>
+
+  <!-- Permanent Branches -->
+  <div class="card">
+    <h2>&#x1F512; Permanent Branches</h2>
+    <table>
+      <tr><th>Branch</th><th>Purpose</th><th>Environment</th></tr>
+      <tr><td><span class="b b-main">main</span></td><td>Production-ready code</td><td><span class="env env-prod">Production</span></td></tr>
+      <tr><td><span class="b b-beta">beta</span></td><td>Pre-production validation &amp; UAT</td><td><span class="env env-pre">Pre-Production</span></td></tr>
+      <tr><td><span class="b b-alpha">alpha</span></td><td>Staging &amp; integration testing</td><td><span class="env env-stg">Staging</span></td></tr>
+      <tr><td><span class="b b-dev">development</span></td><td>Active development integration</td><td><span class="env env-dev">Development</span></td></tr>
+    </table>
+  </div>
+
+  <!-- Temporary Branches -->
+  <div class="card">
+    <h2>&#x1F6E0;&#xFE0F; Temporary Branches</h2>
+    <table>
+      <tr><th>Type</th><th>Format</th><th>Purpose</th></tr>
+      <tr><td><span class="b b-feat">feature/</span></td><td><code>feature/&lt;ticket&gt;-&lt;desc&gt;</code></td><td>New features</td></tr>
+      <tr><td><span class="b b-bug">bugfix/</span></td><td><code>bugfix/&lt;ticket&gt;-&lt;desc&gt;</code></td><td>Non-urgent bug fixes</td></tr>
+      <tr><td><span class="b b-hot">hotfix/</span></td><td><code>hotfix/&lt;ticket&gt;-&lt;desc&gt;</code></td><td>Emergency production fixes</td></tr>
+      <tr><td><span class="b b-rel">release/</span></td><td><code>release/vX.Y.Z</code></td><td>Release archive <span class="note">(kept permanently)</span></td></tr>
+    </table>
+    <div class="ex">
+      <div class="ex-item"><span class="ex-tag b-feat">feat</span><code>feature/JIRA-123-user-auth</code></div>
+      <div class="ex-item"><span class="ex-tag b-bug">bug</span><code>bugfix/JIRA-456-login-error</code></div>
+      <div class="ex-item"><span class="ex-tag b-hot">hot</span><code>hotfix/JIRA-789-payment-failure</code></div>
+      <div class="ex-item"><span class="ex-tag b-rel">rel</span><code>release/v1.2.3</code></div>
+    </div>
+  </div>
+
+  <!-- Flow -->
+  <div class="card">
+    <h2>&#x1F501; Code Flow</h2>
+
+    <div class="who-legend">
+      <span><span class="who-tag who-dev">Developer</span> raises PR</span>
+      <span><span class="who-tag who-lead">Authorized</span> merges PR</span>
+    </div>
+
+    <div class="flow-section">
+      <div class="flow-label">Normal Development</div>
+      <div class="flow">
+        <div class="fn fn-feat">feature/<br>bugfix/</div>
+        <div class="fa"><span class="who-tag who-dev">Developer</span><span class="pr-tag">PR</span><span class="arr">&#x2192;</span></div>
+        <div class="fn fn-dev">development</div>
+        <div class="fa"><span class="who-tag who-lead">Authorized</span><span class="pr-tag">PR</span><span class="arr">&#x2192;</span></div>
+        <div class="fn fn-alp">alpha</div>
+        <div class="fa"><span class="who-tag who-lead">Authorized</span><span class="pr-tag">PR</span><span class="arr">&#x2192;</span></div>
+        <div class="fn fn-bet">beta</div>
+        <div class="fa"><span class="who-tag who-lead">Authorized</span><span class="pr-tag">PR</span><span class="arr">&#x2192;</span></div>
+        <div class="fn fn-main">main</div>
+      </div>
+    </div>
+
+    <div class="flow-section">
+      <div class="flow-label">Hotfix (Emergency)</div>
+      <div class="flow">
+        <div class="fn fn-hot">hotfix/</div>
+        <div class="fa"><span class="who-tag who-lead">Authorized</span><span class="pr-tag">PR</span><span class="arr">&#x2192;</span></div>
+        <div class="fn fn-main">main</div>
+        <div class="fa"><span class="arr">&#x2192;</span></div>
+        <div class="fn fn-bet">beta</div>
+        <div class="fa"><span class="arr">&#x2192;</span></div>
+        <div class="fn fn-alp">alpha</div>
+        <div class="fa"><span class="arr">&#x2192;</span></div>
+        <div class="fn fn-dev">development</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary -->
+  <div class="card">
+    <h2>&#x1F5C2;&#xFE0F; Quick Reference</h2>
+    <div class="bl">
+      <div class="bl-g">
+        <h4>Permanent</h4>
+        <ul>
+          <li><span class="dot dot-p"></span><span class="b b-main">main</span></li>
+          <li><span class="dot dot-p"></span><span class="b b-beta">beta</span></li>
+          <li><span class="dot dot-p"></span><span class="b b-alpha">alpha</span></li>
+          <li><span class="dot dot-p"></span><span class="b b-dev">development</span></li>
+        </ul>
+      </div>
+      <div class="bl-g">
+        <h4>Temporary</h4>
+        <ul>
+          <li><span class="dot dot-t"></span><span class="b b-feat">feature/*</span></li>
+          <li><span class="dot dot-t"></span><span class="b b-bug">bugfix/*</span></li>
+          <li><span class="dot dot-t"></span><span class="b b-hot">hotfix/*</span></li>
+          <li><span class="dot dot-t"></span><span class="b b-rel">release/*</span> <span class="note">(archived)</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <footer>PRs are raised at every stage &mdash; development &#x2192; alpha &#x2192; beta &#x2192; main</footer>
+
+</body>
+</html>
