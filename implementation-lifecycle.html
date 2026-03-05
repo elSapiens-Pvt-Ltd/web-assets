@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>elSapiens — Implementation Lifecycle</title>
+<style>
+  :root {
+    --c50: #f0f3f8;
+    --c100: #dce3ef;
+    --c200: #b9c7df;
+    --c300: #8197c0;
+    --c400: #6b82b3;
+    --c500: #536da0;
+    --c600: #3f5580;
+    --c700: #2d3d5c;
+    --c800: #1e2a40;
+    --c900: #111827;
+    --radius: 8px;
+    --shadow: 0 1px 3px rgba(0,0,0,.1), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-md: 0 4px 6px rgba(0,0,0,.1), 0 2px 4px rgba(0,0,0,.06);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: var(--c900);
+    background: var(--c50);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+
+  /* ── Sticky Nav ── */
+  .top-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--c800);
+    padding: 0 16px;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    box-shadow: 0 2px 8px rgba(0,0,0,.25);
+  }
+  .top-nav a {
+    display: inline-block;
+    color: var(--c200);
+    text-decoration: none;
+    font-size: 13px;
+    padding: 10px 12px;
+    transition: color .2s, background .2s;
+  }
+  .top-nav a:hover { color: #fff; background: var(--c700); }
+
+  /* ── Header ── */
+  .hero {
+    background: var(--c50);
+    color: var(--c900);
+    padding: 20px 24px 16px;
+    text-align: center;
+    border-bottom: 3px solid var(--c500);
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+  }
+  .hero-logo {
+    margin-bottom: 8px;
+  }
+  .hero-logo img {
+    height: 56px;
+    width: auto;
+  }
+  .hero-text h1 {
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    letter-spacing: -0.5px;
+  }
+  .hero-text p {
+    font-size: 15px;
+    color: var(--c400);
+    max-width: 420px;
+    margin: 0 auto;
+  }
+
+  /* ── Container ── */
+  .container { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+
+  /* ── Section ── */
+  .section { padding: 48px 0; }
+  .section + .section { border-top: 1px solid var(--c100); }
+  .section-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--c700);
+    margin-bottom: 4px;
+  }
+  .section-sub {
+    font-size: 14px;
+    color: var(--c400);
+    margin-bottom: 24px;
+  }
+
+  /* ── Flowchart ── */
+  .flowchart-wrap {
+    overflow-x: auto;
+    padding: 32px 0;
+    -webkit-overflow-scrolling: touch;
+  }
+  .flowchart {
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+    min-width: 1100px;
+    position: relative;
+  }
+  .fc-step {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .fc-box {
+    padding: 10px 14px;
+    border-radius: var(--radius);
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+    color: #fff;
+    min-width: 90px;
+    box-shadow: var(--shadow);
+    position: relative;
+  }
+  .fc-arrow {
+    width: 28px;
+    height: 2px;
+    background: var(--c300);
+    position: relative;
+    flex-shrink: 0;
+  }
+  .fc-arrow::after {
+    content: '';
+    position: absolute;
+    right: -1px;
+    top: -4px;
+    border: 5px solid transparent;
+    border-left: 6px solid var(--c300);
+  }
+
+  /* phase colors */
+  .fc-intake { background: var(--c500); }
+  .fc-define { background: var(--c600); }
+  .fc-build  { background: #2563eb; }
+  .fc-test   { background: #7c3aed; }
+  .fc-train  { background: #0891b2; }
+  .fc-release{ background: #059669; }
+  .fc-monitor{ background: #d97706; }
+  .fc-close  { background: var(--c800); }
+  .fc-change { background: #dc2626; }
+
+  /* Change Request branch */
+  .cr-branch {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: -14px;
+  }
+  .cr-line {
+    width: 2px;
+    height: 28px;
+    background: #dc2626;
+  }
+  .cr-box-wrap {
+    position: relative;
+  }
+  .cr-arrow-up {
+    width: 2px;
+    height: 28px;
+    background: #dc2626;
+    position: relative;
+  }
+  .cr-arrow-up::after {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: -4px;
+    border: 5px solid transparent;
+    border-bottom: 6px solid #dc2626;
+  }
+  .cr-label {
+    font-size: 10px;
+    color: #dc2626;
+    font-weight: 600;
+    margin-top: 2px;
+    white-space: nowrap;
+  }
+
+  /* ── Cards ── */
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+  .card {
+    background: #fff;
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: var(--shadow);
+    border-top: 4px solid var(--c300);
+  }
+  .card h3 { font-size: 16px; color: var(--c700); margin-bottom: 8px; }
+  .card p, .card li { font-size: 14px; color: var(--c800); }
+  .card ul { padding-left: 18px; }
+  .card ul li { margin-bottom: 4px; }
+
+  .card--feature { border-top-color: var(--c500); }
+  .card--enhancement { border-top-color: #7c3aed; }
+  .card--bug { border-top-color: #dc2626; }
+
+  /* ── Phase block ── */
+  .phase {
+    background: #fff;
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    box-shadow: var(--shadow);
+    margin-bottom: 24px;
+    border-left: 4px solid var(--c300);
+  }
+  .phase h3 {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--c700);
+    margin-bottom: 12px;
+  }
+  .phase h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--c600);
+    margin: 16px 0 6px;
+  }
+  .phase p, .phase li {
+    font-size: 14px;
+    color: var(--c800);
+  }
+  .phase ul, .phase ol { padding-left: 20px; }
+  .phase li { margin-bottom: 4px; }
+  .phase--change { border-left-color: #dc2626; }
+  .phase--test   { border-left-color: #7c3aed; }
+  .phase--train  { border-left-color: #0891b2; }
+  .phase--release{ border-left-color: #059669; }
+  .phase--monitor{ border-left-color: #d97706; }
+  .phase--close  { border-left-color: var(--c800); }
+
+  /* ── Data table ── */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    margin: 12px 0;
+  }
+  .data-table th {
+    text-align: left;
+    background: var(--c100);
+    padding: 8px 12px;
+    font-weight: 600;
+    color: var(--c700);
+  }
+  .data-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--c100);
+    color: var(--c800);
+  }
+
+  /* ── Badges ── */
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 99px;
+    color: #fff;
+  }
+  .badge-email { background: var(--c500); }
+  .badge-wa    { background: #25d366; }
+
+  /* ── Comm protocol ── */
+  .comm-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 12px;
+  }
+  .comm-item {
+    background: var(--c50);
+    border: 1px solid var(--c100);
+    border-radius: var(--radius);
+    padding: 14px;
+    font-size: 13px;
+  }
+  .comm-item strong { color: var(--c700); }
+
+  /* ── Note callout ── */
+  .note {
+    background: var(--c50);
+    border: 1px solid var(--c200);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--c600);
+    margin-top: 16px;
+  }
+  .note::before {
+    content: 'Note: ';
+    font-weight: 700;
+  }
+
+  /* ── Callout (rule enforcement) ── */
+  .callout-rule {
+    background: #fef2f2;
+    border: 2px solid #dc2626;
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #991b1b;
+    margin: 16px 0;
+    text-align: center;
+  }
+
+  /* ── Checkpoint cards ── */
+  .checkpoint-cards {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-top: 16px;
+  }
+  .checkpoint {
+    background: #fff;
+    border: 1px solid var(--c100);
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: var(--shadow);
+  }
+  .checkpoint-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  .checkpoint-num {
+    background: var(--c600);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .checkpoint-header h4 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--c700);
+    margin: 0;
+  }
+  .checkpoint .cp-when {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--c400);
+    margin-bottom: 6px;
+  }
+  .checkpoint > p {
+    font-size: 14px;
+    color: var(--c800);
+  }
+
+  /* ── Footer ── */
+  .footer {
+    text-align: center;
+    padding: 32px 20px;
+    font-size: 12px;
+    color: var(--c400);
+    border-top: 1px solid var(--c100);
+  }
+
+  /* ── Print ── */
+  @media print {
+    .top-nav { display: none; }
+    .hero { padding: 24px 16px 20px; }
+    .section { padding: 24px 0; }
+    .phase, .card { break-inside: avoid; }
+    body { font-size: 12px; }
+    .flowchart-wrap { overflow: visible; }
+    .flowchart { min-width: unset; flex-wrap: wrap; gap: 8px; }
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 640px) {
+    .hero-text h1 { font-size: 24px; }
+    .hero { padding: 28px 16px 24px; }
+    .hero-logo img { height: 44px; }
+    .container { padding: 0 12px; }
+    .section { padding: 32px 0; }
+    .cards { grid-template-columns: 1fr; }
+    .comm-grid { grid-template-columns: 1fr; }
+    .phase { padding: 20px 16px; }
+    .section-title { font-size: 19px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════ HEADER ════════ -->
+<header class="hero">
+  <div class="hero-logo"><img src="assets/logo.png" alt="elSapiens"></div>
+  <div class="hero-text">
+    <h1>Implementation Lifecycle</h1>
+    <p>A structured approach to building reliable solutions</p>
+  </div>
+</header>
+
+<!-- ════════ NAV ════════ -->
+<nav class="top-nav" role="navigation" aria-label="Document sections">
+  <a href="#flowchart">Flowchart</a>
+  <a href="#req-types">Requirement Types</a>
+  <a href="#phase-know">Know Your Requirement</a>
+  <a href="#phase-define">Definitions</a>
+  <a href="#phase-impl">Implementation</a>
+  <a href="#phase-change">Change Request</a>
+  <a href="#phase-beta">Beta &amp; Usability</a>
+  <a href="#phase-train">Training</a>
+  <a href="#phase-release">Release</a>
+  <a href="#phase-monitor">Monitoring</a>
+  <a href="#phase-close">Closure</a>
+  <a href="#comm">Communication</a>
+</nav>
+
+<!-- ════════ FLOWCHART ════════ -->
+<div class="container">
+<section id="flowchart" class="section">
+  <h2 class="section-title">Lifecycle Overview</h2>
+  <p class="section-sub">Every requirement follows this path from intake to closure</p>
+
+  <div class="flowchart-wrap">
+    <div class="flowchart">
+      <!-- 1 -->
+      <div class="fc-step">
+        <div class="fc-box fc-intake">Requirement</div>
+        <div class="fc-arrow"></div>
+      </div>
+      <!-- 2 -->
+      <div class="fc-step">
+        <div class="fc-box fc-intake">Know Your<br>Requirement</div>
+        <div class="fc-arrow"></div>
+      </div>
+      <!-- 3 -->
+      <div class="fc-step">
+        <div class="fc-box fc-define">Definitions</div>
+        <div class="fc-arrow"></div>
+      </div>
+      <!-- 4 — Implementation + CR branch -->
+      <div class="fc-step" style="flex-direction:column;align-items:center;">
+        <div style="display:flex;align-items:center;">
+          <div class="fc-box fc-build" id="fc-impl">Implementation</div>
+          <div class="fc-arrow"></div>
+        </div>
+        <!-- CR branch going down and back up -->
+        <div class="cr-branch">
+          <div class="cr-line"></div>
+          <div class="fc-box fc-change" style="font-size:11px;min-width:80px;padding:8px 10px;">Change<br>Request</div>
+          <div class="cr-arrow-up"></div>
+          <div class="cr-label">feeds back</div>
+        </div>
+      </div>
+      <!-- 5 -->
+      <div class="fc-step">
+        <div class="fc-box fc-test">Beta &amp;<br>Usability</div>
+        <div class="fc-arrow"></div>
+      </div>
+      <!-- 6 -->
+      <div class="fc-step">
+        <div class="fc-box fc-train">Training</div>
+        <div class="fc-arrow"></div>
+      </div>
+      <!-- 7 -->
+      <div class="fc-step">
+        <div class="fc-box fc-release">Release</div>
+        <div class="fc-arrow"></div>
+      </div>
+      <!-- 8 -->
+      <div class="fc-step">
+        <div class="fc-box fc-monitor">Monitoring</div>
+        <div class="fc-arrow"></div>
+      </div>
+      <!-- 9 -->
+      <div class="fc-step">
+        <div class="fc-box fc-close">Closure</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ REQUIREMENT TYPES ════════ -->
+<section id="req-types" class="section">
+  <h2 class="section-title">Requirement Types</h2>
+  <p class="section-sub">Every incoming request falls into one of three categories</p>
+
+  <div class="cards">
+    <div class="card card--feature">
+      <h3>New Feature</h3>
+      <p>Entirely new functionality that does not currently exist in the system. Requires the most thorough discovery and definition process.</p>
+    </div>
+    <div class="card card--enhancement">
+      <h3>Feature Enhancement</h3>
+      <p>An improvement or modification to an existing feature. Builds on established behavior with targeted changes.</p>
+    </div>
+    <div class="card card--bug">
+      <h3>Bug</h3>
+      <p>A defect in existing behavior where the system does not work as defined. Focused on reproducing, diagnosing, and correcting.</p>
+    </div>
+  </div>
+
+  <div class="note">The depth of the "Know Your Requirement" phase varies by type — new features require the most discovery, bugs the least.</div>
+</section>
+
+<!-- ════════ PHASE 1: KNOW YOUR REQUIREMENT ════════ -->
+<section id="phase-know" class="section">
+  <h2 class="section-title">Phase 1: Know Your Requirement</h2>
+  <p class="section-sub">Understand the problem before jumping to solutions</p>
+
+  <div class="phase">
+    <h3>Who Raises It</h3>
+    <p>Requirements can originate from business stakeholders (client-side) or internal team members. Every requirement must have a named owner responsible for providing context.</p>
+
+    <h3 style="margin-top:20px;">Mandatory Intake Sheet</h3>
+    <p>Before any work begins, the team must have clear answers to these five questions. It is our responsibility to extract this information from the client — through conversations, calls, or emails — and document it. The requirement is not ready until all five fields are answered.</p>
+
+    <div class="callout-rule">No answers to these five &rarr; no work starts.</div>
+
+    <p style="margin-top:12px;">Once confirmed by the client, a summary is sent via <span class="badge badge-email">Email</span> + <span class="badge badge-wa">WhatsApp</span> as the first client checkpoint — <strong>"Here's what we understood."</strong></p>
+
+    <table class="data-table">
+      <tr><th>#</th><th>Field</th><th>Description</th></tr>
+      <tr><td>1</td><td><strong>Problem</strong></td><td>What is happening right now?</td></tr>
+      <tr><td>2</td><td><strong>Why it matters</strong></td><td>Revenue? Time? Errors? Customers?</td></tr>
+      <tr><td>3</td><td><strong>Who is affected</strong></td><td>Team? Customers? Operations?</td></tr>
+      <tr><td>4</td><td><strong>Desired outcome</strong></td><td>What should improve?</td></tr>
+      <tr><td>5</td><td><strong>Constraints</strong></td><td>Time / budget / tech / process</td></tr>
+    </table>
+
+    <h3 style="margin-top:24px;">Supplementary Fields by Type</h3>
+    <p>In addition to the intake sheet, the following type-specific details help deepen understanding.</p>
+
+    <h4>New Feature</h4>
+    <ul>
+      <li><strong>Current management method</strong> — What tools or processes are in place today?</li>
+    </ul>
+
+    <h4>Feature Enhancement</h4>
+    <ul>
+      <li><strong>Current behavior</strong> — How does the feature work today?</li>
+    </ul>
+
+    <h4>Bug</h4>
+    <ul>
+      <li><strong>Steps to reproduce</strong> — Exact sequence to trigger the defect</li>
+      <li><strong>Severity</strong> — Critical / High / Medium / Low</li>
+    </ul>
+
+    <table class="data-table" style="margin-top:20px;">
+      <tr><th>Field</th><th>Description</th></tr>
+      <tr><td>Date Created</td><td>When the requirement was first logged</td></tr>
+      <tr><td>Date Picked</td><td>When the requirement was accepted into a development cycle</td></tr>
+      <tr><td>Raised By</td><td>Name and role of the person who submitted the requirement</td></tr>
+      <tr><td>Type</td><td>New Feature / Enhancement / Bug</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ════════ PHASE 2: DEFINITIONS ════════ -->
+<section id="phase-define" class="section">
+  <h2 class="section-title">Phase 2: Definitions</h2>
+  <p class="section-sub">Define what the system will — and will not — do</p>
+
+  <div class="phase">
+    <h3>System Behavior Definitions</h3>
+    <p>A clear written statement of what the implementation will do and, equally important, what it will <strong>not</strong> do. This eliminates ambiguity and prevents scope drift.</p>
+
+    <h4>Scope Boundaries</h4>
+    <p>Explicit declaration of what is included and excluded. If it is not listed in scope, it is not part of this implementation.</p>
+
+    <h4>Acceptance Criteria</h4>
+    <p>Measurable conditions that must be met for the requirement to be considered complete. Written in a testable format.</p>
+
+    <h4>Time Estimate</h4>
+    <p>Estimated hours for implementation, reviewed and agreed upon before work begins. This becomes the baseline for tracking.</p>
+
+    <table class="data-table">
+      <tr><th>Deliverable</th><th>Purpose</th></tr>
+      <tr><td>Behavior definition</td><td>What it does / does not do</td></tr>
+      <tr><td>Scope document</td><td>Included vs. excluded items</td></tr>
+      <tr><td>Acceptance criteria</td><td>Pass/fail conditions for sign-off</td></tr>
+      <tr><td>Time estimate (hours)</td><td>Baseline for effort tracking</td></tr>
+    </table>
+
+    <p style="margin-top:12px;">Once definitions are complete, a summary is sent via <span class="badge badge-email">Email</span> + <span class="badge badge-wa">WhatsApp</span> as the second client checkpoint — <strong>"Here's what we will build."</strong> The client approves before build starts.</p>
+  </div>
+</section>
+
+<!-- ════════ PHASE 3: IMPLEMENTATION ════════ -->
+<section id="phase-impl" class="section">
+  <h2 class="section-title">Phase 3: Implementation</h2>
+  <p class="section-sub">Build on the Alpha environment with tracked effort</p>
+
+  <div class="phase">
+    <h3>Alpha Environment</h3>
+    <p>All development work happens in the Alpha environment — an internal, non-production space used for active development and internal testing.</p>
+
+    <h4>Estimated Hours</h4>
+    <p>Hours from the Definitions phase are used as the working budget. Any deviation is flagged immediately.</p>
+  </div>
+</section>
+
+<!-- ════════ PHASE 4: CHANGE REQUEST ════════ -->
+<section id="phase-change" class="section">
+  <h2 class="section-title">Phase 4: Change Request</h2>
+  <p class="section-sub">A controlled process for mid-implementation changes</p>
+
+  <div class="phase phase--change">
+    <h3>When Does a Change Request Occur?</h3>
+    <p>During implementation, the team may discover a better approach, gain new insight, or identify a necessary scope adjustment. Rather than absorbing changes silently, every change goes through this process.</p>
+
+    <h4>Trigger</h4>
+    <ul>
+      <li>New insight discovered during development</li>
+      <li>A better technical or UX approach identified</li>
+      <li>Scope adjustment required due to unforeseen dependencies</li>
+    </ul>
+
+    <h4>Impact Analysis</h4>
+    <table class="data-table">
+      <tr><th>Dimension</th><th>Assessment</th></tr>
+      <tr><td>Time impact</td><td>Additional hours required</td></tr>
+      <tr><td>Scope impact</td><td>What changes in the deliverable</td></tr>
+      <tr><td>Risk assessment</td><td>Potential side effects or regressions</td></tr>
+    </table>
+
+    <h4>Communication</h4>
+    <p>Stakeholders are notified via <span class="badge badge-email">Email</span> <span class="badge badge-wa">WhatsApp</span> with the change details and impact summary.</p>
+
+    <h4>Approval</h4>
+    <p>No change is absorbed without explicit client/stakeholder sign-off. Work pauses on the changed item until approval is received.</p>
+
+    <h4>Timeline Adjustment</h4>
+    <p>Upon approval, hours and delivery date are updated. The change feeds back into the Implementation phase with revised parameters.</p>
+  </div>
+</section>
+
+<!-- ════════ PHASE 5: BETA & USABILITY ════════ -->
+<section id="phase-beta" class="section">
+  <h2 class="section-title">Phase 5: Beta &amp; Usability Testing</h2>
+  <p class="section-sub">Validate with real data and real users before release</p>
+
+  <div class="phase phase--test">
+    <h3>Beta Environment</h3>
+    <p>The Beta environment mirrors production data. This ensures testing happens under realistic conditions, not idealized dev data.</p>
+
+    <h4>Usability Test Definition</h4>
+    <ul>
+      <li><strong>What we test</strong> — Specific workflows and scenarios derived from acceptance criteria</li>
+      <li><strong>Who tests</strong> — Identified test users (internal QA + selected end users)</li>
+      <li><strong>Success metrics</strong> — Task completion, error rate, user feedback</li>
+    </ul>
+
+    <h4>Usability Report</h4>
+    <p>A summary of findings from testing: what worked, what didn't, and what was changed as a result.</p>
+
+    <h4>Changes Log</h4>
+    <p>Every change made during Beta is logged with reason and timestamp. Nothing is changed without documentation.</p>
+  </div>
+</section>
+
+<!-- ════════ PHASE 6: TRAINING ════════ -->
+<section id="phase-train" class="section">
+  <h2 class="section-title">Phase 6: Training</h2>
+  <p class="section-sub">Ensure users know how to use what was built</p>
+
+  <div class="phase phase--train">
+    <h3>Training Sessions</h3>
+    <p>Conducted on the Beta environment so users interact with near-production functionality. Training covers new workflows, changed behaviors, and edge cases.</p>
+
+    <h4>Target Audience</h4>
+    <p>Identified user groups who will directly use the new or changed functionality. Training is tailored to each group's role.</p>
+
+    <h4>Completion Status</h4>
+    <table class="data-table">
+      <tr><th>Group</th><th>Scheduled</th><th>Completed</th><th>Notes</th></tr>
+      <tr><td><em>e.g., Operations team</em></td><td>—</td><td>—</td><td>—</td></tr>
+      <tr><td><em>e.g., Management</em></td><td>—</td><td>—</td><td>—</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ════════ PHASE 7: RELEASE ════════ -->
+<section id="phase-release" class="section">
+  <h2 class="section-title">Phase 7: Release</h2>
+  <p class="section-sub">Deploy to production with clear communication</p>
+
+  <div class="phase phase--release">
+    <h3>Release to Production</h3>
+    <p>After training is complete and sign-off is received, the implementation is deployed to the production environment.</p>
+
+    <h4>Release Notes</h4>
+    <p>A summary of what was released — new features, enhancements, or fixes — shared with all stakeholders via <span class="badge badge-email">Email</span> <span class="badge badge-wa">WhatsApp</span>.</p>
+
+    <h4>Release Date</h4>
+    <p>The confirmed date of production deployment, communicated in advance to allow stakeholders to prepare.</p>
+  </div>
+</section>
+
+<!-- ════════ PHASE 8: MONITORING ════════ -->
+<section id="phase-monitor" class="section">
+  <h2 class="section-title">Phase 8: Post-Release Monitoring</h2>
+  <p class="section-sub">Watch for issues before closing the loop</p>
+
+  <div class="phase phase--monitor">
+    <h3>Monitoring Phase</h3>
+    <p>A defined observation period after release to catch issues that only surface with real production usage and load.</p>
+
+    <h4>What We Monitor</h4>
+    <ul>
+      <li>System errors and exceptions related to the release</li>
+      <li>User-reported issues</li>
+      <li>Performance metrics in affected areas</li>
+      <li>Adoption and usage patterns</li>
+    </ul>
+
+    <table class="data-table">
+      <tr><th>Field</th><th>Value</th></tr>
+      <tr><td>Monitoring start date</td><td>—</td></tr>
+      <tr><td>Monitoring end date</td><td>—</td></tr>
+      <tr><td>Duration</td><td>—</td></tr>
+    </table>
+
+    <h4>Monitoring Report</h4>
+    <p>Shared with stakeholders via <span class="badge badge-email">Email</span> <span class="badge badge-wa">WhatsApp</span> at the end of the monitoring period, summarizing findings and any actions taken.</p>
+  </div>
+</section>
+
+<!-- ════════ PHASE 9: CLOSURE ════════ -->
+<section id="phase-close" class="section">
+  <h2 class="section-title">Phase 9: Closure</h2>
+  <p class="section-sub">Wrap up, document, and close</p>
+
+  <div class="phase phase--close">
+    <h3>Post-Release Bugs</h3>
+    <p>Any bugs discovered during the monitoring phase are listed here with time spent on each fix.</p>
+
+    <table class="data-table">
+      <tr><th>Bug</th><th>Severity</th><th>Hours Spent</th><th>Status</th></tr>
+      <tr><td><em>—</em></td><td>—</td><td>—</td><td>—</td></tr>
+    </table>
+
+    <h4>Final Status</h4>
+    <p>The implementation is marked as <strong>Closed</strong> once the monitoring period ends with no outstanding critical issues.</p>
+
+    <h4>Closure Report</h4>
+    <p>A final summary document covering: total hours spent vs. estimated, changes absorbed, bugs found post-release, and lessons learned. Shared via <span class="badge badge-email">Email</span> <span class="badge badge-wa">WhatsApp</span>.</p>
+  </div>
+</section>
+
+<!-- ════════ COMMUNICATION PROTOCOL ════════ -->
+<section id="comm" class="section">
+  <h2 class="section-title">Communication Protocol</h2>
+  <p class="section-sub">Consistent, predictable communication at every phase</p>
+
+  <div class="phase">
+    <h3>Channels</h3>
+    <p>All client communication is shared via <span class="badge badge-email">Email</span> and <span class="badge badge-wa">WhatsApp</span> to ensure visibility across stakeholders.</p>
+
+    <h3 style="margin-top:20px;">3 Client Checkpoints</h3>
+    <p>Client communication is structured into three clear checkpoints. Each checkpoint requires client acknowledgement before the process moves forward.</p>
+
+    <div class="checkpoint-cards">
+      <div class="checkpoint">
+        <div class="checkpoint-header">
+          <div class="checkpoint-num">1</div>
+          <h4>"Here's what we understood"</h4>
+        </div>
+        <div class="cp-when">After Phase 1 &mdash; Know Your Requirement</div>
+        <p>Summary of the problem, its impact, and the desired outcome. The client confirms that the understanding is correct. Once confirmed, a formal acknowledgement is sent via <span class="badge badge-email">Email</span> + <span class="badge badge-wa">WhatsApp</span> before any solution work begins.</p>
+      </div>
+      <div class="checkpoint">
+        <div class="checkpoint-header">
+          <div class="checkpoint-num">2</div>
+          <h4>"Here's what we will build"</h4>
+        </div>
+        <div class="cp-when">After Phase 2 &mdash; Definitions</div>
+        <p>Scope, behavior definitions, acceptance criteria, and time estimate. The client approves the plan before build starts.</p>
+      </div>
+      <div class="checkpoint">
+        <div class="checkpoint-header">
+          <div class="checkpoint-num">3</div>
+          <h4>"Here's what changed after release"</h4>
+        </div>
+        <div class="cp-when">After Phase 8 &mdash; Monitoring</div>
+        <p>Release outcomes, any post-release changes, and the closure summary. The client receives a complete picture of what was delivered.</p>
+      </div>
+    </div>
+
+    <div class="note">Communication channels remain <span class="badge badge-email">Email</span> + <span class="badge badge-wa">WhatsApp</span> for all checkpoints. Internal phase transitions are tracked but do not require separate client notifications.</div>
+  </div>
+</section>
+</div>
+
+<!-- ════════ FOOTER ════════ -->
+<footer class="footer">
+  elSapiens &middot; Implementation Lifecycle &middot; Confidential
+</footer>
+
+</body>
+</html>
