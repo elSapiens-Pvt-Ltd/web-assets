@@ -84,6 +84,12 @@ draft → confirmed → final → cancellation_pending → cancelled
 
 **Indexes**: `account_id`, `conversation_id`, `agent_id`, `order_status`, `payment_status`, `fulfillment_status`, `shipping_status`
 
+**Triggers** (4 triggers — see [Triggers & Functions](triggers-and-functions.md#order-triggers)):
+- `before_order_insert` — Calculates `pending_amount = grand_total - amount_paid`
+- `trigger_before_order_update` — Recalculates `pending_amount`, derives `payment_status` (with tolerance thresholds), auto-sets `fulfillment_status = 'for_despatch'` on full payment
+- `after_order_insert_combined` — Updates `temp_tbl_accounts` order metrics, writes to `crm_revenue_agent_summary`
+- `after_order_update_combined` — Handles value changes, soft delete/undelete cascading to `tbl_order_items`, updates account and revenue summaries
+
 ---
 
 ## tbl_order_items
@@ -107,6 +113,11 @@ Line items for each order. Each item includes quantity, pricing, and individuall
 | `igst_rate` | DECIMAL(5,2) | Yes | NULL | Integrated GST rate % |
 | `igst_amount` | DECIMAL(12,2) | Yes | NULL | Integrated GST amount |
 | `created_on` | DATETIME | No | CURRENT_TIMESTAMP | Record creation time |
+
+**Triggers** (3 triggers — see [Triggers & Functions](triggers-and-functions.md#produce--inventory-triggers)):
+- `trigger_order_items_before_save` — Increments `tbl_lots.quantity_sold`, sets lot to `Sold Out` when fully sold
+- `trigger_order_items_before_update` — Handles soft delete (restores qty), undelete (re-deducts qty), quantity changes (adjusts delta)
+- `trigger_order_items_before_delete` — Restores lot quantity on hard delete
 
 ### Tax Calculation Logic
 
@@ -165,8 +176,13 @@ Records individual payment transactions against orders. Multiple payments can be
 | `recorded_by` | INT | Yes | NULL | FK to `tbl_users` |
 | `created_on` | DATETIME | No | CURRENT_TIMESTAMP | Record creation time |
 
+**Triggers** (3 triggers — see [Triggers & Functions](triggers-and-functions.md#payment-triggers)):
+- `trigger_payment_before_save` — Increments `tbl_orders.amount_paid` on insert
+- `trigger_payment_before_update` — Adjusts `amount_paid` on status change (Success adds, Refund/Deleted subtracts)
+- `trigger_payment_before_delete` — Decrements `tbl_orders.amount_paid` on delete
+
 **Business Rules**:
-- When a payment is recorded, the system updates `tbl_orders.amount_paid` and recalculates `pending_amount`
+- When a payment is recorded, triggers automatically update `tbl_orders.amount_paid`, which cascades to the order's `trigger_before_order_update` trigger to recalculate `pending_amount` and `payment_status`
 - `payment_status` on the order auto-updates: `no_payment` → `partially_paid` → `fully_paid`
 
 ---
@@ -205,6 +221,12 @@ Sales opportunities linked to conversations. When an order is created from a con
 | `source` | VARCHAR(50) | Yes | NULL | Lead source |
 | `created_on` | DATETIME | No | CURRENT_TIMESTAMP | Record creation time |
 
+**Triggers** (4 triggers — see [Triggers & Functions](triggers-and-functions.md#opportunity-triggers)):
+- `trg_outcome_agent_opp_insert` — Tracks new opportunities in `crm_outcome_agent_summary` (with source attribution from linked conversation)
+- `trg_outcome_opportunity_insert` — Updates `crm_outcome_summary` cohort and activity counts
+- `trg_outcome_opportunity_update` — Tracks opportunity→order linking in `crm_outcome_summary`
+- `trg_outcome_agent_opp_update` — Handles amount changes, cancellation/un-cancellation in `crm_outcome_agent_summary`
+
 ---
 
 ## tbl_admin_approvals
@@ -234,4 +256,5 @@ Approval requests for actions that require admin authorization — primarily dis
 | Core Tables | `03-database-design/core-tables.md` |
 | Order Flow | `06-data-flow/order-flow.md` |
 | Orders API | `05-api-documentation/orders-api.md` |
+| Triggers & Functions | `03-database-design/triggers-and-functions.md` |
 | Order Module | `04-core-modules/orders.md` |

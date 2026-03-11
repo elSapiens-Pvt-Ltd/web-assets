@@ -184,6 +184,23 @@ These tables use the `temp_tbl_` prefix — a result of a migration restructurin
 | `tbl_user_leaves` | Employee leave records | `id` (INT) |
 | `tbl_company_work_hours` | Working hours per day-of-week | `id` (INT) |
 
+### CRM Summary Tables (Trigger-Populated)
+
+These tables are populated exclusively by MySQL triggers and cron jobs. They power the reporting dashboards. See [Triggers & Functions](triggers-and-functions.md) for the complete trigger inventory.
+
+| Table | Purpose | Populated By Triggers On |
+|-------|---------|------------------------|
+| `crm_agent_activity_summary` | Daily agent metrics | `tbl_call_logs`, `tbl_followup_schedules`, `tbl_whatsapp_messages` |
+| `crm_conversation_cohort_summary` | Cohort analysis | `tbl_open_conversations` |
+| `crm_conversation_activity_summary` | Daily stage transitions | `tbl_open_conversations` |
+| `crm_conversation_stage_summary` | Stage distribution | `tbl_open_conversations` |
+| `crm_outcome_agent_summary` | Agent opportunity/order tracking | `tbl_opportunities`, `tbl_orders` |
+| `crm_outcome_summary` | Opportunity→order conversion | `tbl_opportunities` |
+| `crm_revenue_agent_summary` | Revenue by agent/source | `tbl_orders` |
+| `crm_unqualified_summary` | Disposition breakdown | `tbl_open_conversations` |
+| `crm_agent_frt_daily_summary` | First response time | Cron job (`calculateAgentFRTSummary`) |
+| `crm_conversation_aging_snapshot` | Aging snapshots | Cron job (`calculateAgingSnapshot`) |
+
 ### Integration & Audit Tables
 
 | Table | Purpose | Primary Key |
@@ -256,6 +273,7 @@ See [Migration System](migration-system.md) for detailed conventions and example
 | CRM Tables | `03-database-design/crm-tables.md` |
 | Order Tables | `03-database-design/order-tables.md` |
 | Configuration Tables | `03-database-design/configuration-tables.md` |
+| Triggers & Functions | `03-database-design/triggers-and-functions.md` |
 | Migration System | `03-database-design/migration-system.md` |
 | Backend Architecture | `01-system-architecture/backend-architecture.md` |
 | Migration Guide | `08-development-guidelines/migration-guide.md` |

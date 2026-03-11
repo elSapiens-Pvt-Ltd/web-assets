@@ -40,6 +40,7 @@ documentation/
 │   ├── crm-tables.md                # Conversations, messages, assignments
 │   ├── order-tables.md              # Orders, payments, opportunities
 │   ├── configuration-tables.md      # Users, roles, settings, reference data
+│   ├── triggers-and-functions.md    # 43 MySQL triggers + 4 stored functions
 │   └── migration-system.md          # Migration conventions and usage
 │
 ├── 04-core-modules/                 ← Business logic documentation

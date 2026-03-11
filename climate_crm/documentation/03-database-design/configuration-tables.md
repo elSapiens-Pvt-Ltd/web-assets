@@ -51,6 +51,7 @@ System users including sales agents, admins, and managers. The `user_status` fie
 - `user_status = 'Inactive'` users are rejected during JWT validation
 - `is_deleted = 'Yes'` users are excluded from round-robin assignment
 - `agent_id` links to `tbl_telecommunication_agents` for CRM-specific agent settings
+- **Trigger**: `CUSTOMER_CREATE_CUSTOMER_ADMIN` on `tbl_customers` creates an access record in `tbl_customer_admin_access_table` linking the new customer to its creating user. See [Triggers & Functions](triggers-and-functions.md#customer--contact-triggers)
 
 ### tbl_roles
 
@@ -287,6 +288,8 @@ Working hours per day-of-week. Used by the round-robin system to respect shift t
 | `end_time` | TIME | Shift end |
 | `is_working_day` | TINYINT(1) | Whether the day is a working day |
 
+**Used by stored functions**: `tbl_company_work_hours` is read by `fn_calculate_working_seconds` and `fn_get_next_working_start`. `tbl_company_holidays` is read by `fn_is_holiday`. `tbl_user_leaves` is read by `fn_get_agent_leave_type`. These functions power the FRT (First Response Time) calculation via the `trg_calculate_attempt_time` trigger. See [Triggers & Functions](triggers-and-functions.md#stored-functions).
+
 ---
 
 ## Integration Tables
@@ -340,4 +343,5 @@ Tracks account merge operations — when duplicate accounts are identified, one 
 | Security & Auth | `01-system-architecture/security.md` |
 | API Authentication | `05-api-documentation/authentication.md` |
 | Backend Architecture (Hook System) | `01-system-architecture/backend-architecture.md` |
+| Triggers & Functions | `03-database-design/triggers-and-functions.md` |
 | Assignment Flow | `06-data-flow/assignment-flow.md` |

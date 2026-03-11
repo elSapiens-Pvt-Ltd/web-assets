@@ -59,7 +59,7 @@ Stores company or individual customer accounts with business details, order stat
 
 **Business Rules**:
 - `account_owner_id` determines Priority 1 in the agent assignment system — all new conversations for contacts under this account go to this agent
-- Order statistics (`total_orders`, `completed_orders`, `pending_orders`, etc.) are maintained by the order lifecycle
+- Order statistics (`order_value`, `order_count`, `first_order_date`, `last_order_date`) are maintained by triggers `after_order_insert_combined` and `after_order_update_combined` on `tbl_orders`. See [Triggers & Functions](triggers-and-functions.md#order-triggers)
 - The `distribution_type` value `'review_pending'` is used for new accounts awaiting classification
 
 ---
@@ -113,6 +113,8 @@ Stores communication handles (phone numbers, email addresses, social IDs) for co
 | `updated_on` | DATETIME | No | CURRENT_TIMESTAMP ON UPDATE | Last update time |
 
 **Indexes**: `account_id`, `contact_id`
+
+**Triggers**: `trigger_generate_number_insert` and `trigger_generate_number_update` on the legacy `tbl_customer_contacts` table auto-generate `concatenated_num` by stripping `+` and spaces from `phone_code` + `phone_number`. See [Triggers & Functions](triggers-and-functions.md#customer--contact-triggers).
 
 **Notes**:
 - `handle_type` is VARCHAR(50), not an ENUM — this allows adding new handle types without a migration
@@ -184,5 +186,6 @@ The models reference these tables directly:
 | CRM Tables | `03-database-design/crm-tables.md` |
 | Order Tables | `03-database-design/order-tables.md` |
 | Configuration Tables | `03-database-design/configuration-tables.md` |
+| Triggers & Functions | `03-database-design/triggers-and-functions.md` |
 | Accounts API | `05-api-documentation/accounts-api.md` |
 | Contact Handles Module | `04-core-modules/contacts-handles.md` |

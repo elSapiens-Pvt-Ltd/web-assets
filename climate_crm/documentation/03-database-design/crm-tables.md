@@ -85,6 +85,13 @@ When a conversation is closed as `'unqualified'`, one of these reasons must be s
 
 ### Stage Transitions
 
+**Triggers** (5 triggers — see [Triggers & Functions](triggers-and-functions.md#conversation-triggers)):
+- `trg_conversation_before_insert` — Sets `had_account_at_start` flag
+- `trg_calculate_attempt_time` — Calculates working-hours FRT using `fn_calculate_working_seconds`
+- `trg_conversation_before_update` — Sets `first_reached_*_at` timestamps, auto-closes unqualified
+- `trg_conversation_after_insert` — Populates `crm_conversation_cohort_summary`, `crm_conversation_activity_summary`, `crm_conversation_stage_summary`
+- `trg_conversation_after_update` — Updates stage/activity/cohort summaries, writes `crm_unqualified_summary`
+
 Two transitions are automatic; the rest are manual:
 
 | Transition | Trigger | Type |
@@ -125,6 +132,7 @@ Stores all messages associated with conversations. Despite its name, this table 
 - The `conversation_id` column was added retroactively via ALTER TABLE — its type is INT (not BIGINT), which is a known inconsistency with the BIGINT `conversation_id` primary key in `tbl_open_conversations`
 - Message delivery status (`sent` → `delivered` → `read` → `failed`) is updated in real-time via WhatsApp status webhooks
 - Media files are stored in AWS S3 and served via CloudFront CDN
+- **Trigger**: `trg_agent_activity_message_insert` — on outbound messages (`sender = 'admin'`), increments `crm_agent_activity_summary.messages_sent`. See [Triggers & Functions](triggers-and-functions.md#whatsapp-message-triggers)
 
 ---
 
@@ -232,4 +240,5 @@ These tables predate the normalized profile structure. They are retained for ref
 | Conversation Lifecycle | `06-data-flow/conversation-lifecycle.md` |
 | Assignment Flow | `06-data-flow/assignment-flow.md` |
 | Message Flow | `06-data-flow/message-flow.md` |
+| Triggers & Functions | `03-database-design/triggers-and-functions.md` |
 | Conversations API | `05-api-documentation/conversations-api.md` |
