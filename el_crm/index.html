@@ -618,32 +618,39 @@
 <li style="margin-bottom:4px;"><strong>Typical flow</strong>: Lead capture → qualification → opportunity → order → account management</li>
 </ul>
 <h3 style="font-size:15px;font-weight:600;color:var(--primary-dark);margin:18px 0 10px 0;">User Roles</h3>
+<p style="color:var(--text-light);font-size:13px;margin-bottom:10px;">Roles are <strong>fully configurable</strong> per workspace via elauth's capability-based RBAC. Each workspace can define as many roles as needed with granular capability assignments. Common examples:</p>
 <table><thead><tr>
-<th>Role</th>
+<th>Example Role</th>
 <th>Description</th>
-<th>Key Activities</th>
+<th>Typical Capabilities</th>
 </tr></thead><tbody>
 <tr>
-<td><strong>Sales Agent</strong></td>
+<td>Sales Agent</td>
 <td>Front-line — talks to customers daily</td>
 <td>Inbox, conversations, follow-ups, pipeline management</td>
 </tr>
 <tr>
-<td><strong>Sales Manager</strong></td>
+<td>Sales Manager</td>
 <td>Team lead — monitors agent performance</td>
 <td>Reports, agent activity, pipeline review, assignment overrides</td>
 </tr>
 <tr>
-<td><strong>Admin</strong></td>
-<td>Workspace administrator — configures the CRM</td>
+<td>Admin</td>
+<td>Workspace administrator</td>
 <td>Settings, pipeline config, custom fields, user management, workflow rules</td>
 </tr>
 <tr>
-<td><strong>Super Admin</strong></td>
-<td>Platform-level (elSapiens internal)</td>
-<td>Workspace provisioning, cross-workspace analytics, system health</td>
+<td>Support Agent</td>
+<td>Handles support tickets</td>
+<td>Inbox (support queue), ticket management, knowledge base</td>
+</tr>
+<tr>
+<td>Viewer</td>
+<td>Read-only access</td>
+<td>View conversations, contacts, reports (no edit/send)</td>
 </tr>
 </tbody></table>
+<p style="color:var(--text-light);font-size:13px;margin-bottom:10px;">Workspaces can create custom roles (e.g., Regional Manager, Team Lead, Quality Auditor) with any combination of capabilities. Platform-level administration (workspace provisioning, cross-workspace analytics) is handled by elauth's reseller/platform roles — not within CRM.</p>
 </div>
 <div class="section">
 <div class="section-header"><div class="section-num">4</div><div class="section-title">4. Core Modules</div></div>

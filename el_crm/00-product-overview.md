@@ -40,12 +40,17 @@ The platform is part of the **elSapiens ecosystem** — a suite of 20+ microserv
 
 ### User Roles
 
-| Role | Description | Key Activities |
-|------|-------------|----------------|
-| **Sales Agent** | Front-line — talks to customers daily | Inbox, conversations, follow-ups, pipeline management |
-| **Sales Manager** | Team lead — monitors agent performance | Reports, agent activity, pipeline review, assignment overrides |
-| **Admin** | Workspace administrator — configures the CRM | Settings, pipeline config, custom fields, user management, workflow rules |
-| **Super Admin** | Platform-level (elSapiens internal) | Workspace provisioning, cross-workspace analytics, system health |
+Roles are **fully configurable** per workspace via elauth's capability-based RBAC. Each workspace can define as many roles as needed with granular capability assignments. Common examples:
+
+| Example Role | Description | Typical Capabilities |
+|-------------|-------------|---------------------|
+| Sales Agent | Front-line — talks to customers daily | Inbox, conversations, follow-ups, pipeline management |
+| Sales Manager | Team lead — monitors agent performance | Reports, agent activity, pipeline review, assignment overrides |
+| Admin | Workspace administrator | Settings, pipeline config, custom fields, user management, workflow rules |
+| Support Agent | Handles support tickets | Inbox (support queue), ticket management, knowledge base |
+| Viewer | Read-only access | View conversations, contacts, reports (no edit/send) |
+
+Workspaces can create custom roles (e.g., Regional Manager, Team Lead, Quality Auditor) with any combination of capabilities. Platform-level administration (workspace provisioning, cross-workspace analytics) is handled by elauth's reseller/platform roles — not within CRM.
 
 ---
 
