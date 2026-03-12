@@ -13,6 +13,7 @@
 - **Timestamps** — `created_at`, `updated_at` on all tables. Set by application, not DB triggers.
 - **JSONB for flexible data** — custom field values, metadata, config payloads.
 - **No business logic in triggers** — all logic in Go application code.
+- **Ecosystem service references** — CRM stores IDs that reference data in other services: `person_id`/`entity_id` (accounts-api), `agent_id` (elauth), `product_id` (Goods & Services). Currency conversion via elCurrency Rates API, location enrichment via elGeolocations API — these are fetched at runtime, not stored redundantly.
 
 ---
 
@@ -229,8 +230,11 @@ CREATE TABLE opportunities (
     pipeline_id         UUID NOT NULL REFERENCES pipelines(id),
     current_stage_id    UUID NOT NULL REFERENCES pipeline_stages(id),
     agent_id            UUID,               -- from elauth
+    currency            VARCHAR(3) DEFAULT 'INR', -- ISO 4217, converted via elCurrency Rates API
     expected_value      DECIMAL(15,2),
+    expected_value_base DECIMAL(15,2),           -- value in workspace base currency (auto-converted)
     won_value           DECIMAL(15,2),
+    won_value_base      DECIMAL(15,2),           -- in workspace base currency
     expected_close_date DATE,
     closed_at           TIMESTAMP WITH TIME ZONE,
     outcome             VARCHAR(10),        -- won, lost (null if open)

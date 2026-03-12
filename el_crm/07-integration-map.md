@@ -23,19 +23,21 @@
               │  HTTP :8090  │ │  HTTP :8091 │ │             │
               │  gRPC :6001  │ │  gRPC :6002 │ │             │
               │  WS   :8092  │ │             │ │             │
-              └──────┬───┬──┘ └──────┬──────┘ └─────────────┘
-                     │   │           │
-          ┌──────────┘   │           │
-          │ gRPC         │ gRPC      │ Channel APIs
-          ▼              ▼           ▼
-   ┌──────────┐   ┌──────────┐   ┌──────────────────┐
-   │ elauth   │   │accounts  │   │ WhatsApp Cloud API│
-   │ Go       │   │-api      │   │ Smartflo Voice    │
-   │ gRPC:6000│   │NestJS    │   │ SES Email         │
-   │ HTTP:8080│   │gRPC:21001│   │ JustDial/FB/IM    │
-   │ PgSQL    │   │HTTP:11001│   └──────────────────┘
-   └──────────┘   │MongoDB   │
-                  └──────────┘
+              └──┬──┬──┬──┬─┘ └──────┬──────┘ └─────────────┘
+                 │  │  │  │          │
+     ┌───────────┘  │  │  └──────────────────────────────┐
+     │ gRPC    gRPC │  │ gRPC       │ Channel APIs       │ gRPC
+     ▼              ▼  ▼            ▼                    ▼
+┌──────────┐ ┌──────────┐ ┌──────────────────┐  ┌───────────────┐
+│ elauth   │ │accounts  │ │ WhatsApp Cloud API│  │Ecosystem Svcs │
+│ Go       │ │-api      │ │ Smartflo Voice    │  │               │
+│ gRPC:6000│ │NestJS    │ │ SES Email         │  │ elGeolocations│
+│ HTTP:8080│ │gRPC:21001│ │ JustDial/FB/IM    │  │ elCurrency    │
+│ PgSQL    │ │HTTP:11001│ └──────────────────┘  │ Workspace Svc │
+└──────────┘ │MongoDB   │                       │ Goods & Svcs  │
+             └──────────┘                       │ elPBX         │
+                                                │ Logger        │
+                                                └───────────────┘
 
    ┌──────────────────────────────────────────┐
    │              NATS Event Bus              │
@@ -394,7 +396,240 @@ Agent attaches file in composer:
 
 ---
 
-## 8. Sequence Diagram: Inbound WhatsApp Message (Full Flow)
+## 8. Ecosystem Service Integrations
+
+CRM leverages existing services from the elSapiens App Registry rather than rebuilding functionality.
+
+### 8.1 elGeolocations API
+
+> `pe8w544nvu` | https://api.elgeolocations.elsapiens.com | 2 ports
+
+**Purpose**: Location data for contact/account profiling — country, state, city, pincode lookup, address validation, geocoding.
+
+**CRM uses it for:**
+- Lead profiling: auto-fill city/state/country from pincode when creating or importing contacts
+- Account address validation for billing/shipping addresses
+- Location-based assignment rules (e.g., assign leads from Mumbai to Ravi)
+- Regional report breakdowns (revenue by city/state)
+- Filter contacts by location
+
+**Integration:**
+```
+CRM → gRPC: elGeolocations API
+  GetLocationByPincode(pincode) → { city, state, country, lat, lng }
+  SearchLocations(query) → [{ city, state, country }]
+  ValidateAddress(address) → { normalized_address, is_valid }
+  GetStates(country_code) → [{ name, code }]
+  GetCities(state_code) → [{ name, pincode_prefix }]
+```
+
+**Where in CRM UI:**
+- Contact create/edit form: pincode field auto-fills city/state
+- Account address fields: validation and autocomplete
+- Filters: "Location" filter uses city/state dropdown from this API
+- Import: location enrichment during bulk contact import
+
+---
+
+### 8.2 elCurrency Rates API
+
+> `auv2fkpc4h` / `de1b5ls9h5` | https://api.elcurrencyrates.elsapiens.com | 2 ports
+
+**Purpose**: Real-time and historical currency exchange rates.
+
+**CRM uses it for:**
+- Multi-currency opportunity values (deal in USD, dashboard shows INR equivalent)
+- Pipeline forecast in workspace's base currency
+- Revenue reports with currency normalization
+- Contact/account currency preference
+
+**Integration:**
+```
+CRM → gRPC/HTTP: elCurrency Rates API
+  GetRate(from, to, date?) → { rate, timestamp }
+  GetRates(base, targets[], date?) → [{ currency, rate }]
+  Convert(amount, from, to, date?) → { converted_amount, rate }
+```
+
+**Where in CRM UI:**
+- New Opportunity form: currency selector (INR, USD, EUR, etc.), shows converted value in base currency
+- Pipeline kanban/list: values shown in workspace base currency with original currency in tooltip
+- Forecast view: all values normalized to base currency
+- Reports: revenue aggregations use converted values
+- Settings → Workspace: base currency selection
+
+---
+
+### 8.3 Workspace Service
+
+> `rttfjbb1es` | https://api.workspace.elsapiens.com | 2 ports
+
+**Purpose**: Workspace lifecycle management, workspace-level config shared across all apps.
+
+**CRM uses it for:**
+- Workspace metadata (name, logo, industry — shared across all elSapiens apps)
+- Cross-app workspace settings
+- Workspace feature flags / plan limits
+
+**Integration:**
+```
+CRM → gRPC: Workspace Service
+  GetWorkspace(workspace_id) → { name, logo_url, industry, plan, settings }
+  GetWorkspaceFeatures(workspace_id) → { max_agents, max_pipelines, channels_enabled[] }
+```
+
+**Where in CRM UI:**
+- TopBar: workspace name and logo from this service
+- Settings → Workspace: reads and writes shared workspace profile
+- Feature gating: disable features based on workspace plan
+
+---
+
+### 8.4 Goods & Services API
+
+> `fq9ksbxg54` | https://api.product.climatenaturals.com | 2 ports
+
+**Purpose**: Product/service catalog, pricing, SKUs.
+
+**CRM uses it for:**
+- Link products/services to opportunities (what is the customer buying?)
+- Product-based reporting (revenue by product)
+- Template variables (product name, price in WhatsApp templates)
+- Auto-populate opportunity value from product pricing
+
+**Integration:**
+```
+CRM → gRPC/HTTP: Goods & Services API
+  SearchProducts(query, workspace_id) → [{ id, name, sku, price, unit }]
+  GetProduct(product_id) → { id, name, sku, price, unit, description }
+  GetProducts(product_ids[]) → [{ ... }]
+```
+
+**Where in CRM UI:**
+- New/Edit Opportunity: "Products" field — searchable multi-select from product catalog
+- Opportunity detail: linked products with quantity and line-item value
+- Reports → Revenue Contribution: breakdown by product
+- WhatsApp templates: `{{product_name}}`, `{{product_price}}` variables
+
+---
+
+### 8.5 elPBX
+
+> `2stpu7ws4g` | https://elpbx.elsapiens.com | 3 ports
+
+**Purpose**: Voice/telephony management — agent phone mapping, call routing, IVR configuration.
+
+**CRM uses it for:**
+- Click-to-call: CRM triggers outbound call via PBX
+- Agent ↔ phone number mapping (which extension rings which agent)
+- Call routing rules (IVR → CRM assignment rules)
+- Call recording access
+
+**Integration:**
+```
+CRM → gRPC/HTTP: elPBX
+  InitiateCall(agent_id, destination_number, workspace_id) → { call_id }
+  GetAgentExtension(agent_id, workspace_id) → { extension, phone_number }
+  GetCallRecording(call_id) → { recording_url, duration }
+```
+
+Communication Gateway handles the actual call events (incoming/outgoing/ended). PBX is the configuration layer.
+
+**Where in CRM UI:**
+- Inbox: "Call" button on contact → triggers PBX call
+- Contact detail: "Call" action button
+- Settings → Channels → Voice: links to PBX for agent mapping config
+
+---
+
+### 8.6 Logger Service
+
+> `oxe54hpejx` | 2 ports
+
+**Purpose**: Centralized logging, audit trail, analytics event collection.
+
+**CRM uses it for:**
+- Audit logging: who did what, when (config changes, data access, exports)
+- Error logging: structured error reporting from CRM service
+- Analytics events: page views, feature usage for product analytics
+
+**Integration:**
+```
+CRM → gRPC/HTTP: Logger Service
+  Log(service, level, event, payload, workspace_id, person_id) → void
+  LogAudit(action, resource_type, resource_id, old_value, new_value, actor_id) → void
+```
+
+**Where in CRM:**
+- Every API endpoint logs request/response
+- Config changes (Settings) logged with before/after values
+- Data exports logged for compliance
+- Errors forwarded for monitoring/alerting
+
+---
+
+### 8.7 Accounts (Frontend)
+
+> `at354wg5kd` | https://accounts.elsapiens.com | 1 port
+
+**Purpose**: The Accounts web app — user profile management, workspace switching, billing.
+
+**CRM uses it for:**
+- "Manage Account" link in user menu → redirects to Accounts app
+- Workspace switching: OrgSwitcher component from elsdk (backed by this app)
+- User profile editing happens in this app, not in CRM
+
+**Integration:**
+- No API calls — this is a frontend-to-frontend redirect
+- CRM user menu: "My Account" → `https://accounts.elsapiens.com`
+- elsdk OrgSwitcher reads workspace list from elauth but the management UI is in Accounts app
+
+---
+
+### 8.8 App Registry
+
+> `rk1tqtcq7w` | https://registry.elsapiens.com | 1 port
+
+**Purpose**: Internal app store — service discovery, app metadata.
+
+**CRM uses it for:**
+- Service discovery: CRM resolves API URLs for other services from registry
+- App navigation: "All Apps" menu in TopBar links to other elSapiens apps
+- Health monitoring: check if dependent services are registered and active
+
+**Integration:**
+```
+CRM → HTTP: App Registry API
+  GetApp(app_id) → { name, url, ports, status }
+  GetApps(category?) → [{ name, url, category, tag, status }]
+```
+
+**Where in CRM UI:**
+- TopBar app switcher (grid icon) → shows available apps from registry
+
+---
+
+### Ecosystem Integration Summary
+
+| Service | CRM Uses It For | Integration Type |
+|---------|----------------|-----------------|
+| **elauth** | Auth, JWT, RBAC, workspace membership | gRPC (core) |
+| **accounts-api** | Contact/Account CRUD, person resolution | gRPC (core) |
+| **Workspace Service** | Workspace metadata, plan limits | gRPC |
+| **Comm Gateway** | WhatsApp, Voice, Email, SMS channels | NATS + gRPC |
+| **elGeolocations** | Address validation, location profiling | gRPC |
+| **elCurrency Rates** | Multi-currency conversion, reports | gRPC/HTTP |
+| **Goods & Services** | Product catalog for opportunities | gRPC/HTTP |
+| **elPBX** | Click-to-call, agent phone mapping | gRPC/HTTP |
+| **Logger** | Audit logging, error reporting | gRPC/HTTP |
+| **Accounts (FE)** | User profile redirect, workspace mgmt | Redirect |
+| **App Registry** | Service discovery, app navigation | HTTP |
+| **Notification Hub** | Email/Push/SMS delivery | NATS |
+| **File Service (S3)** | Attachments, media | Presigned URLs |
+
+---
+
+## 9. Sequence Diagram: Inbound WhatsApp Message (Full Flow)
 
 ```
 Customer    WhatsApp    Comm GW      NATS       CRM          accounts-api    Redis    PgSQL    Agent Browser

@@ -7,9 +7,9 @@
 
 ## 1. What is el-CRM?
 
-el-CRM is a **multi-tenant, omnichannel CRM platform** built for B2B businesses that manage customer relationships across multiple communication channels. It is designed to be configured and delivered to any client as a product — not a one-off build.
+el-CRM is a **multi-tenant, omnichannel CRM platform** built for businesses that manage customer relationships across multiple communication channels — B2B, B2C, or hybrid. It is designed to be configured and delivered to any client as a product — not a one-off build.
 
-The platform is part of the **elSapiens ecosystem** — a suite of microservices (auth, accounts, ops management, accounting) that work together. el-CRM plugs into this ecosystem, leveraging existing services for authentication (elauth), contact/account management (accounts-api), and a shared UI component library (elsdk).
+The platform is part of the **elSapiens ecosystem** — a suite of 20+ microservices and apps (auth, accounts, telephony, finance, geolocation, product catalog, ops management) that work together. el-CRM plugs into this ecosystem, consuming existing services rather than rebuilding functionality.
 
 ---
 
@@ -30,9 +30,11 @@ The platform is part of the **elSapiens ecosystem** — a suite of microservices
 
 ## 3. Target Users
 
-### Primary: B2B Sales Teams (SMB to Mid-Market)
-- **Industries**: Manufacturing, trading, distribution, wholesale, services
-- **Team size**: 5-100 sales agents per workspace
+### Primary: Sales & Customer-Facing Teams (SMB to Mid-Market)
+- **B2B**: Manufacturing, trading, distribution, wholesale, services
+- **B2C**: Retail chains, salons, automotive services, real estate, education
+- **Hybrid**: Businesses selling to both companies and individuals
+- **Team size**: 5-100 agents per workspace
 - **Sales model**: Relationship-driven, high-touch, multi-channel communication
 - **Typical flow**: Lead capture → qualification → opportunity → order → account management
 
@@ -79,7 +81,7 @@ Unlike CRMs that add WhatsApp/voice as integrations, el-CRM is built channel-agn
 ### 5.2 Conversation-Centric (Not Record-Centric)
 Traditional CRMs are record-centric — you create a contact, then work from the contact record. el-CRM is **conversation-centric** — the inbox is the primary workspace. Agents respond to conversations, and the CRM structures data around those conversations (pipeline stage, assignment, activities, follow-ups).
 
-This matches how B2B sales actually works: a customer messages on WhatsApp, calls, or emails — the agent picks up the conversation wherever it happens.
+This matches how sales actually works — whether B2B or B2C: a customer messages on WhatsApp, calls, or emails — the agent picks up the conversation wherever it happens.
 
 ### 5.3 Workspace-Configurable
 Every aspect of the CRM adapts per workspace without code changes:
@@ -91,11 +93,19 @@ Every aspect of the CRM adapts per workspace without code changes:
 - Notification templates and workflow automations
 
 ### 5.4 Ecosystem-Integrated
-el-CRM is not a standalone product. It runs within the elSapiens ecosystem:
+el-CRM is not a standalone product. It runs within the elSapiens ecosystem of 20+ services:
 - **elauth**: Authentication, MFA, workspace-scoped RBAC — no separate login
 - **accounts-api**: Shared contact/account data across all elSapiens services
+- **Workspace Service**: Workspace metadata, plan limits, cross-app config
+- **elGeolocations**: Address validation, pincode → city/state lookup, location-based profiling
+- **elCurrency Rates**: Multi-currency opportunity values, conversion for reports
+- **Goods & Services**: Product catalog linked to opportunities
+- **elPBX**: Click-to-call, agent phone mapping, call routing
+- **Logger**: Centralized audit logging and error reporting
+- **App Registry**: Service discovery, cross-app navigation
 - **el-tracker**: Ops management (tasks, travel, attendance) for the same team
-- **Commerce** (future): Orders, invoices, payments linked to CRM opportunities
+- **elBooks** (future): Accounting, invoicing linked to won opportunities
+- **Inventory Management** (future): Stock-aware opportunity management
 
 ### 5.5 Agent-First UX
 Inspired by respond.io's messaging-first approach:
