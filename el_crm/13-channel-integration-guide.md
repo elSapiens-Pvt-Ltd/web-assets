@@ -1,7 +1,8 @@
 # Channel Integration Guide
 
-> Technical API reference for all Communication Gateway channel adapters.
-> Covers authentication, webhooks, payloads, rate limits, and sending for every MVP channel.
+> Technical API reference for all **Unibox (elunibox)** channel adapters.
+> Covers authentication, webhooks, payloads, rate limits, and sending for every channel.
+> All channel logic lives in Unibox — CRM embeds Unibox for inbox view but does not handle messaging directly.
 > Last verified: March 2026 (Graph API v25.0)
 
 ---
@@ -1181,7 +1182,7 @@ Supports cursor-based pagination (`before`/`after` in `paging` object).
          ↓
 2. Meta sends webhook POST (contains leadgen_id only)
          ↓
-3. Communication Gateway extracts leadgen_id
+3. Unibox extracts leadgen_id
          ↓
 4. GET /v25.0/{leadgen_id}?access_token=...
          ↓
@@ -1502,7 +1503,7 @@ GET /v1/auto_attendants    → IVR menus and destinations
 
 ### 11.1 Overview
 
-Email is handled via the Communication Gateway's Email Adapter, not directly by the CRM.
+Email is handled via the Unibox's Email Adapter, not directly by the CRM.
 
 | Aspect | Details |
 |---|---|
@@ -1570,7 +1571,7 @@ POST SES SendEmail API
 
 | Aspect | Details |
 |---|---|
-| **Type** | Webhook — your web form POSTs to Communication Gateway |
+| **Type** | Webhook — your web form POSTs to Unibox |
 | **Endpoint** | `POST /webhooks/webform` |
 | **Auth** | API key or workspace token in header |
 | **Format** | JSON |
@@ -1598,7 +1599,7 @@ POST SES SendEmail API
 
 ### 12.3 Integration
 
-The Communication Gateway's WebForm Adapter normalizes this to a `UnifiedMessage` with `contentType: "lead_capture"` and `channel: "webform"`.
+The Unibox's WebForm Adapter normalizes this to a `UnifiedMessage` with `contentType: "lead_capture"` and `channel: "webform"`.
 
 ---
 
@@ -1636,7 +1637,7 @@ A conversation belongs to a **contact**, not a channel. Same customer messaging 
 
 ---
 
-## 14. Communication Gateway Unified Webhook
+## 14. Unibox Unified Webhook
 
 All external webhooks route through a single gateway:
 

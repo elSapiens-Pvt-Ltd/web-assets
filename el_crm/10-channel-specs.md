@@ -1,7 +1,7 @@
 # Channel Specifications
 
 > Per-channel behavior, message types, capabilities, and constraints.
-> All channel logic lives in the Communication Gateway — CRM is channel-agnostic.
+> All channel logic lives in **Unibox (elunibox)** — CRM is channel-agnostic.
 
 ---
 
@@ -10,22 +10,40 @@
 ```
 CRM Service (channel-agnostic)
     │
-    │ Events (NATS)
+    │ Embeds Unibox inbox view
+    │ Kafka events for metadata sync
     ↓
-Communication Gateway
+Unibox (elunibox) — Omnichannel Communication Platform
     │
-    ├── WhatsApp Adapter ←→ Meta Cloud API
-    ├── Messenger Adapter ←→ Meta Graph API (Messenger Platform)
-    ├── Instagram DM Adapter ←→ Meta Graph API (IG Messaging)
-    ├── Facebook Comments Adapter ←→ Meta Graph API (Webhooks)
-    ├── Instagram Comments Adapter ←→ Meta Graph API (Webhooks)
-    ├── Voice Adapter ←→ Smartflo / SIP Provider
-    ├── Email Adapter ←→ SES / SMTP
-    ├── JustDial Adapter ←→ JustDial API
-    ├── Facebook Lead Ads Adapter ←→ Facebook Lead Ads API
-    ├── IndiaMart Adapter ←→ IndiaMart API
-    ├── WebForm Adapter ←→ Webhook receiver
-    └── [Future adapters: SMS, Telegram, LINE, LiveChat]
+    ├── Email Providers:
+    │   ├── Microsoft 365 Adapter ←→ Graph API + Subscriptions
+    │   ├── Google Workspace Adapter ←→ Gmail API + Pub/Sub
+    │   ├── iCloud Mail Adapter ←→ IMAP/SMTP + IMAP IDLE
+    │   └── AOL/Yahoo Adapter ←→ IMAP/SMTP + IMAP IDLE
+    │
+    ├── Messaging Channels:
+    │   ├── WhatsApp Adapter ←→ Meta Cloud API
+    │   ├── Telegram Adapter ←→ Telegram Bot API
+    │   └── SMS Adapter ←→ Twilio
+    │
+    ├── Social Channels:
+    │   ├── Facebook Adapter ←→ Meta Graph API (Pages + Messenger)
+    │   ├── Instagram Adapter ←→ Meta Graph API (DMs + Comments)
+    │   ├── X/Twitter Adapter ←→ X API v2 (DMs + Mentions)
+    │   ├── LinkedIn Adapter ←→ LinkedIn API (Messages + Comments)
+    │   ├── TikTok Adapter ←→ TikTok API (Comments)
+    │   └── YouTube Adapter ←→ YouTube Data API (Comments + Live Chat)
+    │
+    ├── Lead Capture:
+    │   ├── JustDial Adapter ←→ JustDial API
+    │   ├── Facebook Lead Ads Adapter ←→ Facebook Lead Ads API
+    │   ├── IndiaMart Adapter ←→ IndiaMart API
+    │   └── WebForm Adapter ←→ Webhook receiver
+    │
+    ├── Internal:
+    │   └── Team Chat ←→ Built-in (rooms, DMs, @mentions)
+    │
+    └── Support Tickets (also handled via Unibox)
 ```
 
 ### Unified Message Model
@@ -164,8 +182,8 @@ Outbound message lifecycle:
 ```
 Customer dials DID number
   → Smartflo routes to workspace (by DID mapping)
-  → Communication Gateway receives call event
-  → Publishes: comm.call.incoming { workspace_id, caller, did_number }
+  → Unibox receives call event
+  → Publishes: unibox.call.incoming { workspace_id, caller, did_number }
   → CRM receives event:
       - Resolves contact by phone handle
       - Finds/creates conversation
@@ -174,7 +192,7 @@ Customer dials DID number
   → Agent answers in browser (WebRTC) or desk phone
   → Call connected, recording starts (if enabled)
   → Call ends
-  → Communication Gateway publishes: comm.call.ended { duration, recording_url, status }
+  → Unibox publishes: unibox.call.ended { duration, recording_url, status }
   → CRM auto-logs activity: call type, duration, recording URL
   → Agent prompted for disposition
 ```
@@ -183,8 +201,8 @@ Customer dials DID number
 
 ```
 Agent clicks phone icon on contact
-  → CRM sends: comm.call.initiate { workspace_id, agent_id, target_number }
-  → Communication Gateway initiates call via provider
+  → CRM sends: unibox.call.initiate { workspace_id, agent_id, target_number }
+  → Unibox initiates call via provider
   → Provider calls agent first → then bridges to customer
   → Same recording + activity logging as inbound
 ```
@@ -243,14 +261,14 @@ Voice doesn't produce traditional "messages" — instead it creates call event c
 
 ```
 Inbound email arrives at: crm-{workspace_id}@inbound.elcrm.com
-  → Communication Gateway receives via SES inbound / webhook
+  → Unibox receives via SES inbound / webhook
   → Parses: From, To, CC, Subject, Body (text + HTML), Attachments, In-Reply-To, Message-ID
   → Threading logic:
       1. Check In-Reply-To header → match to existing conversation's Message-ID
       2. If no match → check Subject + sender → fuzzy match to existing conversation
       3. If no match → create new conversation
   → Normalize to UnifiedMessage (content_type: email)
-  → Publish comm.message.received event
+  → Publish unibox.message.received event
 ```
 
 ### Content Type Mapping
@@ -523,7 +541,7 @@ Customer mentions business in their Story → notification in CRM
 ```
 Customer comments on Facebook Page post
   → Meta Webhook: feed event (type: "comment")
-  → Communication Gateway receives
+  → Unibox receives
   → Normalizes to UnifiedMessage:
     - channel: "facebook_comments"
     - content_type: "social_comment"
@@ -609,7 +627,7 @@ Note: Uses the same Page Access Token as Messenger — single OAuth flow covers 
 ```
 Customer comments on Instagram post/reel
   → Meta Webhook: comments event
-  → Communication Gateway receives
+  → Unibox receives
   → Normalizes to UnifiedMessage:
     - channel: "instagram_comments"
     - content_type: "social_comment"
@@ -826,24 +844,25 @@ When falling back to a different channel, content must adapt:
 
 ## 12. Adding a New Channel
 
-Steps to add a new channel (e.g., Telegram):
+Steps to add a new channel (e.g., a new social platform):
 
-1. **Communication Gateway**: Implement `ChannelAdapter` interface
+1. **Unibox**: Implement the appropriate provider interface (`ChannelProvider` or `SocialProvider`)
    - `validateWebhook()`: Verify webhook signature
    - `parseWebhook()`: Extract message data from provider payload
    - `normalizeInbound()`: Convert to UnifiedMessage
    - `sendMessage()`: Call provider API to send
    - `parseStatusUpdate()`: Handle delivery receipts
 
-2. **Communication Gateway config**: Register adapter, set up webhook URL
+2. **Unibox config**: Register adapter in provider registry, set up webhook URL
 
 3. **CRM Settings UI**: Add channel to configuration page
+   - Fetches available channels from Unibox API
    - OAuth or API key flow for provider
-   - Store credentials (encrypted)
+   - Stores workspace-level channel enablement
 
 4. **CRM changes needed**: **NONE**
-   - Inbox already renders any channel's messages
-   - Filters already have dynamic channel list
+   - Inbox already renders Unibox's unified messages
+   - Filters already have dynamic channel list from Unibox
    - Reports already group by channel
    - Assignment rules already support channel conditions
 

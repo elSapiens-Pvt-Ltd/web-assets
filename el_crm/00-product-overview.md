@@ -67,22 +67,20 @@ The platform is part of the **elSapiens ecosystem** — a suite of 20+ microserv
 ## 5. Key Differentiators
 
 ### 5.1 Omnichannel-Native (Not Bolted On)
-Unlike CRMs that add WhatsApp/voice as integrations, el-CRM is built channel-agnostic from day one. The **Communication Gateway** normalizes all channels into a unified message model. Adding a new channel (e.g., Instagram DM, Telegram) requires zero CRM code changes — just a new adapter in the Communication Gateway.
+Unlike CRMs that add WhatsApp/voice as integrations, el-CRM is built channel-agnostic from day one. **Unibox (elunibox)** — a dedicated omnichannel communication platform — handles all messaging across 11+ channels. The CRM embeds Unibox for its inbox view and delegates all send/receive operations to it. Adding a new channel requires zero CRM code changes — just a new adapter in Unibox.
 
-**Supported channels** (MVP):
-- WhatsApp Business API (Cloud API)
-- Facebook Messenger (Meta Graph API)
-- Instagram DMs (Meta Graph API)
-- Facebook Comments (monitor + reply, public + private)
-- Instagram Comments (monitor + reply on posts/reels, public + DM)
-- Voice (Smartflo / elPBX / generic SIP)
-- Email (inbound + outbound via SES)
-- Lead capture (JustDial, Facebook Leads, IndiaMart, web forms)
+**Supported channels** (via Unibox):
+- **Email**: Microsoft 365, Google Workspace (Gmail), iCloud Mail, AOL/Yahoo Mail
+- **Messaging**: WhatsApp Business API, Telegram Bot API, SMS (Twilio)
+- **Social**: Facebook (Pages + Messenger), Instagram (DMs + Comments), X/Twitter (DMs + Mentions), LinkedIn (Messages + Comments), TikTok (Comments), YouTube (Comments + Live Chat)
+- **Lead capture**: JustDial, Facebook Lead Ads, IndiaMart, web forms
+- **Internal**: Built-in team chat (within Unibox)
+- **Support tickets**: Also handled via Unibox
 
-All 5 Meta channels (WhatsApp, Messenger, IG DMs, FB Comments, IG Comments) share a single OAuth flow.
+All Meta channels (WhatsApp, Messenger, IG, FB) share a single OAuth flow.
 
-**Future channels** (adapter-only additions):
-- SMS, Telegram, LINE, live chat widget
+**Future channels** (adapter-only additions in Unibox):
+- LINE, live chat widget, additional social platforms
 
 ### 5.2 Conversation-Centric (Not Record-Centric)
 Traditional CRMs are record-centric — you create a contact, then work from the contact record. el-CRM is **conversation-centric** — the inbox is the primary workspace. Agents respond to conversations, and the CRM structures data around those conversations (pipeline stage, assignment, activities, follow-ups).
@@ -131,7 +129,9 @@ Inspired by respond.io's messaging-first approach:
 | Frontend | React 18 + @elsapiens/elsdk (60+ shared components) |
 | Database | PostgreSQL with Row-Level Security (workspace isolation) |
 | Inter-service | gRPC + Protobuf (matches elauth ↔ accounts-api pattern) |
-| Event Bus | NATS (start) → Kafka (scale) |
+| Messaging Platform | Unibox (elunibox) — omnichannel send/receive across all channels |
+| Notification Delivery | elmessagehub — transactional alerts, reminders, SLA notifications |
+| Event Bus | Kafka (shared with Unibox and elmessagehub) |
 | Real-time | WebSocket for inbox, message delivery status |
 | Multi-tenancy | `workspace_id` column + PostgreSQL RLS + application-layer guards |
 | Auth | JWT from elauth (HS256, 24hr access / 7-30 day refresh tokens) |

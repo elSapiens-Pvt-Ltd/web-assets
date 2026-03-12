@@ -18,32 +18,32 @@
                      ┌───────────────┼───────────────┐
                      │               │               │
               ┌──────▼──────┐ ┌──────▼──────┐ ┌──────▼──────┐
-              │  CRM Service │ │  Comm GW    │ │ Other Svcs  │
-              │  Go          │ │  Go         │ │             │
-              │  HTTP :8090  │ │  HTTP :8091 │ │             │
-              │  gRPC :6001  │ │  gRPC :6002 │ │             │
-              │  WS   :8092  │ │             │ │             │
+              │  CRM Service │ │  Unibox     │ │ Other Svcs  │
+              │  Go          │ │  (elunibox) │ │             │
+              │  HTTP :8090  │ │  Go         │ │ elmessagehub│
+              │  gRPC :6001  │ │  API :8080  │ │  (Go)       │
+              │  WS   :8092  │ │  WH  :8081  │ │  HTTP:11004 │
               └──┬──┬──┬──┬─┘ └──────┬──────┘ └─────────────┘
                  │  │  │  │          │
      ┌───────────┘  │  │  └──────────────────────────────┐
-     │ gRPC    gRPC │  │ gRPC       │ Channel APIs       │ gRPC
+     │ gRPC    gRPC │  │ Kafka      │ Channel APIs       │ gRPC
      ▼              ▼  ▼            ▼                    ▼
-┌──────────┐ ┌──────────┐ ┌──────────────────┐  ┌───────────────┐
-│ elauth   │ │accounts  │ │ WhatsApp Cloud API│  │Ecosystem Svcs │
-│ Go       │ │-api      │ │ Smartflo Voice    │  │               │
-│ gRPC:6000│ │NestJS    │ │ SES Email         │  │ elGeolocations│
-│ HTTP:8080│ │gRPC:21001│ │ JustDial/FB/IM    │  │ elCurrency    │
-│ PgSQL    │ │HTTP:11001│ └──────────────────┘  │ Workspace Svc │
-└──────────┘ │MongoDB   │                       │ Goods & Svcs  │
-             └──────────┘                       │ elPBX         │
-                                                │ Logger        │
-                                                └───────────────┘
+┌──────────┐ ┌──────────┐ ┌──────────────────────┐ ┌───────────────┐
+│ elauth   │ │accounts  │ │ 11+ Channels:        │ │Ecosystem Svcs │
+│ Go       │ │-api      │ │ WhatsApp, Messenger, │ │               │
+│ gRPC:6000│ │NestJS    │ │ Instagram, Email,    │ │ elGeolocations│
+│ HTTP:8080│ │gRPC:21001│ │ Voice, SMS, Telegram,│ │ elCurrency    │
+│ PgSQL    │ │HTTP:11001│ │ X, LinkedIn, TikTok, │ │ Workspace Svc │
+└──────────┘ │MongoDB   │ │ YouTube, JustDial,   │ │ Goods & Svcs  │
+             └──────────┘ │ IndiaMart, FB Leads  │ │ elPBX         │
+                          └──────────────────────┘ │ Logger        │
+                                                   └───────────────┘
 
-   ┌──────────────────────────────────────────┐
-   │              NATS Event Bus              │
-   │  CRM ←→ Comm GW ←→ Notification Hub    │
-   │  CRM ←→ Commerce ←→ Ops Management     │
-   └──────────────────────────────────────────┘
+   ┌──────────────────────────────────────────────┐
+   │              Kafka Event Bus                  │
+   │  CRM ←→ Unibox ←→ elmessagehub              │
+   │  CRM ←→ Commerce ←→ Ops Management          │
+   └──────────────────────────────────────────────┘
 
    ┌──────────┐   ┌──────────┐   ┌──────────┐
    │ PgSQL    │   │ Redis    │   │ S3       │
@@ -201,25 +201,31 @@ CRM caches person data locally in Redis (TTL: 5 minutes) to avoid per-request gR
 
 ---
 
-## 4. Communication Gateway Integration
+## 4. Unibox Integration (Omnichannel Messaging Platform)
 
 ### Purpose
-All channel communication. CRM never talks to WhatsApp/Smartflo/SES directly.
+**Unibox (elunibox)** is a dedicated omnichannel communication platform that handles all messaging across 11+ channels. CRM never talks to WhatsApp/Smartflo/SES directly — all messaging goes through Unibox.
+
+Unibox is a **separate standalone project** with its own Go backend, PostgreSQL database, Kafka pipeline, webhook gateway, and React frontend. The CRM embeds Unibox's inbox view for conversation management.
+
+**Unibox owns:** Channel adapters, webhook validation, message normalization, delivery status tracking, template management, channel configuration, message send/receive pipeline, email threading (RFC 5256), bounce/DMARC/ARF processing, support tickets.
+
+**CRM owns:** Conversation routing, agent assignment, pipeline stages, activities, reporting, workflow automation.
 
 ### Protocol
-NATS events (async) + gRPC (sync for template listing, health checks).
+Kafka events (async) + Unibox REST/gRPC API (sync for templates, health checks, message history).
 
 ### Inbound Message Flow
 
 ```
-Channel Provider (WhatsApp) → Webhook → Communication Gateway
+Channel Provider (WhatsApp) → Webhook → Unibox Webhook Receiver (:8081)
   │
-  ├─ GW validates webhook signature
-  ├─ GW parses channel-specific payload
-  ├─ GW normalizes to UnifiedMessage
+  ├─ Unibox validates webhook signature
+  ├─ Unibox parses channel-specific payload (via ChannelAdapter)
+  ├─ Unibox normalizes to UnifiedMessage
   │
-  ├─ GW publishes NATS event:
-  │    Subject: comm.message.received
+  ├─ Unibox publishes Kafka event:
+  │    Topic: unibox.message.received
   │    Payload: {
   │      workspace_id, channel, direction: "inbound",
   │      handle_type: "phone", handle_value: "+919876543210",
@@ -229,11 +235,11 @@ Channel Provider (WhatsApp) → Webhook → Communication Gateway
   │      timestamp: "2026-03-12T10:30:00Z"
   │    }
   │
-  CRM subscribes to comm.message.received
+  CRM subscribes to unibox.message.received
   │
   ├─ Resolve contact (see Contact Resolution Flow above)
   ├─ Find/create conversation
-  ├─ Store message in conversation_messages
+  ├─ Store conversation metadata (stage, assignment)
   ├─ Run assignment rules (if new conversation)
   ├─ Notify agent via WebSocket
   └─ Evaluate workflow rules
@@ -242,28 +248,17 @@ Channel Provider (WhatsApp) → Webhook → Communication Gateway
 ### Outbound Message Flow
 
 ```
-Agent clicks Send in Inbox composer
+Agent sends reply via CRM Inbox (Unibox embedded view)
   │
-  ├─ CRM stores message in conversation_messages (status: queued)
+  ├─ CRM stores conversation metadata (status: sending)
   │
-  ├─ CRM publishes NATS event:
-  │    Subject: comm.message.send
-  │    Payload: {
-  │      workspace_id, channel: "whatsapp",
-  │      handle_value: "+919876543210",
-  │      content_type: "text", content: { body: "Hi Rahul!" },
-  │      crm_message_id: "uuid",
-  │      metadata: {}
-  │    }
+  ├─ Unibox handles the actual send:
+  │    - Looks up workspace channel config (WhatsApp credentials)
+  │    - Calls channel provider API (WhatsApp Cloud API)
+  │    - Receives acceptance/failure
   │
-  Communication Gateway subscribes to comm.message.send
-  │
-  ├─ GW looks up workspace channel config (WhatsApp credentials)
-  ├─ GW calls WhatsApp Cloud API
-  ├─ GW receives response (success/failure)
-  │
-  ├─ GW publishes NATS event:
-  │    Subject: comm.message.status
+  ├─ Unibox publishes Kafka event:
+  │    Topic: unibox.message.status
   │    Payload: {
   │      crm_message_id: "uuid",
   │      external_message_id: "wamid.xyz789",
@@ -271,37 +266,38 @@ Agent clicks Send in Inbox composer
   │      timestamp: "2026-03-12T10:30:01Z"
   │    }
   │
-  CRM subscribes to comm.message.status
+  CRM subscribes to unibox.message.status
   │
-  ├─ Update conversation_messages.delivery_status = "sent"
-  ├─ Update conversation_messages.external_message_id
+  ├─ Update conversation message status
   └─ Push status update to agent via WebSocket
 ```
 
 ### Delivery Status Updates
 
 ```
-WhatsApp sends delivery webhook → Communication Gateway
+WhatsApp sends delivery webhook → Unibox Webhook Receiver
   │
-  ├─ GW publishes: comm.message.status
+  ├─ Unibox publishes: unibox.message.status
   │    { crm_message_id, status: "delivered" / "read" / "failed", timestamp }
   │
-  CRM updates message record and pushes to frontend via WebSocket
+  CRM updates conversation record and pushes to frontend via WebSocket
 ```
 
-### gRPC Calls CRM Makes to Communication Gateway
+### API Calls CRM Makes to Unibox
 
 | Method | When | Purpose |
 |--------|------|---------|
-| `GetTemplates(workspace_id, channel)` | Template picker | List approved WhatsApp templates |
+| `GetTemplates(workspace_id, channel)` | Template picker | List approved channel templates |
 | `GetChannelHealth(workspace_id)` | Settings → Channels | Channel connection status |
 | `TestChannel(workspace_id, channel, config)` | Channel setup | Test channel connectivity |
+| `GetConversationThread(workspace_id, conversation_id)` | Inbox load | Get full message history |
+| `SendMessage(workspace_id, conversation_id, message)` | Outbound | Send message via specified channel |
 
 ---
 
-## 5. NATS Event Bus
+## 5. Kafka Event Bus
 
-### Subject Naming Convention
+### Topic Naming Convention
 
 ```
 {service}.{entity}.{action}
@@ -309,19 +305,19 @@ WhatsApp sends delivery webhook → Communication Gateway
 Examples:
   crm.conversation.created
   crm.opportunity.stage_changed
-  comm.message.received
-  comm.message.status
+  unibox.message.received
+  unibox.message.status
   accounts.person.updated
   elauth.user.deactivated
 ```
 
 ### Events Published by CRM
 
-| Subject | Payload (key fields) | Consumers |
-|---------|---------------------|-----------|
-| `crm.contact_handle.linked` | workspace_id, person_id, handle_type, handle_value | Comm GW |
-| `crm.conversation.created` | workspace_id, conversation_id, person_id, channel, source | Comm GW, Ops |
-| `crm.conversation.assigned` | workspace_id, conversation_id, agent_id, method | Notification Hub |
+| Topic | Payload (key fields) | Consumers |
+|-------|---------------------|-----------|
+| `crm.contact_handle.linked` | workspace_id, person_id, handle_type, handle_value | Unibox (for routing) |
+| `crm.conversation.created` | workspace_id, conversation_id, person_id, channel, source | Unibox, Ops |
+| `crm.conversation.assigned` | workspace_id, conversation_id, agent_id, method | Unibox, elmessagehub |
 | `crm.conversation.stage_changed` | workspace_id, conversation_id, old_stage, new_stage | Workflow (internal) |
 | `crm.conversation.closed` | workspace_id, conversation_id, reason, disposition | Analytics |
 | `crm.opportunity.created` | workspace_id, opportunity_id, person_id, pipeline_id | Commerce |
@@ -330,12 +326,12 @@ Examples:
 
 ### Events Consumed by CRM
 
-| Subject | Publisher | CRM Action |
-|---------|-----------|------------|
-| `comm.message.received` | Comm GW | Resolve contact, create/update conversation, store message |
-| `comm.message.status` | Comm GW | Update message delivery status |
-| `comm.call.incoming` | Comm GW | Notify agent of incoming call |
-| `comm.call.ended` | Comm GW | Log call activity, prompt disposition |
+| Topic | Publisher | CRM Action |
+|-------|-----------|------------|
+| `unibox.message.received` | Unibox | Resolve contact, create/update conversation, run assignment |
+| `unibox.message.status` | Unibox | Update message delivery status |
+| `unibox.call.incoming` | Unibox | Notify agent of incoming call |
+| `unibox.call.ended` | Unibox | Log call activity, prompt disposition |
 | `accounts.person.updated` | accounts-api | Invalidate person cache in Redis |
 | `accounts.entity.merged` | accounts-api | Merge related conversations |
 | `elauth.user.deactivated` | elauth | Reassign conversations/opportunities |
@@ -354,30 +350,34 @@ CRM needs to update DB AND publish event atomically:
 
 2. Outbox poller (goroutine, runs every 100ms):
    SELECT * FROM outbox WHERE published_at IS NULL ORDER BY created_at LIMIT 100;
-   For each: publish to NATS → UPDATE outbox SET published_at = now() WHERE id = ?;
+   For each: publish to Kafka → UPDATE outbox SET published_at = now() WHERE id = ?;
 
 3. Guarantees at-least-once delivery. Consumers must be idempotent.
 ```
 
 ---
 
-## 6. Notification Hub
+## 6. elmessagehub (Notification Delivery)
 
-CRM publishes notification requests; Notification Hub delivers them.
+**IMPORTANT: elmessagehub ≠ Unibox.** elmessagehub handles transactional notifications and alerts (SLA breaches, assignment notifications, follow-up reminders) — NOT customer conversations. Unibox handles customer-facing omnichannel messaging. elmessagehub handles internal agent/system notifications.
+
+CRM publishes notification requests; elmessagehub delivers them via email/SMS/push.
 
 ```
-CRM → NATS event: notification.send
+CRM → Kafka event: elmessagehub.notification.send
 Payload: {
   workspace_id, recipient_id, channels: ["email", "push"],
   template: "sla_breach",
+  priority_level: "high",
   data: { contact_name: "Rahul", conversation_id: "...", frt_minutes: 12 }
 }
 
-Notification Hub:
-  → Resolves recipient email from elauth
-  → Renders email template with data
-  → Sends via SES
-  → Sends push via FCM (if push token registered)
+elmessagehub:
+  → Routes to priority-based Kafka queue (high/medium/low)
+  → Resolves recipient contact info from elauth
+  → Renders template (Go template engine)
+  → Sends via Gmail OAuth / SMTP (email), Twilio (SMS), FCM (push)
+  → Tracks delivery status in communication_log
 ```
 
 ---
@@ -391,7 +391,7 @@ Agent attaches file in composer:
   3. Frontend uploads directly to S3 via presigned URL
   4. Frontend sends message with media_url = S3 URL
   5. CRM stores URL in conversation_messages.content_json
-  6. Communication Gateway fetches file from S3 when sending to channel
+  6. Unibox fetches file from S3 when sending to channel
 ```
 
 ---
@@ -533,7 +533,7 @@ CRM → gRPC/HTTP: elPBX
   GetCallRecording(call_id) → { recording_url, duration }
 ```
 
-Communication Gateway handles the actual call events (incoming/outgoing/ended). PBX is the configuration layer.
+Unibox handles the actual call events (incoming/outgoing/ended). PBX is the configuration layer.
 
 **Where in CRM UI:**
 - Inbox: "Call" button on contact → triggers PBX call
@@ -616,7 +616,7 @@ CRM → HTTP: App Registry API
 | **elauth** | Auth, JWT, RBAC, workspace membership | gRPC (core) |
 | **accounts-api** | Contact/Account CRUD, person resolution | gRPC (core) |
 | **Workspace Service** | Workspace metadata, plan limits | gRPC |
-| **Comm Gateway** | WhatsApp, Voice, Email, SMS channels | NATS + gRPC |
+| **Unibox (elunibox)** | All 11+ messaging channels (WhatsApp, Email, Voice, Social, etc.) | Kafka + REST/gRPC |
 | **elGeolocations** | Address validation, location profiling | gRPC |
 | **elCurrency Rates** | Multi-currency conversion, reports | gRPC/HTTP |
 | **Goods & Services** | Product catalog for opportunities | gRPC/HTTP |
@@ -624,7 +624,7 @@ CRM → HTTP: App Registry API
 | **Logger** | Audit logging, error reporting | gRPC/HTTP |
 | **Accounts (FE)** | User profile redirect, workspace mgmt | Redirect |
 | **App Registry** | Service discovery, app navigation | HTTP |
-| **Notification Hub** | Email/Push/SMS delivery | NATS |
+| **elmessagehub** | Transactional notifications (email/push/SMS alerts) | Kafka |
 | **File Service (S3)** | Attachments, media | Presigned URLs |
 
 ---
@@ -632,12 +632,12 @@ CRM → HTTP: App Registry API
 ## 9. Sequence Diagram: Inbound WhatsApp Message (Full Flow)
 
 ```
-Customer    WhatsApp    Comm GW      NATS       CRM          accounts-api    Redis    PgSQL    Agent Browser
+Customer    WhatsApp    Unibox       Kafka      CRM          accounts-api    Redis    PgSQL    Agent Browser
    │           │           │          │          │               │             │        │           │
    │──message─▶│           │          │          │               │             │        │           │
    │           │──webhook─▶│          │          │               │             │        │           │
    │           │           │──publish─▶│         │               │             │        │           │
-   │           │           │  comm.message.received              │             │        │           │
+   │           │           │  unibox.message.received            │             │        │           │
    │           │           │          │──consume─▶│              │             │        │           │
    │           │           │          │          │──lookup──────▶│             │        │           │
    │           │           │          │          │  contact_handles            │        │           │
@@ -648,7 +648,7 @@ Customer    WhatsApp    Comm GW      NATS       CRM          accounts-api    Red
    │           │           │          │          │◀─person data──────────────│        │           │
    │           │           │          │          │──cache─────────────────────▶│        │           │
    │           │           │          │          │               │             │        │           │
-   │           │           │          │          │──store message─────────────────────▶│           │
+   │           │           │          │          │──store metadata────────────────────▶│           │
    │           │           │          │          │──find/create conversation──────────▶│           │
    │           │           │          │          │──run assignment rules──────────────▶│           │
    │           │           │          │          │──insert outbox event───────────────▶│           │
@@ -663,29 +663,28 @@ Customer    WhatsApp    Comm GW      NATS       CRM          accounts-api    Red
 ## 9. Sequence Diagram: Agent Sends Reply
 
 ```
-Agent Browser    CRM           PgSQL      NATS       Comm GW      WhatsApp    Customer
+Agent Browser    CRM           PgSQL      Kafka      Unibox       WhatsApp    Customer
      │            │              │          │           │             │           │
      │──send msg─▶│              │          │           │             │           │
-     │            │──store msg──▶│          │           │             │           │
-     │            │  (status:queued)        │           │             │           │
-     │            │──publish────────────────▶│          │             │           │
-     │            │  comm.message.send      │           │             │           │
-     │◀─optimistic│              │          │──consume─▶│             │           │
-     │  (sending) │              │          │           │──API call──▶│           │
+     │            │──store meta─▶│          │           │             │           │
+     │            │  (status:sending)       │           │             │           │
+     │◀─optimistic│              │          │           │             │           │
+     │  (sending) │              │          │           │             │           │
+     │            │              │          │           │──API call──▶│           │
      │            │              │          │           │             │──deliver─▶│
      │            │              │          │           │◀─accepted──│           │
      │            │              │          │◀─publish──│             │           │
-     │            │              │  comm.message.status (sent)       │           │
+     │            │              │  unibox.message.status (sent)     │           │
      │            │◀─consume─────│          │           │             │           │
-     │            │──update msg─▶│          │           │             │           │
+     │            │──update ────▶│          │           │             │           │
      │            │  (status:sent)          │           │             │           │
      │◀─WS push──│              │          │           │             │           │
      │  (✓ sent)  │              │          │           │             │           │
      │            │              │          │           │             │           │
      │            │              │          │           │◀─delivery──│           │
      │            │              │          │◀─publish──│  webhook    │           │
-     │            │◀─consume─────│  comm.message.status (delivered)  │           │
-     │            │──update msg─▶│          │           │             │           │
+     │            │◀─consume─────│  unibox.message.status (delivered)│           │
+     │            │──update ────▶│          │           │             │           │
      │◀─WS push──│              │          │           │             │           │
      │  (✓✓ dlvd) │              │          │           │             │           │
 ```

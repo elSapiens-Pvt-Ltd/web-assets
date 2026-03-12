@@ -8,7 +8,7 @@
 
 - **REST** for frontend ↔ CRM backend communication
 - **gRPC + Protobuf** for CRM ↔ elauth and CRM ↔ accounts-api
-- **NATS events** for async inter-service (CRM ↔ Communication Gateway)
+- **Kafka events** for async inter-service (CRM ↔ Unibox for messaging, CRM ↔ elmessagehub for notifications)
 - **WebSocket** for real-time frontend updates
 - **workspace_id** extracted from JWT on every request (never passed by client)
 - **Capability-based auth** — each endpoint declares required capability
@@ -348,7 +348,7 @@ service CRMService {
 
 **From accounts-api** (port 21001): GetPerson, GetPersons, SearchPersons, CreatePerson, UpdatePerson, GetPersonByHandle, GetEntity, GetEntities, CreateEntity, UpdateEntity, CreateMembership, MergePersons.
 
-**From Communication Gateway** (port 6002): GetTemplates, GetChannelHealth, TestChannel.
+**From Unibox** (elunibox): GetTemplates, GetChannelHealth, TestChannel, GetConversationThread, SendMessage.
 
 ---
 

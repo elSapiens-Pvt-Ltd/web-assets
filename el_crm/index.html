@@ -697,22 +697,20 @@
 <div class="section">
 <div class="section-header"><div class="section-num">5</div><div class="section-title">5. Key Differentiators</div></div>
 <h3 style="font-size:15px;font-weight:600;color:var(--primary-dark);margin:18px 0 10px 0;">5.1 Omnichannel-Native (Not Bolted On)</h3>
-<p style="color:var(--text-light);font-size:13px;margin-bottom:10px;">Unlike CRMs that add WhatsApp/voice as integrations, el-CRM is built channel-agnostic from day one. The <strong>Communication Gateway</strong> normalizes all channels into a unified message model. Adding a new channel (e.g., Instagram DM, Telegram) requires zero CRM code changes — just a new adapter in the Communication Gateway.</p>
-<p style="color:var(--text-light);font-size:13px;margin-bottom:10px;"><strong>Supported channels</strong> (MVP):</p>
+<p style="color:var(--text-light);font-size:13px;margin-bottom:10px;">Unlike CRMs that add WhatsApp/voice as integrations, el-CRM is built channel-agnostic from day one. <strong>Unibox (elunibox)</strong> — a dedicated omnichannel communication platform — handles all messaging across 11+ channels. The CRM embeds Unibox for its inbox view and delegates all send/receive operations to it. Adding a new channel requires zero CRM code changes — just a new adapter in Unibox.</p>
+<p style="color:var(--text-light);font-size:13px;margin-bottom:10px;"><strong>Supported channels</strong> (via Unibox):</p>
 <ul style="margin:8px 0;padding-left:20px;font-size:13px;color:var(--text-light);">
-<li style="margin-bottom:4px;">WhatsApp Business API (Cloud API)</li>
-<li style="margin-bottom:4px;">Facebook Messenger (Meta Graph API)</li>
-<li style="margin-bottom:4px;">Instagram DMs (Meta Graph API)</li>
-<li style="margin-bottom:4px;">Facebook Comments (monitor + reply, public + private)</li>
-<li style="margin-bottom:4px;">Instagram Comments (monitor + reply on posts/reels, public + DM)</li>
-<li style="margin-bottom:4px;">Voice (Smartflo / elPBX / generic SIP)</li>
-<li style="margin-bottom:4px;">Email (inbound + outbound via SES)</li>
-<li style="margin-bottom:4px;">Lead capture (JustDial, Facebook Leads, IndiaMart, web forms)</li>
+<li style="margin-bottom:4px;"><strong>Email</strong>: Microsoft 365, Google Workspace (Gmail), iCloud Mail, AOL/Yahoo Mail</li>
+<li style="margin-bottom:4px;"><strong>Messaging</strong>: WhatsApp Business API, Telegram Bot API, SMS (Twilio)</li>
+<li style="margin-bottom:4px;"><strong>Social</strong>: Facebook (Pages + Messenger), Instagram (DMs + Comments), X/Twitter (DMs + Mentions), LinkedIn (Messages + Comments), TikTok (Comments), YouTube (Comments + Live Chat)</li>
+<li style="margin-bottom:4px;"><strong>Lead capture</strong>: JustDial, Facebook Lead Ads, IndiaMart, web forms</li>
+<li style="margin-bottom:4px;"><strong>Internal</strong>: Built-in team chat (within Unibox)</li>
+<li style="margin-bottom:4px;"><strong>Support tickets</strong>: Also handled via Unibox</li>
 </ul>
-<p style="color:var(--text-light);font-size:13px;margin-bottom:10px;">All 5 Meta channels (WhatsApp, Messenger, IG DMs, FB Comments, IG Comments) share a single OAuth flow.</p>
-<p style="color:var(--text-light);font-size:13px;margin-bottom:10px;"><strong>Future channels</strong> (adapter-only additions):</p>
+<p style="color:var(--text-light);font-size:13px;margin-bottom:10px;">All Meta channels (WhatsApp, Messenger, IG, FB) share a single OAuth flow.</p>
+<p style="color:var(--text-light);font-size:13px;margin-bottom:10px;"><strong>Future channels</strong> (adapter-only additions in Unibox):</p>
 <ul style="margin:8px 0;padding-left:20px;font-size:13px;color:var(--text-light);">
-<li style="margin-bottom:4px;">SMS, Telegram, LINE, live chat widget</li>
+<li style="margin-bottom:4px;">LINE, live chat widget, additional social platforms</li>
 </ul>
 <h3 style="font-size:15px;font-weight:600;color:var(--primary-dark);margin:18px 0 10px 0;">5.2 Conversation-Centric (Not Record-Centric)</h3>
 <p style="color:var(--text-light);font-size:13px;margin-bottom:10px;">Traditional CRMs are record-centric — you create a contact, then work from the contact record. el-CRM is <strong>conversation-centric</strong> — the inbox is the primary workspace. Agents respond to conversations, and the CRM structures data around those conversations (pipeline stage, assignment, activities, follow-ups).</p>
@@ -776,8 +774,16 @@
 <td>gRPC + Protobuf (matches elauth ↔ accounts-api pattern)</td>
 </tr>
 <tr>
+<td>Messaging Platform</td>
+<td>Unibox (elunibox) — omnichannel send/receive across all channels</td>
+</tr>
+<tr>
+<td>Notification Delivery</td>
+<td>elmessagehub — transactional alerts, reminders, SLA notifications</td>
+</tr>
+<tr>
 <td>Event Bus</td>
-<td>NATS (start) → Kafka (scale)</td>
+<td>Kafka (shared with Unibox and elmessagehub)</td>
 </tr>
 <tr>
 <td>Real-time</td>
@@ -9496,7 +9502,7 @@ SET app.current_workspace_id = &#x27;&lt;workspace_uuid_from_jwt&gt;&#x27;;</pre
 <ul style="margin:8px 0;padding-left:20px;font-size:13px;color:var(--text-light);">
 <li style="margin-bottom:4px;"><strong>REST</strong> for frontend ↔ CRM backend communication</li>
 <li style="margin-bottom:4px;"><strong>gRPC + Protobuf</strong> for CRM ↔ elauth and CRM ↔ accounts-api</li>
-<li style="margin-bottom:4px;"><strong>NATS events</strong> for async inter-service (CRM ↔ Communication Gateway)</li>
+<li style="margin-bottom:4px;"><strong>Kafka events</strong> for async inter-service (CRM ↔ Unibox for messaging, CRM ↔ elmessagehub for notifications)</li>
 <li style="margin-bottom:4px;"><strong>WebSocket</strong> for real-time frontend updates</li>
 <li style="margin-bottom:4px;"><strong>workspace_id</strong> extracted from JWT on every request (never passed by client)</li>
 <li style="margin-bottom:4px;"><strong>Capability-based auth</strong> — each endpoint declares required capability</li>
@@ -10360,7 +10366,7 @@ start_date=2026-03-01   end_date=2026-03-12</pre>
 <h3 style="font-size:15px;font-weight:600;color:var(--primary-dark);margin:18px 0 10px 0;">CRM Consumes</h3>
 <p style="color:var(--text-light);font-size:13px;margin-bottom:10px;"><strong>From elauth</strong> (port 6000): ValidateToken, GetPerson, GetPersonRoles, GetWorkspaceMembers, AddWorkspaceMember, UpdatePersonRole, RemoveWorkspaceMember, ListWorkspaces.</p>
 <p style="color:var(--text-light);font-size:13px;margin-bottom:10px;"><strong>From accounts-api</strong> (port 21001): GetPerson, GetPersons, SearchPersons, CreatePerson, UpdatePerson, GetPersonByHandle, GetEntity, GetEntities, CreateEntity, UpdateEntity, CreateMembership, MergePersons.</p>
-<p style="color:var(--text-light);font-size:13px;margin-bottom:10px;"><strong>From Communication Gateway</strong> (port 6002): GetTemplates, GetChannelHealth, TestChannel.</p>
+<p style="color:var(--text-light);font-size:13px;margin-bottom:10px;"><strong>From Unibox</strong> (elunibox): GetTemplates, GetChannelHealth, TestChannel, GetConversationThread, SendMessage.</p>
 </div>
 <div class="section">
 <div class="section-header"><div class="section-num">6</div><div class="section-title">6. WebSocket Events</div></div>
@@ -10483,32 +10489,32 @@ Max per_page: 100</pre>
                      ┌───────────────┼───────────────┐
                      │               │               │
               ┌──────▼──────┐ ┌──────▼──────┐ ┌──────▼──────┐
-              │  CRM Service │ │  Comm GW    │ │ Other Svcs  │
-              │  Go          │ │  Go         │ │             │
-              │  HTTP :8090  │ │  HTTP :8091 │ │             │
-              │  gRPC :6001  │ │  gRPC :6002 │ │             │
-              │  WS   :8092  │ │             │ │             │
+              │  CRM Service │ │  Unibox     │ │ Other Svcs  │
+              │  Go          │ │  (elunibox) │ │             │
+              │  HTTP :8090  │ │  Go         │ │ elmessagehub│
+              │  gRPC :6001  │ │  API :8080  │ │  (Go)       │
+              │  WS   :8092  │ │  WH  :8081  │ │  HTTP:11004 │
               └──┬──┬──┬──┬─┘ └──────┬──────┘ └─────────────┘
                  │  │  │  │          │
      ┌───────────┘  │  │  └──────────────────────────────┐
-     │ gRPC    gRPC │  │ gRPC       │ Channel APIs       │ gRPC
+     │ gRPC    gRPC │  │ Kafka      │ Channel APIs       │ gRPC
      ▼              ▼  ▼            ▼                    ▼
-┌──────────┐ ┌──────────┐ ┌──────────────────┐  ┌───────────────┐
-│ elauth   │ │accounts  │ │ WhatsApp Cloud API│  │Ecosystem Svcs │
-│ Go       │ │-api      │ │ Smartflo Voice    │  │               │
-│ gRPC:6000│ │NestJS    │ │ SES Email         │  │ elGeolocations│
-│ HTTP:8080│ │gRPC:21001│ │ JustDial/FB/IM    │  │ elCurrency    │
-│ PgSQL    │ │HTTP:11001│ └──────────────────┘  │ Workspace Svc │
-└──────────┘ │MongoDB   │                       │ Goods &amp; Svcs  │
-             └──────────┘                       │ elPBX         │
-                                                │ Logger        │
-                                                └───────────────┘
+┌──────────┐ ┌──────────┐ ┌──────────────────────┐ ┌───────────────┐
+│ elauth   │ │accounts  │ │ 11+ Channels:        │ │Ecosystem Svcs │
+│ Go       │ │-api      │ │ WhatsApp, Messenger, │ │               │
+│ gRPC:6000│ │NestJS    │ │ Instagram, Email,    │ │ elGeolocations│
+│ HTTP:8080│ │gRPC:21001│ │ Voice, SMS, Telegram,│ │ elCurrency    │
+│ PgSQL    │ │HTTP:11001│ │ X, LinkedIn, TikTok, │ │ Workspace Svc │
+└──────────┘ │MongoDB   │ │ YouTube, JustDial,   │ │ Goods &amp; Svcs  │
+             └──────────┘ │ IndiaMart, FB Leads  │ │ elPBX         │
+                          └──────────────────────┘ │ Logger        │
+                                                   └───────────────┘
 
-   ┌──────────────────────────────────────────┐
-   │              NATS Event Bus              │
-   │  CRM ←→ Comm GW ←→ Notification Hub    │
-   │  CRM ←→ Commerce ←→ Ops Management     │
-   └──────────────────────────────────────────┘
+   ┌──────────────────────────────────────────────┐
+   │              Kafka Event Bus                  │
+   │  CRM ←→ Unibox ←→ elmessagehub              │
+   │  CRM ←→ Commerce ←→ Ops Management          │
+   └──────────────────────────────────────────────┘
 
    ┌──────────┐   ┌──────────┐   ┌──────────┐
    │ PgSQL    │   │ Redis    │   │ S3       │
@@ -10726,20 +10732,23 @@ Merged result (what CRM sees):
 </ul>
 </div>
 <div class="section">
-<div class="section-header"><div class="section-num">4</div><div class="section-title">4. Communication Gateway Integration</div></div>
+<div class="section-header"><div class="section-num">4</div><div class="section-title">4. Unibox Integration (Omnichannel Messaging Platform)</div></div>
 <h3 style="font-size:15px;font-weight:600;color:var(--primary-dark);margin:18px 0 10px 0;">Purpose</h3>
-<p style="color:var(--text-light);font-size:13px;margin-bottom:10px;">All channel communication. CRM never talks to WhatsApp/Smartflo/SES directly.</p>
+<p style="color:var(--text-light);font-size:13px;margin-bottom:10px;"><strong>Unibox (elunibox)</strong> is a dedicated omnichannel communication platform that handles all messaging across 11+ channels. CRM never talks to WhatsApp/Smartflo/SES directly — all messaging goes through Unibox.</p>
+<p style="color:var(--text-light);font-size:13px;margin-bottom:10px;">Unibox is a <strong>separate standalone project</strong> with its own Go backend, PostgreSQL database, Kafka pipeline, webhook gateway, and React frontend. The CRM embeds Unibox's inbox view for conversation management.</p>
+<p style="color:var(--text-light);font-size:13px;margin-bottom:10px;"><strong>Unibox owns:</strong> Channel adapters, webhook validation, message normalization, delivery status tracking, template management, channel configuration, message send/receive pipeline, email threading (RFC 5256), bounce/DMARC/ARF processing, support tickets.</p>
+<p style="color:var(--text-light);font-size:13px;margin-bottom:10px;"><strong>CRM owns:</strong> Conversation routing, agent assignment, pipeline stages, activities, reporting, workflow automation.</p>
 <h3 style="font-size:15px;font-weight:600;color:var(--primary-dark);margin:18px 0 10px 0;">Protocol</h3>
-<p style="color:var(--text-light);font-size:13px;margin-bottom:10px;">NATS events (async) + gRPC (sync for template listing, health checks).</p>
+<p style="color:var(--text-light);font-size:13px;margin-bottom:10px;">Kafka events (async) + Unibox REST/gRPC API (sync for templates, health checks, message history).</p>
 <h3 style="font-size:15px;font-weight:600;color:var(--primary-dark);margin:18px 0 10px 0;">Inbound Message Flow</h3>
-<pre style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;overflow-x:auto;font-family:monospace;font-size:12px;line-height:1.5;margin:16px 0;">Channel Provider (WhatsApp) → Webhook → Communication Gateway
+<pre style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;overflow-x:auto;font-family:monospace;font-size:12px;line-height:1.5;margin:16px 0;">Channel Provider (WhatsApp) → Webhook → Unibox Webhook Receiver (:8081)
   │
-  ├─ GW validates webhook signature
-  ├─ GW parses channel-specific payload
-  ├─ GW normalizes to UnifiedMessage
+  ├─ Unibox validates webhook signature
+  ├─ Unibox parses channel-specific payload (via ChannelAdapter)
+  ├─ Unibox normalizes to UnifiedMessage
   │
-  ├─ GW publishes NATS event:
-  │    Subject: comm.message.received
+  ├─ Unibox publishes Kafka event:
+  │    Topic: unibox.message.received
   │    Payload: {
   │      workspace_id, channel, direction: &quot;inbound&quot;,
   │      handle_type: &quot;phone&quot;, handle_value: &quot;+919876543210&quot;,
@@ -10749,37 +10758,26 @@ Merged result (what CRM sees):
   │      timestamp: &quot;2026-03-12T10:30:00Z&quot;
   │    }
   │
-  CRM subscribes to comm.message.received
+  CRM subscribes to unibox.message.received
   │
   ├─ Resolve contact (see Contact Resolution Flow above)
   ├─ Find/create conversation
-  ├─ Store message in conversation_messages
+  ├─ Store conversation metadata (stage, assignment)
   ├─ Run assignment rules (if new conversation)
   ├─ Notify agent via WebSocket
   └─ Evaluate workflow rules</pre>
 <h3 style="font-size:15px;font-weight:600;color:var(--primary-dark);margin:18px 0 10px 0;">Outbound Message Flow</h3>
-<pre style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;overflow-x:auto;font-family:monospace;font-size:12px;line-height:1.5;margin:16px 0;">Agent clicks Send in Inbox composer
+<pre style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;overflow-x:auto;font-family:monospace;font-size:12px;line-height:1.5;margin:16px 0;">Agent sends reply via CRM Inbox (Unibox embedded view)
   │
-  ├─ CRM stores message in conversation_messages (status: queued)
+  ├─ CRM stores conversation metadata (status: sending)
   │
-  ├─ CRM publishes NATS event:
-  │    Subject: comm.message.send
-  │    Payload: {
-  │      workspace_id, channel: &quot;whatsapp&quot;,
-  │      handle_value: &quot;+919876543210&quot;,
-  │      content_type: &quot;text&quot;, content: { body: &quot;Hi Rahul!&quot; },
-  │      crm_message_id: &quot;uuid&quot;,
-  │      metadata: {}
-  │    }
+  ├─ Unibox handles the actual send:
+  │    - Looks up workspace channel config (WhatsApp credentials)
+  │    - Calls channel provider API (WhatsApp Cloud API)
+  │    - Receives acceptance/failure
   │
-  Communication Gateway subscribes to comm.message.send
-  │
-  ├─ GW looks up workspace channel config (WhatsApp credentials)
-  ├─ GW calls WhatsApp Cloud API
-  ├─ GW receives response (success/failure)
-  │
-  ├─ GW publishes NATS event:
-  │    Subject: comm.message.status
+  ├─ Unibox publishes Kafka event:
+  │    Topic: unibox.message.status
   │    Payload: {
   │      crm_message_id: &quot;uuid&quot;,
   │      external_message_id: &quot;wamid.xyz789&quot;,
@@ -10787,19 +10785,18 @@ Merged result (what CRM sees):
   │      timestamp: &quot;2026-03-12T10:30:01Z&quot;
   │    }
   │
-  CRM subscribes to comm.message.status
+  CRM subscribes to unibox.message.status
   │
-  ├─ Update conversation_messages.delivery_status = &quot;sent&quot;
-  ├─ Update conversation_messages.external_message_id
+  ├─ Update conversation message status
   └─ Push status update to agent via WebSocket</pre>
 <h3 style="font-size:15px;font-weight:600;color:var(--primary-dark);margin:18px 0 10px 0;">Delivery Status Updates</h3>
-<pre style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;overflow-x:auto;font-family:monospace;font-size:12px;line-height:1.5;margin:16px 0;">WhatsApp sends delivery webhook → Communication Gateway
+<pre style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;overflow-x:auto;font-family:monospace;font-size:12px;line-height:1.5;margin:16px 0;">WhatsApp sends delivery webhook → Unibox Webhook Receiver
   │
-  ├─ GW publishes: comm.message.status
+  ├─ Unibox publishes: unibox.message.status
   │    { crm_message_id, status: &quot;delivered&quot; / &quot;read&quot; / &quot;failed&quot;, timestamp }
   │
-  CRM updates message record and pushes to frontend via WebSocket</pre>
-<h3 style="font-size:15px;font-weight:600;color:var(--primary-dark);margin:18px 0 10px 0;">gRPC Calls CRM Makes to Communication Gateway</h3>
+  CRM updates conversation record and pushes to frontend via WebSocket</pre>
+<h3 style="font-size:15px;font-weight:600;color:var(--primary-dark);margin:18px 0 10px 0;">API Calls CRM Makes to Unibox</h3>
 <table><thead><tr>
 <th>Method</th>
 <th>When</th>
@@ -10808,7 +10805,7 @@ Merged result (what CRM sees):
 <tr>
 <td><code>GetTemplates(workspace_id, channel)</code></td>
 <td>Template picker</td>
-<td>List approved WhatsApp templates</td>
+<td>List approved channel templates</td>
 </tr>
 <tr>
 <td><code>GetChannelHealth(workspace_id)</code></td>
@@ -10820,40 +10817,50 @@ Merged result (what CRM sees):
 <td>Channel setup</td>
 <td>Test channel connectivity</td>
 </tr>
+<tr>
+<td><code>GetConversationThread(workspace_id, conversation_id)</code></td>
+<td>Inbox load</td>
+<td>Get full message history</td>
+</tr>
+<tr>
+<td><code>SendMessage(workspace_id, conversation_id, message)</code></td>
+<td>Outbound</td>
+<td>Send message via specified channel</td>
+</tr>
 </tbody></table>
 </div>
 <div class="section">
-<div class="section-header"><div class="section-num">5</div><div class="section-title">5. NATS Event Bus</div></div>
-<h3 style="font-size:15px;font-weight:600;color:var(--primary-dark);margin:18px 0 10px 0;">Subject Naming Convention</h3>
+<div class="section-header"><div class="section-num">5</div><div class="section-title">5. Kafka Event Bus</div></div>
+<h3 style="font-size:15px;font-weight:600;color:var(--primary-dark);margin:18px 0 10px 0;">Topic Naming Convention</h3>
 <pre style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;overflow-x:auto;font-family:monospace;font-size:12px;line-height:1.5;margin:16px 0;">{service}.{entity}.{action}
 
 Examples:
   crm.conversation.created
   crm.opportunity.stage_changed
-  comm.message.received
-  comm.message.status
+  unibox.message.received
+  unibox.message.status
   accounts.person.updated
   elauth.user.deactivated</pre>
 <h3 style="font-size:15px;font-weight:600;color:var(--primary-dark);margin:18px 0 10px 0;">Events Published by CRM</h3>
 <table><thead><tr>
-<th>Subject</th>
+<th>Topic</th>
 <th>Payload (key fields)</th>
 <th>Consumers</th>
 </tr></thead><tbody>
 <tr>
 <td><code>crm.contact_handle.linked</code></td>
 <td>workspace_id, person_id, handle_type, handle_value</td>
-<td>Comm GW</td>
+<td>Unibox (for routing)</td>
 </tr>
 <tr>
 <td><code>crm.conversation.created</code></td>
 <td>workspace_id, conversation_id, person_id, channel, source</td>
-<td>Comm GW, Ops</td>
+<td>Unibox, Ops</td>
 </tr>
 <tr>
 <td><code>crm.conversation.assigned</code></td>
 <td>workspace_id, conversation_id, agent_id, method</td>
-<td>Notification Hub</td>
+<td>Unibox, elmessagehub</td>
 </tr>
 <tr>
 <td><code>crm.conversation.stage_changed</code></td>
@@ -10883,28 +10890,28 @@ Examples:
 </tbody></table>
 <h3 style="font-size:15px;font-weight:600;color:var(--primary-dark);margin:18px 0 10px 0;">Events Consumed by CRM</h3>
 <table><thead><tr>
-<th>Subject</th>
+<th>Topic</th>
 <th>Publisher</th>
 <th>CRM Action</th>
 </tr></thead><tbody>
 <tr>
-<td><code>comm.message.received</code></td>
-<td>Comm GW</td>
-<td>Resolve contact, create/update conversation, store message</td>
+<td><code>unibox.message.received</code></td>
+<td>Unibox</td>
+<td>Resolve contact, create/update conversation, run assignment</td>
 </tr>
 <tr>
-<td><code>comm.message.status</code></td>
-<td>Comm GW</td>
+<td><code>unibox.message.status</code></td>
+<td>Unibox</td>
 <td>Update message delivery status</td>
 </tr>
 <tr>
-<td><code>comm.call.incoming</code></td>
-<td>Comm GW</td>
+<td><code>unibox.call.incoming</code></td>
+<td>Unibox</td>
 <td>Notify agent of incoming call</td>
 </tr>
 <tr>
-<td><code>comm.call.ended</code></td>
-<td>Comm GW</td>
+<td><code>unibox.call.ended</code></td>
+<td>Unibox</td>
 <td>Log call activity, prompt disposition</td>
 </tr>
 <tr>
@@ -10939,25 +10946,28 @@ Examples:
 
 2. Outbox poller (goroutine, runs every 100ms):
    SELECT * FROM outbox WHERE published_at IS NULL ORDER BY created_at LIMIT 100;
-   For each: publish to NATS → UPDATE outbox SET published_at = now() WHERE id = ?;
+   For each: publish to Kafka → UPDATE outbox SET published_at = now() WHERE id = ?;
 
 3. Guarantees at-least-once delivery. Consumers must be idempotent.</pre>
 </div>
 <div class="section">
-<div class="section-header"><div class="section-num">6</div><div class="section-title">6. Notification Hub</div></div>
-<p style="color:var(--text-light);font-size:13px;margin-bottom:10px;">CRM publishes notification requests; Notification Hub delivers them.</p>
-<pre style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;overflow-x:auto;font-family:monospace;font-size:12px;line-height:1.5;margin:16px 0;">CRM → NATS event: notification.send
+<div class="section-header"><div class="section-num">6</div><div class="section-title">6. elmessagehub (Notification Delivery)</div></div>
+<p style="color:var(--text-light);font-size:13px;margin-bottom:10px;"><strong>IMPORTANT: elmessagehub ≠ Unibox.</strong> elmessagehub handles transactional notifications and alerts (SLA breaches, assignment notifications, follow-up reminders) — NOT customer conversations. Unibox handles customer-facing omnichannel messaging. elmessagehub handles internal agent/system notifications.</p>
+<p style="color:var(--text-light);font-size:13px;margin-bottom:10px;">CRM publishes notification requests; elmessagehub delivers them via email/SMS/push.</p>
+<pre style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;overflow-x:auto;font-family:monospace;font-size:12px;line-height:1.5;margin:16px 0;">CRM → Kafka event: elmessagehub.notification.send
 Payload: {
   workspace_id, recipient_id, channels: [&quot;email&quot;, &quot;push&quot;],
   template: &quot;sla_breach&quot;,
+  priority_level: &quot;high&quot;,
   data: { contact_name: &quot;Rahul&quot;, conversation_id: &quot;...&quot;, frt_minutes: 12 }
 }
 
-Notification Hub:
-  → Resolves recipient email from elauth
-  → Renders email template with data
-  → Sends via SES
-  → Sends push via FCM (if push token registered)</pre>
+elmessagehub:
+  → Routes to priority-based Kafka queue (high/medium/low)
+  → Resolves recipient contact info from elauth
+  → Renders template (Go template engine)
+  → Sends via Gmail OAuth / SMTP (email), Twilio (SMS), FCM (push)
+  → Tracks delivery status in communication_log</pre>
 </div>
 <div class="section">
 <div class="section-header"><div class="section-num">7</div><div class="section-title">7. File Service (S3)</div></div>
@@ -10967,7 +10977,7 @@ Notification Hub:
   3. Frontend uploads directly to S3 via presigned URL
   4. Frontend sends message with media_url = S3 URL
   5. CRM stores URL in conversation_messages.content_json
-  6. Communication Gateway fetches file from S3 when sending to channel</pre>
+  6. Unibox fetches file from S3 when sending to channel</pre>
 </div>
 <div class="section">
 <div class="section-header"><div class="section-num">8</div><div class="section-title">8. Ecosystem Service Integrations</div></div>
@@ -11077,7 +11087,7 @@ Notification Hub:
   InitiateCall(agent_id, destination_number, workspace_id) → { call_id }
   GetAgentExtension(agent_id, workspace_id) → { extension, phone_number }
   GetCallRecording(call_id) → { recording_url, duration }</pre>
-<p style="color:var(--text-light);font-size:13px;margin-bottom:10px;">Communication Gateway handles the actual call events (incoming/outgoing/ended). PBX is the configuration layer.</p>
+<p style="color:var(--text-light);font-size:13px;margin-bottom:10px;">Unibox handles the actual call events (incoming/outgoing/ended). PBX is the configuration layer.</p>
 <p style="color:var(--text-light);font-size:13px;margin-bottom:10px;"><strong>Where in CRM UI:</strong></p>
 <ul style="margin:8px 0;padding-left:20px;font-size:13px;color:var(--text-light);">
 <li style="margin-bottom:4px;">Inbox: "Call" button on contact → triggers PBX call</li>
@@ -11158,9 +11168,9 @@ Notification Hub:
 <td>gRPC</td>
 </tr>
 <tr>
-<td><strong>Comm Gateway</strong></td>
-<td>WhatsApp, Voice, Email, SMS channels</td>
-<td>NATS + gRPC</td>
+<td><strong>Unibox (elunibox)</strong></td>
+<td>All 11+ messaging channels (WhatsApp, Email, Voice, Social, etc.)</td>
+<td>Kafka + REST/gRPC</td>
 </tr>
 <tr>
 <td><strong>elGeolocations</strong></td>
@@ -11198,9 +11208,9 @@ Notification Hub:
 <td>HTTP</td>
 </tr>
 <tr>
-<td><strong>Notification Hub</strong></td>
-<td>Email/Push/SMS delivery</td>
-<td>NATS</td>
+<td><strong>elmessagehub</strong></td>
+<td>Transactional notifications (email/push/SMS alerts)</td>
+<td>Kafka</td>
 </tr>
 <tr>
 <td><strong>File Service (S3)</strong></td>
@@ -11210,12 +11220,12 @@ Notification Hub:
 </tbody></table>
 <div class="section">
 <div class="section-header"><div class="section-num">9</div><div class="section-title">9. Sequence Diagram: Inbound WhatsApp Message (Full Flow)</div></div>
-<pre style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;overflow-x:auto;font-family:monospace;font-size:12px;line-height:1.5;margin:16px 0;">Customer    WhatsApp    Comm GW      NATS       CRM          accounts-api    Redis    PgSQL    Agent Browser
+<pre style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;overflow-x:auto;font-family:monospace;font-size:12px;line-height:1.5;margin:16px 0;">Customer    WhatsApp    Unibox       Kafka      CRM          accounts-api    Redis    PgSQL    Agent Browser
    │           │           │          │          │               │             │        │           │
    │──message─▶│           │          │          │               │             │        │           │
    │           │──webhook─▶│          │          │               │             │        │           │
    │           │           │──publish─▶│         │               │             │        │           │
-   │           │           │  comm.message.received              │             │        │           │
+   │           │           │  unibox.message.received            │             │        │           │
    │           │           │          │──consume─▶│              │             │        │           │
    │           │           │          │          │──lookup──────▶│             │        │           │
    │           │           │          │          │  contact_handles            │        │           │
@@ -11226,7 +11236,7 @@ Notification Hub:
    │           │           │          │          │◀─person data──────────────│        │           │
    │           │           │          │          │──cache─────────────────────▶│        │           │
    │           │           │          │          │               │             │        │           │
-   │           │           │          │          │──store message─────────────────────▶│           │
+   │           │           │          │          │──store metadata────────────────────▶│           │
    │           │           │          │          │──find/create conversation──────────▶│           │
    │           │           │          │          │──run assignment rules──────────────▶│           │
    │           │           │          │          │──insert outbox event───────────────▶│           │
@@ -11237,29 +11247,28 @@ Notification Hub:
 </div>
 <div class="section">
 <div class="section-header"><div class="section-num">10</div><div class="section-title">9. Sequence Diagram: Agent Sends Reply</div></div>
-<pre style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;overflow-x:auto;font-family:monospace;font-size:12px;line-height:1.5;margin:16px 0;">Agent Browser    CRM           PgSQL      NATS       Comm GW      WhatsApp    Customer
+<pre style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;overflow-x:auto;font-family:monospace;font-size:12px;line-height:1.5;margin:16px 0;">Agent Browser    CRM           PgSQL      Kafka      Unibox       WhatsApp    Customer
      │            │              │          │           │             │           │
      │──send msg─▶│              │          │           │             │           │
-     │            │──store msg──▶│          │           │             │           │
-     │            │  (status:queued)        │           │             │           │
-     │            │──publish────────────────▶│          │             │           │
-     │            │  comm.message.send      │           │             │           │
-     │◀─optimistic│              │          │──consume─▶│             │           │
-     │  (sending) │              │          │           │──API call──▶│           │
+     │            │──store meta─▶│          │           │             │           │
+     │            │  (status:sending)       │           │             │           │
+     │◀─optimistic│              │          │           │             │           │
+     │  (sending) │              │          │           │             │           │
+     │            │              │          │           │──API call──▶│           │
      │            │              │          │           │             │──deliver─▶│
      │            │              │          │           │◀─accepted──│           │
      │            │              │          │◀─publish──│             │           │
-     │            │              │  comm.message.status (sent)       │           │
+     │            │              │  unibox.message.status (sent)     │           │
      │            │◀─consume─────│          │           │             │           │
-     │            │──update msg─▶│          │           │             │           │
+     │            │──update ────▶│          │           │             │           │
      │            │  (status:sent)          │           │             │           │
      │◀─WS push──│              │          │           │             │           │
      │  (✓ sent)  │              │          │           │             │           │
      │            │              │          │           │             │           │
      │            │              │          │           │◀─delivery──│           │
      │            │              │          │◀─publish──│  webhook    │           │
-     │            │◀─consume─────│  comm.message.status (delivered)  │           │
-     │            │──update msg─▶│          │           │             │           │
+     │            │◀─consume─────│  unibox.message.status (delivered)│           │
+     │            │──update ────▶│          │           │             │           │
      │◀─WS push──│              │          │           │             │           │
      │  (✓✓ dlvd) │              │          │           │             │           │</pre>
 </div>
@@ -12808,27 +12817,45 @@ Response: {
 </div>
 </div><div class="panel" id="channels">
 <h2 style="font-size:22px;font-weight:700;color:var(--primary-dark);margin-bottom:20px;">Channel Specs</h2>
-<div class="info-box">Per-channel behavior, message types, capabilities, and constraints.<br>All channel logic lives in the Communication Gateway — CRM is channel-agnostic.</div>
+<div class="info-box">Per-channel behavior, message types, capabilities, and constraints.<br>All channel logic lives in <strong>Unibox (elunibox)</strong> — CRM is channel-agnostic.</div>
 <div class="section">
 <div class="section-header"><div class="section-num">1</div><div class="section-title">1. Architecture</div></div>
 <pre style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;overflow-x:auto;font-family:monospace;font-size:12px;line-height:1.5;margin:16px 0;">CRM Service (channel-agnostic)
     │
-    │ Events (NATS)
+    │ Embeds Unibox inbox view
+    │ Kafka events for metadata sync
     ↓
-Communication Gateway
+Unibox (elunibox) — Omnichannel Communication Platform
     │
-    ├── WhatsApp Adapter ←→ Meta Cloud API
-    ├── Messenger Adapter ←→ Meta Graph API (Messenger Platform)
-    ├── Instagram DM Adapter ←→ Meta Graph API (IG Messaging)
-    ├── Facebook Comments Adapter ←→ Meta Graph API (Webhooks)
-    ├── Instagram Comments Adapter ←→ Meta Graph API (Webhooks)
-    ├── Voice Adapter ←→ Smartflo / SIP Provider
-    ├── Email Adapter ←→ SES / SMTP
-    ├── JustDial Adapter ←→ JustDial API
-    ├── Facebook Lead Ads Adapter ←→ Facebook Lead Ads API
-    ├── IndiaMart Adapter ←→ IndiaMart API
-    ├── WebForm Adapter ←→ Webhook receiver
-    └── [Future adapters: SMS, Telegram, LINE, LiveChat]</pre>
+    ├── Email Providers:
+    │   ├── Microsoft 365 Adapter ←→ Graph API + Subscriptions
+    │   ├── Google Workspace Adapter ←→ Gmail API + Pub/Sub
+    │   ├── iCloud Mail Adapter ←→ IMAP/SMTP + IMAP IDLE
+    │   └── AOL/Yahoo Adapter ←→ IMAP/SMTP + IMAP IDLE
+    │
+    ├── Messaging Channels:
+    │   ├── WhatsApp Adapter ←→ Meta Cloud API
+    │   ├── Telegram Adapter ←→ Telegram Bot API
+    │   └── SMS Adapter ←→ Twilio
+    │
+    ├── Social Channels:
+    │   ├── Facebook Adapter ←→ Meta Graph API (Pages + Messenger)
+    │   ├── Instagram Adapter ←→ Meta Graph API (DMs + Comments)
+    │   ├── X/Twitter Adapter ←→ X API v2 (DMs + Mentions)
+    │   ├── LinkedIn Adapter ←→ LinkedIn API (Messages + Comments)
+    │   ├── TikTok Adapter ←→ TikTok API (Comments)
+    │   └── YouTube Adapter ←→ YouTube Data API (Comments + Live Chat)
+    │
+    ├── Lead Capture:
+    │   ├── JustDial Adapter ←→ JustDial API
+    │   ├── Facebook Lead Ads Adapter ←→ Facebook Lead Ads API
+    │   ├── IndiaMart Adapter ←→ IndiaMart API
+    │   └── WebForm Adapter ←→ Webhook receiver
+    │
+    ├── Internal:
+    │   └── Team Chat ←→ Built-in (rooms, DMs, @mentions)
+    │
+    └── Support Tickets (also handled via Unibox)</pre>
 <h3 style="font-size:15px;font-weight:600;color:var(--primary-dark);margin:18px 0 10px 0;">Unified Message Model</h3>
 <p style="color:var(--text-light);font-size:13px;margin-bottom:10px;">All channels normalize to this structure before CRM sees the message:</p>
 <pre style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;overflow-x:auto;font-family:monospace;font-size:12px;line-height:1.5;margin:16px 0;">{
@@ -13092,8 +13119,8 @@ Communication Gateway
 <h3 style="font-size:15px;font-weight:600;color:var(--primary-dark);margin:18px 0 10px 0;">Call Flow — Inbound</h3>
 <pre style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;overflow-x:auto;font-family:monospace;font-size:12px;line-height:1.5;margin:16px 0;">Customer dials DID number
   → Smartflo routes to workspace (by DID mapping)
-  → Communication Gateway receives call event
-  → Publishes: comm.call.incoming { workspace_id, caller, did_number }
+  → Unibox receives call event
+  → Publishes: unibox.call.incoming { workspace_id, caller, did_number }
   → CRM receives event:
       - Resolves contact by phone handle
       - Finds/creates conversation
@@ -13102,13 +13129,13 @@ Communication Gateway
   → Agent answers in browser (WebRTC) or desk phone
   → Call connected, recording starts (if enabled)
   → Call ends
-  → Communication Gateway publishes: comm.call.ended { duration, recording_url, status }
+  → Unibox publishes: unibox.call.ended { duration, recording_url, status }
   → CRM auto-logs activity: call type, duration, recording URL
   → Agent prompted for disposition</pre>
 <h3 style="font-size:15px;font-weight:600;color:var(--primary-dark);margin:18px 0 10px 0;">Call Flow — Outbound</h3>
 <pre style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;overflow-x:auto;font-family:monospace;font-size:12px;line-height:1.5;margin:16px 0;">Agent clicks phone icon on contact
-  → CRM sends: comm.call.initiate { workspace_id, agent_id, target_number }
-  → Communication Gateway initiates call via provider
+  → CRM sends: unibox.call.initiate { workspace_id, agent_id, target_number }
+  → Unibox initiates call via provider
   → Provider calls agent first → then bridges to customer
   → Same recording + activity logging as inbound</pre>
 <h3 style="font-size:15px;font-weight:600;color:var(--primary-dark);margin:18px 0 10px 0;">Content Type Mapping</h3>
@@ -13212,14 +13239,14 @@ Communication Gateway
 </tbody></table>
 <h3 style="font-size:15px;font-weight:600;color:var(--primary-dark);margin:18px 0 10px 0;">Email Threading</h3>
 <pre style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;overflow-x:auto;font-family:monospace;font-size:12px;line-height:1.5;margin:16px 0;">Inbound email arrives at: crm-{workspace_id}@inbound.elcrm.com
-  → Communication Gateway receives via SES inbound / webhook
+  → Unibox receives via SES inbound / webhook
   → Parses: From, To, CC, Subject, Body (text + HTML), Attachments, In-Reply-To, Message-ID
   → Threading logic:
       1. Check In-Reply-To header → match to existing conversation&#x27;s Message-ID
       2. If no match → check Subject + sender → fuzzy match to existing conversation
       3. If no match → create new conversation
   → Normalize to UnifiedMessage (content_type: email)
-  → Publish comm.message.received event</pre>
+  → Publish unibox.message.received event</pre>
 <h3 style="font-size:15px;font-weight:600;color:var(--primary-dark);margin:18px 0 10px 0;">Content Type Mapping</h3>
 <table><thead><tr>
 <th>CRM content_type</th>
@@ -13571,7 +13598,7 @@ Customer mentions business in their Story → notification in CRM
 <h3 style="font-size:15px;font-weight:600;color:var(--primary-dark);margin:18px 0 10px 0;">How It Works</h3>
 <pre style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;overflow-x:auto;font-family:monospace;font-size:12px;line-height:1.5;margin:16px 0;">Customer comments on Facebook Page post
   → Meta Webhook: feed event (type: &quot;comment&quot;)
-  → Communication Gateway receives
+  → Unibox receives
   → Normalizes to UnifiedMessage:
     - channel: &quot;facebook_comments&quot;
     - content_type: &quot;social_comment&quot;
@@ -13660,7 +13687,7 @@ If someone comments on a post AND messages on Messenger → same contact.</pre>
 <h3 style="font-size:15px;font-weight:600;color:var(--primary-dark);margin:18px 0 10px 0;">How It Works</h3>
 <pre style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;overflow-x:auto;font-family:monospace;font-size:12px;line-height:1.5;margin:16px 0;">Customer comments on Instagram post/reel
   → Meta Webhook: comments event
-  → Communication Gateway receives
+  → Unibox receives
   → Normalizes to UnifiedMessage:
     - channel: &quot;instagram_comments&quot;
     - content_type: &quot;social_comment&quot;
@@ -13916,9 +13943,9 @@ Contact override: Email → WhatsApp (customer prefers email)</pre>
 </div>
 <div class="section">
 <div class="section-header"><div class="section-num">12</div><div class="section-title">12. Adding a New Channel</div></div>
-<p style="color:var(--text-light);font-size:13px;margin-bottom:10px;">Steps to add a new channel (e.g., Telegram):</p>
+<p style="color:var(--text-light);font-size:13px;margin-bottom:10px;">Steps to add a new channel (e.g., a new social platform):</p>
 <ul style="margin:8px 0;padding-left:20px;font-size:13px;color:var(--text-light);list-style-type:decimal;">
-<li style="margin-bottom:4px;"><strong>Communication Gateway</strong>: Implement <code>ChannelAdapter</code> interface</li>
+<li style="margin-bottom:4px;"><strong>Unibox</strong>: Implement the appropriate provider interface (<code>ChannelProvider</code> or <code>SocialProvider</code>)</li>
 <li style="margin-bottom:4px;"><code>validateWebhook()</code>: Verify webhook signature</li>
 <li style="margin-bottom:4px;"><code>parseWebhook()</code>: Extract message data from provider payload</li>
 <li style="margin-bottom:4px;"><code>normalizeInbound()</code>: Convert to UnifiedMessage</li>
@@ -13926,17 +13953,18 @@ Contact override: Email → WhatsApp (customer prefers email)</pre>
 <li style="margin-bottom:4px;"><code>parseStatusUpdate()</code>: Handle delivery receipts</li>
 </ul>
 <ul style="margin:8px 0;padding-left:20px;font-size:13px;color:var(--text-light);list-style-type:decimal;">
-<li style="margin-bottom:4px;"><strong>Communication Gateway config</strong>: Register adapter, set up webhook URL</li>
+<li style="margin-bottom:4px;"><strong>Unibox config</strong>: Register adapter in provider registry, set up webhook URL</li>
 </ul>
 <ul style="margin:8px 0;padding-left:20px;font-size:13px;color:var(--text-light);list-style-type:decimal;">
 <li style="margin-bottom:4px;"><strong>CRM Settings UI</strong>: Add channel to configuration page</li>
+<li style="margin-bottom:4px;">Fetches available channels from Unibox API</li>
 <li style="margin-bottom:4px;">OAuth or API key flow for provider</li>
-<li style="margin-bottom:4px;">Store credentials (encrypted)</li>
+<li style="margin-bottom:4px;">Stores workspace-level channel enablement</li>
 </ul>
 <ul style="margin:8px 0;padding-left:20px;font-size:13px;color:var(--text-light);list-style-type:decimal;">
 <li style="margin-bottom:4px;"><strong>CRM changes needed</strong>: <strong>NONE</strong></li>
-<li style="margin-bottom:4px;">Inbox already renders any channel's messages</li>
-<li style="margin-bottom:4px;">Filters already have dynamic channel list</li>
+<li style="margin-bottom:4px;">Inbox already renders Unibox's unified messages</li>
+<li style="margin-bottom:4px;">Filters already have dynamic channel list from Unibox</li>
 <li style="margin-bottom:4px;">Reports already group by channel</li>
 <li style="margin-bottom:4px;">Assignment rules already support channel conditions</li>
 </ul>
@@ -15369,7 +15397,7 @@ Default: populated from elauth workspace data</pre>
 </div>
 </div><div class="panel" id="channel-integration">
 <h2 style="font-size:22px;font-weight:700;color:var(--primary-dark);margin-bottom:20px;">Channel Integration</h2>
-<div class="info-box">Technical API reference for all Communication Gateway channel adapters.<br>Covers authentication, webhooks, payloads, rate limits, and sending for every MVP channel.<br>Last verified: March 2026 (Graph API v25.0)</div>
+<div class="info-box">Technical API reference for all <strong>Unibox (elunibox)</strong> channel adapters.<br>Covers authentication, webhooks, payloads, rate limits, and sending for every channel.<br>All channel logic lives in Unibox — CRM embeds Unibox for inbox view but does not handle messaging directly.<br>Last verified: March 2026 (Graph API v25.0)</div>
 <div class="section">
 <div class="section-header"><div class="section-num">1</div><div class="section-title">1. Meta Platform (Shared Infrastructure)</div></div>
 <p style="color:var(--text-light);font-size:13px;margin-bottom:10px;">All 5 Meta channels (WhatsApp, Messenger, Instagram DMs, Facebook Comments, Instagram Comments) share common infrastructure.</p>
@@ -16681,7 +16709,7 @@ Content-Type: application/json</pre>
          ↓
 2. Meta sends webhook POST (contains leadgen_id only)
          ↓
-3. Communication Gateway extracts leadgen_id
+3. Unibox extracts leadgen_id
          ↓
 4. GET /v25.0/{leadgen_id}?access_token=...
          ↓
@@ -17232,7 +17260,7 @@ GET /v1/auto_attendants    → IVR menus and destinations</pre>
 <div class="section">
 <div class="section-header"><div class="section-num">11</div><div class="section-title">11. Email (AWS SES / SMTP)</div></div>
 <h3 style="font-size:15px;font-weight:600;color:var(--primary-dark);margin:18px 0 10px 0;">11.1 Overview</h3>
-<p style="color:var(--text-light);font-size:13px;margin-bottom:10px;">Email is handled via the Communication Gateway's Email Adapter, not directly by the CRM.</p>
+<p style="color:var(--text-light);font-size:13px;margin-bottom:10px;">Email is handled via the Unibox's Email Adapter, not directly by the CRM.</p>
 <table><thead><tr>
 <th>Aspect</th>
 <th>Details</th>
@@ -17320,7 +17348,7 @@ GET /v1/auto_attendants    → IVR menus and destinations</pre>
 </tr></thead><tbody>
 <tr>
 <td><strong>Type</strong></td>
-<td>Webhook — your web form POSTs to Communication Gateway</td>
+<td>Webhook — your web form POSTs to Unibox</td>
 </tr>
 <tr>
 <td><strong>Endpoint</strong></td>
@@ -17353,7 +17381,7 @@ GET /v1/auto_attendants    → IVR menus and destinations</pre>
   }
 }</pre>
 <h3 style="font-size:15px;font-weight:600;color:var(--primary-dark);margin:18px 0 10px 0;">12.3 Integration</h3>
-<p style="color:var(--text-light);font-size:13px;margin-bottom:10px;">The Communication Gateway's WebForm Adapter normalizes this to a <code>UnifiedMessage</code> with <code>contentType: &quot;lead_capture&quot;</code> and <code>channel: &quot;webform&quot;</code>.</p>
+<p style="color:var(--text-light);font-size:13px;margin-bottom:10px;">The Unibox's WebForm Adapter normalizes this to a <code>UnifiedMessage</code> with <code>contentType: &quot;lead_capture&quot;</code> and <code>channel: &quot;webform&quot;</code>.</p>
 </div>
 <div class="section">
 <div class="section-header"><div class="section-num">13</div><div class="section-title">13. Cross-Channel Identity Mapping</div></div>
@@ -17403,7 +17431,7 @@ GET /v1/auto_attendants    → IVR menus and destinations</pre>
 <p style="color:var(--text-light);font-size:13px;margin-bottom:10px;">A conversation belongs to a <strong>contact</strong>, not a channel. Same customer messaging on WhatsApp and later emailing → same conversation (if handles are linked to same contact). The conversation tracks <code>primary_channel</code> and <code>active_channels[]</code>.</p>
 </div>
 <div class="section">
-<div class="section-header"><div class="section-num">14</div><div class="section-title">14. Communication Gateway Unified Webhook</div></div>
+<div class="section-header"><div class="section-num">14</div><div class="section-title">14. Unibox Unified Webhook</div></div>
 <p style="color:var(--text-light);font-size:13px;margin-bottom:10px;">All external webhooks route through a single gateway:</p>
 <pre style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;overflow-x:auto;font-family:monospace;font-size:12px;line-height:1.5;margin:16px 0;">POST /webhooks/{channel_id}
 
