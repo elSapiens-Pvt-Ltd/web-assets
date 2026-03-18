@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>elSapiens — BNI Presentation</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --c50:  #EEF1F6;
+  --c100: #DDE3EE;
+  --c200: #BBC7DD;
+  --c300: #99ABCC;
+  --c400: #778FBB;
+  --c500: #5573AA;
+  --c600: #445C88;
+  --c700: #334566;
+  --c800: #222E44;
+  --c900: #111722;
+  --c950: #0C1018;
+  --green: #34d399;
+  --green-dim: rgba(52,211,153,0.15);
+  --orange: #f59e0b;
+  --red: #ef4444;
+  --glass: rgba(34,46,68,0.45);
+  --glass-border: rgba(91,115,170,0.18);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+html, body {
+  width:100vw; height:100vh;
+  overflow:hidden;
+  background: var(--c950);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: var(--c50);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ========== GLOBAL BACKGROUND ========== */
+.bg-canvas {
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 100%, rgba(85,115,170,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 85% 10%, rgba(52,211,153,0.05) 0%, transparent 50%),
+    var(--c950);
+}
+
+/* Subtle animated grain */
+.bg-canvas::after {
+  content:'';
+  position:absolute; inset:0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  opacity:0.4;
+}
+
+/* Grid lines */
+.grid-overlay {
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background-image:
+    linear-gradient(rgba(85,115,170,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(85,115,170,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* ========== SLIDES ========== */
+.slide {
+  position:absolute; inset:0;
+  display:flex; flex-direction:column;
+  justify-content:center; align-items:center;
+  z-index:1;
+  opacity:0;
+  pointer-events:none;
+  transition: opacity 0.7s cubic-bezier(0.4,0,0.2,1), transform 0.7s cubic-bezier(0.4,0,0.2,1);
+  transform: scale(0.97) translateY(10px);
+  padding: 30px 50px 60px;
+}
+.slide.active {
+  opacity:1; pointer-events:auto;
+  transform: scale(1) translateY(0);
+}
+.slide.exit-left {
+  opacity:0;
+  transform: scale(1.02) translateY(-10px);
+}
+
+/* ========== PROGRESS BAR ========== */
+.progress-bar {
+  position:fixed; top:0; left:0; height:3px;
+  background: linear-gradient(90deg, var(--c500), var(--green));
+  z-index:200;
+  transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+  box-shadow: 0 0 12px rgba(85,115,170,0.5);
+}
+
+/* ========== NAVIGATION ========== */
+.nav {
+  position:fixed; bottom:28px; left:50%; transform:translateX(-50%);
+  display:flex; align-items:center; gap:14px;
+  background: rgba(12,16,24,0.7);
+  backdrop-filter: blur(24px) saturate(1.4);
+  border:1px solid var(--glass-border);
+  border-radius:60px;
+  padding:8px 20px;
+  z-index:200;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+.nav-btn {
+  width:34px; height:34px; border-radius:50%;
+  border:1px solid rgba(85,115,170,0.25);
+  background:transparent; color:var(--c200);
+  font-size:14px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  transition:all 0.25s;
+}
+.nav-btn:hover { background:rgba(85,115,170,0.15); color:#fff; }
+.nav-btn svg { width:16px; height:16px; }
+
+.dots { display:flex; gap:6px; }
+.dot {
+  width:8px; height:8px; border-radius:50%;
+  background:rgba(187,199,221,0.2);
+  cursor:pointer; transition:all 0.35s;
+}
+.dot.active {
+  background:var(--c400);
+  width:28px; border-radius:4px;
+  box-shadow: 0 0 8px rgba(85,115,170,0.4);
+}
+
+.counter {
+  font-size:12px; color:var(--c400);
+  font-weight:500; min-width:40px; text-align:center;
+  font-family:'Space Grotesk',sans-serif;
+}
+
+/* ========== TYPOGRAPHY ========== */
+.eyebrow {
+  font-size:12px; font-weight:700; letter-spacing:0.2em;
+  text-transform:uppercase; margin-bottom:12px;
+}
+.heading-xl {
+  font-family:'Space Grotesk',sans-serif;
+  font-size:52px; font-weight:700; line-height:1.1;
+  letter-spacing:-0.02em;
+}
+.heading-lg {
+  font-family:'Space Grotesk',sans-serif;
+  font-size:40px; font-weight:700; line-height:1.15;
+  letter-spacing:-0.02em;
+}
+.heading-md {
+  font-family:'Space Grotesk',sans-serif;
+  font-size:28px; font-weight:600; line-height:1.2;
+}
+.body-lg { font-size:18px; line-height:1.7; color:var(--c300); }
+.body-md { font-size:15px; line-height:1.7; color:var(--c300); }
+.body-sm { font-size:13px; line-height:1.6; color:var(--c400); }
+.gradient-text {
+  background:linear-gradient(135deg, var(--c200), var(--green));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.accent-text { color:var(--c300); }
+.green-text { color:var(--green); }
+.orange-text { color:var(--orange); }
+.red-text { color:var(--red); }
+
+/* ========== GLASS CARD ========== */
+.glass {
+  background: var(--glass);
+  backdrop-filter: blur(20px) saturate(1.3);
+  border:1px solid var(--glass-border);
+  border-radius:16px;
+}
+.glass-sm { border-radius:12px; }
+.glass-strong {
+  background: rgba(34,46,68,0.65);
+  backdrop-filter: blur(24px) saturate(1.4);
+  border:1px solid rgba(91,115,170,0.22);
+  border-radius:16px;
+}
+
+/* ========== GLOW LINE ========== */
+.glow-line {
+  width:60px; height:2px; border-radius:1px;
+  background:linear-gradient(90deg, var(--c500), var(--green));
+  box-shadow: 0 0 16px rgba(85,115,170,0.4);
+}
+
+/* ========== WATERMARK LOGO ========== */
+.watermark {
+  position:absolute; top:16px; left:24px;
+  height:56px; opacity:0.8;
+  pointer-events:none; z-index:5;
+}
+
+/* ========== SLIDE: TITLE ========== */
+.slide-title { text-align:center; gap:20px; }
+.slide-title .logo { height:180px; margin-bottom:8px; }
+.slide-title .tagline {
+  font-family:'Space Grotesk',sans-serif;
+  font-size:24px; font-weight:500;
+  letter-spacing:0.12em; text-transform:uppercase;
+  color:var(--c300);
+}
+.slide-title .sub {
+  font-size:16px; color:var(--c400);
+  max-width:560px; line-height:1.8;
+}
+.slide-title .presenter {
+  font-size:14px; color:var(--c500);
+  margin-top:20px; letter-spacing:0.05em;
+}
+
+/* ========== SLIDE: ABOUT ========== */
+.about-grid {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:60px; max-width:1200px; width:100%;
+  align-items:center;
+}
+.stat-row { display:flex; gap:36px; margin-top:28px; }
+.stat-num {
+  font-family:'Space Grotesk',sans-serif;
+  font-size:42px; font-weight:700;
+}
+.stat-label { font-size:11px; color:var(--c500); text-transform:uppercase; letter-spacing:0.12em; margin-top:2px; }
+
+.services-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.svc-card {
+  padding:22px 20px;
+  transition:all 0.3s;
+}
+.svc-card:hover { background:rgba(85,115,170,0.12); transform:translateY(-2px); }
+.svc-icon {
+  width:40px; height:40px; border-radius:10px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:18px; margin-bottom:12px;
+  background:rgba(85,115,170,0.1);
+}
+.svc-card h4 { font-size:14px; font-weight:700; margin-bottom:4px; color:var(--c100); }
+.svc-card p { font-size:11px; color:var(--c400); line-height:1.5; }
+
+/* ========== SLIDE: PROBLEM ========== */
+.problem-cards {
+  display:grid; grid-template-columns:repeat(4,1fr);
+  gap:20px; max-width:1150px; width:100%; margin-top:40px;
+}
+.prob-card {
+  padding:28px 24px;
+  border:1px solid rgba(239,68,68,0.25);
+  background:rgba(239,68,68,0.08);
+}
+.prob-card .num {
+  font-family:'Space Grotesk',sans-serif;
+  font-size:36px; font-weight:800; color:rgba(239,68,68,0.7);
+  margin-bottom:12px;
+}
+.prob-card h4 { font-size:16px; font-weight:700; color:#f59e0b; margin-bottom:8px; }
+.prob-card p { font-size:13px; color:var(--c200); line-height:1.6; }
+
+/* ========== SLIDE: STORY ========== */
+.story-grid {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:50px; max-width:1200px; width:100%;
+  align-items:start;
+}
+.quote-box {
+  border-left:3px solid var(--green);
+  padding:20px 24px;
+  background:rgba(52,211,153,0.06);
+  border-radius:0 12px 12px 0;
+  margin-top:24px;
+}
+.quote-box p { font-size:18px; font-weight:600; color:var(--green); line-height:1.5; font-style:italic; }
+
+.fix-card { padding:32px; }
+.fix-item {
+  display:flex; align-items:flex-start; gap:14px;
+  padding:14px 0;
+  border-bottom:1px solid rgba(85,115,170,0.1);
+}
+.fix-item:last-child { border-bottom:none; }
+.fix-dot {
+  width:8px; height:8px; border-radius:50%;
+  background:var(--green); margin-top:6px; flex-shrink:0;
+  box-shadow: 0 0 8px rgba(52,211,153,0.4);
+}
+.fix-item h4 { font-size:15px; font-weight:700; color:var(--c100); margin-bottom:2px; }
+.fix-item p { font-size:12px; color:var(--c400); }
+
+/* ========== SLIDE: SOLUTION ========== */
+.vs-grid {
+  display:grid; grid-template-columns:1fr auto 1fr;
+  gap:30px; max-width:1100px; width:100%;
+  align-items:center; margin-top:40px;
+}
+.vs-col { display:flex; flex-direction:column; gap:16px; }
+.vs-item {
+  display:flex; align-items:center; gap:12px;
+  padding:16px 20px;
+  border-radius:12px;
+}
+.vs-before {
+  background:rgba(239,68,68,0.05);
+  border:1px solid rgba(239,68,68,0.1);
+}
+.vs-after {
+  background:rgba(52,211,153,0.05);
+  border:1px solid rgba(52,211,153,0.1);
+}
+.vs-icon { font-size:18px; flex-shrink:0; }
+.vs-item span { font-size:15px; }
+.vs-divider {
+  display:flex; flex-direction:column; align-items:center; gap:8px;
+}
+.vs-arrow {
+  font-family:'Space Grotesk',sans-serif;
+  font-size:28px; font-weight:800; color:var(--c500);
+}
+
+/* ========== SLIDE: PROJECT ========== */
+.proj-layout {
+  display:grid; grid-template-columns:320px 1fr;
+  gap:40px; max-width:1400px; width:100%;
+  align-items:center;
+}
+.proj-badge {
+  display:inline-flex; padding:5px 14px;
+  border-radius:20px; font-size:11px; font-weight:700;
+  letter-spacing:0.1em; text-transform:uppercase;
+  width:fit-content;
+}
+.badge-product { background:rgba(85,115,170,0.12); color:var(--c300); border:1px solid rgba(85,115,170,0.2); }
+.badge-client { background:rgba(52,211,153,0.1); color:var(--green); border:1px solid rgba(52,211,153,0.2); }
+
+.proj-features { list-style:none; display:flex; flex-direction:column; gap:7px; margin-top:14px; }
+.proj-features li {
+  display:flex; align-items:center; gap:8px;
+  font-size:13px; color:var(--c300);
+}
+.feat-dot {
+  width:6px; height:6px; border-radius:50%; flex-shrink:0;
+}
+
+/* ===== SCREENSHOT CINEMA ===== */
+.cinema {
+  position:relative;
+  border-radius:14px;
+  overflow:hidden;
+  aspect-ratio:16/10;
+  background:var(--c950);
+  border:1px solid var(--glass-border);
+  box-shadow:
+    0 20px 50px rgba(0,0,0,0.5),
+    0 0 0 1px rgba(85,115,170,0.08);
+}
+.cinema img {
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  object-fit:contain;
+  background:var(--c950);
+  opacity:0;
+  transition: opacity 0.2s ease;
+}
+.cinema img.cin-active {
+  opacity:1;
+}
+
+.cinema-progress { display:none; }
+.cinema-dots {
+  position:absolute; bottom:10px; left:50%;
+  transform:translateX(-50%);
+  display:flex; gap:6px; z-index:10;
+}
+.cin-dot {
+  width:6px; height:6px; border-radius:50%;
+  background:rgba(255,255,255,0.25);
+  transition:all 0.3s; cursor:pointer;
+}
+.cin-dot.cd-active {
+  background:rgba(255,255,255,0.9);
+  width:20px; border-radius:3px;
+  box-shadow: 0 0 6px rgba(255,255,255,0.4);
+}
+
+/* ===== VIDEO PLAYER ===== */
+.video-container {
+  position:relative;
+  border-radius:14px;
+  overflow:hidden;
+  background:var(--c950);
+  border:1px solid var(--glass-border);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  width:100%;
+  max-height:70vh;
+  aspect-ratio:16/9;
+}
+.video-container video {
+  width:100%; height:100%;
+  object-fit:contain;
+  background:#000;
+  border-radius:14px;
+}
+
+/* Project name pill on cinema */
+.cinema-label {
+  position:absolute; top:10px; left:12px; z-index:10;
+  font-size:10px; font-weight:700; letter-spacing:0.08em;
+  text-transform:uppercase;
+  padding:3px 9px; border-radius:5px;
+  background:rgba(12,16,24,0.7);
+  backdrop-filter:blur(8px);
+  color:var(--c300);
+}
+
+/* ========== SLIDE: ABOUT-THEM ========== */
+.signal-cards {
+  display:flex; gap:24px; margin-top:36px;
+}
+.signal-card {
+  flex:1; padding:28px 24px; text-align:center;
+  border:1px solid rgba(245,158,11,0.15);
+  background:rgba(245,158,11,0.04);
+}
+.signal-card p {
+  font-size:20px; font-weight:700; color:var(--orange);
+  font-style:italic;
+}
+
+/* ========== SLIDE: ASK ========== */
+.ask-grid {
+  display:grid; grid-template-columns:repeat(4,1fr);
+  gap:20px; max-width:1100px; width:100%; margin-top:36px;
+}
+.ask-card {
+  padding:28px 22px;
+  border:1px solid rgba(52,211,153,0.15);
+  background:rgba(52,211,153,0.04);
+}
+.ask-card h4 { font-size:16px; font-weight:700; color:var(--green); margin-bottom:8px; }
+.ask-card p { font-size:13px; color:var(--c400); line-height:1.5; }
+
+.signal-box {
+  max-width:700px; width:100%; margin-top:40px;
+  padding:28px 36px; text-align:center;
+}
+
+/* ========== SLIDE: CLOSING ========== */
+.slide-close { text-align:center; gap:16px; }
+.slide-close .logo { height:140px; margin-bottom:16px; }
+.close-quote {
+  font-size:30px; line-height:1.4; color:var(--c300);
+  max-width:700px;
+}
+.close-quote strong { color:var(--c50); font-weight:700; }
+.close-contact {
+  display:flex; gap:48px; margin-top:24px;
+}
+.cc-item { text-align:center; }
+.cc-label { font-size:11px; text-transform:uppercase; letter-spacing:0.15em; color:var(--c500); margin-bottom:4px; }
+.cc-value { font-size:16px; font-weight:600; color:var(--c300); }
+
+/* ========== ANIMATIONS ========== */
+.slide.active .fade-up {
+  animation: fadeUp 0.7s cubic-bezier(0.22,1,0.36,1) both;
+}
+.slide.active .fade-up-d1 { animation-delay:0.1s; }
+.slide.active .fade-up-d2 { animation-delay:0.2s; }
+.slide.active .fade-up-d3 { animation-delay:0.3s; }
+.slide.active .fade-up-d4 { animation-delay:0.4s; }
+.slide.active .fade-up-d5 { animation-delay:0.5s; }
+
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(24px); }
+  to { opacity:1; transform:translateY(0); }
+}
+
+/* ========== FULLSCREEN HINT ========== */
+.fs-hint {
+  position:fixed; top:20px; right:20px; z-index:300;
+  font-size:11px; color:var(--c500);
+  background:rgba(12,16,24,0.6);
+  backdrop-filter:blur(12px);
+  padding:6px 14px; border-radius:8px;
+  border:1px solid var(--glass-border);
+  cursor:pointer;
+  transition:all 0.3s;
+}
+.fs-hint:hover { color:var(--c300); background:rgba(12,16,24,0.8); }
+
+/* Responsive */
+@media (max-width:1100px) {
+  .slide { padding:40px; }
+  .about-grid, .story-grid, .proj-layout { grid-template-columns:1fr; }
+  .heading-xl { font-size:38px; }
+  .heading-lg { font-size:30px; }
+  .problem-cards, .ask-grid { grid-template-columns:1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-canvas"></div>
+<div class="grid-overlay"></div>
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="fs-hint" onclick="goFullscreen()" id="fsHint">Press F for fullscreen</div>
+
+<!-- ===================== SLIDE 0: TITLE ===================== -->
+<div class="slide slide-title active" data-slide="0">
+  <img src="logo_dark_clean.png" class="logo fade-up" alt="elSapiens" style="filter:drop-shadow(0 4px 24px rgba(85,115,170,0.25));">
+  <div class="glow-line fade-up fade-up-d1"></div>
+  <div class="tagline fade-up fade-up-d2">Building Systems That Power Business</div>
+  <div class="sub fade-up fade-up-d3">We design, develop, and deploy custom software that helps businesses operate smarter, sell faster, and scale with confidence.</div>
+  <div class="presenter fade-up fade-up-d4">Dawn Dharmishtan &nbsp;·&nbsp; Founder & CEO &nbsp;·&nbsp; 21 Years in Technology</div>
+</div>
+
+<!-- ===================== SLIDE 1: ABOUT ===================== -->
+<div class="slide" data-slide="1">
+  <img src="logo_dark_clean.png" class="watermark" alt="">
+  <div class="about-grid">
+    <div>
+      <div class="eyebrow accent-text fade-up">Who We Are</div>
+      <div class="heading-lg fade-up fade-up-d1" style="margin-bottom:20px;">
+        21 Years of Building<br><span class="gradient-text">Systems That Work</span>
+      </div>
+      <div class="body-md fade-up fade-up-d2" style="margin-bottom:8px;">
+        elSapiens is a software development company with over two decades of experience in technology. We partner with businesses to build the operational systems they need.
+      </div>
+      <div class="body-md fade-up fade-up-d3">
+        We don't sell off-the-shelf software. We build <strong style="color:var(--c100)">exactly what your business needs</strong> — tailored to your workflows, your team, and your customers.
+      </div>
+      <div class="stat-row fade-up fade-up-d4">
+        <div><div class="stat-num gradient-text">21+</div><div class="stat-label">Years</div></div>
+        <div><div class="stat-num gradient-text">7+</div><div class="stat-label">Products</div></div>
+        <div><div class="stat-num gradient-text">20+</div><div class="stat-label">Industries</div></div>
+        <div><div class="stat-num gradient-text">100%</div><div class="stat-label">Custom</div></div>
+      </div>
+    </div>
+    <div class="services-grid fade-up fade-up-d3">
+      <div class="glass svc-card">
+        <div class="svc-icon">⚙</div>
+        <h4>Custom Software</h4>
+        <p>Purpose-built systems designed around your exact business processes</p>
+      </div>
+      <div class="glass svc-card">
+        <div class="svc-icon">☁</div>
+        <h4>Cloud Platforms</h4>
+        <p>Scalable, secure cloud-native applications with 99.9% uptime</p>
+      </div>
+      <div class="glass svc-card">
+        <div class="svc-icon">📊</div>
+        <h4>Business Intelligence</h4>
+        <p>Dashboards & analytics that turn your data into decisions</p>
+      </div>
+      <div class="glass svc-card">
+        <div class="svc-icon">🔐</div>
+        <h4>Auth & Security</h4>
+        <p>Enterprise-grade identity, access control & data protection</p>
+      </div>
+      <div class="glass svc-card">
+        <div class="svc-icon">📱</div>
+        <h4>Mobile & Web</h4>
+        <p>Cross-platform applications built for speed and usability</p>
+      </div>
+      <div class="glass svc-card">
+        <div class="svc-icon">🔗</div>
+        <h4>Integrations</h4>
+        <p>Connect systems, automate workflows, eliminate data silos</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SLIDE 2: PROBLEM ===================== -->
+<div class="slide" data-slide="2" style="text-align:center;">
+  <img src="logo_dark_clean.png" class="watermark" alt="">
+  <div class="eyebrow red-text fade-up">The Real Problem</div>
+  <div class="heading-xl fade-up fade-up-d1" style="max-width:900px;">
+    Businesses Don't Fail From Lack of Sales<br>
+    <span class="orange-text">They Fail From Broken Operations</span>
+  </div>
+  <div class="problem-cards fade-up fade-up-d2">
+    <div class="glass-sm prob-card">
+      <div class="num">01</div>
+      <h4>Missed Follow-ups</h4>
+      <p>Leads go cold. Customers feel forgotten. Opportunities slip through the cracks.</p>
+    </div>
+    <div class="glass-sm prob-card">
+      <div class="num">02</div>
+      <h4>Wrong Numbers</h4>
+      <p>Stock counts are off. Invoices don't match. Financial reports can't be trusted.</p>
+    </div>
+    <div class="glass-sm prob-card">
+      <div class="num">03</div>
+      <h4>Delayed Decisions</h4>
+      <p>Data lives in 5 places. No one has the full picture. Action comes too late.</p>
+    </div>
+    <div class="glass-sm prob-card">
+      <div class="num">04</div>
+      <h4>No Visibility</h4>
+      <p>You don't know what's leaking money until it's already gone.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SLIDE 3: STORY ===================== -->
+<div class="slide" data-slide="3">
+  <img src="logo_dark_clean.png" class="watermark" alt="">
+  <div class="story-grid">
+    <div>
+      <div class="eyebrow green-text fade-up">A Real Story</div>
+      <div class="heading-lg fade-up fade-up-d1" style="margin-bottom:20px;">
+        Every Extra Day at the Port<br><span class="red-text">= Money Lost</span>
+        <div style="margin-top:10px; font-size:14px; color:var(--c400); font-family:'Plus Jakarta Sans',sans-serif; font-weight:400; letter-spacing:0;">Demurrage &amp; Floor Rent — the hidden costs no one budgets for</div>
+      </div>
+      <div class="body-md fade-up fade-up-d2" style="margin-bottom:16px;">
+        We worked with a company importing goods regularly. Every time their shipment was delayed at the port, they paid a <strong style="color:var(--c100)">daily penalty</strong> — like a parking fine for containers.
+      </div>
+      <div class="body-md fade-up fade-up-d3">
+        Not because they wanted to delay… but because:<br>
+        <span style="color:var(--c200)">• No real-time visibility</span><br>
+        <span style="color:var(--c200)">• Teams coordinating on calls & WhatsApp</span><br>
+        <span style="color:var(--c200)">• Deadlines simply missed</span>
+      </div>
+      <div class="quote-box fade-up fade-up-d4">
+        <p>"They weren't making a wrong decision… They were making no decision in time."</p>
+      </div>
+    </div>
+    <div class="glass-strong fix-card fade-up fade-up-d3">
+      <div class="eyebrow accent-text" style="margin-bottom:16px;">The Fix</div>
+      <div class="heading-md" style="margin-bottom:24px;">We Fixed the <span class="gradient-text">System</span></div>
+      <div class="fix-item">
+        <div class="fix-dot"></div>
+        <div><h4>One unified platform</h4><p>Instead of scattered WhatsApp groups</p></div>
+      </div>
+      <div class="fix-item">
+        <div class="fix-dot"></div>
+        <div><h4>Automated alerts</h4><p>Before deadlines, not after</p></div>
+      </div>
+      <div class="fix-item">
+        <div class="fix-dot"></div>
+        <div><h4>Real-time tracking</h4><p>Know exactly where every shipment is</p></div>
+      </div>
+      <div class="fix-item">
+        <div class="fix-dot"></div>
+        <div><h4>Clear ownership</h4><p>Who is responsible for what, and when</p></div>
+      </div>
+      <div style="margin-top:20px; padding-top:16px; border-top:1px solid rgba(52,211,153,0.15);">
+        <span class="body-md green-text" style="font-weight:700;">Result: Daily penalty — almost eliminated.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SLIDE 4: SOLUTION ===================== -->
+<div class="slide" data-slide="4" style="text-align:center;">
+  <img src="logo_dark_clean.png" class="watermark" alt="">
+  <div class="eyebrow accent-text fade-up">Our Approach</div>
+  <div class="heading-xl fade-up fade-up-d1" style="margin-bottom:8px;">
+    We Don't Build Apps
+  </div>
+  <div class="heading-xl gradient-text fade-up fade-up-d2">
+    We Build Operating Systems for Business
+  </div>
+  <div class="vs-grid fade-up fade-up-d3">
+    <div class="vs-col">
+      <div class="eyebrow red-text" style="text-align:center;">Instead of</div>
+      <div class="glass-sm vs-item vs-before"><span class="vs-icon">✗</span><span style="color:var(--c300)">People remembering things</span></div>
+      <div class="glass-sm vs-item vs-before"><span class="vs-icon">✗</span><span style="color:var(--c300)">Teams chasing updates</span></div>
+      <div class="glass-sm vs-item vs-before"><span class="vs-icon">✗</span><span style="color:var(--c300)">Data sitting in 5 places</span></div>
+      <div class="glass-sm vs-item vs-before"><span class="vs-icon">✗</span><span style="color:var(--c300)">Decisions based on gut feel</span></div>
+    </div>
+    <div class="vs-divider">
+      <div class="vs-arrow">→</div>
+    </div>
+    <div class="vs-col">
+      <div class="eyebrow green-text" style="text-align:center;">We Create</div>
+      <div class="glass-sm vs-item vs-after"><span class="vs-icon" style="color:var(--green)">✓</span><span style="color:var(--green)">One unified platform</span></div>
+      <div class="glass-sm vs-item vs-after"><span class="vs-icon" style="color:var(--green)">✓</span><span style="color:var(--green)">Automated workflows & alerts</span></div>
+      <div class="glass-sm vs-item vs-after"><span class="vs-icon" style="color:var(--green)">✓</span><span style="color:var(--green)">Real-time visibility</span></div>
+      <div class="glass-sm vs-item vs-after"><span class="vs-icon" style="color:var(--green)">✓</span><span style="color:var(--green)">Decisions based on live data</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SLIDE 5: elBooks ===================== -->
+<div class="slide" data-slide="5">
+  <img src="logo_dark_clean.png" class="watermark" alt="">
+  <div class="proj-layout">
+    <div>
+      <div class="proj-badge badge-product fade-up">Product</div>
+      <div class="heading-lg fade-up fade-up-d1" style="margin-top:12px;">
+        <span class="gradient-text">elBooks</span>
+      </div>
+      <div class="heading-md fade-up fade-up-d1" style="color:var(--c200); margin-bottom:16px;">Accounting System</div>
+      <div class="body-md fade-up fade-up-d2">
+        Full-featured accounting platform built for Indian businesses. Manages journal entries, financial reporting, invoicing, purchase orders, and bank reconciliation.
+      </div>
+      <ul class="proj-features fade-up fade-up-d3">
+        <li><span class="feat-dot" style="background:var(--c400)"></span>Double-entry journal system</li>
+        <li><span class="feat-dot" style="background:var(--c400)"></span>P&L, Balance Sheet & Trial Balance</li>
+        <li><span class="feat-dot" style="background:var(--c400)"></span>Sales orders, invoicing & vendor bills</li>
+        <li><span class="feat-dot" style="background:var(--c400)"></span>Multi-entity, multi-currency support</li>
+        <li><span class="feat-dot" style="background:var(--c400)"></span>Bank reconciliation & payments</li>
+      </ul>
+    </div>
+    <div class="cinema fade-up fade-up-d2" data-cinema="acc" data-speed="1500">
+      <span class="cinema-label">elBooks</span>
+      <img src="assets/acc1.webp" class="cin-active"><img src="assets/acc2.webp"><img src="assets/acc3.webp"><img src="assets/acc4.webp"><img src="assets/acc5.webp">
+      <div class="cinema-progress"></div>
+      <div class="cinema-dots"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== BinCard Mobile App ===================== -->
+<div class="slide" data-slide="6">
+  <img src="logo_dark_clean.png" class="watermark" alt="">
+  <div class="proj-layout">
+    <div>
+      <div class="proj-badge badge-product fade-up" style="background:rgba(239,68,68,0.1); color:#ef4444; border-color:rgba(239,68,68,0.2);">Mobile App</div>
+      <div class="heading-lg fade-up fade-up-d1" style="margin-top:12px;">
+        <span class="gradient-text">BinCard</span>
+      </div>
+      <div class="heading-md fade-up fade-up-d1" style="color:var(--c200); margin-bottom:16px;">Inventory Management</div>
+      <div class="body-md fade-up fade-up-d2">
+        A mobile inventory management app for warehouses and stores. Track stock levels, receive and issue products, view transaction history — all from your phone with barcode scanning.
+      </div>
+      <ul class="proj-features fade-up fade-up-d3">
+        <li><span class="feat-dot" style="background:var(--c400)"></span>Real-time stock level tracking</li>
+        <li><span class="feat-dot" style="background:var(--c400)"></span>Receive & issue product transactions</li>
+        <li><span class="feat-dot" style="background:var(--c400)"></span>Full transaction history per item</li>
+        <li><span class="feat-dot" style="background:var(--c400)"></span>Product search & barcode scanning</li>
+        <li><span class="feat-dot" style="background:var(--c400)"></span>Available on Google Play Store</li>
+      </ul>
+    </div>
+    <div class="cinema fade-up fade-up-d2" data-cinema="bc" data-speed="1500">
+      <span class="cinema-label">BinCard</span>
+      <img src="assets/bc1.webp" class="cin-active"><img src="assets/bc2.webp"><img src="assets/bc3.webp"><img src="assets/bc4.webp"><img src="assets/bc5.webp"><img src="assets/bc6.webp"><img src="assets/bc7.webp">
+      <div class="cinema-progress"></div>
+      <div class="cinema-dots"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SLIDE 6: elAuth ===================== -->
+<div class="slide" data-slide="7">
+  <img src="logo_dark_clean.png" class="watermark" alt="">
+  <div class="proj-layout">
+    <div>
+      <div class="proj-badge badge-product fade-up">Product</div>
+      <div class="heading-lg fade-up fade-up-d1" style="margin-top:12px;">
+        <span class="gradient-text">elAuth</span>
+      </div>
+      <div class="heading-md fade-up fade-up-d1" style="color:var(--c200); margin-bottom:16px;">Identity & Access</div>
+      <div class="body-md fade-up fade-up-d2">
+        Centralized authentication and account management. Secure sign-in, 2FA, session management, and a fully customizable user portal across all applications.
+      </div>
+      <ul class="proj-features fade-up fade-up-d3">
+        <li><span class="feat-dot" style="background:var(--c400)"></span>Two-factor authentication (2FA)</li>
+        <li><span class="feat-dot" style="background:var(--c400)"></span>Session tracking & login activity logs</li>
+        <li><span class="feat-dot" style="background:var(--c400)"></span>Customizable themes & branding</li>
+        <li><span class="feat-dot" style="background:var(--c400)"></span>Address & personal info management</li>
+        <li><span class="feat-dot" style="background:var(--c400)"></span>Data privacy & export controls</li>
+      </ul>
+    </div>
+    <div class="cinema fade-up fade-up-d2" data-cinema="auth" data-speed="1500">
+      <span class="cinema-label">elAuth</span>
+      <img src="assets/auth.webp" class="cin-active"><img src="assets/auth1.webp"><img src="assets/auth2.webp"><img src="assets/auth3.webp">
+      <div class="cinema-progress"></div>
+      <div class="cinema-dots"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SLIDE 7: elCatalogs ===================== -->
+<div class="slide" data-slide="8">
+  <img src="logo_dark_clean.png" class="watermark" alt="">
+  <div class="proj-layout">
+    <div>
+      <div class="proj-badge badge-product fade-up">Product</div>
+      <div class="heading-lg fade-up fade-up-d1" style="margin-top:12px;">
+        <span class="gradient-text">elCatalogs</span>
+      </div>
+      <div class="heading-md fade-up fade-up-d1" style="color:var(--c200); margin-bottom:16px;">Product Management</div>
+      <div class="body-md fade-up fade-up-d2">
+        Comprehensive product and service catalog. Manages items, commodities, categories, HSN/SAC codes, manufacturers, and brands — built for Indian trade compliance.
+      </div>
+      <ul class="proj-features fade-up fade-up-d3">
+        <li><span class="feat-dot" style="background:var(--c400)"></span>Goods, services & utilities management</li>
+        <li><span class="feat-dot" style="background:var(--c400)"></span>Commodity templates with custom fields</li>
+        <li><span class="feat-dot" style="background:var(--c400)"></span>HSN & SAC code compliance</li>
+        <li><span class="feat-dot" style="background:var(--c400)"></span>Pricing, tax & inventory tracking</li>
+        <li><span class="feat-dot" style="background:var(--c400)"></span>Manufacturer & brand management</li>
+      </ul>
+    </div>
+    <div class="cinema fade-up fade-up-d2" data-cinema="cat" data-speed="1500">
+      <span class="cinema-label">elCatalogs</span>
+      <img src="assets/cat1.webp" class="cin-active"><img src="assets/cat2.webp"><img src="assets/cat3.webp"><img src="assets/cat4.webp"><img src="assets/cat5.webp"><img src="assets/cat6.webp"><img src="assets/cat7.webp">
+      <div class="cinema-progress"></div>
+      <div class="cinema-dots"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SLIDE 8: Climate CRM ===================== -->
+<div class="slide" data-slide="9">
+  <img src="logo_dark_clean.png" class="watermark" alt="">
+  <div class="proj-layout">
+    <div>
+      <div class="proj-badge badge-client fade-up">Client Project</div>
+      <div class="heading-lg fade-up fade-up-d1" style="margin-top:12px;">
+        <span class="gradient-text">Climate CRM</span>
+      </div>
+      <div class="heading-md fade-up fade-up-d1" style="color:var(--c200); margin-bottom:16px;">Sales & Orders</div>
+      <div class="body-md fade-up fade-up-d2">
+        Custom CRM built for Climate Natural Spices — a spice exporter. Tracks conversations, manages a sales pipeline, processes orders, and measures agent performance in real time.
+      </div>
+      <ul class="proj-features fade-up fade-up-d3">
+        <li><span class="feat-dot" style="background:var(--green)"></span>Visual conversation pipeline</li>
+        <li><span class="feat-dot" style="background:var(--green)"></span>Agent performance & revenue tracking</li>
+        <li><span class="feat-dot" style="background:var(--green)"></span>Online, offline & international orders</li>
+        <li><span class="feat-dot" style="background:var(--green)"></span>Produce lots & grade rate management</li>
+        <li><span class="feat-dot" style="background:var(--green)"></span>Team activity & contact analytics</li>
+      </ul>
+    </div>
+    <div class="cinema fade-up fade-up-d2" data-cinema="cm" data-speed="1500">
+      <span class="cinema-label">Climate CRM</span>
+      <img src="assets/cm1.webp" class="cin-active"><img src="assets/cm2.webp"><img src="assets/cm3.webp"><img src="assets/cm4.webp"><img src="assets/cm5.webp"><img src="assets/cm6.webp"><img src="assets/cm7.webp"><img src="assets/cm8.webp">
+      <div class="cinema-progress"></div>
+      <div class="cinema-dots"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SLIDE 9: Climate Auction Video ===================== -->
+<div class="slide" data-slide="10">
+  <img src="logo_dark_clean.png" class="watermark" alt="">
+  <div class="proj-layout">
+    <div>
+      <div class="proj-badge badge-client fade-up">Live Demo</div>
+      <div class="heading-lg fade-up fade-up-d1" style="margin-top:12px;">
+        <span class="gradient-text">Climate Auctions</span>
+      </div>
+      <div class="heading-md fade-up fade-up-d1" style="color:var(--c200); margin-bottom:16px;">Real-Time Bidding</div>
+      <div class="body-md fade-up fade-up-d2">
+        A live auction system built for Climate Natural Spices. Buyers bid on produce lots in real time, with instant price updates and automated order creation.
+      </div>
+      <ul class="proj-features fade-up fade-up-d3">
+        <li><span class="feat-dot" style="background:var(--green)"></span>Real-time bidding engine</li>
+        <li><span class="feat-dot" style="background:var(--green)"></span>Live price updates for all participants</li>
+        <li><span class="feat-dot" style="background:var(--green)"></span>Automated order creation on bid win</li>
+        <li><span class="feat-dot" style="background:var(--green)"></span>Full auction history & analytics</li>
+      </ul>
+    </div>
+    <div class="video-container fade-up fade-up-d2" id="auctionVideo">
+      <video src="assets/agrixe.mp4" playsinline loop></video>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SLIDE 10: GrowMart ===================== -->
+<div class="slide" data-slide="11">
+  <img src="logo_dark_clean.png" class="watermark" alt="">
+  <div class="proj-layout">
+    <div>
+      <div class="proj-badge badge-client fade-up">Client Project</div>
+      <div class="heading-lg fade-up fade-up-d1" style="margin-top:12px;">
+        <span class="gradient-text">GrowMart</span>
+      </div>
+      <div class="heading-md fade-up fade-up-d1" style="color:var(--c200); margin-bottom:16px;">Marketplace Platform</div>
+      <div class="body-md fade-up fade-up-d2">
+        Multi-vendor marketplace and distribution platform. Connects shops, tracks sales, manages commissions, handles invoicing, and gives full visibility into the retail chain.
+      </div>
+      <ul class="proj-features fade-up fade-up-d3">
+        <li><span class="feat-dot" style="background:var(--green)"></span>Multi-store management & onboarding</li>
+        <li><span class="feat-dot" style="background:var(--green)"></span>Real-time sales & earnings dashboard</li>
+        <li><span class="feat-dot" style="background:var(--green)"></span>Commission tracking & payments</li>
+        <li><span class="feat-dot" style="background:var(--green)"></span>Shop-level analytics & performance</li>
+        <li><span class="feat-dot" style="background:var(--green)"></span>Invoice generation & dispute resolution</li>
+      </ul>
+    </div>
+    <div class="cinema fade-up fade-up-d2" data-cinema="gm" data-speed="1500">
+      <span class="cinema-label">GrowMart</span>
+      <img src="assets/gm1.webp" class="cin-active"><img src="assets/gm2.webp"><img src="assets/gm3.webp"><img src="assets/gm4.webp"><img src="assets/gm5.webp"><img src="assets/gm6.webp"><img src="assets/gm7.webp">
+      <div class="cinema-progress"></div>
+      <div class="cinema-dots"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== GrowMart Shop Mobile App ===================== -->
+<div class="slide" data-slide="12">
+  <img src="logo_dark_clean.png" class="watermark" alt="">
+  <div class="proj-layout">
+    <div>
+      <div class="proj-badge badge-client fade-up" style="background:rgba(52,211,153,0.1); color:var(--green); border-color:rgba(52,211,153,0.2);">Mobile App</div>
+      <div class="heading-lg fade-up fade-up-d1" style="margin-top:12px;">
+        <span class="gradient-text">GrowMart Shop</span>
+      </div>
+      <div class="heading-md fade-up fade-up-d1" style="color:var(--c200); margin-bottom:16px;">Mobile App</div>
+      <div class="body-md fade-up fade-up-d2">
+        The companion mobile app for GrowMart store owners and members. Manage sales, view payments, scan QR codes, and track approved transactions — all from your phone.
+      </div>
+      <ul class="proj-features fade-up fade-up-d3">
+        <li><span class="feat-dot" style="background:var(--green)"></span>Member & store owner portals</li>
+        <li><span class="feat-dot" style="background:var(--green)"></span>Approved sales & payment tracking</li>
+        <li><span class="feat-dot" style="background:var(--green)"></span>QR code scanning for quick access</li>
+        <li><span class="feat-dot" style="background:var(--green)"></span>Real-time transaction history</li>
+        <li><span class="feat-dot" style="background:var(--green)"></span>Available on Google Play Store</li>
+      </ul>
+    </div>
+    <div class="cinema fade-up fade-up-d2" data-cinema="gms" data-speed="1500">
+      <span class="cinema-label">GrowMart Shop</span>
+      <img src="assets/gms1.webp" class="cin-active"><img src="assets/gms2.webp"><img src="assets/gms3.webp"><img src="assets/gms4.webp"><img src="assets/gms5.webp">
+      <div class="cinema-progress"></div>
+      <div class="cinema-dots"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SLIDE 10: elPOS ===================== -->
+<div class="slide" data-slide="13">
+  <img src="logo_dark_clean.png" class="watermark" alt="">
+  <div class="proj-layout">
+    <div>
+      <div class="proj-badge badge-product fade-up">Product</div>
+      <div class="heading-lg fade-up fade-up-d1" style="margin-top:12px;">
+        <span class="gradient-text">elPOS</span>
+      </div>
+      <div class="heading-md fade-up fade-up-d1" style="color:var(--c200); margin-bottom:16px;">Point of Sale</div>
+      <div class="body-md fade-up fade-up-d2">
+        Visual, touch-friendly POS designed for service businesses like laundry, dry cleaning, and tailoring. Staff pick garments visually, add services, and process payments in seconds.
+      </div>
+      <ul class="proj-features fade-up fade-up-d3">
+        <li><span class="feat-dot" style="background:var(--c400)"></span>Visual garment & item selection</li>
+        <li><span class="feat-dot" style="background:var(--c400)"></span>Service types: dry clean, press, starch</li>
+        <li><span class="feat-dot" style="background:var(--c400)"></span>Cart with multi-service per item</li>
+        <li><span class="feat-dot" style="background:var(--c400)"></span>Cash, card, UPI & split payments</li>
+        <li><span class="feat-dot" style="background:var(--c400)"></span>Fast checkout — built for speed</li>
+      </ul>
+    </div>
+    <div class="cinema fade-up fade-up-d2" data-cinema="pos" data-speed="1500">
+      <span class="cinema-label">elPOS</span>
+      <img src="assets/pos1.webp" class="cin-active"><img src="assets/pos2.webp">
+      <div class="cinema-progress"></div>
+      <div class="cinema-dots"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SLIDE 11: Pay Per Lead ===================== -->
+<div class="slide" data-slide="14">
+  <img src="logo_dark_clean.png" class="watermark" alt="">
+  <div class="proj-layout">
+    <div>
+      <div class="proj-badge badge-client fade-up">Client Project</div>
+      <div class="heading-lg fade-up fade-up-d1" style="margin-top:12px;">
+        <span class="gradient-text">Pay Per Lead</span>
+      </div>
+      <div class="heading-md fade-up fade-up-d1" style="color:var(--c200); margin-bottom:16px;">Lead Generation Engine</div>
+      <div class="body-md fade-up fade-up-d2">
+        Powerful lead generation and processing platform built for a UK-based marketing agency. Captures leads from multiple sources, processes them through automated pipelines, and tracks campaign ROI.
+      </div>
+      <ul class="proj-features fade-up fade-up-d3">
+        <li><span class="feat-dot" style="background:var(--green)"></span>Multi-source lead capture & processing</li>
+        <li><span class="feat-dot" style="background:var(--green)"></span>Email, phone & web visitor tracking</li>
+        <li><span class="feat-dot" style="background:var(--green)"></span>Campaign management & analytics</li>
+        <li><span class="feat-dot" style="background:var(--green)"></span>Automated lead routing & scoring</li>
+        <li><span class="feat-dot" style="background:var(--green)"></span>GDPR compliance & bounce processing</li>
+      </ul>
+    </div>
+    <div class="cinema fade-up fade-up-d2" data-cinema="ppl" data-speed="1500">
+      <span class="cinema-label">Pay Per Lead</span>
+      <img src="assets/ppl0.webp" class="cin-active"><img src="assets/ppl1.webp"><img src="assets/ppl2.webp"><img src="assets/ppl3.webp"><img src="assets/ppl4.webp"><img src="assets/ppl5.webp"><img src="assets/ppl6.webp"><img src="assets/ppl7.webp">
+      <div class="cinema-progress"></div>
+      <div class="cinema-dots"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SLIDE 12: ABOUT THEM ===================== -->
+<div class="slide" data-slide="15" style="text-align:center;">
+  <img src="logo_dark_clean.png" class="watermark" alt="">
+  <div class="eyebrow red-text fade-up">This Isn't Just Logistics</div>
+  <div class="heading-xl fade-up fade-up-d1" style="max-width:900px;">
+    This Is Happening in<br><span class="orange-text">Every Business Here</span>
+  </div>
+  <div class="signal-cards fade-up fade-up-d2" style="max-width:1000px;">
+    <div class="glass-sm signal-card"><p>"I'll check and<br>get back"</p></div>
+    <div class="glass-sm signal-card"><p>"Let me<br>confirm"</p></div>
+    <div class="glass-sm signal-card"><p>"I think it<br>was done"</p></div>
+  </div>
+  <div style="margin-top:40px; max-width:700px;" class="fade-up fade-up-d3">
+    <div class="body-lg" style="color:var(--c400);">That's not a people problem.</div>
+    <div class="heading-md" style="color:var(--c50); margin-top:8px;">That's a system problem.</div>
+    <div style="margin-top:24px;">
+      <span class="body-lg red-text" style="font-weight:600;">And systems don't fail loudly… They leak money silently.</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SLIDE 13: THE ASK ===================== -->
+<div class="slide" data-slide="16" style="text-align:center;">
+  <img src="logo_dark_clean.png" class="watermark" alt="">
+  <div class="eyebrow green-text fade-up">My Ask</div>
+  <div class="heading-xl fade-up fade-up-d1">Who Do I Want to Meet?</div>
+  <div class="ask-grid fade-up fade-up-d2">
+    <div class="glass-sm ask-card">
+      <h4>Business Owners</h4>
+      <p>Doing ₹1Cr+ revenue with growing operational complexity</p>
+    </div>
+    <div class="glass-sm ask-card">
+      <h4>Growing Teams</h4>
+      <p>5+ employees where coordination is becoming a daily challenge</p>
+    </div>
+    <div class="glass-sm ask-card">
+      <h4>Logistics & Import</h4>
+      <p>Import-export, warehousing, and field operations teams</p>
+    </div>
+    <div class="glass-sm ask-card">
+      <h4>Scaling SMEs</h4>
+      <p>Companies still dependent on spreadsheets & WhatsApp</p>
+    </div>
+  </div>
+  <div class="glass-strong signal-box fade-up fade-up-d3">
+    <div class="body-md" style="color:var(--c400); margin-bottom:8px;">If you hear someone say:</div>
+    <div class="heading-md accent-text" style="font-style:italic;">"Things are getting hard to manage…"</div>
+    <div style="margin-top:10px;"><span class="body-lg" style="color:var(--c100); font-weight:700;">That's my person.</span></div>
+  </div>
+</div>
+
+<!-- ===================== SLIDE 14: CLOSING ===================== -->
+<div class="slide slide-close" data-slide="17">
+  <img src="logo_dark_clean.png" class="logo fade-up" alt="elSapiens" style="filter:drop-shadow(0 4px 24px rgba(85,115,170,0.25));">
+  <div class="glow-line fade-up fade-up-d1" style="margin:8px 0;"></div>
+  <div class="close-quote fade-up fade-up-d2">
+    Spreadsheets are amazing tools…<br><strong>But terrible businesses.</strong>
+  </div>
+  <div class="body-lg fade-up fade-up-d3" style="color:var(--c400); margin-top:12px; max-width:600px;">
+    If your business depends on people remembering everything…
+  </div>
+  <div class="heading-md orange-text fade-up fade-up-d4" style="margin-top:8px;">
+    You don't own a system. You own stress.
+  </div>
+  <div class="glow-line fade-up fade-up-d4" style="margin:20px 0 12px;"></div>
+  <div class="close-contact fade-up fade-up-d5">
+    <div class="cc-item">
+      <div class="cc-label">Founder & CEO</div>
+      <div class="cc-value">Dawn Dharmishtan</div>
+    </div>
+    <div class="cc-item">
+      <div class="cc-label">Experience</div>
+      <div class="cc-value">21+ Years</div>
+    </div>
+    <div class="cc-item">
+      <div class="cc-label">Email</div>
+      <div class="cc-value">dawndharm@elsapiens.com</div>
+    </div>
+    <div class="cc-item">
+      <div class="cc-label">Website</div>
+      <div class="cc-value">elsapiens.com</div>
+    </div>
+  </div>
+  <div class="body-lg fade-up fade-up-d5" style="color:var(--c200); margin-top:20px; font-weight:500;">Thank you.</div>
+</div>
+
+<!-- ===================== NAVIGATION ===================== -->
+<div class="nav">
+  <button class="nav-btn" onclick="go(-1)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+  </button>
+  <div class="dots" id="dots"></div>
+  <span class="counter" id="counter">1 / 18</span>
+  <button class="nav-btn" onclick="go(1)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </button>
+</div>
+
+<script>
+// ===== SLIDE ENGINE =====
+let cur = 0;
+const slides = document.querySelectorAll('.slide');
+const total = slides.length;
+const dotsEl = document.getElementById('dots');
+const counterEl = document.getElementById('counter');
+const progBar = document.getElementById('progressBar');
+
+for (let i = 0; i < total; i++) {
+  const d = document.createElement('div');
+  d.className = 'dot' + (i === 0 ? ' active' : '');
+  d.onclick = () => goTo(i);
+  dotsEl.appendChild(d);
+}
+
+function goTo(n) {
+  if (n === cur || n < 0 || n >= total) return;
+  const prev = slides[cur];
+  prev.classList.add('exit-left');
+  prev.classList.remove('active');
+  setTimeout(() => prev.classList.remove('exit-left'), 500);
+  cur = n;
+  slides[cur].classList.add('active');
+  document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === cur));
+  counterEl.textContent = `${cur + 1} / ${total}`;
+  progBar.style.width = `${((cur + 1) / total) * 100}%`;
+  startCinemas();
+  handleVideos();
+}
+
+function go(dir) { goTo(cur + dir); }
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); go(1); }
+  if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); go(-1); }
+  if (e.key === 'Home') { e.preventDefault(); goTo(0); }
+  if (e.key === 'End') { e.preventDefault(); goTo(total - 1); }
+  if (e.key === 'f' || e.key === 'F') goFullscreen();
+});
+
+let tx = 0;
+document.addEventListener('touchstart', e => tx = e.touches[0].clientX);
+document.addEventListener('touchend', e => {
+  const d = tx - e.changedTouches[0].clientX;
+  if (Math.abs(d) > 50) go(d > 0 ? 1 : -1);
+});
+
+function goFullscreen() {
+  if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(()=>{});
+  document.getElementById('fsHint').style.display = 'none';
+}
+
+// ===== CINEMA ENGINE — fast slide transitions =====
+const cinemas = {};
+const cinemaTimers = {};
+
+document.querySelectorAll('.cinema').forEach(el => {
+  const name = el.dataset.cinema;
+  const speed = parseInt(el.dataset.speed) || 2200;
+  const imgs = el.querySelectorAll('img');
+  const dotsC = el.querySelector('.cinema-dots');
+  const progC = el.querySelector('.cinema-progress');
+  const dots = [];
+
+  imgs.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'cin-dot' + (i === 0 ? ' cd-active' : '');
+    d.onclick = e => { e.stopPropagation(); showCin(name, i); };
+    dotsC.appendChild(d);
+    dots.push(d);
+  });
+
+  cinemas[name] = { el, imgs, dots, progC, speed, cur: 0, count: imgs.length };
+
+  el.addEventListener('click', () => {
+    const c = cinemas[name];
+    showCin(name, (c.cur + 1) % c.count);
+  });
+});
+
+function showCin(name, idx) {
+  const c = cinemas[name];
+  // Simple crossfade — new image fades in on top of old
+  c.imgs.forEach(img => img.classList.remove('cin-active'));
+  c.imgs[idx].classList.add('cin-active');
+  c.dots.forEach(dot => dot.classList.remove('cd-active'));
+  c.dots[idx].classList.add('cd-active');
+  c.cur = idx;
+
+  if (cinemaTimers[name]) clearInterval(cinemaTimers[name]);
+  cinemaTimers[name] = setInterval(() => {
+    showCin(name, (c.cur + 1) % c.count);
+  }, c.speed);
+}
+
+function startCinemas() {
+  Object.keys(cinemaTimers).forEach(k => { clearInterval(cinemaTimers[k]); delete cinemaTimers[k]; });
+  const activeSlide = slides[cur];
+  const cin = activeSlide.querySelector('.cinema');
+  if (cin) {
+    const name = cin.dataset.cinema;
+    // Reset all images
+    cinemas[name].imgs.forEach(img => img.classList.remove('cin-active'));
+    showCin(name, 0);
+  }
+}
+
+// ===== VIDEO CONTROL =====
+function handleVideos() {
+  // Pause all videos
+  document.querySelectorAll('video').forEach(v => { v.pause(); v.currentTime = 0; });
+  // Play video on active slide
+  const activeSlide = slides[cur];
+  const video = activeSlide.querySelector('video');
+  if (video) {
+    video.currentTime = 0;
+    video.play().catch(()=>{});
+  }
+}
+
+progBar.style.width = `${(1 / total) * 100}%`;
+startCinemas();
+</script>
+
+</body>
+</html>
