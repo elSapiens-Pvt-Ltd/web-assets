@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Phone Isn't Listening — It's Worse</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --c50:  #EEF1F6;
+  --c100: #DDE3EE;
+  --c200: #BBC7DD;
+  --c300: #99ABCC;
+  --c400: #778FBB;
+  --c500: #5573AA;
+  --c600: #445C88;
+  --c700: #334566;
+  --c800: #222E44;
+  --c900: #111722;
+  --c950: #0C1018;
+  --green: #34d399;
+  --green-dim: rgba(52,211,153,0.15);
+  --orange: #f59e0b;
+  --red: #ef4444;
+  --glass: rgba(34,46,68,0.45);
+  --glass-border: rgba(91,115,170,0.18);
+  --purple: #a78bfa;
+  --cyan: #22d3ee;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+html, body {
+  width:100vw; height:100vh;
+  overflow:hidden;
+  background: var(--c950);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: var(--c50);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ========== GLOBAL BACKGROUND ========== */
+.bg-canvas {
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 100%, rgba(85,115,170,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 85% 10%, rgba(52,211,153,0.05) 0%, transparent 50%),
+    var(--c950);
+}
+
+.bg-canvas::after {
+  content:'';
+  position:absolute; inset:0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  opacity:0.4;
+}
+
+.grid-overlay {
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background-image:
+    linear-gradient(rgba(85,115,170,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(85,115,170,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* ========== SLIDES ========== */
+.slide {
+  position:absolute; inset:0;
+  display:flex; flex-direction:column;
+  justify-content:center; align-items:center;
+  z-index:1;
+  opacity:0;
+  pointer-events:none;
+  transition: opacity 0.7s cubic-bezier(0.4,0,0.2,1), transform 0.7s cubic-bezier(0.4,0,0.2,1);
+  transform: scale(0.97) translateY(10px);
+  padding: 30px 50px 60px;
+}
+.slide.active {
+  opacity:1; pointer-events:auto;
+  transform: scale(1) translateY(0);
+}
+.slide.exit-left {
+  opacity:0;
+  transform: scale(1.02) translateY(-10px);
+}
+
+/* ========== PROGRESS BAR ========== */
+.progress-bar {
+  position:fixed; top:0; left:0; height:3px;
+  background: linear-gradient(90deg, var(--c500), var(--green));
+  z-index:200;
+  transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+  box-shadow: 0 0 12px rgba(85,115,170,0.5);
+}
+
+/* ========== NAVIGATION ========== */
+.nav {
+  position:fixed; bottom:28px; left:50%; transform:translateX(-50%);
+  display:flex; align-items:center; gap:14px;
+  background: rgba(12,16,24,0.7);
+  backdrop-filter: blur(24px) saturate(1.4);
+  border:1px solid var(--glass-border);
+  border-radius:60px;
+  padding:8px 20px;
+  z-index:200;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+.nav-btn {
+  width:34px; height:34px; border-radius:50%;
+  border:1px solid rgba(85,115,170,0.25);
+  background:transparent; color:var(--c200);
+  font-size:14px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  transition:all 0.25s;
+}
+.nav-btn:hover { background:rgba(85,115,170,0.15); color:#fff; }
+.nav-btn svg { width:16px; height:16px; }
+
+.dots { display:flex; gap:6px; }
+.dot {
+  width:8px; height:8px; border-radius:50%;
+  background:rgba(187,199,221,0.2);
+  cursor:pointer; transition:all 0.35s;
+}
+.dot.active {
+  background:var(--c400);
+  width:28px; border-radius:4px;
+  box-shadow: 0 0 8px rgba(85,115,170,0.4);
+}
+
+.counter {
+  font-size:12px; color:var(--c400);
+  font-weight:500; min-width:40px; text-align:center;
+  font-family:'Space Grotesk',sans-serif;
+}
+
+/* ========== TYPOGRAPHY ========== */
+.eyebrow {
+  font-size:12px; font-weight:700; letter-spacing:0.2em;
+  text-transform:uppercase; margin-bottom:12px;
+}
+.heading-xl {
+  font-family:'Space Grotesk',sans-serif;
+  font-size:52px; font-weight:700; line-height:1.1;
+  letter-spacing:-0.02em;
+}
+.heading-lg {
+  font-family:'Space Grotesk',sans-serif;
+  font-size:40px; font-weight:700; line-height:1.15;
+  letter-spacing:-0.02em;
+}
+.heading-md {
+  font-family:'Space Grotesk',sans-serif;
+  font-size:28px; font-weight:600; line-height:1.2;
+}
+.heading-sm {
+  font-family:'Space Grotesk',sans-serif;
+  font-size:22px; font-weight:600; line-height:1.3;
+}
+.body-lg { font-size:18px; line-height:1.7; color:var(--c300); }
+.body-md { font-size:15px; line-height:1.7; color:var(--c300); }
+.body-sm { font-size:13px; line-height:1.6; color:var(--c400); }
+.gradient-text {
+  background:linear-gradient(135deg, var(--c200), var(--green));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.accent-text { color:var(--c300); }
+.green-text { color:var(--green); }
+.orange-text { color:var(--orange); }
+.red-text { color:var(--red); }
+.purple-text { color:var(--purple); }
+.cyan-text { color:var(--cyan); }
+
+/* ========== GLASS CARD ========== */
+.glass {
+  background: var(--glass);
+  backdrop-filter: blur(20px) saturate(1.3);
+  border:1px solid var(--glass-border);
+  border-radius:16px;
+}
+.glass-sm { border-radius:12px; }
+.glass-strong {
+  background: rgba(34,46,68,0.65);
+  backdrop-filter: blur(24px) saturate(1.4);
+  border:1px solid rgba(91,115,170,0.22);
+  border-radius:16px;
+}
+
+/* ========== GLOW LINE ========== */
+.glow-line {
+  width:60px; height:2px; border-radius:1px;
+  background:linear-gradient(90deg, var(--c500), var(--green));
+  box-shadow: 0 0 16px rgba(85,115,170,0.4);
+}
+
+/* ========== WATERMARK LOGO ========== */
+.watermark {
+  position:absolute; top:16px; left:24px;
+  height:56px; opacity:0.8;
+  pointer-events:none; z-index:5;
+}
+
+/* ========== TITLE SLIDE ========== */
+.slide-title { text-align:center; gap:20px; }
+.slide-title .title-icon {
+  font-size:72px; margin-bottom:8px;
+  filter: drop-shadow(0 0 40px rgba(239,68,68,0.3));
+}
+.slide-title .sub {
+  font-size:18px; color:var(--c400);
+  max-width:620px; line-height:1.8;
+}
+.slide-title .credit {
+  font-size:13px; color:var(--c600);
+  margin-top:24px; letter-spacing:0.05em;
+}
+
+/* ========== TWO-COL LAYOUT ========== */
+.two-col {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:60px; max-width:1200px; width:100%;
+  align-items:center;
+}
+
+/* ========== STAT CARDS ========== */
+.stat-grid {
+  display:grid; grid-template-columns:repeat(3, 1fr);
+  gap:20px; max-width:900px; width:100%; margin-top:36px;
+}
+.stat-card {
+  padding:28px 22px; text-align:center;
+  border:1px solid rgba(85,115,170,0.15);
+  background:rgba(85,115,170,0.04);
+}
+.stat-card .num {
+  font-family:'Space Grotesk',sans-serif;
+  font-size:42px; font-weight:800; color:var(--red);
+  margin-bottom:8px;
+}
+.stat-card p { font-size:13px; color:var(--c300); line-height:1.5; }
+
+/* ========== SIGNAL/TRACKING CARDS ========== */
+.track-grid {
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:20px; max-width:1100px; width:100%; margin-top:36px;
+}
+.track-card {
+  padding:28px 24px;
+  border:1px solid rgba(167,139,250,0.15);
+  background:rgba(167,139,250,0.04);
+}
+.track-card .track-icon {
+  font-size:28px; margin-bottom:14px;
+}
+.track-card h4 {
+  font-size:16px; font-weight:700; color:var(--purple);
+  margin-bottom:8px;
+}
+.track-card p { font-size:13px; color:var(--c300); line-height:1.6; }
+
+/* ========== PREDICTION SECTION ========== */
+.predict-layout {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:50px; max-width:1200px; width:100%;
+  align-items:start;
+}
+.predict-card {
+  padding:28px 24px;
+  border:1px solid rgba(52,211,153,0.15);
+  background:rgba(52,211,153,0.04);
+  margin-bottom:16px;
+}
+.predict-card h4 {
+  font-size:16px; font-weight:700; color:var(--green);
+  margin-bottom:8px;
+}
+.predict-card p { font-size:13px; color:var(--c300); line-height:1.6; }
+
+.story-box {
+  border-left:3px solid var(--orange);
+  padding:24px 28px;
+  background:rgba(245,158,11,0.06);
+  border-radius:0 12px 12px 0;
+}
+.story-box p { font-size:15px; color:var(--c200); line-height:1.7; }
+.story-box .story-source { font-size:11px; color:var(--c500); margin-top:12px; }
+
+/* ========== RED CAR VISUAL ========== */
+.car-grid {
+  display:flex; gap:14px; flex-wrap:wrap;
+  justify-content:center;
+  max-width:700px; margin-top:32px;
+}
+.car-icon {
+  font-size:32px; opacity:0.25;
+  transition: all 0.6s;
+  filter: grayscale(1);
+}
+.car-icon.red {
+  opacity:1; filter:grayscale(0);
+  transform:scale(1.15);
+  text-shadow: 0 0 20px rgba(239,68,68,0.4);
+}
+
+/* ========== BIAS METER ========== */
+.bias-visual {
+  display:flex; flex-direction:column; gap:16px;
+  max-width:800px; width:100%; margin-top:36px;
+}
+.bias-bar {
+  display:flex; align-items:center; gap:16px;
+}
+.bias-bar-label {
+  font-size:13px; font-weight:600; color:var(--c300);
+  min-width:140px; text-align:right;
+}
+.bias-bar-track {
+  flex:1; height:36px; border-radius:8px;
+  background:rgba(85,115,170,0.08);
+  border:1px solid rgba(85,115,170,0.1);
+  position:relative; overflow:hidden;
+}
+.bias-bar-fill {
+  height:100%; border-radius:8px;
+  display:flex; align-items:center;
+  padding:0 12px;
+  font-size:12px; font-weight:700; color:#fff;
+}
+.bias-bar-fill.miss {
+  background: linear-gradient(90deg, rgba(239,68,68,0.3), rgba(239,68,68,0.6));
+  width:99.5%;
+}
+.bias-bar-fill.hit {
+  background: linear-gradient(90deg, rgba(52,211,153,0.3), rgba(52,211,153,0.8));
+  width:0.5%;
+  min-width:50px;
+}
+
+/* ========== FREQUENCY ILLUSION ========== */
+.freq-steps {
+  display:grid; grid-template-columns:repeat(4,1fr);
+  gap:20px; max-width:1100px; width:100%; margin-top:36px;
+}
+.freq-step {
+  padding:28px 22px; text-align:center;
+  border:1px solid rgba(34,211,238,0.15);
+  background:rgba(34,211,238,0.04);
+  position:relative;
+}
+.freq-step .step-num {
+  font-family:'Space Grotesk',sans-serif;
+  font-size:48px; font-weight:800;
+  color:rgba(34,211,238,0.2);
+  position:absolute; top:10px; right:16px;
+}
+.freq-step h4 {
+  font-size:15px; font-weight:700; color:var(--cyan);
+  margin-bottom:8px; text-align:left;
+}
+.freq-step p { font-size:12px; color:var(--c300); line-height:1.6; text-align:left; }
+
+/* ========== TRUTH SUMMARY ========== */
+.truth-grid {
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:20px; max-width:1000px; width:100%; margin-top:36px;
+}
+.truth-card {
+  padding:28px 24px; text-align:center;
+}
+.truth-card .truth-icon { font-size:36px; margin-bottom:14px; }
+.truth-card h4 { font-size:15px; font-weight:700; color:var(--c100); margin-bottom:8px; }
+.truth-card p { font-size:12px; color:var(--c400); line-height:1.6; }
+
+/* ========== CLOSING ========== */
+.slide-close { text-align:center; gap:16px; }
+.close-quote {
+  font-size:30px; line-height:1.4; color:var(--c300);
+  max-width:750px;
+}
+.close-quote strong { color:var(--c50); font-weight:700; }
+
+/* ========== ANIMATIONS ========== */
+.slide.active .fade-up {
+  animation: fadeUp 0.7s cubic-bezier(0.22,1,0.36,1) both;
+}
+.slide.active .fade-up-d1 { animation-delay:0.1s; }
+.slide.active .fade-up-d2 { animation-delay:0.2s; }
+.slide.active .fade-up-d3 { animation-delay:0.3s; }
+.slide.active .fade-up-d4 { animation-delay:0.4s; }
+.slide.active .fade-up-d5 { animation-delay:0.5s; }
+.slide.active .fade-up-d6 { animation-delay:0.6s; }
+
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(24px); }
+  to { opacity:1; transform:translateY(0); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(239,68,68,0.2); }
+  50% { box-shadow: 0 0 40px rgba(239,68,68,0.5); }
+}
+
+/* ========== FULLSCREEN HINT ========== */
+.fs-hint {
+  position:fixed; top:20px; right:20px; z-index:300;
+  font-size:11px; color:var(--c500);
+  background:rgba(12,16,24,0.6);
+  backdrop-filter:blur(12px);
+  padding:6px 14px; border-radius:8px;
+  border:1px solid var(--glass-border);
+  cursor:pointer;
+  transition:all 0.3s;
+}
+.fs-hint:hover { color:var(--c300); background:rgba(12,16,24,0.8); }
+
+/* ========== SLIDE BACKGROUND IMAGES ========== */
+.slide-bg {
+  position:absolute; inset:0; z-index:-1;
+  background-size:cover; background-position:center;
+  opacity:0.12;
+  pointer-events:none;
+}
+.slide-bg::after {
+  content:'';
+  position:absolute; inset:0;
+  background: linear-gradient(180deg, var(--c950) 0%, transparent 30%, transparent 70%, var(--c950) 100%);
+}
+
+/* Inline image panels */
+.slide-img-panel {
+  border-radius:14px;
+  overflow:hidden;
+  border:1px solid var(--glass-border);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 0 1px rgba(85,115,170,0.08);
+  position:relative;
+}
+.slide-img-panel img {
+  width:100%; height:100%;
+  object-fit:cover;
+  display:block;
+}
+.slide-img-panel .img-overlay {
+  position:absolute; inset:0;
+  background: linear-gradient(135deg, rgba(12,16,24,0.4), rgba(12,16,24,0.1));
+}
+
+/* Responsive */
+@media (max-width:1100px) {
+  .slide { padding:40px; }
+  .two-col, .predict-layout { grid-template-columns:1fr; }
+  .heading-xl { font-size:38px; }
+  .heading-lg { font-size:30px; }
+  .stat-grid, .track-grid, .freq-steps { grid-template-columns:1fr 1fr; }
+  .truth-grid { grid-template-columns:1fr; }
+  .car-grid { gap:8px; }
+  .car-icon { font-size:24px; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-canvas"></div>
+<div class="grid-overlay"></div>
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="fs-hint" onclick="goFullscreen()" id="fsHint">Press F for fullscreen</div>
+
+<!-- ===================== SLIDE 0: TITLE ===================== -->
+<div class="slide slide-title active" data-slide="0">
+  <div class="slide-bg" style="background-image:url('assets/phone-dark.jpg'); opacity:0.18;"></div>
+  <img src="../../logo_dark_clean.png" class="logo fade-up" alt="elSapiens" style="height:140px; filter:drop-shadow(0 4px 24px rgba(85,115,170,0.25));">
+  <div class="glow-line fade-up fade-up-d1" style="margin-bottom:8px;"></div>
+  <div class="heading-xl fade-up fade-up-d1">
+    Your Phone Isn't <span class="red-text">Listening.</span><br>
+    <span class="gradient-text">It's Worse.</span>
+  </div>
+  <div class="sub fade-up fade-up-d2">
+    The truth about why you see that ad seconds after talking about it — and why the reality is far more unsettling than a microphone.
+  </div>
+  <div class="credit fade-up fade-up-d3" style="font-size:14px; color:var(--c500); margin-top:20px;">Dawn Dharmishtan &nbsp;·&nbsp; elSapiens &nbsp;·&nbsp; A Data Science Deep Dive</div>
+</div>
+
+<!-- ===================== SLIDE 1: THE MYTH ===================== -->
+<div class="slide" data-slide="1" style="text-align:center;">
+  <div class="slide-bg" style="background-image:url('assets/shocked.jpg'); opacity:0.1;"></div>
+  <img src="../../logo_dark_clean.png" class="watermark" alt="">
+  <div class="eyebrow red-text fade-up">The Myth Everyone Believes</div>
+  <div class="heading-xl fade-up fade-up-d1" style="max-width:900px;">
+    "I Was <em>Just</em> Talking About That…"
+  </div>
+  <div class="body-lg fade-up fade-up-d2" style="max-width:700px; margin-top:16px;">
+    You mention camping to a friend. Minutes later, your Instagram is flooded with tent ads. It <em>has</em> to be listening… right?
+  </div>
+  <div class="stat-grid fade-up fade-up-d3">
+    <div class="glass-sm stat-card">
+      <div class="num">48%</div>
+      <p>of Americans believe their phone is secretly listening to them</p>
+    </div>
+    <div class="glass-sm stat-card">
+      <div class="num">57%</div>
+      <p>of 18-34 year olds are convinced their mic is always on</p>
+    </div>
+    <div class="glass-sm stat-card">
+      <div class="num">0</div>
+      <p>instances of secret audio leaking found across 17,000 Android apps tested</p>
+    </div>
+  </div>
+  <div class="body-sm fade-up fade-up-d4" style="margin-top:20px;">
+    Source: Panda Security 2019 · Consumer Reports · Northeastern University research
+  </div>
+</div>
+
+<!-- ===================== SLIDE 2: WHY THEY DON'T NEED YOUR MIC ===================== -->
+<div class="slide" data-slide="2" style="text-align:center;">
+  <div class="slide-bg" style="background-image:url('assets/matrix.jpg'); opacity:0.1;"></div>
+  <img src="../../logo_dark_clean.png" class="watermark" alt="">
+  <div class="eyebrow purple-text fade-up">The Real Engine</div>
+  <div class="heading-xl fade-up fade-up-d1" style="max-width:950px;">
+    They Don't Need Your <span class="red-text">Microphone</span><br>
+    They Have Something <span class="purple-text">Better</span>
+  </div>
+  <div class="body-lg fade-up fade-up-d2" style="max-width:750px; margin-top:16px;">
+    Every time you touch your phone, you're feeding an algorithm that knows you better than you know yourself.
+  </div>
+  <div class="track-grid fade-up fade-up-d3">
+    <div class="glass-sm track-card">
+      <div class="track-icon">⏱️</div>
+      <h4>Dwell Time</h4>
+      <p>Paused on a post for 3 seconds? That's a signal. Instagram confirmed <strong>watch time is the #1 ranking signal</strong> for Reels.</p>
+    </div>
+    <div class="glass-sm track-card">
+      <div class="track-icon">👆</div>
+      <h4>Scroll Velocity</h4>
+      <p>How fast you scroll past content tells the algorithm what bores you. Even <strong>half a second</strong> of hesitation is tracked.</p>
+    </div>
+    <div class="glass-sm track-card">
+      <div class="track-icon">🔄</div>
+      <h4>Micro-Interactions</h4>
+      <p>Saves, shares, comments, screenshot pauses, re-watches — each action builds your <strong>behavioral fingerprint</strong>.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SLIDE 3: YOUR DIGITAL SHADOW ===================== -->
+<div class="slide" data-slide="3">
+  <div class="slide-bg" style="background-image:url('assets/scrolling.jpg'); opacity:0.08;"></div>
+  <img src="../../logo_dark_clean.png" class="watermark" alt="">
+  <div class="two-col">
+    <div>
+      <div class="eyebrow orange-text fade-up">Your Digital Shadow</div>
+      <div class="heading-lg fade-up fade-up-d1">
+        You Never Typed It.<br>
+        Never Searched It.<br>
+        <span class="orange-text">They Still Know.</span>
+      </div>
+      <div class="body-md fade-up fade-up-d2" style="margin-top:16px;">
+        Meta's AI watches for <strong>post linger time</strong>, <strong>related topic pivots</strong>, and <strong>creators you follow in similar verticals</strong>. It sees patterns in your behavior without needing keywords.
+      </div>
+      <div class="body-md fade-up fade-up-d3" style="margin-top:16px;">
+        You paused 2 seconds longer than usual on a camping reel. That was enough.
+      </div>
+    </div>
+    <div class="fade-up fade-up-d2">
+      <div class="glass-strong" style="padding:32px;">
+        <div class="heading-sm" style="color:var(--c100); margin-bottom:20px;">What they know from your scroll:</div>
+        <div style="display:flex; flex-direction:column; gap:14px;">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <span style="color:var(--green); font-size:18px;">✓</span>
+            <span class="body-md">Your interests (even ones you haven't admitted to yourself)</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px;">
+            <span style="color:var(--green); font-size:18px;">✓</span>
+            <span class="body-md">Your emotional state based on content patterns</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px;">
+            <span style="color:var(--green); font-size:18px;">✓</span>
+            <span class="body-md">Life events — moving, breakups, pregnancy</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px;">
+            <span style="color:var(--green); font-size:18px;">✓</span>
+            <span class="body-md">What you'll be interested in <em>next week</em></span>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px;">
+            <span style="color:var(--green); font-size:18px;">✓</span>
+            <span class="body-md">Your income bracket, relationship status, political lean</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SLIDE 4: THE PREDICTION MACHINE ===================== -->
+<div class="slide" data-slide="4">
+  <div class="slide-bg" style="background-image:url('assets/shopping.jpg'); opacity:0.08;"></div>
+  <img src="../../logo_dark_clean.png" class="watermark" alt="">
+  <div class="predict-layout">
+    <div>
+      <div class="eyebrow green-text fade-up">The Prediction Machine</div>
+      <div class="heading-lg fade-up fade-up-d1">
+        Your <span class="gradient-text">Behavioral Twin</span><br>Already Told Them
+      </div>
+      <div class="glass-sm predict-card fade-up fade-up-d2">
+        <h4>Collaborative Filtering</h4>
+        <p>"People who behaved like you also did X — so you probably want X too." The algorithm doesn't need to know <em>why</em>. It just matches your patterns to millions of others.</p>
+      </div>
+      <div class="glass-sm predict-card fade-up fade-up-d3">
+        <h4>Look-Alike Audiences</h4>
+        <p>Advertisers upload their customer list. The platform finds people with identical behavior patterns. You never visited their site — but someone just like you did.</p>
+      </div>
+    </div>
+    <div>
+      <div class="story-box glass-sm fade-up fade-up-d2">
+        <div class="heading-sm" style="color:var(--orange); margin-bottom:12px;">The Target Pregnancy Story</div>
+        <p>Target's data team found that buying <strong>unscented lotion, certain vitamins, and cotton balls</strong> in combination predicted pregnancy months before any baby items were purchased.</p>
+        <p style="margin-top:12px;">A father stormed into a Minneapolis Target furious about baby coupons sent to his teenage daughter.</p>
+        <p style="margin-top:12px; color:var(--orange); font-weight:600;">He later called back to apologize — she was pregnant. Target knew before her own father did.</p>
+        <div class="story-source">— Charles Duhigg, The New York Times, 2012</div>
+      </div>
+      <div class="glass-strong fade-up fade-up-d3" style="padding:24px; margin-top:16px; text-align:center;">
+        <div class="body-md" style="color:var(--c400);">If 10,000 people who behave like you started researching something this week...</div>
+        <div class="heading-sm" style="color:var(--c100); margin-top:8px;">The algorithm bets you will too.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SLIDE 5: THE RED CAR THEORY ===================== -->
+<div class="slide" data-slide="5" style="text-align:center;">
+  <div class="slide-bg" style="background-image:url('assets/red-car.jpg'); opacity:0.15;"></div>
+  <img src="../../logo_dark_clean.png" class="watermark" alt="">
+  <div class="eyebrow red-text fade-up">The Red Car Theory</div>
+  <div class="heading-xl fade-up fade-up-d1" style="max-width:900px;">
+    The <span class="red-text">Reticular Activating System</span>
+  </div>
+  <div class="body-lg fade-up fade-up-d2" style="max-width:750px; margin-top:12px;">
+    A bundle of nerves at your brainstem that acts as a <strong>gatekeeper</strong> — filtering millions of inputs so only what it deems "important" reaches your conscious mind.
+  </div>
+  <div class="car-grid fade-up fade-up-d3">
+    <span class="car-icon">🚗</span><span class="car-icon">🚗</span><span class="car-icon">🚗</span><span class="car-icon red">🚗</span><span class="car-icon">🚗</span>
+    <span class="car-icon">🚗</span><span class="car-icon red">🚗</span><span class="car-icon">🚗</span><span class="car-icon">🚗</span><span class="car-icon">🚗</span>
+    <span class="car-icon">🚗</span><span class="car-icon">🚗</span><span class="car-icon">🚗</span><span class="car-icon">🚗</span><span class="car-icon red">🚗</span>
+    <span class="car-icon">🚗</span><span class="car-icon">🚗</span><span class="car-icon red">🚗</span><span class="car-icon">🚗</span><span class="car-icon">🚗</span>
+  </div>
+  <div class="glass-strong fade-up fade-up-d4" style="padding:28px 36px; max-width:800px; margin-top:28px;">
+    <div class="body-lg" style="color:var(--c200);">
+      Tell someone to look for <span class="red-text" style="font-weight:700;">red cars</span>, and suddenly they see them everywhere.
+    </div>
+    <div class="body-lg" style="color:var(--c400); margin-top:8px;">
+      The red cars were <em>always there</em>. Your brain was just filtering them out.
+    </div>
+    <div class="heading-sm" style="color:var(--c100); margin-top:16px;">
+      That conversation about camping? It <span class="red-text">primed your RAS</span> to notice camping ads that were already in your feed.
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SLIDE 6: IT WAS ALREADY THERE ===================== -->
+<div class="slide" data-slide="6" style="text-align:center;">
+  <div class="slide-bg" style="background-image:url('assets/eye.jpg'); opacity:0.12;"></div>
+  <img src="../../logo_dark_clean.png" class="watermark" alt="">
+  <div class="eyebrow cyan-text fade-up">The Baader-Meinhof Phenomenon</div>
+  <div class="heading-xl fade-up fade-up-d1" style="max-width:900px;">
+    Those Ads Were <span class="cyan-text">Already There</span>
+  </div>
+  <div class="body-lg fade-up fade-up-d2" style="max-width:700px; margin-top:12px;">
+    Named by Stanford linguist Arnold Zwicky — the <strong>Frequency Illusion</strong> makes something that just caught your attention seem to appear more often. But the frequency hasn't changed. Only your perception has.
+  </div>
+  <div class="freq-steps fade-up fade-up-d3">
+    <div class="glass-sm freq-step">
+      <span class="step-num">1</span>
+      <h4>The Conversation</h4>
+      <p>You talk about camping gear with a friend over coffee.</p>
+    </div>
+    <div class="glass-sm freq-step">
+      <span class="step-num">2</span>
+      <h4>RAS Activates</h4>
+      <p>Your brain now flags "camping" as important. The filter changes.</p>
+    </div>
+    <div class="glass-sm freq-step">
+      <span class="step-num">3</span>
+      <h4>Same Ads, New Eyes</h4>
+      <p>Those camping ads were in your feed yesterday too. You scrolled right past them.</p>
+    </div>
+    <div class="glass-sm freq-step">
+      <span class="step-num">4</span>
+      <h4>Confirmation Loop</h4>
+      <p>Each sighting reinforces the belief: "It's listening!" A self-reinforcing illusion.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SLIDE 7: HIT AND MISS ===================== -->
+<div class="slide" data-slide="7" style="text-align:center;">
+  <div class="slide-bg" style="background-image:url('assets/dartboard.jpg'); opacity:0.1;"></div>
+  <img src="../../logo_dark_clean.png" class="watermark" alt="">
+  <div class="eyebrow orange-text fade-up">The Inconvenient Truth</div>
+  <div class="heading-xl fade-up fade-up-d1" style="max-width:950px;">
+    It's <span class="red-text">Wrong</span> 99.5% of the Time
+  </div>
+  <div class="body-lg fade-up fade-up-d2" style="max-width:750px; margin-top:12px;">
+    You see thousands of ads per day. The vast majority miss completely. But you only <strong>notice and remember the hits</strong>.
+  </div>
+  <div class="bias-visual fade-up fade-up-d3">
+    <div class="bias-bar">
+      <div class="bias-bar-label">Ads you ignore</div>
+      <div class="bias-bar-track">
+        <div class="bias-bar-fill miss">~99.5% — invisible to you</div>
+      </div>
+    </div>
+    <div class="bias-bar">
+      <div class="bias-bar-label">Ads that "hit"</div>
+      <div class="bias-bar-track">
+        <div class="bias-bar-fill hit">0.5%</div>
+      </div>
+    </div>
+  </div>
+  <div class="glass-strong fade-up fade-up-d4" style="padding:28px 36px; max-width:800px; margin-top:28px;">
+    <div class="heading-sm" style="color:var(--c100);">This is <span class="orange-text">Confirmation Bias</span></div>
+    <div class="body-md" style="margin-top:12px;">
+      You see 1,000 ads. 997 are irrelevant — your brain doesn't even register them. 3 match something you recently talked about. Those 3 feel <em>shocking</em>.
+    </div>
+    <div class="body-lg" style="color:var(--orange); font-weight:600; margin-top:12px;">
+      You remember the 3. You forget the 997. You conclude: "My phone is listening."
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SLIDE 8: THE REAL PICTURE ===================== -->
+<div class="slide" data-slide="8" style="text-align:center;">
+  <div class="slide-bg" style="background-image:url('assets/brain.jpg'); opacity:0.1;"></div>
+  <img src="../../logo_dark_clean.png" class="watermark" alt="">
+  <div class="eyebrow green-text fade-up">Putting It All Together</div>
+  <div class="heading-xl fade-up fade-up-d1" style="max-width:900px;">
+    Three Forces. <span class="gradient-text">Zero Microphones.</span>
+  </div>
+  <div class="truth-grid fade-up fade-up-d3">
+    <div class="glass-strong truth-card">
+      <div class="truth-icon">🧠</div>
+      <h4>The Algorithm</h4>
+      <p>Already knows your interests from behavioral data — scroll patterns, dwell time, social connections, purchase history. No keywords needed.</p>
+    </div>
+    <div class="glass-strong truth-card">
+      <div class="truth-icon">👁️</div>
+      <h4>Your Brain (RAS)</h4>
+      <p>The conversation primed your attention filter. You now notice things that were already there but previously invisible to you.</p>
+    </div>
+    <div class="glass-strong truth-card">
+      <div class="truth-icon">🎯</div>
+      <h4>Confirmation Bias</h4>
+      <p>You remember the rare hits and forget the constant misses. The algorithm fails constantly — you only see it when it succeeds.</p>
+    </div>
+  </div>
+  <div class="glass-strong fade-up fade-up-d4" style="padding:24px 36px; max-width:800px; margin-top:32px;">
+    <div class="body-lg" style="color:var(--c200);">
+      The truth isn't that your phone is listening to your words.
+    </div>
+    <div class="heading-md" style="color:var(--c50); margin-top:8px;">
+      It's that it doesn't <em>need</em> to.
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SLIDE 9: KEY QUOTE ===================== -->
+<div class="slide" data-slide="9" style="text-align:center;">
+  <div class="slide-bg" style="background-image:url('assets/ai-abstract.jpg'); opacity:0.1;"></div>
+  <img src="../../logo_dark_clean.png" class="watermark" alt="">
+  <div class="glow-line fade-up" style="margin-bottom:24px;"></div>
+  <div class="close-quote fade-up fade-up-d1">
+    "They're getting such a <strong>deep picture</strong> of us as individuals — more so than listening to any conversations."
+  </div>
+  <div class="body-md fade-up fade-up-d2" style="margin-top:12px; color:var(--c500);">
+    — Northeastern University researchers, after analyzing 17,000+ apps
+  </div>
+  <div class="glow-line fade-up fade-up-d3" style="margin:28px 0;"></div>
+  <div class="heading-md fade-up fade-up-d3" style="color:var(--c300); max-width:700px;">
+    The microphone myth is comforting because it implies you can just <span class="red-text">turn it off</span>.
+  </div>
+  <div class="heading-md fade-up fade-up-d4" style="color:var(--c100); max-width:700px; margin-top:16px;">
+    The reality — that your <span class="gradient-text">behavior is the data</span> — is harder to escape.
+  </div>
+  <div class="body-sm fade-up fade-up-d5" style="margin-top:32px; max-width:500px; color:var(--c600);">
+    Sources: Consumer Reports · Panda Security · Northeastern University · NYT · Sprout Social · Wandera Mobile Security
+  </div>
+</div>
+
+<!-- ===================== SLIDE 10: ABOUT ELSAPIENS ===================== -->
+<div class="slide" data-slide="10">
+  <img src="../../logo_dark_clean.png" class="watermark" alt="">
+  <div class="about-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:60px; max-width:1200px; width:100%; align-items:center;">
+    <div>
+      <div class="eyebrow accent-text fade-up">About elSapiens</div>
+      <div class="heading-lg fade-up fade-up-d1" style="margin-bottom:20px;">
+        21 Years of Building<br><span class="gradient-text">Systems That Work</span>
+      </div>
+      <div class="body-md fade-up fade-up-d2" style="margin-bottom:8px;">
+        elSapiens is a software development company with over two decades of experience in technology. We partner with businesses to build the operational systems they need.
+      </div>
+      <div class="body-md fade-up fade-up-d3">
+        We don't sell off-the-shelf software. We build <strong style="color:var(--c100)">exactly what your business needs</strong> — tailored to your workflows, your team, and your customers.
+      </div>
+      <div style="display:flex; gap:36px; margin-top:28px;" class="fade-up fade-up-d4">
+        <div><div class="heading-md gradient-text" style="font-weight:700;">21+</div><div class="body-sm" style="text-transform:uppercase; letter-spacing:0.12em; font-size:11px;">Years</div></div>
+        <div><div class="heading-md gradient-text" style="font-weight:700;">7+</div><div class="body-sm" style="text-transform:uppercase; letter-spacing:0.12em; font-size:11px;">Products</div></div>
+        <div><div class="heading-md gradient-text" style="font-weight:700;">20+</div><div class="body-sm" style="text-transform:uppercase; letter-spacing:0.12em; font-size:11px;">Industries</div></div>
+        <div><div class="heading-md gradient-text" style="font-weight:700;">100%</div><div class="body-sm" style="text-transform:uppercase; letter-spacing:0.12em; font-size:11px;">Custom</div></div>
+      </div>
+    </div>
+    <div class="fade-up fade-up-d3" style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+      <div class="glass" style="padding:22px 20px;">
+        <div style="font-size:18px; margin-bottom:12px;">⚙</div>
+        <h4 style="font-size:14px; font-weight:700; color:var(--c100); margin-bottom:4px;">Custom Software</h4>
+        <p style="font-size:11px; color:var(--c400); line-height:1.5;">Purpose-built systems designed around your exact business processes</p>
+      </div>
+      <div class="glass" style="padding:22px 20px;">
+        <div style="font-size:18px; margin-bottom:12px;">☁</div>
+        <h4 style="font-size:14px; font-weight:700; color:var(--c100); margin-bottom:4px;">Cloud Platforms</h4>
+        <p style="font-size:11px; color:var(--c400); line-height:1.5;">Scalable, secure cloud-native applications with 99.9% uptime</p>
+      </div>
+      <div class="glass" style="padding:22px 20px;">
+        <div style="font-size:18px; margin-bottom:12px;">📊</div>
+        <h4 style="font-size:14px; font-weight:700; color:var(--c100); margin-bottom:4px;">Business Intelligence</h4>
+        <p style="font-size:11px; color:var(--c400); line-height:1.5;">Dashboards & analytics that turn your data into decisions</p>
+      </div>
+      <div class="glass" style="padding:22px 20px;">
+        <div style="font-size:18px; margin-bottom:12px;">🔐</div>
+        <h4 style="font-size:14px; font-weight:700; color:var(--c100); margin-bottom:4px;">Auth & Security</h4>
+        <p style="font-size:11px; color:var(--c400); line-height:1.5;">Enterprise-grade identity, access control & data protection</p>
+      </div>
+      <div class="glass" style="padding:22px 20px;">
+        <div style="font-size:18px; margin-bottom:12px;">📱</div>
+        <h4 style="font-size:14px; font-weight:700; color:var(--c100); margin-bottom:4px;">Mobile & Web</h4>
+        <p style="font-size:11px; color:var(--c400); line-height:1.5;">Cross-platform applications built for speed and usability</p>
+      </div>
+      <div class="glass" style="padding:22px 20px;">
+        <div style="font-size:18px; margin-bottom:12px;">🔗</div>
+        <h4 style="font-size:14px; font-weight:700; color:var(--c100); margin-bottom:4px;">Integrations</h4>
+        <p style="font-size:11px; color:var(--c400); line-height:1.5;">Connect systems, automate workflows, eliminate data silos</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SLIDE 11: CLOSING ===================== -->
+<div class="slide slide-close" data-slide="11">
+  <img src="../../logo_dark_clean.png" class="logo fade-up" alt="elSapiens" style="height:140px; filter:drop-shadow(0 4px 24px rgba(85,115,170,0.25));">
+  <div class="glow-line fade-up fade-up-d1" style="margin:8px 0;"></div>
+  <div class="close-quote fade-up fade-up-d2">
+    Understanding how algorithms work<br>is the first step to <strong>building better ones.</strong>
+  </div>
+  <div class="glow-line fade-up fade-up-d3" style="margin:20px 0 12px;"></div>
+  <div style="display:flex; gap:48px; margin-top:24px;" class="fade-up fade-up-d4">
+    <div style="text-align:center;">
+      <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.15em; color:var(--c500); margin-bottom:4px;">Founder & CEO</div>
+      <div style="font-size:16px; font-weight:600; color:var(--c300);">Dawn Dharmishtan</div>
+    </div>
+    <div style="text-align:center;">
+      <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.15em; color:var(--c500); margin-bottom:4px;">Experience</div>
+      <div style="font-size:16px; font-weight:600; color:var(--c300);">21+ Years</div>
+    </div>
+    <div style="text-align:center;">
+      <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.15em; color:var(--c500); margin-bottom:4px;">Email</div>
+      <div style="font-size:16px; font-weight:600; color:var(--c300);">dawndharm@elsapiens.com</div>
+    </div>
+    <div style="text-align:center;">
+      <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.15em; color:var(--c500); margin-bottom:4px;">Website</div>
+      <div style="font-size:16px; font-weight:600; color:var(--c300);">elsapiens.com</div>
+    </div>
+  </div>
+  <div class="body-lg fade-up fade-up-d5" style="color:var(--c200); margin-top:20px; font-weight:500;">Thank you.</div>
+</div>
+
+<!-- ===================== NAVIGATION ===================== -->
+<div class="nav">
+  <button class="nav-btn" onclick="go(-1)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+  </button>
+  <div class="dots" id="dots"></div>
+  <span class="counter" id="counter">1 / 12</span>
+  <button class="nav-btn" onclick="go(1)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </button>
+</div>
+
+<script>
+// ===== SLIDE ENGINE =====
+let cur = 0;
+const slides = document.querySelectorAll('.slide');
+const total = slides.length;
+const dotsEl = document.getElementById('dots');
+const counterEl = document.getElementById('counter');
+const progBar = document.getElementById('progressBar');
+
+for (let i = 0; i < total; i++) {
+  const d = document.createElement('div');
+  d.className = 'dot' + (i === 0 ? ' active' : '');
+  d.onclick = () => goTo(i);
+  dotsEl.appendChild(d);
+}
+
+function goTo(n) {
+  if (n === cur || n < 0 || n >= total) return;
+  const prev = slides[cur];
+  prev.classList.add('exit-left');
+  prev.classList.remove('active');
+  setTimeout(() => prev.classList.remove('exit-left'), 500);
+  cur = n;
+  slides[cur].classList.add('active');
+  document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === cur));
+  counterEl.textContent = `${cur + 1} / ${total}`;
+  progBar.style.width = `${((cur + 1) / total) * 100}%`;
+}
+
+function go(dir) { goTo(cur + dir); }
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); go(1); }
+  if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); go(-1); }
+  if (e.key === 'Home') { e.preventDefault(); goTo(0); }
+  if (e.key === 'End') { e.preventDefault(); goTo(total - 1); }
+  if (e.key === 'f' || e.key === 'F') goFullscreen();
+});
+
+let tx = 0;
+document.addEventListener('touchstart', e => tx = e.touches[0].clientX);
+document.addEventListener('touchend', e => {
+  const d = tx - e.changedTouches[0].clientX;
+  if (Math.abs(d) > 50) go(d > 0 ? 1 : -1);
+});
+
+function goFullscreen() {
+  if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(()=>{});
+  document.getElementById('fsHint').style.display = 'none';
+}
+</script>
+</body>
+</html>
