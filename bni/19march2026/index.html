@@ -502,66 +502,104 @@ html, body {
 /* Responsive — Mobile */
 @media (max-width:768px) {
   .slide {
-    padding:80px 20px 80px;
+    padding:24px 18px 70px;
     justify-content:flex-start;
     overflow-y:auto;
     -webkit-overflow-scrolling:touch;
   }
+
+  /* Watermark logo — inline flow, not absolute */
   .watermark {
-    position:relative; top:auto; left:auto;
-    height:36px; margin-bottom:12px;
+    position:relative !important;
+    top:auto !important; left:auto !important;
+    height:32px;
+    margin:0 0 16px 0;
     display:block;
+    flex-shrink:0;
   }
-  .slide-title .logo { height:80px !important; }
-  .heading-xl { font-size:26px; }
-  .heading-lg { font-size:24px; }
-  .heading-md { font-size:20px; }
-  .body-lg { font-size:15px; }
-  .body-md { font-size:13px; }
+
+  /* Title & closing logos */
+  .slide-title .logo,
+  .slide-close .logo {
+    height:70px !important;
+    max-width:80vw;
+    object-fit:contain;
+    flex-shrink:0;
+  }
+
+  /* Title & closing slide spacing */
+  .slide-title { gap:12px; padding-top:40px; }
+  .slide-close { gap:12px; padding-top:40px; }
+
+  /* Typography */
+  .heading-xl { font-size:24px; }
+  .heading-lg { font-size:22px; }
+  .heading-md { font-size:18px; }
+  .body-lg { font-size:14px; line-height:1.6; }
+  .body-md { font-size:12px; line-height:1.6; }
   .body-sm { font-size:11px; }
-  .eyebrow { font-size:10px; margin-bottom:8px; }
-  .slide-title .tagline { font-size:16px; letter-spacing:0.08em; }
-  .slide-title .sub { font-size:14px; }
-  .slide-title .presenter { font-size:12px; }
+  .eyebrow { font-size:10px; margin-bottom:6px; }
+  .glow-line { width:40px; }
+  .slide-title .tagline { font-size:14px; letter-spacing:0.08em; }
+  .slide-title .sub { font-size:13px; }
+  .slide-title .presenter { font-size:11px; }
 
-  .about-grid { grid-template-columns:1fr; gap:24px; }
-  .stat-row { gap:20px; flex-wrap:wrap; }
-  .stat-num { font-size:30px; }
-  .services-grid { grid-template-columns:1fr; gap:10px; }
-  .svc-card { padding:16px; }
+  /* About section */
+  .about-grid { grid-template-columns:1fr; gap:20px; }
+  .stat-row { gap:16px; flex-wrap:wrap; }
+  .stat-num { font-size:28px; }
+  .services-grid { grid-template-columns:1fr; gap:8px; }
+  .svc-card { padding:14px; }
+  .svc-icon { width:32px; height:32px; font-size:14px; margin-bottom:8px; }
 
-  .problem-cards { grid-template-columns:1fr; gap:12px; margin-top:20px; }
-  .prob-card { padding:20px 18px; }
-  .prob-card .num { font-size:28px; }
+  /* Problem cards */
+  .problem-cards { grid-template-columns:1fr; gap:10px; margin-top:16px; }
+  .prob-card { padding:16px 14px; }
+  .prob-card .num { font-size:24px; }
 
-  .story-grid { grid-template-columns:1fr; gap:24px; }
-  .quote-box { padding:16px 18px; }
-  .fix-card { padding:20px; }
+  /* Story */
+  .story-grid { grid-template-columns:1fr; gap:20px; }
+  .quote-box { padding:14px 16px; }
+  .quote-box p { font-size:15px; }
+  .fix-card { padding:16px; }
 
-  .vs-grid { grid-template-columns:1fr; gap:16px; margin-top:20px; }
+  /* Solution */
+  .vs-grid { grid-template-columns:1fr; gap:12px; margin-top:16px; }
   .vs-divider { flex-direction:row; }
+  .vs-item { padding:12px 14px; }
+  .vs-item span { font-size:13px; }
 
-  .proj-layout { grid-template-columns:1fr; gap:20px; }
+  /* Projects */
+  .proj-layout { grid-template-columns:1fr; gap:16px; }
+  .proj-badge { font-size:10px; padding:4px 10px; }
+  .proj-features li { font-size:12px; }
   .cinema { aspect-ratio:16/10; }
 
-  .signal-cards { flex-direction:column; gap:12px; margin-top:20px; }
-  .signal-card { padding:20px 18px; }
+  /* Signal / about-them cards */
+  .signal-cards { flex-direction:column; gap:10px; margin-top:16px; }
+  .signal-card { padding:16px 14px; }
+  .signal-card p { font-size:16px; }
 
-  .ask-grid { grid-template-columns:1fr; gap:12px; margin-top:20px; }
-  .ask-card { padding:20px 18px; }
-  .signal-box { padding:20px 24px !important; margin-top:24px; }
+  /* Ask grid */
+  .ask-grid { grid-template-columns:1fr; gap:10px; margin-top:16px; }
+  .ask-card { padding:16px 14px; }
+  .signal-box { padding:16px 20px !important; margin-top:20px; }
 
-  .slide-close .logo { height:80px !important; }
-  .close-quote { font-size:20px; }
-  .close-contact { flex-direction:column; gap:16px; }
+  /* Closing */
+  .close-quote { font-size:18px; line-height:1.4; }
+  .close-contact { flex-direction:column; gap:12px; }
 
-  .nav { padding:6px 14px; gap:10px; bottom:12px; }
-  .dots { gap:4px; }
-  .dot { width:6px; height:6px; }
-  .dot.active { width:20px; }
-  .counter { font-size:10px; }
-  .nav-btn { width:28px; height:28px; }
-  .nav-btn svg { width:14px; height:14px; }
+  /* Max widths — don't overflow on mobile */
+  [style*="max-width"] { max-width:100% !important; }
+
+  /* Nav bar */
+  .nav { padding:5px 12px; gap:8px; bottom:8px; border-radius:40px; }
+  .dots { gap:3px; }
+  .dot { width:5px; height:5px; }
+  .dot.active { width:16px; }
+  .counter { font-size:9px; min-width:32px; }
+  .nav-btn { width:26px; height:26px; }
+  .nav-btn svg { width:12px; height:12px; }
 
   .fs-hint { display:none; }
 }
@@ -581,7 +619,7 @@ html, body {
   <div class="glow-line fade-up fade-up-d1"></div>
   <div class="tagline fade-up fade-up-d2">Building Systems That Power Business</div>
   <div class="sub fade-up fade-up-d3">We design, develop, and deploy custom software that helps businesses operate smarter, sell faster, and scale with confidence.</div>
-  <div class="presenter fade-up fade-up-d4">Dawn Dharmishtan &nbsp;·&nbsp; Founder & CEO &nbsp;·&nbsp; 21 Years in Technology</div>
+  <div class="presenter fade-up fade-up-d4">Dawn Dharmishtan &nbsp;·&nbsp; Founder & CEO &nbsp;·&nbsp; 21+ Years in Technology</div>
 </div>
 
 <!-- ===================== SLIDE 1: ABOUT ===================== -->
@@ -591,16 +629,16 @@ html, body {
     <div>
       <div class="eyebrow accent-text fade-up">Who We Are</div>
       <div class="heading-lg fade-up fade-up-d1" style="margin-bottom:20px;">
-        21 Years of Building<br><span class="gradient-text">Systems That Work</span>
+        21+ Years of Experience.<br><span class="gradient-text">One Mission.</span>
       </div>
       <div class="body-md fade-up fade-up-d2" style="margin-bottom:8px;">
-        elSapiens is a software development company with over two decades of experience in technology. We partner with businesses to build the operational systems they need.
+        elSapiens was born from 21+ years of hands-on experience in technology. We don't resell software — we build operational systems from scratch, tailored to how your business actually works.
       </div>
       <div class="body-md fade-up fade-up-d3">
         We don't sell off-the-shelf software. We build <strong style="color:var(--c100)">exactly what your business needs</strong> — tailored to your workflows, your team, and your customers.
       </div>
       <div class="stat-row fade-up fade-up-d4">
-        <div><div class="stat-num gradient-text">21+</div><div class="stat-label">Years</div></div>
+        <div><div class="stat-num gradient-text">21+</div><div class="stat-label">Yrs Experience</div></div>
         <div><div class="stat-num gradient-text">7+</div><div class="stat-label">Products</div></div>
         <div><div class="stat-num gradient-text">20+</div><div class="stat-label">Industries</div></div>
         <div><div class="stat-num gradient-text">100%</div><div class="stat-label">Custom</div></div>

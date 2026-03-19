@@ -462,67 +462,97 @@ html, body {
 /* Responsive — Mobile */
 @media (max-width:768px) {
   .slide {
-    padding:80px 20px 80px;
+    padding:24px 18px 70px;
     justify-content:flex-start;
     overflow-y:auto;
     -webkit-overflow-scrolling:touch;
   }
+
+  /* Watermark logo — inline flow, not absolute */
   .watermark {
-    position:relative; top:auto; left:auto;
-    height:36px; margin-bottom:12px;
+    position:relative !important;
+    top:auto !important; left:auto !important;
+    height:32px;
+    margin:0 0 16px 0;
     display:block;
+    flex-shrink:0;
   }
-  .slide-title .logo { height:80px !important; }
-  .heading-xl { font-size:26px; }
-  .heading-lg { font-size:24px; }
-  .heading-md { font-size:20px; }
-  .heading-sm { font-size:17px; }
-  .body-lg { font-size:15px; }
-  .body-md { font-size:13px; }
+
+  /* Title & closing logos */
+  .slide-title img.logo,
+  .slide-close img.logo {
+    height:70px !important;
+    max-width:80vw;
+    object-fit:contain;
+    flex-shrink:0;
+  }
+
+  /* Title slide */
+  .slide-title { gap:12px; padding-top:40px; }
+  .slide-close { gap:12px; padding-top:40px; }
+
+  /* Typography */
+  .heading-xl { font-size:24px; }
+  .heading-lg { font-size:22px; }
+  .heading-md { font-size:18px; }
+  .heading-sm { font-size:16px; }
+  .body-lg { font-size:14px; line-height:1.6; }
+  .body-md { font-size:12px; line-height:1.6; }
   .body-sm { font-size:11px; }
-  .eyebrow { font-size:10px; margin-bottom:8px; }
+  .eyebrow { font-size:10px; margin-bottom:6px; }
+  .glow-line { width:40px; }
 
-  .stat-grid { grid-template-columns:1fr; gap:12px; margin-top:20px; }
-  .stat-card { padding:20px 16px; }
-  .stat-card .num { font-size:32px; }
+  /* Grids — all single column */
+  .stat-grid { grid-template-columns:1fr; gap:10px; margin-top:16px; }
+  .stat-card { padding:16px 14px; }
+  .stat-card .num { font-size:28px; }
 
-  .track-grid { grid-template-columns:1fr; gap:12px; margin-top:20px; }
-  .track-card { padding:20px 18px; }
+  .track-grid { grid-template-columns:1fr; gap:10px; margin-top:16px; }
+  .track-card { padding:16px 14px; }
+  .track-card .track-icon { font-size:22px; margin-bottom:8px; }
 
-  .two-col { grid-template-columns:1fr; gap:24px; }
-  .predict-layout { grid-template-columns:1fr; gap:24px; }
+  .two-col { grid-template-columns:1fr; gap:20px; }
+  .predict-layout { grid-template-columns:1fr; gap:20px; }
+  .predict-card { padding:16px 14px; margin-bottom:10px; }
 
-  .car-grid { gap:6px; margin-top:20px; }
-  .car-icon { font-size:20px; }
+  .car-grid { gap:4px; margin-top:16px; }
+  .car-icon { font-size:18px; }
 
-  .freq-steps { grid-template-columns:1fr; gap:12px; margin-top:20px; }
-  .freq-step { padding:20px 18px; }
-  .freq-step .step-num { font-size:36px; }
+  .freq-steps { grid-template-columns:1fr; gap:10px; margin-top:16px; }
+  .freq-step { padding:16px 14px; }
+  .freq-step .step-num { font-size:32px; }
 
-  .truth-grid { grid-template-columns:1fr; gap:12px; margin-top:20px; }
+  .truth-grid { grid-template-columns:1fr; gap:10px; margin-top:16px; }
+  .truth-card { padding:20px 16px; }
 
-  .bias-visual { margin-top:20px; }
+  .bias-visual { margin-top:16px; }
   .bias-bar { flex-direction:column; gap:4px; }
-  .bias-bar-label { text-align:left; min-width:auto; }
+  .bias-bar-label { text-align:left; min-width:auto; font-size:12px; }
+  .bias-bar-track { height:28px; }
+  .bias-bar-fill { font-size:10px; padding:0 8px; }
 
-  .glass-strong { padding:20px !important; }
-  .close-quote { font-size:20px; }
+  .glass-strong { padding:16px !important; }
+  .story-box { padding:16px 18px; }
+  .close-quote { font-size:18px; line-height:1.4; }
 
   /* About grid on mobile */
-  .about-grid { grid-template-columns:1fr !important; gap:24px !important; }
+  .about-grid { grid-template-columns:1fr !important; gap:20px !important; }
 
-  /* Contact row */
-  .slide-close > div[style*="gap:48px"] {
-    flex-direction:column; gap:16px !important;
-  }
+  /* Contact rows — force column */
+  .contact-row { flex-direction:column !important; gap:12px !important; }
 
-  .nav { padding:6px 14px; gap:10px; bottom:12px; }
-  .dots { gap:4px; }
-  .dot { width:6px; height:6px; }
-  .dot.active { width:20px; }
-  .counter { font-size:10px; }
-  .nav-btn { width:28px; height:28px; }
-  .nav-btn svg { width:14px; height:14px; }
+  /* Max widths — don't overflow */
+  .signal-cards { flex-direction:column; gap:10px; margin-top:16px; }
+  [style*="max-width"] { max-width:100% !important; }
+
+  /* Nav bar */
+  .nav { padding:5px 12px; gap:8px; bottom:8px; border-radius:40px; }
+  .dots { gap:3px; }
+  .dot { width:5px; height:5px; }
+  .dot.active { width:16px; }
+  .counter { font-size:9px; min-width:32px; }
+  .nav-btn { width:26px; height:26px; }
+  .nav-btn svg { width:12px; height:12px; }
 
   .fs-hint { display:none; }
 }
@@ -862,16 +892,16 @@ html, body {
     <div>
       <div class="eyebrow accent-text fade-up">About elSapiens</div>
       <div class="heading-lg fade-up fade-up-d1" style="margin-bottom:20px;">
-        21 Years of Building<br><span class="gradient-text">Systems That Work</span>
+        21+ Years of Experience.<br><span class="gradient-text">One Mission.</span>
       </div>
       <div class="body-md fade-up fade-up-d2" style="margin-bottom:8px;">
-        elSapiens is a software development company with over two decades of experience in technology. We partner with businesses to build the operational systems they need.
+        elSapiens was born from 21+ years of hands-on experience in technology. We don't resell software — we build operational systems from scratch, tailored to how your business actually works.
       </div>
       <div class="body-md fade-up fade-up-d3">
         We don't sell off-the-shelf software. We build <strong style="color:var(--c100)">exactly what your business needs</strong> — tailored to your workflows, your team, and your customers.
       </div>
       <div style="display:flex; gap:36px; margin-top:28px;" class="fade-up fade-up-d4">
-        <div><div class="heading-md gradient-text" style="font-weight:700;">21+</div><div class="body-sm" style="text-transform:uppercase; letter-spacing:0.12em; font-size:11px;">Years</div></div>
+        <div><div class="heading-md gradient-text" style="font-weight:700;">21+</div><div class="body-sm" style="text-transform:uppercase; letter-spacing:0.12em; font-size:11px;">Yrs Experience</div></div>
         <div><div class="heading-md gradient-text" style="font-weight:700;">7+</div><div class="body-sm" style="text-transform:uppercase; letter-spacing:0.12em; font-size:11px;">Products</div></div>
         <div><div class="heading-md gradient-text" style="font-weight:700;">20+</div><div class="body-sm" style="text-transform:uppercase; letter-spacing:0.12em; font-size:11px;">Industries</div></div>
         <div><div class="heading-md gradient-text" style="font-weight:700;">100%</div><div class="body-sm" style="text-transform:uppercase; letter-spacing:0.12em; font-size:11px;">Custom</div></div>
@@ -920,7 +950,7 @@ html, body {
     Understanding how algorithms work<br>is the first step to <strong>building better ones.</strong>
   </div>
   <div class="glow-line fade-up fade-up-d3" style="margin:20px 0 12px;"></div>
-  <div style="display:flex; gap:48px; margin-top:24px;" class="fade-up fade-up-d4">
+  <div class="contact-row fade-up fade-up-d4" style="display:flex; gap:48px; margin-top:24px; flex-wrap:wrap; justify-content:center;">
     <div style="text-align:center;">
       <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.15em; color:var(--c500); margin-bottom:4px;">Founder & CEO</div>
       <div style="font-size:16px; font-weight:600; color:var(--c300);">Dawn Dharmishtan</div>
