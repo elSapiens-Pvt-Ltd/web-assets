@@ -447,7 +447,7 @@ html, body {
   background: linear-gradient(135deg, rgba(12,16,24,0.4), rgba(12,16,24,0.1));
 }
 
-/* Responsive */
+/* Responsive — Tablet */
 @media (max-width:1100px) {
   .slide { padding:40px; }
   .two-col, .predict-layout { grid-template-columns:1fr; }
@@ -457,6 +457,74 @@ html, body {
   .truth-grid { grid-template-columns:1fr; }
   .car-grid { gap:8px; }
   .car-icon { font-size:24px; }
+}
+
+/* Responsive — Mobile */
+@media (max-width:768px) {
+  .slide {
+    padding:80px 20px 80px;
+    justify-content:flex-start;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+  .watermark {
+    position:relative; top:auto; left:auto;
+    height:36px; margin-bottom:12px;
+    display:block;
+  }
+  .slide-title .logo { height:80px !important; }
+  .heading-xl { font-size:26px; }
+  .heading-lg { font-size:24px; }
+  .heading-md { font-size:20px; }
+  .heading-sm { font-size:17px; }
+  .body-lg { font-size:15px; }
+  .body-md { font-size:13px; }
+  .body-sm { font-size:11px; }
+  .eyebrow { font-size:10px; margin-bottom:8px; }
+
+  .stat-grid { grid-template-columns:1fr; gap:12px; margin-top:20px; }
+  .stat-card { padding:20px 16px; }
+  .stat-card .num { font-size:32px; }
+
+  .track-grid { grid-template-columns:1fr; gap:12px; margin-top:20px; }
+  .track-card { padding:20px 18px; }
+
+  .two-col { grid-template-columns:1fr; gap:24px; }
+  .predict-layout { grid-template-columns:1fr; gap:24px; }
+
+  .car-grid { gap:6px; margin-top:20px; }
+  .car-icon { font-size:20px; }
+
+  .freq-steps { grid-template-columns:1fr; gap:12px; margin-top:20px; }
+  .freq-step { padding:20px 18px; }
+  .freq-step .step-num { font-size:36px; }
+
+  .truth-grid { grid-template-columns:1fr; gap:12px; margin-top:20px; }
+
+  .bias-visual { margin-top:20px; }
+  .bias-bar { flex-direction:column; gap:4px; }
+  .bias-bar-label { text-align:left; min-width:auto; }
+
+  .glass-strong { padding:20px !important; }
+  .close-quote { font-size:20px; }
+
+  /* About grid on mobile */
+  .about-grid { grid-template-columns:1fr !important; gap:24px !important; }
+
+  /* Contact row */
+  .slide-close > div[style*="gap:48px"] {
+    flex-direction:column; gap:16px !important;
+  }
+
+  .nav { padding:6px 14px; gap:10px; bottom:12px; }
+  .dots { gap:4px; }
+  .dot { width:6px; height:6px; }
+  .dot.active { width:20px; }
+  .counter { font-size:10px; }
+  .nav-btn { width:28px; height:28px; }
+  .nav-btn svg { width:14px; height:14px; }
+
+  .fs-hint { display:none; }
 }
 </style>
 </head>
