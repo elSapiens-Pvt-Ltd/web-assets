@@ -193,6 +193,20 @@
   .strengths li { padding: 3px 0 3px 18px; position: relative; color: var(--c700); }
   .strengths li::before { content: "\2192"; position: absolute; left: 0; color: var(--c500); }
 
+
+  /* ── Tooltips ── */
+  .fn { position: relative; cursor: help; }
+  .fn .tip {
+    display: block;
+    font-weight: 400;
+    font-size: 11px;
+    color: var(--c400);
+    line-height: 1.4;
+    margin-top: 2px;
+    white-space: normal;
+    min-width: 200px;
+  }
+
   /* ── Tables ── */
   .table-wrap {
     overflow-x: auto;
@@ -340,6 +354,37 @@
     background: var(--success) !important;
   }
 
+  /* ── Disclaimer ── */
+  .disclaimer-banner {
+    background: var(--warning-light);
+    border: 1px solid #f59e0b;
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-bottom: 28px;
+    font-size: 13px;
+    color: #92400e;
+    line-height: 1.6;
+  }
+  .disclaimer-banner strong { color: #78350f; }
+  .source-tag {
+    display: inline-block;
+    font-size: 10px;
+    background: var(--c100);
+    color: var(--c400);
+    padding: 1px 6px;
+    border-radius: 3px;
+    margin-left: 4px;
+    vertical-align: middle;
+  }
+  .source-tag.verified {
+    background: var(--success-light);
+    color: #166534;
+  }
+  .source-tag.unverified {
+    background: var(--warning-light);
+    color: #92400e;
+  }
+
   /* ── Footer ── */
   .footer {
     text-align: center;
@@ -407,8 +452,8 @@
 <!-- COMPETITORS -->
 <section id="competitors" class="section">
   <div class="container">
-    <div class="section-title">Competitor Profiles</div>
-    <div class="section-sub">Detailed profiles of each POS system, their focus, and key differentiators.</div>
+    <div class="section-title">Competitor Profiles <span class="source-tag unverified">AI-researched, not independently verified</span></div>
+    <div class="section-sub">Profiles based on publicly available information. Feature claims should be verified on each competitor's official website before citing.</div>
     <div class="card-grid">
 
       <div class="card">
@@ -417,11 +462,11 @@
         <p class="card-desc">India's leading restaurant POS with deep food aggregator integrations (Swiggy, Zomato, Dunzo). Strong in dine-in, takeaway, and delivery management.</p>
         <ul class="strengths">
           <li>Swiggy/Zomato/Dunzo direct integration</li>
-          <li>Captain app for tableside ordering</li>
-          <li>Anti-theft module (monitors suspicious voids/discounts)</li>
-          <li>Central kitchen management for chains</li>
+          <li>Captain app — waiter takes order on phone at the table, goes straight to kitchen</li>
+          <li>Anti-theft — alerts owner if staff cancel too many bills or give unusual discounts</li>
+          <li>Central kitchen — one kitchen supplies food to multiple outlets, tracked in POS</li>
           <li>80+ reports with GST compliance</li>
-          <li>Recipe-level ingredient tracking</li>
+          <li>Recipe tracking — when 1 biryani sells, system auto-deducts rice, chicken, spices from stock</li>
         </ul>
       </div>
 
@@ -431,10 +476,10 @@
         <p class="card-desc">Enterprise restaurant management platform for multi-brand chains. Strong in analytics, food cost management, and multi-outlet operations.</p>
         <ul class="strengths">
           <li>Multi-brand, multi-outlet management</li>
-          <li>AI-driven demand forecasting</li>
-          <li>Actual vs theoretical food cost tracking</li>
-          <li>Vendor performance scoring</li>
-          <li>Cockpit app for owners (mobile dashboard)</li>
+          <li>AI demand forecasting — predicts how many orders you'll get tomorrow based on past data + weather</li>
+          <li>Food cost tracking — compares "should have used 5kg chicken" vs "actually used 7kg" to find waste</li>
+          <li>Vendor scoring — rates suppliers on delivery time, quality, pricing</li>
+          <li>Owner app — see sales, staff performance, alerts on your phone from anywhere</li>
           <li>Automated report scheduling via email</li>
         </ul>
       </div>
@@ -445,7 +490,7 @@
         <p class="card-desc">Complete business ecosystem — POS, payments, banking, payroll, online store, lending. Strongest in micro/small business with zero monthly fees on base plan.</p>
         <ul class="strengths">
           <li>Free POS software (pay only processing fees)</li>
-          <li>Square Banking + Capital (lending based on sales)</li>
+          <li>Square Capital — get a business loan based on your sales history, repay automatically from daily sales</li>
           <li>Vertical-specific: Retail, Restaurant, Appointments</li>
           <li>Square Payroll integration</li>
           <li>Instant bank deposits</li>
@@ -458,9 +503,9 @@
         <div class="card-meta"><span><strong>Focus:</strong> Restaurants</span><span><strong>#1</strong> US restaurant POS</span></div>
         <p class="card-desc">Purpose-built for restaurants with industry-leading features. xtraCHEF invoice scanning, handheld tableside ordering, and deep food cost analytics.</p>
         <ul class="strengths">
-          <li>xtraCHEF — photograph invoices, auto-extract data</li>
-          <li>Menu Engineering Chart (profit vs popularity matrix)</li>
-          <li>Toast Go handheld for tableside ordering + payment</li>
+          <li>xtraCHEF — take photo of supplier bill, AI reads it and enters data into system automatically</li>
+          <li>Menu Engineering — shows which dishes are popular AND profitable vs popular but losing money</li>
+          <li>Handheld device — waiter takes orders AND accepts card payment right at the table</li>
           <li>Self-ordering kiosks</li>
           <li>Pay-as-you-go hardware model</li>
           <li>Toast Capital (restaurant lending)</li>
@@ -473,9 +518,9 @@
         <p class="card-desc">Best-in-class omnichannel retail — unified online + in-store commerce. Buy online pick up in store, return anywhere, unified inventory and customer profiles.</p>
         <ul class="strengths">
           <li>Best omnichannel (online &#8596; offline unification)</li>
-          <li>Customer cohort &amp; RFM analysis</li>
-          <li>ABC inventory analysis</li>
-          <li>Shopify Flow (automation rules)</li>
+          <li>RFM analysis — groups customers by how Recently they bought, how Frequently, and how Much they spend</li>
+          <li>ABC analysis — A items = top 80% revenue (focus here), B = next 15%, C = bottom 5% (consider dropping)</li>
+          <li>Automation rules — "when stock drops below 10, auto-email supplier" or "when VIP customer orders, alert manager"</li>
           <li>Massive app ecosystem (8,000+ apps)</li>
           <li>Shopify Markets (international selling)</li>
         </ul>
@@ -486,12 +531,12 @@
         <div class="card-meta"><span><strong>Focus:</strong> Retail + Restaurant</span><span><strong>Specialty</strong> retail</span></div>
         <p class="card-desc">Advanced inventory management with supplier catalog integration. Strongest in specialty retail (bike shops, electronics, apparel) and fine dining.</p>
         <ul class="strengths">
-          <li>Embedded supplier catalogs (order from POS)</li>
-          <li>Serialized inventory tracking (electronics, jewelry)</li>
-          <li>Work orders (repair tracking)</li>
-          <li>GMROI — inventory investment profitability</li>
-          <li>Dusty inventory detection</li>
-          <li>B2B ordering (NuORDER acquisition)</li>
+          <li>Supplier catalogs — browse and order stock from suppliers directly inside the POS, no phone calls needed</li>
+          <li>Serial number tracking — each iPhone, laptop, or gold chain tracked by its unique serial number</li>
+          <li>Work orders — customer drops off item for repair, track progress, notify when done</li>
+          <li>GMROI — tells you "for every ₹1 spent on this stock, you earned ₹X profit". Helps buy smarter.</li>
+          <li>Dusty inventory — flags items sitting on shelf for too long without selling. Clear them out with discounts.</li>
+          <li>B2B wholesale ordering — let other businesses browse your catalog and place bulk orders online</li>
         </ul>
       </div>
 
@@ -503,9 +548,9 @@
           <li>Premium all-in-one hardware design</li>
           <li>300+ apps in Clover App Market</li>
           <li>Distributed via banks (Bank of America, etc.)</li>
-          <li>Virtual Terminal for phone orders</li>
-          <li>Recurring billing for service businesses</li>
-          <li>Customer-facing display (Station Duo)</li>
+          <li>Virtual Terminal — take card payment over phone by typing card number into POS (for phone orders)</li>
+          <li>Recurring billing — auto-charge customer monthly (gym membership, cleaning service, etc.)</li>
+          <li>Customer screen — second display facing customer shows cart items and total as cashier adds them</li>
         </ul>
       </div>
 
@@ -515,11 +560,11 @@
         <p class="card-desc">Desktop-first ERP with 30+ industry variants. Dominates Indian pharma distribution, FMCG wholesale, and manufacturing.</p>
         <ul class="strengths">
           <li>30+ industry-specific variants</li>
-          <li>Batch + expiry date tracking (pharma/FMCG)</li>
-          <li>Manufacturing/BOM module</li>
+          <li>Batch + expiry tracking — know which batch of medicine expires when. Auto-alerts before expiry date.</li>
+          <li>BOM (Bill of Materials) — define what raw materials make a finished product. Track production costs.</li>
           <li>500-1000+ MIS reports</li>
-          <li>Auto-GST filing + GSTR-1/3B/9</li>
-          <li>Speed billing with keyboard shortcuts</li>
+          <li>Auto GST filing — generates return data and files directly to GST portal. No CA needed for routine filing.</li>
+          <li>Speed billing — experienced cashiers bill 50+ items/minute using only keyboard, no mouse needed</li>
         </ul>
       </div>
 
@@ -529,11 +574,11 @@
         <p class="card-desc">Ultra-simple mobile billing app for India's informal retail sector. Digitized khata (credit ledger) for millions of small shops.</p>
         <ul class="strengths">
           <li>WhatsApp integration (invoices, payment reminders)</li>
-          <li>Khata digitization (credit/debit ledger)</li>
+          <li>Digital Khata — replaces the paper notebook where shopkeepers write "Sharma ji owes ₹500". Now it's on phone with reminders.</li>
           <li>Extremely simple UX (designed for non-tech users)</li>
           <li>Free tier available</li>
           <li>E-invoice and e-way bill support</li>
-          <li>Bank statement import for reconciliation</li>
+          <li>Bank reconciliation — import bank statement, system auto-matches payments to invoices. Find missing payments.</li>
         </ul>
       </div>
 
@@ -547,7 +592,7 @@
           <li>No payment processor lock-in</li>
           <li>Open API</li>
           <li>Works on any existing device</li>
-          <li>FIFO inventory valuation</li>
+          <li>FIFO valuation — "First In, First Out". Stock bought first is sold first. Gives accurate cost calculations.</li>
         </ul>
       </div>
 
@@ -558,23 +603,23 @@
 <!-- FEATURE MATRIX -->
 <section id="features" class="section">
   <div class="container">
-    <div class="section-title">Feature Comparison Matrix</div>
-    <div class="section-sub">Side-by-side comparison of key features across all competitors and elPOS.</div>
+    <div class="section-title">Feature Comparison Matrix <span class="source-tag unverified">AI-researched, not independently verified</span></div>
+    <div class="section-sub">Based on publicly available marketing materials and AI training data. Feature availability may have changed. Verify with each vendor before citing.</div>
 
     <h3>Core POS Features</h3>
     <div class="table-wrap"><table>
       <thead><tr><th>Feature</th><th>elPOS</th><th>Petpooja</th><th>POSist</th><th>Square</th><th>Toast</th><th>Shopify</th><th>Lightspeed</th><th>Clover</th><th>Marg</th><th>Vyapar</th><th>Loyverse</th></tr></thead>
       <tbody>
-        <tr><td class="fn">Retail POS Mode</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td></tr>
-        <tr><td class="fn">Restaurant / KOT Mode</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-partial">~</td><td class="cell-no">&#10007;</td><td class="cell-partial">~</td></tr>
-        <tr><td class="fn">Service Order Mode (Laundry/Repair)</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-partial">~</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td></tr>
-        <tr><td class="fn">Offline-First Operation</td><td class="cell-yes">&#10003;</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td></tr>
-        <tr><td class="fn">Multi-Platform (Web+Desktop+Mobile)</td><td class="cell-yes">&#10003;</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-no">&#10007;</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td></tr>
-        <tr><td class="fn">Barcode Scanning</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td></tr>
-        <tr><td class="fn">Hold / Park Bills</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td></tr>
-        <tr><td class="fn">Split Billing</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td></tr>
-        <tr><td class="fn">Returns &amp; Refunds</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td></tr>
-        <tr><td class="fn">Keyboard Shortcuts</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td></tr>
+        <tr><td class="fn">Retail POS Mode<span class="tip">Standard shop billing — scan items, add to cart, checkout. Used by grocery, clothing, electronics stores.</span></td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td></tr>
+        <tr><td class="fn">Restaurant / KOT Mode<span class="tip">KOT = Kitchen Order Token. Waiter takes order on POS, a ticket prints in kitchen telling chef what to cook.</span></td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-partial">~</td><td class="cell-no">&#10007;</td><td class="cell-partial">~</td></tr>
+        <tr><td class="fn">Service Order Mode<span class="tip">Customer drops off clothes/car/device. Staff records items, tracks status (cleaning → ready → delivered), then invoices.</span></td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-partial">~</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td></tr>
+        <tr><td class="fn">Offline-First Operation<span class="tip">POS works without internet. All billing, orders, payments happen locally. Data syncs to cloud when internet returns.</span></td><td class="cell-yes">&#10003;</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td></tr>
+        <tr><td class="fn">Multi-Platform<span class="tip">Same app runs on browser (Chrome), desktop app (Windows/Mac), and tablet/phone (Android/iOS).</span></td><td class="cell-yes">&#10003;</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-no">&#10007;</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td></tr>
+        <tr><td class="fn">Barcode Scanning<span class="tip">Scan product barcode to instantly add it to cart — via camera, handheld scanner, or USB scanner.</span></td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td></tr>
+        <tr><td class="fn">Hold / Park Bills<span class="tip">Pause a bill mid-way (e.g., customer forgot wallet) and serve the next customer. Resume the held bill later.</span></td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td></tr>
+        <tr><td class="fn">Split Billing<span class="tip">Split one bill into multiple — e.g., 4 friends at a restaurant each pay for their own food separately.</span></td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td></tr>
+        <tr><td class="fn">Returns &amp; Refunds<span class="tip">Customer brings back an item. Staff references original bill, processes return, and refunds money or gives store credit.</span></td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td></tr>
+        <tr><td class="fn">Keyboard Shortcuts<span class="tip">Press keys like F2, F3, +/- instead of clicking buttons. Makes billing 3-5x faster for trained cashiers.</span></td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td></tr>
       </tbody>
     </table></div>
 
@@ -582,14 +627,14 @@
     <div class="table-wrap"><table>
       <thead><tr><th>Feature</th><th>elPOS</th><th>Petpooja</th><th>POSist</th><th>Square</th><th>Toast</th><th>Shopify</th><th>Lightspeed</th><th>Clover</th><th>Marg</th><th>Vyapar</th><th>Loyverse</th></tr></thead>
       <tbody>
-        <tr><td class="fn">Cash Payment</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td></tr>
-        <tr><td class="fn">Card Payment</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-partial">~</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td></tr>
-        <tr><td class="fn">UPI / QR Payment</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td></tr>
-        <tr><td class="fn">Split Payment (Multi-method)</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td></tr>
-        <tr><td class="fn">Gift Cards</td><td class="cell-no">&#10007;</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td></tr>
-        <tr><td class="fn">Store Credit</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td></tr>
-        <tr><td class="fn">Khata / Credit Ledger</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td></tr>
-        <tr><td class="fn">Digital Receipt (WhatsApp/SMS)</td><td class="cell-no">&#10007;</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td></tr>
+        <tr><td class="fn">Cash Payment<span class="tip">Customer pays with cash. System calculates change to return.</span></td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td></tr>
+        <tr><td class="fn">Card Payment<span class="tip">Accept debit/credit cards via a card swipe machine connected to POS.</span></td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-partial">~</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td></tr>
+        <tr><td class="fn">UPI / QR Payment<span class="tip">Customer scans QR code with PhonePe/GPay/Paytm and pays. POS confirms payment automatically.</span></td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td></tr>
+        <tr><td class="fn">Split Payment<span class="tip">Pay one bill using multiple methods — e.g., ₹500 cash + ₹300 UPI + ₹200 card for a ₹1000 bill.</span></td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td></tr>
+        <tr><td class="fn">Gift Cards<span class="tip">Prepaid cards customers buy as gifts. Recipient uses the balance to pay at the store.</span></td><td class="cell-no">&#10007;</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td></tr>
+        <tr><td class="fn">Store Credit<span class="tip">Instead of cash refund, give customer credit in your store. They use it on their next purchase.</span></td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td></tr>
+        <tr><td class="fn">Khata / Credit Ledger<span class="tip">Traditional Indian credit system — "pay me later". Track who owes how much. Send reminders via WhatsApp.</span></td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td></tr>
+        <tr><td class="fn">Digital Receipt<span class="tip">Send bill to customer's phone via WhatsApp/SMS instead of printing paper receipt. Eco-friendly + keeps customer connected.</span></td><td class="cell-no">&#10007;</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td></tr>
       </tbody>
     </table></div>
 
@@ -597,12 +642,12 @@
     <div class="table-wrap"><table>
       <thead><tr><th>Feature</th><th>elPOS</th><th>Petpooja</th><th>POSist</th><th>Square</th><th>Toast</th><th>Shopify</th><th>Lightspeed</th><th>Clover</th><th>Marg</th><th>Vyapar</th><th>Loyverse</th></tr></thead>
       <tbody>
-        <tr><td class="fn">Staff Clock In/Out</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td></tr>
-        <tr><td class="fn">Role-Based POS Access</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td></tr>
-        <tr><td class="fn">Manager Approval (Voids/Discounts)</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td></tr>
-        <tr><td class="fn">Tip Management</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td></tr>
-        <tr><td class="fn">Settlement / End-of-Day</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td></tr>
-        <tr><td class="fn">Audit Trail</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td></tr>
+        <tr><td class="fn">Staff Clock In/Out<span class="tip">Staff punch in when shift starts, punch out when done. Tracks hours worked for attendance and payroll.</span></td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td></tr>
+        <tr><td class="fn">Role-Based POS Access<span class="tip">Cashier can only bill. Manager can also give discounts and void bills. Owner sees everything. Different access per role.</span></td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td></tr>
+        <tr><td class="fn">Manager Approval<span class="tip">When cashier tries to cancel a bill or give a big discount, manager must enter their PIN to approve. Prevents misuse.</span></td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td></tr>
+        <tr><td class="fn">Tip Management<span class="tip">Track tips received by each waiter. Pool tips and split fairly. Include tips in staff payouts.</span></td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td></tr>
+        <tr><td class="fn">Settlement / End-of-Day<span class="tip">At closing time, count cash in drawer, match with system total. Find any shortage. Print summary report.</span></td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td></tr>
+        <tr><td class="fn">Audit Trail<span class="tip">Every action logged — who cancelled a bill, who gave a discount, when, why. Cannot be deleted. Used for accountability.</span></td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td></tr>
       </tbody>
     </table></div>
 
@@ -610,11 +655,11 @@
     <div class="table-wrap"><table>
       <thead><tr><th>Feature</th><th>elPOS</th><th>Petpooja</th><th>POSist</th><th>Square</th><th>Toast</th><th>Shopify</th><th>Lightspeed</th><th>Clover</th><th>Marg</th><th>Vyapar</th><th>Loyverse</th></tr></thead>
       <tbody>
-        <tr><td class="fn">Customer Database</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td></tr>
-        <tr><td class="fn">Loyalty / Points Program</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-partial">~</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td></tr>
-        <tr><td class="fn">Customer Purchase History</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td></tr>
-        <tr><td class="fn">Customer Segmentation</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td></tr>
-        <tr><td class="fn">Discount / Promotion Engine</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td></tr>
+        <tr><td class="fn">Customer Database<span class="tip">Store customer name, phone, email. See their full purchase history. Know your regulars.</span></td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td></tr>
+        <tr><td class="fn">Loyalty / Points Program<span class="tip">Customer earns points on every purchase (e.g., ₹100 = 1 point). Redeem points for discounts. Keeps customers coming back.</span></td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-partial">~</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td></tr>
+        <tr><td class="fn">Customer Purchase History<span class="tip">See everything a customer ever bought — dates, amounts, items. Useful for personalized service.</span></td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td></tr>
+        <tr><td class="fn">Customer Segmentation<span class="tip">Group customers — "high spenders", "new customers", "inactive 30 days". Send targeted offers to each group.</span></td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td></tr>
+        <tr><td class="fn">Discount / Promotion Engine<span class="tip">Create offers like "Buy 2 Get 1 Free", "20% off on Tuesdays", "₹100 off with code SAVE100". System auto-applies at checkout.</span></td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td></tr>
       </tbody>
     </table></div>
 
@@ -622,11 +667,11 @@
     <div class="table-wrap"><table>
       <thead><tr><th>Feature</th><th>elPOS</th><th>Petpooja</th><th>POSist</th><th>Square</th><th>Toast</th><th>Shopify</th><th>Lightspeed</th><th>Clover</th><th>Marg</th><th>Vyapar</th><th>Loyverse</th></tr></thead>
       <tbody>
-        <tr><td class="fn">GST Compliance (India)</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-partial">~</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-partial">~</td></tr>
-        <tr><td class="fn">E-Invoicing (NIC/IRP)</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td></tr>
-        <tr><td class="fn">E-Way Bill</td><td class="cell-partial">~</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td></tr>
-        <tr><td class="fn">GSTR-1 / GSTR-3B Reports</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-partial">~</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td></tr>
-        <tr><td class="fn">Multi-Country Tax</td><td class="cell-partial">~</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td></tr>
+        <tr><td class="fn">GST Compliance<span class="tip">Calculates correct GST (CGST+SGST for same state, IGST for different state) per item based on HSN/SAC code.</span></td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-partial">~</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-partial">~</td></tr>
+        <tr><td class="fn">E-Invoicing<span class="tip">For B2B sales above ₹5 Cr turnover — bill is sent to government portal (NIC) which returns a signed QR code and IRN number.</span></td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td></tr>
+        <tr><td class="fn">E-Way Bill<span class="tip">Required when transporting goods worth ₹50,000+. Generated from POS, includes vehicle and transporter details.</span></td><td class="cell-partial">~</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td></tr>
+        <tr><td class="fn">GSTR-1 / GSTR-3B<span class="tip">Monthly/quarterly GST return data organized exactly how the government portal needs it. Copy-paste or auto-file.</span></td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-partial">~</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td></tr>
+        <tr><td class="fn">Multi-Country Tax<span class="tip">Supports different tax systems — GST (India), VAT (UAE/Europe), Sales Tax (US). Configurable per country.</span></td><td class="cell-partial">~</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td></tr>
       </tbody>
     </table></div>
 
@@ -634,15 +679,15 @@
     <div class="table-wrap"><table>
       <thead><tr><th>Feature</th><th>elPOS</th><th>Petpooja</th><th>POSist</th><th>Square</th><th>Toast</th><th>Lightspeed</th></tr></thead>
       <tbody>
-        <tr><td class="fn">Table Management + Floor Map</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td></tr>
-        <tr><td class="fn">Kitchen Display System (KDS)</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td></tr>
-        <tr><td class="fn">Multi-Course / Coursing</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td></tr>
-        <tr><td class="fn">Table Transfer / Merge</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td></tr>
-        <tr><td class="fn">Aggregator Integration (Swiggy/Zomato)</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-na">N/A</td><td class="cell-partial">~</td><td class="cell-partial">~</td></tr>
-        <tr><td class="fn">QR Table Ordering</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-partial">~</td></tr>
-        <tr><td class="fn">Self-Service Kiosk</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td></tr>
-        <tr><td class="fn">Recipe / Ingredient Inventory</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td></tr>
-        <tr><td class="fn">Pay at Table (Handheld)</td><td class="cell-no">&#10007;</td><td class="cell-partial">~</td><td class="cell-no">&#10007;</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td></tr>
+        <tr><td class="fn">Table Management + Floor Map<span class="tip">Visual map of restaurant floor. See which tables are free, occupied, or reserved. Tap table to open/close orders.</span></td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td></tr>
+        <tr><td class="fn">Kitchen Display System<span class="tip">Screen in kitchen showing orders in real-time instead of paper tickets. Chef marks items done. Waiter sees "ready" on POS.</span></td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td></tr>
+        <tr><td class="fn">Multi-Course / Coursing<span class="tip">Send starters first, then soups, then main course to kitchen separately — not all at once. Kitchen prepares in sequence.</span></td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td></tr>
+        <tr><td class="fn">Table Transfer / Merge<span class="tip">Move an order from Table 5 to Table 8 (transfer). Or combine Table 3 and Table 4 into one bill (merge).</span></td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td></tr>
+        <tr><td class="fn">Aggregator Integration<span class="tip">Swiggy/Zomato online orders appear directly in your KOT system. No separate tablet. One screen for everything.</span></td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-na">N/A</td><td class="cell-partial">~</td><td class="cell-partial">~</td></tr>
+        <tr><td class="fn">QR Table Ordering<span class="tip">Customer scans QR code on table, sees menu on their phone, orders directly. Order goes to kitchen. No waiter needed.</span></td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-partial">~</td></tr>
+        <tr><td class="fn">Self-Service Kiosk<span class="tip">Tablet at entrance where customers browse menu and order themselves. Like McDonald's ordering screens. Reduces queue.</span></td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td></tr>
+        <tr><td class="fn">Recipe / Ingredient Inventory<span class="tip">Define that 1 pizza = 200g cheese + 1 base + 50g sauce. When pizza sells, ingredients auto-deduct from stock.</span></td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td></tr>
+        <tr><td class="fn">Pay at Table<span class="tip">Waiter brings a small handheld device to your table. You tap your card right there. No walking to the counter.</span></td><td class="cell-no">&#10007;</td><td class="cell-partial">~</td><td class="cell-no">&#10007;</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td></tr>
       </tbody>
     </table></div>
 
@@ -658,13 +703,13 @@
 <!-- REPORTS -->
 <section id="reports" class="section">
   <div class="container">
-    <div class="section-title">Reports Comparison</div>
-    <div class="section-sub">Complete breakdown of reports offered by competitors, grouped by category. 300+ reports catalogued.</div>
+    <div class="section-title">Reports Comparison <span class="source-tag unverified">AI-researched, not independently verified</span></div>
+    <div class="section-sub">Report names and availability are based on AI training data and may not reflect current product offerings. Verify on each vendor's website.</div>
 
     <div class="report-category">
       <div class="report-category-header"><h4>Sales Reports</h4><span class="rcount">12</span></div>
       <div class="report-list">
-        <div class="report-item"><div><div class="rname">Sales Summary (Daily/Weekly/Monthly)</div><div class="rdesc">Gross sales, refunds, net sales, discounts, taxes — the primary dashboard report</div></div><div class="rwho">ALL competitors</div></div>
+        <div class="report-item"><div><div class="rname">Sales Summary (Daily/Weekly/Monthly)</div><div class="rdesc">The main report every owner checks daily — total sales, minus refunds and discounts, plus tax collected</div></div><div class="rwho">ALL competitors</div></div>
         <div class="report-item"><div><div class="rname">Sales Trends Over Time</div><div class="rdesc">Performance comparison across periods with trend lines</div></div><div class="rwho">Square, Shopify, Lightspeed</div></div>
         <div class="report-item"><div><div class="rname">Item-Wise Sales</div><div class="rdesc">Individual product performance — quantity, revenue, profit per item</div></div><div class="rwho">ALL competitors</div></div>
         <div class="report-item"><div><div class="rname">Category-Wise Sales</div><div class="rdesc">Revenue grouped by product/menu category</div></div><div class="rwho">ALL competitors</div></div>
@@ -672,8 +717,8 @@
         <div class="report-item"><div><div class="rname">Sales by Payment Method</div><div class="rdesc">Cash vs card vs UPI vs digital wallet breakdown</div></div><div class="rwho">ALL competitors</div></div>
         <div class="report-item"><div><div class="rname">Sales by Order Type</div><div class="rdesc">Dine-in, takeaway, delivery, online breakdown</div></div><div class="rwho">Toast, Petpooja, POSist, Clover</div></div>
         <div class="report-item"><div><div class="rname">Sales by Location</div><div class="rdesc">Multi-location sales comparison</div></div><div class="rwho">Square, Shopify, Petpooja, POSist, Lightspeed</div></div>
-        <div class="report-item"><div><div class="rname">Sales by Employee / Server</div><div class="rdesc">Revenue attributed to each staff member</div></div><div class="rwho">ALL except Vyapar</div></div>
-        <div class="report-item"><div><div class="rname">Average Order Value</div><div class="rdesc">Mean ticket size, trends over time</div></div><div class="rwho">Square, Shopify, POSist, Toast</div></div>
+        <div class="report-item"><div><div class="rname">Sales by Employee / Server</div><div class="rdesc">See which cashier/waiter sold how much — useful for incentives and spotting underperformers</div></div><div class="rwho">ALL except Vyapar</div></div>
+        <div class="report-item"><div><div class="rname">Average Order Value</div><div class="rdesc">Average bill amount — if it's ₹500, your average customer spends ₹500 per visit. Track if it's going up or down.</div></div><div class="rwho">Square, Shopify, POSist, Toast</div></div>
         <div class="report-item"><div><div class="rname">Sales by Channel</div><div class="rdesc">Online vs in-store vs social commerce</div></div><div class="rwho">Shopify, Square</div></div>
         <div class="report-item"><div><div class="rname">Modifier / Add-on Sales</div><div class="rdesc">Revenue from modifiers and add-ons (restaurant)</div></div><div class="rwho">Square, Toast, Lightspeed</div></div>
       </div>
@@ -682,11 +727,11 @@
     <div class="report-category">
       <div class="report-category-header"><h4>Financial &amp; Accounting Reports</h4><span class="rcount">14</span></div>
       <div class="report-list">
-        <div class="report-item"><div><div class="rname">Tax Report (Collected by Rate)</div><div class="rdesc">Taxes collected grouped by rate/jurisdiction</div></div><div class="rwho">ALL competitors</div></div>
-        <div class="report-item"><div><div class="rname">Discount Report</div><div class="rdesc">All discounts applied — type, amount, who authorized</div></div><div class="rwho">ALL competitors</div></div>
-        <div class="report-item"><div><div class="rname">Void / Cancel Report</div><div class="rdesc">Voided items/orders with reason and authorizing manager</div></div><div class="rwho">Square, Toast, Petpooja, Lightspeed, Clover</div></div>
+        <div class="report-item"><div><div class="rname">Tax Report (Collected by Rate)</div><div class="rdesc">How much tax you collected at each rate (5%, 12%, 18%, 28%) — needed for filing GST returns</div></div><div class="rwho">ALL competitors</div></div>
+        <div class="report-item"><div><div class="rname">Discount Report</div><div class="rdesc">Every discount given — how much, by which staff member, and whether manager approved it. Catches misuse.</div></div><div class="rwho">ALL competitors</div></div>
+        <div class="report-item"><div><div class="rname">Void / Cancel Report</div><div class="rdesc">Bills that were cancelled after being created — who cancelled, why, and who approved. Key for catching theft.</div></div><div class="rwho">Square, Toast, Petpooja, Lightspeed, Clover</div></div>
         <div class="report-item"><div><div class="rname">Refund / Returns Report</div><div class="rdesc">All refunds with original transaction reference</div></div><div class="rwho">ALL competitors</div></div>
-        <div class="report-item"><div><div class="rname">Cash Drawer Report</div><div class="rdesc">Cash in/out, expected vs actual, pay-ins/pay-outs</div></div><div class="rwho">Square, Petpooja, Clover, Marg</div></div>
+        <div class="report-item"><div><div class="rname">Cash Drawer Report</div><div class="rdesc">How much cash should be in the drawer vs how much actually is. Shows if money is missing or extra.</div></div><div class="rwho">Square, Petpooja, Clover, Marg</div></div>
         <div class="report-item"><div><div class="rname">Settlement / Close of Day Report</div><div class="rdesc">Complete daily summary — sales, payments, variance</div></div><div class="rwho">Square, Toast, Lightspeed, Clover, Marg</div></div>
         <div class="report-item"><div><div class="rname">Comp Report (Free Items)</div><div class="rdesc">Complimentary items with reason and server</div></div><div class="rwho">Square, Toast</div></div>
         <div class="report-item"><div><div class="rname">Profit &amp; Loss</div><div class="rdesc">Revenue minus COGS, expenses, taxes</div></div><div class="rwho">Shopify, Lightspeed, Marg, Vyapar</div></div>
@@ -704,7 +749,7 @@
       <div class="report-list">
         <div class="report-item"><div><div class="rname">Employee Sales Performance</div><div class="rdesc">Sales per employee with conversion metrics</div></div><div class="rwho">ALL except Vyapar</div></div>
         <div class="report-item"><div><div class="rname">Timecard / Hours Report</div><div class="rdesc">Clock-in/out records, hours worked, overtime</div></div><div class="rwho">Square, Toast, Clover, Loyverse</div></div>
-        <div class="report-item"><div><div class="rname">Labor vs Sales %</div><div class="rdesc">Labor cost as percentage of revenue per hour</div></div><div class="rwho">Square, Toast</div></div>
+        <div class="report-item"><div><div class="rname">Labor vs Sales %</div><div class="rdesc">If you made ₹10,000 in an hour and paid ₹3,000 in wages, labor cost is 30%. Helps optimize staffing.</div></div><div class="rwho">Square, Toast</div></div>
         <div class="report-item"><div><div class="rname">Shift Report</div><div class="rdesc">Per-shift sales, payments, activity summary</div></div><div class="rwho">Square, Toast, Lightspeed</div></div>
         <div class="report-item"><div><div class="rname">Tip Summary / Distribution</div><div class="rdesc">Tips by server, payment type, tip pool calculations</div></div><div class="rwho">Toast, Lightspeed, Clover</div></div>
         <div class="report-item"><div><div class="rname">Server Covers Report</div><div class="rdesc">Guests served per server (restaurant)</div></div><div class="rwho">Lightspeed, Toast</div></div>
@@ -719,17 +764,17 @@
       <div class="report-list">
         <div class="report-item"><div><div class="rname">Current Stock Levels</div><div class="rdesc">Real-time stock on hand across locations</div></div><div class="rwho">ALL except Vyapar</div></div>
         <div class="report-item"><div><div class="rname">Low Stock Alerts</div><div class="rdesc">Items below minimum threshold</div></div><div class="rwho">ALL</div></div>
-        <div class="report-item"><div><div class="rname">Inventory Valuation</div><div class="rdesc">Total cost of stock (FIFO/LIFO/Avg Cost)</div></div><div class="rwho">Square, Shopify, Lightspeed, Marg, Loyverse</div></div>
+        <div class="report-item"><div><div class="rname">Inventory Valuation</div><div class="rdesc">Total worth of all unsold stock sitting in your shop — tells you how much money is locked in inventory</div></div><div class="rwho">Square, Shopify, Lightspeed, Marg, Loyverse</div></div>
         <div class="report-item"><div><div class="rname">COGS (Cost of Goods Sold)</div><div class="rdesc">Unit cost tracking and COGS calculations</div></div><div class="rwho">Square, Shopify, Lightspeed, Marg</div></div>
         <div class="report-item"><div><div class="rname">Stock Movement / Ledger</div><div class="rdesc">Stock in and out tracking over time</div></div><div class="rwho">POSist, Marg, Lightspeed</div></div>
         <div class="report-item"><div><div class="rname">ABC Analysis (80/15/5)</div><div class="rdesc">Products categorized by sales contribution</div></div><div class="rwho">Shopify</div></div>
         <div class="report-item"><div><div class="rname">Dusty / Aging Inventory</div><div class="rdesc">Stock not selling within set period</div></div><div class="rwho">Square, Lightspeed, Marg</div></div>
         <div class="report-item"><div><div class="rname">Sell-Through Rate</div><div class="rdesc">Percentage of received inventory sold</div></div><div class="rwho">Shopify, Lightspeed</div></div>
         <div class="report-item"><div><div class="rname">Days of Inventory Remaining</div><div class="rdesc">Projected days until stockout</div></div><div class="rwho">Shopify</div></div>
-        <div class="report-item"><div><div class="rname">Actual vs Theoretical Food Cost</div><div class="rdesc">Variance between expected and actual ingredient usage</div></div><div class="rwho">Toast, POSist</div></div>
+        <div class="report-item"><div><div class="rname">Actual vs Theoretical Food Cost</div><div class="rdesc">Recipe says 1kg chicken makes 10 biryanis. You made 10 but used 1.5kg. That 0.5kg variance = waste or theft.</div></div><div class="rwho">Toast, POSist</div></div>
         <div class="report-item"><div><div class="rname">Wastage / Spoilage Report</div><div class="rdesc">Food waste and spoilage tracking</div></div><div class="rwho">Toast, Petpooja, POSist</div></div>
         <div class="report-item"><div><div class="rname">Batch / Expiry Report</div><div class="rdesc">Stock by batch with expiry date tracking</div></div><div class="rwho">Marg</div></div>
-        <div class="report-item"><div><div class="rname">GMROI (Gross Margin Return on Investment)</div><div class="rdesc">Profitability of inventory investment</div></div><div class="rwho">Lightspeed</div></div>
+        <div class="report-item"><div><div class="rname">GMROI (Gross Margin Return on Investment)</div><div class="rdesc">For every ₹1 you invested in buying this stock, how much gross profit did you earn? Higher = better investment.</div></div><div class="rwho">Lightspeed</div></div>
       </div>
     </div>
 
@@ -740,8 +785,8 @@
         <div class="report-item"><div><div class="rname">Customer Frequency / Visit Patterns</div><div class="rdesc">How often customers return</div></div><div class="rwho">Toast, Petpooja, POSist, Shopify</div></div>
         <div class="report-item"><div><div class="rname">Top Spenders</div><div class="rdesc">Highest-spending customers ranked</div></div><div class="rwho">Toast, Shopify, Marg</div></div>
         <div class="report-item"><div><div class="rname">First-Time vs Returning</div><div class="rdesc">New vs repeat customer revenue comparison</div></div><div class="rwho">Shopify</div></div>
-        <div class="report-item"><div><div class="rname">Customer Cohort Analysis</div><div class="rdesc">Retention and repeat patterns by acquisition cohort</div></div><div class="rwho">Shopify</div></div>
-        <div class="report-item"><div><div class="rname">RFM Analysis (Recency/Frequency/Monetary)</div><div class="rdesc">Customer segmentation by purchase behavior</div></div><div class="rwho">Shopify</div></div>
+        <div class="report-item"><div><div class="rname">Customer Cohort Analysis</div><div class="rdesc">Group customers by when they first bought. See if Jan customers still buy in June. Shows long-term loyalty.</div></div><div class="rwho">Shopify</div></div>
+        <div class="report-item"><div><div class="rname">RFM Analysis (Recency/Frequency/Monetary)</div><div class="rdesc">Scores customers on 3 things: how Recently they bought, how Frequently, and how much Money they spend. Finds your best and worst customers.</div></div><div class="rwho">Shopify</div></div>
         <div class="report-item"><div><div class="rname">At-Risk Customers</div><div class="rdesc">Customers likely to churn based on patterns</div></div><div class="rwho">Shopify</div></div>
         <div class="report-item"><div><div class="rname">Loyalty Program Report</div><div class="rdesc">Points earned, redeemed, program performance</div></div><div class="rwho">Square, Petpooja, POSist, Loyverse</div></div>
         <div class="report-item"><div><div class="rname">Gift Card Report</div><div class="rdesc">Sales, redemptions, outstanding balances</div></div><div class="rwho">Square, Toast, Shopify</div></div>
@@ -785,8 +830,8 @@
 <!-- GAP ANALYSIS -->
 <section id="gaps" class="section">
   <div class="container">
-    <div class="section-title">Gap Analysis — What elPOS is Missing</div>
-    <div class="section-sub">Features every serious POS has that elPOS needs to build, prioritized by competitive necessity.</div>
+    <div class="section-title">Gap Analysis — What elPOS is Missing <span class="source-tag unverified">AI-researched, not independently verified</span></div>
+    <div class="section-sub">Gap identification is based on the unverified feature matrix above. Competitor claims about specific features should be confirmed before prioritizing development.</div>
 
     <h3>P0 — Ship Blockers (Cannot sell without these)</h3>
     <ul class="gap-list">
@@ -832,18 +877,18 @@
 <section id="pricing" class="section">
   <div class="container">
     <div class="section-title">Competitor Pricing</div>
-    <div class="section-sub">Pricing models across all competitors for positioning reference.</div>
+    <div class="section-sub">Only verified pricing from official sources included. Unverified pricing marked accordingly.</div>
     <div class="pricing-grid">
-      <div class="price-card"><h4>Petpooja</h4><div class="price">&#8377;1,000 — 3,000/mo</div><div class="model">Per outlet subscription. Hardware separate.</div></div>
-      <div class="price-card"><h4>POSist (Restroworks)</h4><div class="price">Custom pricing</div><div class="model">Enterprise per-outlet pricing. Contact sales.</div></div>
-      <div class="price-card"><h4>Square</h4><div class="price">Free — $165/mo</div><div class="model">Free base + 2.6%+10c processing. Paid tiers for verticals.</div></div>
-      <div class="price-card"><h4>Toast</h4><div class="price">Free — $165+/mo</div><div class="model">Free starter tier. Required payment processing. Hardware financing.</div></div>
-      <div class="price-card"><h4>Shopify POS</h4><div class="price">$39 — $399/mo + $89/loc</div><div class="model">Shopify plan required. POS Pro add-on per location.</div></div>
-      <div class="price-card"><h4>Lightspeed</h4><div class="price">$89 — $289+/mo</div><div class="model">Tiered subscription. Advanced analytics on higher tiers.</div></div>
-      <div class="price-card"><h4>Clover</h4><div class="price">$15 — $85/mo + hardware</div><div class="model">Hardware purchase required ($499-$1,799). Processing fees.</div></div>
-      <div class="price-card"><h4>Marg ERP</h4><div class="price">&#8377;8,000 — 50,000+ one-time</div><div class="model">One-time license OR subscription. Per industry variant.</div></div>
-      <div class="price-card"><h4>Vyapar</h4><div class="price">Free — &#8377;500/mo</div><div class="model">Free tier available. Premium unlocks GST, e-invoicing.</div></div>
-      <div class="price-card"><h4>Loyverse</h4><div class="price">Free + $5-25/mo add-ons</div><div class="model">Free core POS. Paid add-ons for staff mgmt, inventory.</div></div>
+      <div class="price-card"><h4>Petpooja</h4><div class="price">Contact for pricing</div><div class="model">No public pricing. Per-outlet subscription. Enquiry: petpooja.com/pricing</div></div>
+      <div class="price-card"><h4>POSist (Restroworks)</h4><div class="price">Contact for pricing</div><div class="model">Enterprise per-outlet pricing. Custom quotes only.</div></div>
+      <div class="price-card"><h4>Square</h4><div class="price">Free / $49 / $149 per mo</div><div class="model">Processing: 2.4–2.6% + 15c in-person. Hardware: $59–$1,189. No contracts.<br><span style="font-size:11px;color:var(--c300);">Source: NerdWallet, verified Mar 2026</span></div></div>
+      <div class="price-card"><h4>Toast</h4><div class="price">$0 / $69 / Custom per mo</div><div class="model">Processing: 2.49–3.69% + 15c. Hardware: $449–$1,339 (or $0 with higher fees). 2-year contract.<br><span style="font-size:11px;color:var(--c300);">Source: NerdWallet, verified Mar 2026</span></div></div>
+      <div class="price-card"><h4>Shopify POS</h4><div class="price">&#8377;1,499 — &#8377;22,680/mo</div><div class="model">Basic &#8377;1,499 / Grow &#8377;5,599 / Advanced &#8377;22,680 / Plus &#8377;1,75,000 (billed yearly). POS Pro add-on: &#8377;7,000/mo.<br><span style="font-size:11px;color:var(--c300);">Source: shopify.com/pricing, verified Mar 2026</span></div></div>
+      <div class="price-card"><h4>Lightspeed</h4><div class="price">Not publicly verifiable</div><div class="model">Website blocks automated access. Tiered subscription model. Check: lightspeedhq.com/pricing</div></div>
+      <div class="price-card"><h4>Clover</h4><div class="price">Not publicly verifiable</div><div class="model">Website requires JavaScript. Hardware + software bundles. Check: clover.com/pricing</div></div>
+      <div class="price-card"><h4>Marg ERP</h4><div class="price">Not publicly verifiable</div><div class="model">One-time license model. Per industry variant. Check: margcompusoft.com</div></div>
+      <div class="price-card"><h4>Vyapar</h4><div class="price">Free tier available</div><div class="model">Free basic Android app. Premium features via yearly subscription. Exact pricing in-app only. Check: vyaparapp.in/pricing</div></div>
+      <div class="price-card"><h4>Loyverse</h4><div class="price">Free + $5–$25/mo add-ons</div><div class="model">Free POS, KDS, Dashboard. Add-ons: $5/mo sales history, $5/mo/employee staff mgmt, $25/mo advanced inventory. Annual = 2 months free.<br><span style="font-size:11px;color:var(--c300);">Source: loyverse.com/pricing, verified Mar 2026</span></div></div>
     </div>
   </div>
 </section>
@@ -851,8 +896,8 @@
 <!-- ADVANTAGE -->
 <section id="advantage" class="section">
   <div class="container">
-    <div class="section-title">elPOS Competitive Advantage</div>
-    <div class="section-sub">Where elPOS wins against every competitor.</div>
+    <div class="section-title">elPOS Competitive Advantage <span class="source-tag unverified">Internal assessment, claims about competitors unverified</span></div>
+    <div class="section-sub">Based on our understanding of the market. Claims about competitor limitations should be verified before using in sales or marketing materials.</div>
     <div class="advantage-grid">
       <div class="adv-card"><h4>Multi-Vertical (Unique)</h4><p>No competitor covers retail + restaurant + laundry/service in one product. Petpooja is restaurant-only. Shopify is retail-only. elPOS does all three with a unified cart, payments, and customer system.</p></div>
       <div class="adv-card"><h4>Offline-First (Rare)</h4><p>Most competitors need internet. In tier-2/3 India where connectivity is unreliable, elPOS working fully offline with automatic sync is a massive differentiator. Only Marg and Vyapar match this.</p></div>
@@ -867,8 +912,9 @@
 <!-- FOOTER -->
 <footer class="footer">
   <div class="container">
-    <p>elPOS Competitor Analysis Report — March 25, 2026 — Confidential</p>
+    <p>elPOS Competitor Analysis Report — March 25, 2026 — Confidential — For Internal Use Only</p>
     <p style="margin-top:4px;">Part of the elSapiens Ecosystem</p>
+    <p style="margin-top:8px;font-size:11px;color:var(--c300);">This report was compiled using AI-assisted research. Data marked with <span class="source-tag verified" style="display:inline;">Verified</span> has been confirmed from official sources. All other content is based on AI training data and publicly available information — treat as directional research, not verified fact.</p>
   </div>
 </footer>
 
