@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>elPOS — Competitor Analysis Report</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #232733;
+    --border: #2e3345;
+    --text: #e1e4ed;
+    --text-muted: #8b90a0;
+    --accent: #6c5ce7;
+    --accent-light: #a29bfe;
+    --green: #00b894;
+    --green-bg: rgba(0,184,148,0.1);
+    --red: #ff6b6b;
+    --red-bg: rgba(255,107,107,0.1);
+    --yellow: #ffd93d;
+    --yellow-bg: rgba(255,217,61,0.1);
+    --blue: #74b9ff;
+    --blue-bg: rgba(116,185,255,0.1);
+    --orange: #fdcb6e;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent-light); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* Header */
+  .header {
+    background: linear-gradient(135deg, #1a1d27 0%, #2d1f5e 100%);
+    padding: 60px 0 40px;
+    border-bottom: 1px solid var(--border);
+  }
+  .header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .header h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+  .header h1 span { color: var(--accent-light); }
+  .header p { color: var(--text-muted); margin-top: 6px; font-size: 0.95rem; }
+  .header .date { color: var(--text-muted); font-size: 0.85rem; }
+
+  /* Container */
+  .container { max-width: 1280px; margin: 0 auto; padding: 0 32px; }
+
+  /* Navigation */
+  .nav {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .nav ul {
+    list-style: none;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+  }
+  .nav li a {
+    display: block;
+    padding: 14px 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+  }
+  .nav li a:hover, .nav li a.active {
+    color: var(--accent-light);
+    border-bottom-color: var(--accent);
+    text-decoration: none;
+    background: rgba(108,92,231,0.05);
+  }
+
+  /* Sections */
+  section { padding: 48px 0; }
+  section + section { border-top: 1px solid var(--border); }
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: -0.3px;
+  }
+  h2 .badge {
+    font-size: 0.7rem;
+    background: var(--accent);
+    color: white;
+    padding: 3px 10px;
+    border-radius: 12px;
+    vertical-align: middle;
+    margin-left: 10px;
+    font-weight: 600;
+  }
+  .section-desc {
+    color: var(--text-muted);
+    margin-bottom: 28px;
+    font-size: 0.9rem;
+  }
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 28px 0 14px;
+    color: var(--accent-light);
+  }
+
+  /* Cards */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 20px;
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: var(--accent); }
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  .card-header h3 {
+    margin: 0;
+    font-size: 1.15rem;
+    color: var(--text);
+  }
+  .card-header .tag {
+    font-size: 0.7rem;
+    padding: 3px 10px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .tag-india { background: var(--yellow-bg); color: var(--yellow); }
+  .tag-global { background: var(--blue-bg); color: var(--blue); }
+  .tag-us { background: var(--green-bg); color: var(--green); }
+  .tag-free { background: rgba(0,184,148,0.15); color: var(--green); }
+
+  .card-meta {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 14px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+  .card-meta strong { color: var(--text); }
+  .card-desc {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+  .card .strengths {
+    list-style: none;
+    font-size: 0.85rem;
+  }
+  .card .strengths li {
+    padding: 4px 0;
+    padding-left: 20px;
+    position: relative;
+  }
+  .card .strengths li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent-light);
+  }
+  .card-links {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .card-links a {
+    font-size: 0.8rem;
+    color: var(--accent-light);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* Tables */
+  .table-wrap {
+    overflow-x: auto;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    margin: 16px 0;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+  thead th {
+    background: var(--surface2);
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    white-space: nowrap;
+    border-bottom: 1px solid var(--border);
+  }
+  tbody td {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: rgba(108,92,231,0.03); }
+  .cell-yes { color: var(--green); font-weight: 600; }
+  .cell-no { color: var(--red); opacity: 0.6; }
+  .cell-partial { color: var(--yellow); font-weight: 500; }
+  .cell-na { color: var(--text-muted); opacity: 0.4; }
+  td.feature-name { font-weight: 500; white-space: nowrap; }
+
+  /* Rating bars */
+  .rating {
+    display: inline-flex;
+    gap: 3px;
+    align-items: center;
+  }
+  .rating-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--border);
+  }
+  .rating-dot.filled { background: var(--accent-light); }
+  .rating-dot.filled.green { background: var(--green); }
+  .rating-dot.filled.yellow { background: var(--yellow); }
+
+  /* Stats row */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+  }
+  .stat-card .number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent-light);
+  }
+  .stat-card .label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  /* Gap analysis */
+  .gap-list { list-style: none; }
+  .gap-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 22px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .gap-item .priority {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+  }
+  .priority-p0 { background: var(--red-bg); color: var(--red); }
+  .priority-p1 { background: var(--yellow-bg); color: var(--yellow); }
+  .priority-p2 { background: var(--blue-bg); color: var(--blue); }
+  .priority-p3 { background: rgba(139,144,160,0.15); color: var(--text-muted); }
+  .gap-item .gap-content { flex: 1; }
+  .gap-item .gap-title { font-weight: 600; font-size: 0.95rem; }
+  .gap-item .gap-desc { font-size: 0.83rem; color: var(--text-muted); margin-top: 3px; }
+  .gap-item .gap-who { font-size: 0.75rem; color: var(--text-muted); margin-top: 6px; font-style: italic; }
+
+  /* Report section */
+  .report-category {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .report-category-header {
+    padding: 16px 22px;
+    background: var(--surface2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+  }
+  .report-category-header h4 {
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+  .report-category-header .count {
+    font-size: 0.75rem;
+    background: var(--accent);
+    color: white;
+    padding: 2px 10px;
+    border-radius: 10px;
+  }
+  .report-list {
+    padding: 8px 22px 16px;
+  }
+  .report-item {
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(46,51,69,0.5);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .report-item:last-child { border-bottom: none; }
+  .report-item .rname { font-weight: 500; font-size: 0.88rem; }
+  .report-item .rdesc { font-size: 0.8rem; color: var(--text-muted); }
+  .report-item .rwho {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* Pricing */
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .price-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 22px;
+  }
+  .price-card h4 { font-size: 1rem; margin-bottom: 8px; }
+  .price-card .price {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--accent-light);
+    margin-bottom: 6px;
+  }
+  .price-card .model {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+
+  /* elPOS advantage */
+  .advantage-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+  }
+  .adv-card {
+    background: linear-gradient(135deg, rgba(108,92,231,0.08), rgba(108,92,231,0.02));
+    border: 1px solid rgba(108,92,231,0.3);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .adv-card h4 {
+    font-size: 1rem;
+    margin-bottom: 6px;
+    color: var(--accent-light);
+  }
+  .adv-card p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  /* Footer */
+  .footer {
+    padding: 32px 0;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .container { padding: 0 16px; }
+    .header h1 { font-size: 1.5rem; }
+    .card-grid { grid-template-columns: 1fr; }
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .nav ul { gap: 0; }
+    .nav li a { padding: 12px 14px; font-size: 0.8rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="container">
+    <div>
+      <h1><span>el</span>POS — Competitor Analysis</h1>
+      <p>Comprehensive feature comparison across 10 POS systems worldwide</p>
+    </div>
+    <div class="date">Report Date: March 25, 2026</div>
+  </div>
+</div>
+
+<!-- NAVIGATION -->
+<nav class="nav">
+  <div class="container">
+    <ul>
+      <li><a href="#overview">Overview</a></li>
+      <li><a href="#competitors">Competitors</a></li>
+      <li><a href="#features">Feature Matrix</a></li>
+      <li><a href="#reports">Reports Comparison</a></li>
+      <li><a href="#gaps">Gap Analysis</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#advantage">elPOS Advantage</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- OVERVIEW -->
+<section id="overview">
+  <div class="container">
+    <h2>Market Overview</h2>
+    <p class="section-desc">Analysis of 10 leading POS systems across India, US, and Global markets.</p>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="number">10</div>
+        <div class="label">Competitors Analyzed</div>
+      </div>
+      <div class="stat-card">
+        <div class="number">4</div>
+        <div class="label">Indian Market</div>
+      </div>
+      <div class="stat-card">
+        <div class="number">3</div>
+        <div class="label">US Market</div>
+      </div>
+      <div class="stat-card">
+        <div class="number">3</div>
+        <div class="label">Global</div>
+      </div>
+      <div class="stat-card">
+        <div class="number">200+</div>
+        <div class="label">Features Compared</div>
+      </div>
+      <div class="stat-card">
+        <div class="number">300+</div>
+        <div class="label">Reports Catalogued</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPETITORS -->
+<section id="competitors">
+  <div class="container">
+    <h2>Competitor Profiles</h2>
+    <p class="section-desc">Detailed profiles of each POS system, their focus, and key differentiators.</p>
+
+    <div class="card-grid">
+
+      <!-- Petpooja -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Petpooja</h3>
+          <span class="tag tag-india">India</span>
+        </div>
+        <div class="card-meta">
+          <span><strong>Focus:</strong> Restaurants</span>
+          <span><strong>50,000+</strong> outlets</span>
+        </div>
+        <p class="card-desc">India's leading restaurant POS with deep food aggregator integrations (Swiggy, Zomato, Dunzo). Strong in dine-in, takeaway, and delivery management.</p>
+        <ul class="strengths">
+          <li>Swiggy/Zomato/Dunzo direct integration</li>
+          <li>Captain app for tableside ordering</li>
+          <li>Anti-theft module (monitors suspicious voids/discounts)</li>
+          <li>Central kitchen management for chains</li>
+          <li>80+ reports with GST compliance</li>
+          <li>Recipe-level ingredient tracking</li>
+        </ul>
+        <div class="card-links">
+          <a href="https://www.petpooja.com" target="_blank">Website ↗</a>
+          <a href="https://www.petpooja.com/poss/reports-and-analytics" target="_blank">Reports ↗</a>
+        </div>
+      </div>
+
+      <!-- POSist -->
+      <div class="card">
+        <div class="card-header">
+          <h3>POSist (Restroworks)</h3>
+          <span class="tag tag-india">India + Middle East</span>
+        </div>
+        <div class="card-meta">
+          <span><strong>Focus:</strong> Restaurant Chains</span>
+          <span><strong>Enterprise</strong> grade</span>
+        </div>
+        <p class="card-desc">Enterprise restaurant management platform for multi-brand chains. Strong in analytics, food cost management, and multi-outlet operations.</p>
+        <ul class="strengths">
+          <li>Multi-brand, multi-outlet management</li>
+          <li>AI-driven demand forecasting</li>
+          <li>Actual vs theoretical food cost tracking</li>
+          <li>Vendor performance scoring</li>
+          <li>Cockpit app for owners (mobile dashboard)</li>
+          <li>Automated report scheduling via email</li>
+        </ul>
+        <div class="card-links">
+          <a href="https://www.posist.com" target="_blank">Website ↗</a>
+          <a href="https://www.posist.com/features/restaurant-analytics-software/" target="_blank">Analytics ↗</a>
+        </div>
+      </div>
+
+      <!-- Square -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Square POS</h3>
+          <span class="tag tag-us">US</span>
+        </div>
+        <div class="card-meta">
+          <span><strong>Focus:</strong> Multi-vertical</span>
+          <span><strong>Free</strong> base tier</span>
+        </div>
+        <p class="card-desc">Complete business ecosystem — POS, payments, banking, payroll, online store, lending. Strongest in micro/small business with zero monthly fees on base plan.</p>
+        <ul class="strengths">
+          <li>Free POS software (pay only processing fees)</li>
+          <li>Square Banking + Capital (lending based on sales)</li>
+          <li>Vertical-specific: Retail, Restaurant, Appointments</li>
+          <li>Square Payroll integration</li>
+          <li>Instant bank deposits</li>
+          <li>Developer-friendly APIs</li>
+        </ul>
+        <div class="card-links">
+          <a href="https://squareup.com" target="_blank">Website ↗</a>
+          <a href="https://squareup.com/help/us/en/topic/reports" target="_blank">Reports ↗</a>
+        </div>
+      </div>
+
+      <!-- Toast -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Toast POS</h3>
+          <span class="tag tag-us">US</span>
+        </div>
+        <div class="card-meta">
+          <span><strong>Focus:</strong> Restaurants</span>
+          <span><strong>#1</strong> US restaurant POS</span>
+        </div>
+        <p class="card-desc">Purpose-built for restaurants with industry-leading features. xtraCHEF invoice scanning, handheld tableside ordering, and deep food cost analytics.</p>
+        <ul class="strengths">
+          <li>xtraCHEF — photograph invoices, auto-extract data</li>
+          <li>Menu Engineering Chart (profit vs popularity matrix)</li>
+          <li>Toast Go handheld for tableside ordering + payment</li>
+          <li>Self-ordering kiosks</li>
+          <li>Pay-as-you-go hardware model</li>
+          <li>Toast Capital (restaurant lending)</li>
+        </ul>
+        <div class="card-links">
+          <a href="https://pos.toasttab.com" target="_blank">Website ↗</a>
+          <a href="https://pos.toasttab.com/products/reporting" target="_blank">Reports ↗</a>
+        </div>
+      </div>
+
+      <!-- Shopify -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Shopify POS</h3>
+          <span class="tag tag-global">Global</span>
+        </div>
+        <div class="card-meta">
+          <span><strong>Focus:</strong> Retail (Omnichannel)</span>
+          <span><strong>8,000+</strong> apps</span>
+        </div>
+        <p class="card-desc">Best-in-class omnichannel retail — unified online + in-store commerce. Buy online pick up in store, return anywhere, unified inventory and customer profiles.</p>
+        <ul class="strengths">
+          <li>Best omnichannel (online ↔ offline unification)</li>
+          <li>Customer cohort & RFM analysis</li>
+          <li>ABC inventory analysis</li>
+          <li>Shopify Flow (automation rules)</li>
+          <li>Massive app ecosystem (8,000+ apps)</li>
+          <li>Shopify Markets (international selling)</li>
+        </ul>
+        <div class="card-links">
+          <a href="https://www.shopify.com/pos" target="_blank">Website ↗</a>
+          <a href="https://help.shopify.com/en/manual/reports-and-analytics" target="_blank">Reports ↗</a>
+        </div>
+      </div>
+
+      <!-- Lightspeed -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Lightspeed POS</h3>
+          <span class="tag tag-global">Global</span>
+        </div>
+        <div class="card-meta">
+          <span><strong>Focus:</strong> Retail + Restaurant</span>
+          <span><strong>Specialty</strong> retail</span>
+        </div>
+        <p class="card-desc">Advanced inventory management with supplier catalog integration. Strongest in specialty retail (bike shops, electronics, apparel) and fine dining.</p>
+        <ul class="strengths">
+          <li>Embedded supplier catalogs (order from POS)</li>
+          <li>Serialized inventory tracking (electronics, jewelry)</li>
+          <li>Work orders (repair tracking)</li>
+          <li>GMROI — inventory investment profitability</li>
+          <li>Dusty inventory detection</li>
+          <li>B2B ordering (NuORDER acquisition)</li>
+        </ul>
+        <div class="card-links">
+          <a href="https://www.lightspeedhq.com" target="_blank">Website ↗</a>
+          <a href="https://www.lightspeedhq.com/pos/retail/analytics/" target="_blank">Reports ↗</a>
+        </div>
+      </div>
+
+      <!-- Clover -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Clover POS</h3>
+          <span class="tag tag-us">US</span>
+        </div>
+        <div class="card-meta">
+          <span><strong>Focus:</strong> Multi-vertical</span>
+          <span><strong>All-in-one</strong> hardware</span>
+        </div>
+        <p class="card-desc">Premium hardware + software bundles distributed via banks. App marketplace with 300+ extensions. Strong for service businesses (salons, contractors).</p>
+        <ul class="strengths">
+          <li>Premium all-in-one hardware design</li>
+          <li>300+ apps in Clover App Market</li>
+          <li>Distributed via banks (Bank of America, etc.)</li>
+          <li>Virtual Terminal for phone orders</li>
+          <li>Recurring billing for service businesses</li>
+          <li>Customer-facing display (Station Duo)</li>
+        </ul>
+        <div class="card-links">
+          <a href="https://www.clover.com" target="_blank">Website ↗</a>
+          <a href="https://www.clover.com/pos-systems/business-tracking-reporting" target="_blank">Reports ↗</a>
+        </div>
+      </div>
+
+      <!-- Marg ERP -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Marg ERP</h3>
+          <span class="tag tag-india">India</span>
+        </div>
+        <div class="card-meta">
+          <span><strong>Focus:</strong> Retail / Wholesale / Pharma</span>
+          <span><strong>500+</strong> reports</span>
+        </div>
+        <p class="card-desc">Desktop-first ERP with 30+ industry variants. Dominates Indian pharma distribution, FMCG wholesale, and manufacturing. Extremely fast keyboard-driven billing.</p>
+        <ul class="strengths">
+          <li>30+ industry-specific variants (pharma, auto parts, steel, etc.)</li>
+          <li>Batch + expiry date tracking (pharma/FMCG)</li>
+          <li>Manufacturing/BOM module</li>
+          <li>500-1000+ MIS reports</li>
+          <li>Auto-GST filing + GSTR-1/3B/9</li>
+          <li>Speed billing with keyboard shortcuts</li>
+        </ul>
+        <div class="card-links">
+          <a href="https://margcompusoft.com" target="_blank">Website ↗</a>
+          <a href="https://care.margcompusoft.com/margerp" target="_blank">Docs ↗</a>
+        </div>
+      </div>
+
+      <!-- Vyapar -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Vyapar</h3>
+          <span class="tag tag-india">India</span>
+        </div>
+        <div class="card-meta">
+          <span><strong>Focus:</strong> Small Business Billing</span>
+          <span><strong>Mobile-first</strong></span>
+        </div>
+        <p class="card-desc">Ultra-simple mobile billing app for India's informal retail sector. Digitized khata (credit ledger) for millions of small shops. WhatsApp invoice sharing.</p>
+        <ul class="strengths">
+          <li>WhatsApp integration (invoices, payment reminders)</li>
+          <li>Khata digitization (credit/debit ledger)</li>
+          <li>Extremely simple UX (designed for non-tech users)</li>
+          <li>Free tier available</li>
+          <li>E-invoice and e-way bill support</li>
+          <li>Bank statement import for reconciliation</li>
+        </ul>
+        <div class="card-links">
+          <a href="https://vyaparapp.in" target="_blank">Website ↗</a>
+        </div>
+      </div>
+
+      <!-- Loyverse -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Loyverse POS</h3>
+          <span class="tag tag-free">Free / Global</span>
+        </div>
+        <div class="card-meta">
+          <span><strong>Focus:</strong> Small Business</span>
+          <span><strong>Free</strong> core POS</span>
+        </div>
+        <p class="card-desc">Best free POS globally. No transaction fees, no payment processor lock-in. Runs on any phone/tablet. Ideal for food trucks, market stalls, small cafes.</p>
+        <ul class="strengths">
+          <li>Completely free POS with no processing fees</li>
+          <li>Built-in free loyalty program</li>
+          <li>No payment processor lock-in</li>
+          <li>Open API</li>
+          <li>Works on any existing device</li>
+          <li>FIFO inventory valuation</li>
+        </ul>
+        <div class="card-links">
+          <a href="https://loyverse.com" target="_blank">Website ↗</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FEATURE MATRIX -->
+<section id="features">
+  <div class="container">
+    <h2>Feature Comparison Matrix</h2>
+    <p class="section-desc">Side-by-side comparison of key features across all competitors and elPOS.</p>
+
+    <!-- Core POS Features -->
+    <h3>Core POS Features</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>elPOS</th>
+            <th>Petpooja</th>
+            <th>POSist</th>
+            <th>Square</th>
+            <th>Toast</th>
+            <th>Shopify</th>
+            <th>Lightspeed</th>
+            <th>Clover</th>
+            <th>Marg</th>
+            <th>Vyapar</th>
+            <th>Loyverse</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="feature-name">Retail POS Mode</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td></tr>
+          <tr><td class="feature-name">Restaurant / KOT Mode</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-partial">~</td><td class="cell-no">&#10007;</td><td class="cell-partial">~</td></tr>
+          <tr><td class="feature-name">Service Order Mode (Laundry/Repair)</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-partial">~</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td></tr>
+          <tr><td class="feature-name">Offline-First Operation</td><td class="cell-yes">&#10003;</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td></tr>
+          <tr><td class="feature-name">Multi-Platform (Web+Desktop+Mobile)</td><td class="cell-yes">&#10003;</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-no">&#10007;</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td></tr>
+          <tr><td class="feature-name">Barcode Scanning</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td></tr>
+          <tr><td class="feature-name">Hold / Park Bills</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td></tr>
+          <tr><td class="feature-name">Split Billing</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td></tr>
+          <tr><td class="feature-name">Returns & Refunds</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td></tr>
+          <tr><td class="feature-name">Keyboard Shortcuts</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Payment Features -->
+    <h3>Payment & Checkout</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>elPOS</th>
+            <th>Petpooja</th>
+            <th>POSist</th>
+            <th>Square</th>
+            <th>Toast</th>
+            <th>Shopify</th>
+            <th>Lightspeed</th>
+            <th>Clover</th>
+            <th>Marg</th>
+            <th>Vyapar</th>
+            <th>Loyverse</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="feature-name">Cash Payment</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td></tr>
+          <tr><td class="feature-name">Card Payment</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-partial">~</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td></tr>
+          <tr><td class="feature-name">UPI / QR Payment</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td></tr>
+          <tr><td class="feature-name">Split Payment (Multi-method)</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td></tr>
+          <tr><td class="feature-name">Gift Cards</td><td class="cell-no">&#10007;</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td></tr>
+          <tr><td class="feature-name">Store Credit</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td></tr>
+          <tr><td class="feature-name">Khata / Credit Ledger</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td></tr>
+          <tr><td class="feature-name">Digital Receipt (WhatsApp/SMS)</td><td class="cell-no">&#10007;</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Staff & Operations -->
+    <h3>Staff & Operations</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>elPOS</th>
+            <th>Petpooja</th>
+            <th>POSist</th>
+            <th>Square</th>
+            <th>Toast</th>
+            <th>Shopify</th>
+            <th>Lightspeed</th>
+            <th>Clover</th>
+            <th>Marg</th>
+            <th>Vyapar</th>
+            <th>Loyverse</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="feature-name">Staff Clock In/Out</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td></tr>
+          <tr><td class="feature-name">Role-Based POS Access</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td></tr>
+          <tr><td class="feature-name">Manager Approval (Voids/Discounts)</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td></tr>
+          <tr><td class="feature-name">Tip Management</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td></tr>
+          <tr><td class="feature-name">Settlement / End-of-Day</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td></tr>
+          <tr><td class="feature-name">Audit Trail</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Customer & Loyalty -->
+    <h3>Customer & Loyalty</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>elPOS</th>
+            <th>Petpooja</th>
+            <th>POSist</th>
+            <th>Square</th>
+            <th>Toast</th>
+            <th>Shopify</th>
+            <th>Lightspeed</th>
+            <th>Clover</th>
+            <th>Marg</th>
+            <th>Vyapar</th>
+            <th>Loyverse</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="feature-name">Customer Database</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td></tr>
+          <tr><td class="feature-name">Loyalty / Points Program</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-partial">~</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td></tr>
+          <tr><td class="feature-name">Customer Purchase History</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td></tr>
+          <tr><td class="feature-name">Customer Segmentation</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-partial">~</td><td class="cell-partial">~</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td></tr>
+          <tr><td class="feature-name">Discount / Promotion Engine</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Tax & Compliance -->
+    <h3>Tax & Compliance</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>elPOS</th>
+            <th>Petpooja</th>
+            <th>POSist</th>
+            <th>Square</th>
+            <th>Toast</th>
+            <th>Shopify</th>
+            <th>Lightspeed</th>
+            <th>Clover</th>
+            <th>Marg</th>
+            <th>Vyapar</th>
+            <th>Loyverse</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="feature-name">GST Compliance (India)</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-partial">~</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-partial">~</td></tr>
+          <tr><td class="feature-name">E-Invoicing (NIC/IRP)</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td></tr>
+          <tr><td class="feature-name">E-Way Bill</td><td class="cell-partial">~</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td></tr>
+          <tr><td class="feature-name">GSTR-1 / GSTR-3B Reports</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-partial">~</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-na">N/A</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td></tr>
+          <tr><td class="feature-name">Multi-Country Tax</td><td class="cell-partial">~</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Restaurant Specific -->
+    <h3>Restaurant / KOT Features</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>elPOS</th>
+            <th>Petpooja</th>
+            <th>POSist</th>
+            <th>Square</th>
+            <th>Toast</th>
+            <th>Lightspeed</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="feature-name">Table Management + Floor Map</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td></tr>
+          <tr><td class="feature-name">Kitchen Display System (KDS)</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td></tr>
+          <tr><td class="feature-name">Multi-Course / Coursing</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td></tr>
+          <tr><td class="feature-name">Table Transfer / Merge</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td></tr>
+          <tr><td class="feature-name">Aggregator Integration (Swiggy/Zomato)</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-na">N/A</td><td class="cell-partial">~</td><td class="cell-partial">~</td></tr>
+          <tr><td class="feature-name">QR Table Ordering</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-partial">~</td></tr>
+          <tr><td class="feature-name">Self-Service Kiosk</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td></tr>
+          <tr><td class="feature-name">Recipe / Ingredient Inventory</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td><td class="cell-no">&#10007;</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td></tr>
+          <tr><td class="feature-name">Pay at Table (Handheld)</td><td class="cell-no">&#10007;</td><td class="cell-partial">~</td><td class="cell-no">&#10007;</td><td class="cell-partial">~</td><td class="cell-yes">&#10003;</td><td class="cell-yes">&#10003;</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p style="margin-top:16px;font-size:0.8rem;color:var(--text-muted);">
+      <span class="cell-yes">&#10003;</span> = Available &nbsp;&nbsp;
+      <span class="cell-partial">~</span> = Partial / Planned &nbsp;&nbsp;
+      <span class="cell-no">&#10007;</span> = Not Available &nbsp;&nbsp;
+      <span class="cell-na">N/A</span> = Not Applicable
+    </p>
+  </div>
+</section>
+
+<!-- REPORTS COMPARISON -->
+<section id="reports">
+  <div class="container">
+    <h2>Reports Comparison <span class="badge">300+ Reports Catalogued</span></h2>
+    <p class="section-desc">Complete breakdown of reports offered by competitors, grouped by category.</p>
+
+    <!-- Sales Reports -->
+    <div class="report-category">
+      <div class="report-category-header">
+        <h4>Sales Reports</h4>
+        <span class="count">12 reports</span>
+      </div>
+      <div class="report-list">
+        <div class="report-item"><div><div class="rname">Sales Summary (Daily/Weekly/Monthly)</div><div class="rdesc">Gross sales, refunds, net sales, discounts, taxes — the primary dashboard report</div></div><div class="rwho">ALL competitors</div></div>
+        <div class="report-item"><div><div class="rname">Sales Trends Over Time</div><div class="rdesc">Performance comparison across periods with trend lines</div></div><div class="rwho">Square, Shopify, Lightspeed</div></div>
+        <div class="report-item"><div><div class="rname">Item-Wise Sales</div><div class="rdesc">Individual product performance — quantity, revenue, profit per item</div></div><div class="rwho">ALL competitors</div></div>
+        <div class="report-item"><div><div class="rname">Category-Wise Sales</div><div class="rdesc">Revenue grouped by product/menu category</div></div><div class="rwho">ALL competitors</div></div>
+        <div class="report-item"><div><div class="rname">Hourly Sales</div><div class="rdesc">Revenue broken down by hour — peak hours identification</div></div><div class="rwho">Square, Toast, Petpooja, POSist, Lightspeed</div></div>
+        <div class="report-item"><div><div class="rname">Sales by Payment Method</div><div class="rdesc">Cash vs card vs UPI vs digital wallet breakdown</div></div><div class="rwho">ALL competitors</div></div>
+        <div class="report-item"><div><div class="rname">Sales by Order Type</div><div class="rdesc">Dine-in, takeaway, delivery, online breakdown</div></div><div class="rwho">Toast, Petpooja, POSist, Clover</div></div>
+        <div class="report-item"><div><div class="rname">Sales by Location</div><div class="rdesc">Multi-location sales comparison</div></div><div class="rwho">Square, Shopify, Petpooja, POSist, Lightspeed</div></div>
+        <div class="report-item"><div><div class="rname">Sales by Employee / Server</div><div class="rdesc">Revenue attributed to each staff member</div></div><div class="rwho">ALL except Vyapar</div></div>
+        <div class="report-item"><div><div class="rname">Average Order Value</div><div class="rdesc">Mean ticket size, trends over time</div></div><div class="rwho">Square, Shopify, POSist, Toast</div></div>
+        <div class="report-item"><div><div class="rname">Sales by Channel</div><div class="rdesc">Online vs in-store vs social commerce</div></div><div class="rwho">Shopify, Square</div></div>
+        <div class="report-item"><div><div class="rname">Modifier / Add-on Sales</div><div class="rdesc">Revenue from modifiers and add-ons (restaurant)</div></div><div class="rwho">Square, Toast, Lightspeed</div></div>
+      </div>
+    </div>
+
+    <!-- Financial Reports -->
+    <div class="report-category">
+      <div class="report-category-header">
+        <h4>Financial & Accounting Reports</h4>
+        <span class="count">14 reports</span>
+      </div>
+      <div class="report-list">
+        <div class="report-item"><div><div class="rname">Tax Report (Collected by Rate)</div><div class="rdesc">Taxes collected grouped by rate/jurisdiction</div></div><div class="rwho">ALL competitors</div></div>
+        <div class="report-item"><div><div class="rname">Discount Report</div><div class="rdesc">All discounts applied — type, amount, who authorized</div></div><div class="rwho">ALL competitors</div></div>
+        <div class="report-item"><div><div class="rname">Void / Cancel Report</div><div class="rdesc">Voided items/orders with reason and authorizing manager</div></div><div class="rwho">Square, Toast, Petpooja, Lightspeed, Clover</div></div>
+        <div class="report-item"><div><div class="rname">Refund / Returns Report</div><div class="rdesc">All refunds with original transaction reference</div></div><div class="rwho">ALL competitors</div></div>
+        <div class="report-item"><div><div class="rname">Cash Drawer Report</div><div class="rdesc">Cash in/out, expected vs actual, pay-ins/pay-outs</div></div><div class="rwho">Square, Petpooja, Clover, Marg</div></div>
+        <div class="report-item"><div><div class="rname">Settlement / Close of Day Report</div><div class="rdesc">Complete daily summary — sales, payments, variance</div></div><div class="rwho">Square, Toast, Lightspeed, Clover, Marg</div></div>
+        <div class="report-item"><div><div class="rname">Comp Report (Free Items)</div><div class="rdesc">Complimentary items with reason and server</div></div><div class="rwho">Square, Toast</div></div>
+        <div class="report-item"><div><div class="rname">Profit & Loss</div><div class="rdesc">Revenue minus COGS, expenses, taxes</div></div><div class="rwho">Shopify, Lightspeed, Marg, Vyapar</div></div>
+        <div class="report-item"><div><div class="rname">Payment Reconciliation</div><div class="rdesc">Match POS transactions with bank deposits</div></div><div class="rwho">Square, Petpooja, Marg</div></div>
+        <div class="report-item"><div><div class="rname">Outstanding / Receivable</div><div class="rdesc">Amounts owed by customers (Khata)</div></div><div class="rwho">Marg, Vyapar</div></div>
+        <div class="report-item"><div><div class="rname">Ageing Analysis (30/60/90 days)</div><div class="rdesc">Overdue amounts by age bracket</div></div><div class="rwho">Marg</div></div>
+        <div class="report-item"><div><div class="rname">Trial Balance / Balance Sheet</div><div class="rdesc">Full accounting reports</div></div><div class="rwho">Marg</div></div>
+        <div class="report-item"><div><div class="rname">GSTR-1 / GSTR-3B</div><div class="rdesc">India GST return data ready for filing</div></div><div class="rwho">Petpooja, Marg, Vyapar</div></div>
+        <div class="report-item"><div><div class="rname">HSN-Wise Summary</div><div class="rdesc">Tax summary grouped by HSN/SAC code</div></div><div class="rwho">Marg, Petpooja</div></div>
+      </div>
+    </div>
+
+    <!-- Staff Reports -->
+    <div class="report-category">
+      <div class="report-category-header">
+        <h4>Staff & Labor Reports</h4>
+        <span class="count">9 reports</span>
+      </div>
+      <div class="report-list">
+        <div class="report-item"><div><div class="rname">Employee Sales Performance</div><div class="rdesc">Sales per employee with conversion metrics</div></div><div class="rwho">ALL except Vyapar</div></div>
+        <div class="report-item"><div><div class="rname">Timecard / Hours Report</div><div class="rdesc">Clock-in/out records, hours worked, overtime</div></div><div class="rwho">Square, Toast, Clover, Loyverse</div></div>
+        <div class="report-item"><div><div class="rname">Labor vs Sales %</div><div class="rdesc">Labor cost as percentage of revenue per hour</div></div><div class="rwho">Square, Toast</div></div>
+        <div class="report-item"><div><div class="rname">Shift Report</div><div class="rdesc">Per-shift sales, payments, activity summary</div></div><div class="rwho">Square, Toast, Lightspeed</div></div>
+        <div class="report-item"><div><div class="rname">Tip Summary / Distribution</div><div class="rdesc">Tips by server, payment type, tip pool calculations</div></div><div class="rwho">Toast, Lightspeed, Clover</div></div>
+        <div class="report-item"><div><div class="rname">Server Covers Report</div><div class="rdesc">Guests served per server (restaurant)</div></div><div class="rwho">Lightspeed, Toast</div></div>
+        <div class="report-item"><div><div class="rname">Scheduled vs Actual Labor</div><div class="rdesc">Comparison of scheduled hours vs actually worked</div></div><div class="rwho">Toast</div></div>
+        <div class="report-item"><div><div class="rname">Overtime Report</div><div class="rdesc">Employees approaching or exceeding overtime</div></div><div class="rwho">Toast, Square</div></div>
+        <div class="report-item"><div><div class="rname">Commission Report</div><div class="rdesc">Salesperson commission tracking</div></div><div class="rwho">Lightspeed, Marg</div></div>
+      </div>
+    </div>
+
+    <!-- Inventory Reports -->
+    <div class="report-category">
+      <div class="report-category-header">
+        <h4>Inventory Reports</h4>
+        <span class="count">13 reports</span>
+      </div>
+      <div class="report-list">
+        <div class="report-item"><div><div class="rname">Current Stock Levels</div><div class="rdesc">Real-time stock on hand across locations</div></div><div class="rwho">ALL except Vyapar (basic)</div></div>
+        <div class="report-item"><div><div class="rname">Low Stock Alerts</div><div class="rdesc">Items below minimum threshold</div></div><div class="rwho">ALL</div></div>
+        <div class="report-item"><div><div class="rname">Inventory Valuation</div><div class="rdesc">Total cost of stock (FIFO/LIFO/Avg Cost)</div></div><div class="rwho">Square, Shopify, Lightspeed, Marg, Loyverse</div></div>
+        <div class="report-item"><div><div class="rname">COGS (Cost of Goods Sold)</div><div class="rdesc">Unit cost tracking and COGS calculations</div></div><div class="rwho">Square, Shopify, Lightspeed, Marg</div></div>
+        <div class="report-item"><div><div class="rname">Stock Movement / Ledger</div><div class="rdesc">Stock in and out tracking over time</div></div><div class="rwho">POSist, Marg, Lightspeed</div></div>
+        <div class="report-item"><div><div class="rname">ABC Analysis (80/15/5)</div><div class="rdesc">Products categorized by sales contribution</div></div><div class="rwho">Shopify</div></div>
+        <div class="report-item"><div><div class="rname">Dusty / Aging Inventory</div><div class="rdesc">Stock not selling within set period</div></div><div class="rwho">Square, Lightspeed, Marg</div></div>
+        <div class="report-item"><div><div class="rname">Sell-Through Rate</div><div class="rdesc">Percentage of received inventory sold</div></div><div class="rwho">Shopify, Lightspeed</div></div>
+        <div class="report-item"><div><div class="rname">Days of Inventory Remaining</div><div class="rdesc">Projected days until stockout</div></div><div class="rwho">Shopify</div></div>
+        <div class="report-item"><div><div class="rname">Actual vs Theoretical Food Cost</div><div class="rdesc">Variance between expected and actual ingredient usage</div></div><div class="rwho">Toast, POSist</div></div>
+        <div class="report-item"><div><div class="rname">Wastage / Spoilage Report</div><div class="rdesc">Food waste and spoilage tracking</div></div><div class="rwho">Toast, Petpooja, POSist</div></div>
+        <div class="report-item"><div><div class="rname">Batch / Expiry Report</div><div class="rdesc">Stock by batch with expiry date tracking</div></div><div class="rwho">Marg</div></div>
+        <div class="report-item"><div><div class="rname">GMROI (Gross Margin Return on Investment)</div><div class="rdesc">Profitability of inventory investment</div></div><div class="rwho">Lightspeed</div></div>
+      </div>
+    </div>
+
+    <!-- Customer Reports -->
+    <div class="report-category">
+      <div class="report-category-header">
+        <h4>Customer & Loyalty Reports</h4>
+        <span class="count">10 reports</span>
+      </div>
+      <div class="report-list">
+        <div class="report-item"><div><div class="rname">Customer Purchase History</div><div class="rdesc">Full order history per customer</div></div><div class="rwho">ALL competitors</div></div>
+        <div class="report-item"><div><div class="rname">Customer Frequency / Visit Patterns</div><div class="rdesc">How often customers return</div></div><div class="rwho">Toast, Petpooja, POSist, Shopify</div></div>
+        <div class="report-item"><div><div class="rname">Top Spenders</div><div class="rdesc">Highest-spending customers ranked</div></div><div class="rwho">Toast, Shopify, Marg</div></div>
+        <div class="report-item"><div><div class="rname">First-Time vs Returning</div><div class="rdesc">New vs repeat customer revenue comparison</div></div><div class="rwho">Shopify</div></div>
+        <div class="report-item"><div><div class="rname">Customer Cohort Analysis</div><div class="rdesc">Retention and repeat patterns by acquisition cohort</div></div><div class="rwho">Shopify</div></div>
+        <div class="report-item"><div><div class="rname">RFM Analysis (Recency/Frequency/Monetary)</div><div class="rdesc">Customer segmentation by purchase behavior</div></div><div class="rwho">Shopify</div></div>
+        <div class="report-item"><div><div class="rname">At-Risk Customers</div><div class="rdesc">Customers likely to churn based on patterns</div></div><div class="rwho">Shopify</div></div>
+        <div class="report-item"><div><div class="rname">Loyalty Program Report</div><div class="rdesc">Points earned, redeemed, program performance</div></div><div class="rwho">Square, Petpooja, POSist, Loyverse</div></div>
+        <div class="report-item"><div><div class="rname">Gift Card Report</div><div class="rdesc">Sales, redemptions, outstanding balances</div></div><div class="rwho">Square, Toast, Shopify</div></div>
+        <div class="report-item"><div><div class="rname">Items Bought Together</div><div class="rdesc">Frequently co-purchased items analysis</div></div><div class="rwho">Shopify</div></div>
+      </div>
+    </div>
+
+    <!-- Restaurant Reports -->
+    <div class="report-category">
+      <div class="report-category-header">
+        <h4>Restaurant-Specific Reports</h4>
+        <span class="count">10 reports</span>
+      </div>
+      <div class="report-list">
+        <div class="report-item"><div><div class="rname">Table Turn Time</div><div class="rdesc">Average time per table seating</div></div><div class="rwho">Toast, Lightspeed, POSist</div></div>
+        <div class="report-item"><div><div class="rname">Server Performance</div><div class="rdesc">Revenue, checks, covers per server</div></div><div class="rwho">Toast, Lightspeed, POSist</div></div>
+        <div class="report-item"><div><div class="rname">KOT Preparation Time</div><div class="rdesc">Kitchen order to ready time tracking</div></div><div class="rwho">Petpooja, POSist, Toast</div></div>
+        <div class="report-item"><div><div class="rname">Menu Engineering Chart</div><div class="rdesc">Profitability vs popularity matrix for menu optimization</div></div><div class="rwho">Toast</div></div>
+        <div class="report-item"><div><div class="rname">Sales by Floor / Section</div><div class="rdesc">Revenue by dining area (bar, patio, main)</div></div><div class="rwho">Toast, Lightspeed</div></div>
+        <div class="report-item"><div><div class="rname">Covers / Guest Count</div><div class="rdesc">Number of guests served per hour/day</div></div><div class="rwho">Toast, Lightspeed, POSist</div></div>
+        <div class="report-item"><div><div class="rname">Sales by Daypart</div><div class="rdesc">Breakfast, lunch, dinner, late night</div></div><div class="rwho">Toast</div></div>
+        <div class="report-item"><div><div class="rname">86 Report (Out of Stock)</div><div class="rdesc">Items removed from availability during service</div></div><div class="rwho">Toast</div></div>
+        <div class="report-item"><div><div class="rname">Delivery Performance</div><div class="rdesc">Delivery times, driver efficiency</div></div><div class="rwho">Toast, Petpooja</div></div>
+        <div class="report-item"><div><div class="rname">Online Aggregator Revenue</div><div class="rdesc">Revenue by Swiggy, Zomato, etc.</div></div><div class="rwho">Petpooja</div></div>
+      </div>
+    </div>
+
+    <!-- Laundry Reports (elPOS Unique) -->
+    <div class="report-category" style="border-color:var(--accent);">
+      <div class="report-category-header" style="background:rgba(108,92,231,0.15);">
+        <h4>Laundry / Service Reports (elPOS Exclusive)</h4>
+        <span class="count" style="background:var(--green);">No competitor has these</span>
+      </div>
+      <div class="report-list">
+        <div class="report-item"><div><div class="rname">Service Order Turnaround Time</div><div class="rdesc">Average time from received to delivered</div></div><div class="rwho">elPOS only</div></div>
+        <div class="report-item"><div><div class="rname">Orders by Service Type</div><div class="rdesc">Wet-cleaning vs dry-cleaning vs pressing breakdown</div></div><div class="rwho">elPOS only</div></div>
+        <div class="report-item"><div><div class="rname">Garment Category Analysis</div><div class="rdesc">Most serviced garment types</div></div><div class="rwho">elPOS only</div></div>
+        <div class="report-item"><div><div class="rname">Pending Deliveries</div><div class="rdesc">Overdue orders past promised delivery date</div></div><div class="rwho">elPOS only</div></div>
+        <div class="report-item"><div><div class="rname">Customer Repeat Rate (Service)</div><div class="rdesc">How often laundry/service customers return</div></div><div class="rwho">elPOS only</div></div>
+        <div class="report-item"><div><div class="rname">Revenue by Service Type</div><div class="rdesc">Which services generate most revenue</div></div><div class="rwho">elPOS only</div></div>
+        <div class="report-item"><div><div class="rname">Rework / Complaint Rate</div><div class="rdesc">Quality tracking — items returned for redo</div></div><div class="rwho">elPOS only</div></div>
+        <div class="report-item"><div><div class="rname">Daily Garment Count</div><div class="rdesc">Pieces received vs delivered per day</div></div><div class="rwho">elPOS only</div></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- GAP ANALYSIS -->
+<section id="gaps">
+  <div class="container">
+    <h2>Gap Analysis — What elPOS is Missing</h2>
+    <p class="section-desc">Features every serious POS has that elPOS needs to build, prioritized by competitive necessity.</p>
+
+    <h3>P0 — Ship Blockers (Cannot sell without these)</h3>
+    <ul class="gap-list">
+      <li class="gap-item">
+        <div class="priority priority-p0">P0</div>
+        <div class="gap-content">
+          <div class="gap-title">Staff / Employee Management</div>
+          <div class="gap-desc">Clock in/out, shift tracking, sales per cashier, role-based POS access, manager approval for voids/discounts</div>
+          <div class="gap-who">Present in: ALL competitors except Vyapar</div>
+        </div>
+      </li>
+      <li class="gap-item">
+        <div class="priority priority-p0">P0</div>
+        <div class="gap-content">
+          <div class="gap-title">Returns & Refunds Flow</div>
+          <div class="gap-desc">Return against original invoice, partial returns, refund to original payment method or store credit, return reason tracking</div>
+          <div class="gap-who">Present in: ALL competitors</div>
+        </div>
+      </li>
+      <li class="gap-item">
+        <div class="priority priority-p0">P0</div>
+        <div class="gap-content">
+          <div class="gap-title">Discount / Promotion Engine</div>
+          <div class="gap-desc">Item-level and order-level discounts, percentage or flat, Buy-X-Get-Y, combo deals, coupon codes, happy hour pricing</div>
+          <div class="gap-who">Present in: ALL competitors</div>
+        </div>
+      </li>
+      <li class="gap-item">
+        <div class="priority priority-p0">P0</div>
+        <div class="gap-content">
+          <div class="gap-title">Reports Dashboard</div>
+          <div class="gap-desc">At minimum: sales summary, item-wise, category-wise, hourly, payment method, tax, discount, void reports</div>
+          <div class="gap-who">Present in: ALL competitors (15+ reports minimum)</div>
+        </div>
+      </li>
+      <li class="gap-item">
+        <div class="priority priority-p0">P0</div>
+        <div class="gap-content">
+          <div class="gap-title">Full Customer Management</div>
+          <div class="gap-desc">Searchable customer list, purchase history, outstanding balance, customer profile page</div>
+          <div class="gap-who">Present in: ALL competitors</div>
+        </div>
+      </li>
+      <li class="gap-item">
+        <div class="priority priority-p0">P0</div>
+        <div class="gap-content">
+          <div class="gap-title">Audit Trail</div>
+          <div class="gap-desc">Every void, discount, refund, and settlement logged with who/when/why</div>
+          <div class="gap-who">Present in: Square, Toast, Petpooja, POSist, Lightspeed, Clover, Marg</div>
+        </div>
+      </li>
+    </ul>
+
+    <h3>P1 — Competitive Necessity (Every paid POS has these)</h3>
+    <ul class="gap-list">
+      <li class="gap-item">
+        <div class="priority priority-p1">P1</div>
+        <div class="gap-content">
+          <div class="gap-title">Loyalty & Rewards Program</div>
+          <div class="gap-desc">Points-based system, digital punch cards, customer tiers, birthday rewards</div>
+          <div class="gap-who">Present in: Square, Petpooja, POSist, Lightspeed, Clover, Loyverse</div>
+        </div>
+      </li>
+      <li class="gap-item">
+        <div class="priority priority-p1">P1</div>
+        <div class="gap-content">
+          <div class="gap-title">Barcode Scanning</div>
+          <div class="gap-desc">Camera-based for web/mobile, USB HID for desktop — button exists but no implementation</div>
+          <div class="gap-who">Present in: ALL competitors</div>
+        </div>
+      </li>
+      <li class="gap-item">
+        <div class="priority priority-p1">P1</div>
+        <div class="gap-content">
+          <div class="gap-title">Digital Receipts (WhatsApp/SMS/Email)</div>
+          <div class="gap-desc">Send receipt via WhatsApp or SMS instead of paper — eco-friendly + re-marketing channel</div>
+          <div class="gap-who">Present in: Square, Toast, Shopify, Vyapar, Clover</div>
+        </div>
+      </li>
+      <li class="gap-item">
+        <div class="priority priority-p1">P1</div>
+        <div class="gap-content">
+          <div class="gap-title">Khata / Credit Management</div>
+          <div class="gap-desc">Track who owes how much, payment reminders via WhatsApp, partial payments — massive in India</div>
+          <div class="gap-who">Present in: Marg, Vyapar (India's informal sector runs on this)</div>
+        </div>
+      </li>
+      <li class="gap-item">
+        <div class="priority priority-p1">P1</div>
+        <div class="gap-content">
+          <div class="gap-title">Gift Cards / Store Credit</div>
+          <div class="gap-desc">Prepaid cards, store credit on returns, balance tracking</div>
+          <div class="gap-who">Present in: Square, Toast, Shopify, Lightspeed, Clover</div>
+        </div>
+      </li>
+      <li class="gap-item">
+        <div class="priority priority-p1">P1</div>
+        <div class="gap-content">
+          <div class="gap-title">Kitchen Display System (KDS)</div>
+          <div class="gap-desc">Digital screen replacing paper KOT tickets in kitchen with real-time updates</div>
+          <div class="gap-who">Present in: ALL restaurant POS (Petpooja, POSist, Square, Toast, Lightspeed)</div>
+        </div>
+      </li>
+    </ul>
+
+    <h3>P2 — Differentiators (Win deals with these)</h3>
+    <ul class="gap-list">
+      <li class="gap-item">
+        <div class="priority priority-p2">P2</div>
+        <div class="gap-content">
+          <div class="gap-title">Aggregator Integration (Swiggy/Zomato)</div>
+          <div class="gap-desc">Online orders flow into same KOT system — Petpooja's biggest selling point</div>
+          <div class="gap-who">Present in: Petpooja, POSist</div>
+        </div>
+      </li>
+      <li class="gap-item">
+        <div class="priority priority-p2">P2</div>
+        <div class="gap-content">
+          <div class="gap-title">WhatsApp Integration</div>
+          <div class="gap-desc">Share invoices, send payment reminders, order status updates via WhatsApp</div>
+          <div class="gap-who">Present in: Vyapar (killer feature), Petpooja</div>
+        </div>
+      </li>
+      <li class="gap-item">
+        <div class="priority priority-p2">P2</div>
+        <div class="gap-content">
+          <div class="gap-title">Subscription / Recurring Plans</div>
+          <div class="gap-desc">Monthly laundry packages, meal plans — auto-billing on schedule</div>
+          <div class="gap-who">Present in: No one does this well for laundry/services — open opportunity</div>
+        </div>
+      </li>
+      <li class="gap-item">
+        <div class="priority priority-p2">P2</div>
+        <div class="gap-content">
+          <div class="gap-title">QR Table Ordering</div>
+          <div class="gap-desc">Customer scans QR, browses menu, orders from their phone</div>
+          <div class="gap-who">Present in: Petpooja, POSist, Square, Toast</div>
+        </div>
+      </li>
+      <li class="gap-item">
+        <div class="priority priority-p2">P2</div>
+        <div class="gap-content">
+          <div class="gap-title">Recipe / Ingredient-Level Inventory</div>
+          <div class="gap-desc">1 pizza sold = deduct 200g cheese + 1 base + 50g sauce</div>
+          <div class="gap-who">Present in: Toast (xtraCHEF), Petpooja, POSist, Lightspeed</div>
+        </div>
+      </li>
+      <li class="gap-item">
+        <div class="priority priority-p2">P2</div>
+        <div class="gap-content">
+          <div class="gap-title">Self-Service Kiosk Mode</div>
+          <div class="gap-desc">Tablet-based customer self-ordering for restaurants, QSR</div>
+          <div class="gap-who">Present in: Toast, Square</div>
+        </div>
+      </li>
+    </ul>
+
+    <h3>P3 — Nice to Have (Growth features)</h3>
+    <ul class="gap-list">
+      <li class="gap-item">
+        <div class="priority priority-p3">P3</div>
+        <div class="gap-content">
+          <div class="gap-title">Customer-Facing Display</div>
+          <div class="gap-desc">Second screen showing cart, total, payment status</div>
+          <div class="gap-who">Present in: Square, Clover, Lightspeed</div>
+        </div>
+      </li>
+      <li class="gap-item">
+        <div class="priority priority-p3">P3</div>
+        <div class="gap-content">
+          <div class="gap-title">Tally / Zoho Export</div>
+          <div class="gap-desc">One-click accounting export for Indian businesses</div>
+          <div class="gap-who">Present in: Marg</div>
+        </div>
+      </li>
+      <li class="gap-item">
+        <div class="priority priority-p3">P3</div>
+        <div class="gap-content">
+          <div class="gap-title">Multi-Language UI</div>
+          <div class="gap-desc">Hindi, Tamil, Marathi — i18n is scaffolded, needs content</div>
+          <div class="gap-who">Present in: Petpooja, Vyapar</div>
+        </div>
+      </li>
+      <li class="gap-item">
+        <div class="priority priority-p3">P3</div>
+        <div class="gap-content">
+          <div class="gap-title">Online Ordering / Ecommerce</div>
+          <div class="gap-desc">Branded ordering page or ecommerce integration</div>
+          <div class="gap-who">Present in: Shopify (best-in-class), Square, Toast, Petpooja</div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="container">
+    <h2>Competitor Pricing</h2>
+    <p class="section-desc">Pricing models across all competitors for positioning reference.</p>
+
+    <div class="pricing-grid">
+      <div class="price-card">
+        <h4>Petpooja</h4>
+        <div class="price">&#8377;1,000 — 3,000/mo</div>
+        <div class="model">Per outlet subscription. Hardware separate.</div>
+      </div>
+      <div class="price-card">
+        <h4>POSist (Restroworks)</h4>
+        <div class="price">Custom pricing</div>
+        <div class="model">Enterprise per-outlet pricing. Contact sales.</div>
+      </div>
+      <div class="price-card">
+        <h4>Square</h4>
+        <div class="price">Free — $165/mo</div>
+        <div class="model">Free base + 2.6%+10c processing. Paid tiers for verticals.</div>
+      </div>
+      <div class="price-card">
+        <h4>Toast</h4>
+        <div class="price">Free — $165+/mo</div>
+        <div class="model">Free starter tier. Required payment processing. Hardware financing.</div>
+      </div>
+      <div class="price-card">
+        <h4>Shopify POS</h4>
+        <div class="price">$39 — $399/mo + $89/location</div>
+        <div class="model">Shopify plan required. POS Pro add-on per location.</div>
+      </div>
+      <div class="price-card">
+        <h4>Lightspeed</h4>
+        <div class="price">$89 — $289+/mo</div>
+        <div class="model">Tiered subscription. Advanced analytics on higher tiers.</div>
+      </div>
+      <div class="price-card">
+        <h4>Clover</h4>
+        <div class="price">$15 — $85/mo + hardware</div>
+        <div class="model">Hardware purchase required ($499-$1,799). Processing fees.</div>
+      </div>
+      <div class="price-card">
+        <h4>Marg ERP</h4>
+        <div class="price">&#8377;8,000 — 50,000+ one-time</div>
+        <div class="model">One-time license OR subscription. Per industry variant.</div>
+      </div>
+      <div class="price-card">
+        <h4>Vyapar</h4>
+        <div class="price">Free — &#8377;500/mo</div>
+        <div class="model">Free tier available. Premium unlocks GST, e-invoicing.</div>
+      </div>
+      <div class="price-card">
+        <h4>Loyverse</h4>
+        <div class="price">Free + $5-25/mo add-ons</div>
+        <div class="model">Free core POS. Paid add-ons for staff mgmt, inventory, integrations.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- elPOS ADVANTAGE -->
+<section id="advantage">
+  <div class="container">
+    <h2>elPOS Competitive Advantage</h2>
+    <p class="section-desc">Where elPOS wins against every competitor.</p>
+
+    <div class="advantage-grid">
+      <div class="adv-card">
+        <h4>Multi-Vertical (Unique)</h4>
+        <p>No competitor covers retail + restaurant + laundry/service in one product. Petpooja is restaurant-only. Shopify is retail-only. elPOS does all three with a unified cart, payments, and customer system.</p>
+      </div>
+      <div class="adv-card">
+        <h4>Offline-First (Rare)</h4>
+        <p>Most competitors need internet. In tier-2/3 India where connectivity is unreliable, elPOS working fully offline with automatic sync is a massive differentiator. Only Marg and Vyapar match this.</p>
+      </div>
+      <div class="adv-card">
+        <h4>Ecosystem Integration</h4>
+        <p>Petpooja is standalone. elPOS plugs into inventory, accounting, CRM, messaging — a unified business platform. Square does this in the US, but nobody does it in India.</p>
+      </div>
+      <div class="adv-card">
+        <h4>Laundry / Service POS</h4>
+        <p>There is no serious organized POS for laundry in India. Most use paper tags and manual registers. 257 garment types, 12 services, per-piece condition tracking with photos — wide open market.</p>
+      </div>
+      <div class="adv-card">
+        <h4>Multi-Country Ready</h4>
+        <p>The ecosystem's geolocations service already has currency, tax, and formatting data for every country. While Petpooja/Marg are India-locked, elPOS can expand to UAE, SE Asia, Africa.</p>
+      </div>
+      <div class="adv-card">
+        <h4>No Hardware Lock-In</h4>
+        <p>Petpooja pushes their terminals. Toast requires Toast hardware. Clover needs Clover devices. elPOS runs on any tablet, laptop, phone, or dedicated terminal — zero vendor lock-in.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="container">
+    <p>elPOS Competitor Analysis Report — Generated March 25, 2026 — Confidential</p>
+    <p style="margin-top:6px;">Part of the elSapiens Ecosystem</p>
+  </div>
+</div>
+
+</body>
+</html>
