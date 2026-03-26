@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>elPOS Feature Registry — All Gatable Features for Plans</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f8fafc;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b;--light:#94a3b8;
+  --blue:#3b82f6;--green:#22c55e;--amber:#f59e0b;--red:#ef4444;--purple:#8b5cf6;--cyan:#06b6d4;--pink:#ec4899;
+}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6}
+.nav{position:sticky;top:0;z-index:100;background:#0f172a;padding:0 16px;display:flex;align-items:center;height:44px;gap:16px;box-shadow:0 2px 12px rgba(0,0,0,.25);overflow-x:auto}
+.nav .brand{color:#fff;font-weight:800;font-size:14px;white-space:nowrap}
+.nav a{color:#94a3b8;font-size:11px;font-weight:500;text-decoration:none;white-space:nowrap;padding:4px 0}
+.nav a:hover{color:#fff}
+.header{background:linear-gradient(135deg,#1e293b,#0f172a);color:#fff;padding:40px 24px 32px;text-align:center}
+.header h1{font-size:24px;font-weight:800}
+.header p{font-size:13px;color:#94a3b8;margin-top:6px;max-width:700px;margin-left:auto;margin-right:auto}
+.container{max-width:1200px;margin:0 auto;padding:20px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-bottom:20px}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center}
+.stat-n{font-size:24px;font-weight:800;color:var(--text)}
+.stat-l{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+.how-box{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px;margin-bottom:24px}
+.how-box h3{font-size:15px;font-weight:700;margin-bottom:8px;color:var(--text)}
+.how-box p{font-size:13px;color:var(--muted);margin-bottom:10px}
+.how-box code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:12px;font-family:'SF Mono',monospace}
+.how-box pre{background:#1e293b;color:#e2e8f0;padding:14px;border-radius:6px;font-size:12px;font-family:'SF Mono',monospace;overflow-x:auto;margin-top:8px}
+.section{margin-bottom:28px}
+.section-head{display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:8px 8px 0 0;color:#fff}
+.section-head h2{font-size:15px;font-weight:700}
+.section-head .count{font-size:10px;background:rgba(255,255,255,.2);padding:2px 8px;border-radius:4px;font-weight:600}
+.section-body{background:var(--card);border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th{background:#f8fafc;padding:8px 14px;text-align:left;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;border-bottom:2px solid var(--border)}
+td{padding:10px 14px;border-bottom:1px solid #f1f5f9;font-size:13px}
+tr:hover td{background:#f8fafc}
+.key{font-family:'SF Mono','Fira Code',monospace;font-size:12px;font-weight:600;color:#1e40af;white-space:nowrap}
+.type{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;text-transform:uppercase}
+.type-quota{background:#dbeafe;color:#1e40af}
+.type-bool{background:#dcfce7;color:#166534}
+.desc{color:var(--muted);font-size:12.5px;line-height:1.5}
+.plan-table{margin:24px 0}
+.plan-table table{min-width:800px}
+.plan-table th:first-child{min-width:220px}
+.plan-table .yes{color:var(--green);font-weight:700}
+.plan-table .no{color:var(--red);opacity:.5}
+.plan-table .val{font-weight:600;color:var(--text)}
+.plan-table .plan-header{font-weight:800;font-size:14px}
+.plan-table .price{font-size:11px;color:var(--muted);font-weight:600}
+.footer{text-align:center;padding:32px;color:var(--muted);font-size:12px;border-top:1px solid var(--border);margin-top:20px}
+@media(max-width:768px){.stats{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <span class="brand">elSapiens</span>
+  <a href="#infra">Infrastructure</a>
+  <a href="#modes">Modes</a>
+  <a href="#retail">Retail</a>
+  <a href="#service">Service</a>
+  <a href="#kot">KOT</a>
+  <a href="#payments">Payments</a>
+  <a href="#customers">Customers</a>
+  <a href="#reports">Reports</a>
+  <a href="#gst">GST</a>
+  <a href="#printing">Printing</a>
+  <a href="#notif">Notifications</a>
+  <a href="#offline">Offline</a>
+  <a href="#settle">Settlement</a>
+  <a href="#multi">Multi-Store</a>
+  <a href="#integrations">Integrations</a>
+  <a href="#branding">Branding</a>
+  <a href="#data">Data</a>
+  <a href="#security">Security</a>
+  <a href="#plans">Sample Plans</a>
+</nav>
+
+<header class="header">
+  <h1>elPOS Feature Registry</h1>
+  <p>Complete list of gatable features that can be controlled via elplans subscriptions. Each feature includes a plain-English description for non-technical readers.</p>
+</header>
+
+<div class="container">
+
+<div class="stats">
+  <div class="stat"><div class="stat-n">132</div><div class="stat-l">Total Features</div></div>
+  <div class="stat"><div class="stat-n">19</div><div class="stat-l">Categories</div></div>
+  <div class="stat"><div class="stat-n">~30</div><div class="stat-l">Quota Type</div></div>
+  <div class="stat"><div class="stat-n">~100</div><div class="stat-l">Boolean Type</div></div>
+  <div class="stat"><div class="stat-n">3</div><div class="stat-l">Plan Levels</div></div>
+</div>
+
+<div class="how-box">
+  <h3>How Feature Gating Works</h3>
+  <p>When a business buys an elPOS plan (Starter, Pro, Enterprise), the plan includes features with limits. elPOS checks these at runtime before allowing any action:</p>
+  <pre>CheckEntitlement(workspace_id, "mode_kot")
+→ { entitled: false }
+→ UI shows: "Restaurant mode requires elPOS Pro. Upgrade to unlock."
+
+CheckEntitlement(workspace_id, "max_terminals")
+→ { entitled: true, used: 2, limit: 3, remaining: 1 }
+→ Allow terminal registration</pre>
+  <p style="margin-top:12px"><strong>Feature types:</strong> <span class="type type-quota">quota</span> has a numeric limit (can be unlimited). <span class="type type-bool">boolean</span> is simply on or off.</p>
+</div>
+
+<!-- ═══ INFRASTRUCTURE ═══ -->
+<div class="section" id="infra">
+  <div class="section-head" style="background:#6366f1"><h2>1. Infrastructure</h2><span class="count">4 features</span></div>
+  <div class="section-body">
+    <table>
+      <thead><tr><th>Feature Key</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td class="key">max_terminals</td><td><span class="type type-quota">quota</span></td><td class="desc"><strong>POS terminals/registers</strong> — each physical device or browser tab running elPOS counts as one terminal. A laundry shop with 1 counter needs 1. A supermarket with 5 billing counters needs 5.</td></tr>
+        <tr><td class="key">max_stores</td><td><span class="type type-quota">quota</span></td><td class="desc"><strong>Store locations</strong> — each physical branch/outlet. A single-shop business has 1. A chain with 3 branches has 3. Each store can have multiple terminals.</td></tr>
+        <tr><td class="key">max_staff_accounts</td><td><span class="type type-quota">quota</span></td><td class="desc"><strong>Staff logins</strong> — how many people can operate the POS. Includes cashiers, managers, and owners. Each person gets their own login for accountability.</td></tr>
+        <tr><td class="key">max_concurrent_sessions</td><td><span class="type type-quota">quota</span></td><td class="desc"><strong>Registers open at the same time</strong> — a store with 3 terminals but only 2 staff working simultaneously needs 2 concurrent sessions.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══ POS MODES ═══ -->
+<div class="section" id="modes">
+  <div class="section-head" style="background:#059669"><h2>2. POS Modes</h2><span class="count">4 features</span></div>
+  <div class="section-body">
+    <table>
+      <thead><tr><th>Feature Key</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td class="key">mode_retail</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Product sales mode</strong> — scan or search products, add to cart, checkout. Used by retail shops, grocery stores, pharmacies.</td></tr>
+        <tr><td class="key">mode_service</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Service order mode</strong> — accept customer items (clothes, car, shoes), perform services on them, track status, deliver back. Used by laundry, car wash, repair shops.</td></tr>
+        <tr><td class="key">mode_kot</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Restaurant/KOT mode</strong> — table management, floor map, kitchen order tokens, course ordering, split billing. Used by restaurants, cafes, food courts.</td></tr>
+        <tr><td class="key">mode_hybrid</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Mixed mode</strong> — combine products and services in one bill. Example: laundry shop that also sells detergent.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══ PRODUCT SALES ═══ -->
+<div class="section" id="retail">
+  <div class="section-head" style="background:#2563eb"><h2>3. Product Sales</h2><span class="count">13 features</span></div>
+  <div class="section-body">
+    <table>
+      <thead><tr><th>Feature Key</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td class="key">max_transactions_per_month</td><td><span class="type type-quota">quota</span></td><td class="desc"><strong>Monthly transaction cap</strong> — each completed sale counts as one. Starter plans may limit to 500/month.</td></tr>
+        <tr><td class="key">barcode_scanning</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Scan products by barcode</strong> — use phone camera, USB barcode gun, or Bluetooth scanner. Scan product → instantly added to cart.</td></tr>
+        <tr><td class="key">barcode_generation</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Create and print barcodes</strong> — generate Code 128 or EAN-13 barcodes for products that don't have one. Print on label printer.</td></tr>
+        <tr><td class="key">hold_recall_bills</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Park and recall</strong> — customer forgot wallet? "Hold" the bill, serve next customer, then "recall" when they return.</td></tr>
+        <tr><td class="key">returns_refunds</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Process returns</strong> — scan original bill, select items to return, refund to original payment method or store credit.</td></tr>
+        <tr><td class="key">exchange</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Return + new sale in one</strong> — customer returns a shirt and picks different size. One transaction instead of two.</td></tr>
+        <tr><td class="key">price_override</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Change price on the fly</strong> — modify selling price during billing. Requires manager PIN. For damaged goods, negotiations.</td></tr>
+        <tr><td class="key">item_level_discount</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Discount on individual items</strong> — "20% off on this shirt". Per line item. Percentage or flat amount.</td></tr>
+        <tr><td class="key">order_level_discount</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Discount on entire bill</strong> — "&#8377;500 off total". Applied after all items are added.</td></tr>
+        <tr><td class="key">coupon_codes</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Promotional coupons</strong> — customer gives code like "DIWALI20". System validates and applies discount automatically.</td></tr>
+        <tr><td class="key">quick_add_product</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Add unlisted product</strong> — product not in catalog? Enter name, price, tax rate manually. Syncs to elcatalogs as draft.</td></tr>
+        <tr><td class="key">weight_scale_integration</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>USB weighing scale</strong> — for grocery, meat, spice shops. Place item → weight auto-reads → price calculated.</td></tr>
+        <tr><td class="key">serial_number_tracking</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Track by serial number</strong> — for electronics, jewelry. Scan serial at sale. Records which serial went to which customer.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══ SERVICE ORDERS ═══ -->
+<div class="section" id="service">
+  <div class="section-head" style="background:#d97706"><h2>4. Service Orders</h2><span class="count">13 features</span></div>
+  <div class="section-body">
+    <table>
+      <thead><tr><th>Feature Key</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td class="key">max_service_orders_per_month</td><td><span class="type type-quota">quota</span></td><td class="desc"><strong>Monthly service order cap</strong> — each laundry drop-off, car wash, or repair job counts as one.</td></tr>
+        <tr><td class="key">service_photo_capture</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Photo at intake</strong> — photograph each garment/item when customer drops it off. Proves condition. Dispute protection.</td></tr>
+        <tr><td class="key">max_photos_per_order</td><td><span class="type type-quota">quota</span></td><td class="desc"><strong>Photos per order</strong> — Starter: 4, Pro: 10, Enterprise: unlimited.</td></tr>
+        <tr><td class="key">service_delivery_tracking</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Delivery date tracking</strong> — set promised date, track actual delivery, identify overdue orders.</td></tr>
+        <tr><td class="key">service_priority_levels</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Priority tagging</strong> — low/normal/high/urgent. Urgent orders processed first. May cost more.</td></tr>
+        <tr><td class="key">service_vehicle_info</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Vehicle details</strong> — make, model, license plate, odometer. For car wash/service. Enables vehicle history lookup.</td></tr>
+        <tr><td class="key">service_per_item_status</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Individual item tracking</strong> — each garment has its own status. Enables partial delivery.</td></tr>
+        <tr><td class="key">service_condition_notes</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Condition tagging</strong> — mark stain, fade, damage, missing button at intake. Stored with photos.</td></tr>
+        <tr><td class="key">delivery_without_token</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Lost slip delivery</strong> — secure delivery with customer photo/signature when they lose their pickup slip.</td></tr>
+        <tr><td class="key">service_recurring_orders</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Scheduled pickups</strong> — "pick up every Monday at 9am". Auto-creates orders on schedule.</td></tr>
+        <tr><td class="key">service_rack_management</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Storage tracking</strong> — assign garments to rack/slot numbers. Staff knows exactly where to find them.</td></tr>
+        <tr><td class="key">partial_delivery</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Deliver some, keep rest</strong> — 8 dropped off, 6 ready. Deliver 6, invoice those, keep 2 pending.</td></tr>
+        <tr><td class="key">service_material_tracking</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Track consumables</strong> — materials used during service (shoe sole, oil, chemicals). Deducts inventory.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══ KOT ═══ -->
+<div class="section" id="kot">
+  <div class="section-head" style="background:#dc2626"><h2>5. KOT / Restaurant</h2><span class="count">8 features</span></div>
+  <div class="section-body">
+    <table>
+      <thead><tr><th>Feature Key</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td class="key">max_floors</td><td><span class="type type-quota">quota</span></td><td class="desc"><strong>Dining areas</strong> — restaurant sections like Ground Floor, Terrace, Bar Area.</td></tr>
+        <tr><td class="key">max_tables</td><td><span class="type type-quota">quota</span></td><td class="desc"><strong>Total tables</strong> across all floors. Small cafe: 10. Large restaurant: 50.</td></tr>
+        <tr><td class="key">kot_printing</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Kitchen ticket printing</strong> — order auto-prints in kitchen with table, items, modifiers, special instructions.</td></tr>
+        <tr><td class="key">kitchen_display_system</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Digital kitchen screen</strong> — replaces paper tickets. Kitchen marks items preparing → ready → served.</td></tr>
+        <tr><td class="key">table_merge_transfer</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Merge or move tables</strong> — combine tables for large groups. Transfer order if guests move.</td></tr>
+        <tr><td class="key">split_billing</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Split the bill</strong> — friends pay separately. By items, by seat, or equal division.</td></tr>
+        <tr><td class="key">multi_course_ordering</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Course management</strong> — starters first, main later, dessert last. Each course is a timed KOT.</td></tr>
+        <tr><td class="key">qr_table_ordering</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Customer self-ordering</strong> — QR on table. Customer scans, browses menu, orders from phone.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══ PAYMENTS ═══ -->
+<div class="section" id="payments">
+  <div class="section-head" style="background:#7c3aed"><h2>6. Payments</h2><span class="count">10 features</span></div>
+  <div class="section-body">
+    <table>
+      <thead><tr><th>Feature Key</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td class="key">payment_cash</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Cash payments</strong> — customer pays cash, POS calculates change. Should always be on.</td></tr>
+        <tr><td class="key">payment_card</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Card via EDC terminal</strong> — POS sends amount to Pine Labs/Razorpay device, customer taps card.</td></tr>
+        <tr><td class="key">payment_upi</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>UPI QR payments</strong> — generate QR with exact amount. Customer scans with GPay/PhonePe/Paytm.</td></tr>
+        <tr><td class="key">payment_split</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Split payment</strong> — &#8377;500 cash + &#8377;2,500 card in one transaction.</td></tr>
+        <tr><td class="key">payment_credit</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Sell on credit (khata)</strong> — B2B customers take goods without paying now. Balance tracked.</td></tr>
+        <tr><td class="key">payment_gift_card</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Gift cards</strong> — accept prepaid gift cards. Deduct from card balance.</td></tr>
+        <tr><td class="key">payment_store_credit</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Store credit</strong> — credit from returns used for future purchases.</td></tr>
+        <tr><td class="key">payment_emi</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>EMI installments</strong> — expensive items paid in monthly installments via credit card.</td></tr>
+        <tr><td class="key">digital_receipt</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Send receipt via WhatsApp/SMS</strong> — eco-friendly + becomes a re-marketing channel.</td></tr>
+        <tr><td class="key">post_facto_gstin</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Add GSTIN after sale</strong> — attach buyer GSTIN to yesterday's walk-in sale. Regenerate tax invoice without voiding.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══ CUSTOMERS ═══ -->
+<div class="section" id="customers">
+  <div class="section-head" style="background:#be185d"><h2>7. Customers</h2><span class="count">7 features</span></div>
+  <div class="section-body">
+    <table>
+      <thead><tr><th>Feature Key</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td class="key">max_customers</td><td><span class="type type-quota">quota</span></td><td class="desc"><strong>Customer database size</strong> — Starter: 500, Pro: unlimited.</td></tr>
+        <tr><td class="key">customer_loyalty</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Loyalty points</strong> — earn on purchase, redeem for discounts. Configurable rates.</td></tr>
+        <tr><td class="key">customer_credit_management</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Credit limits &amp; aging</strong> — set limits, track 30/60/90 day aging, auto-block overdue.</td></tr>
+        <tr><td class="key">customer_plans_enabled</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Customer subscription plans</strong> — business can sell plans to their customers (laundry packages, car wash memberships). Gates Level 2 entirely.</td></tr>
+        <tr><td class="key">customer_history</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Purchase history</strong> — view all past transactions per customer.</td></tr>
+        <tr><td class="key">customer_tags</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Tag customers</strong> — VIP, wholesale, walk-in, corporate.</td></tr>
+        <tr><td class="key">customer_import_export</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Bulk import/export</strong> — CSV/Excel for migration or backup.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══ REPORTS ═══ -->
+<div class="section" id="reports">
+  <div class="section-head" style="background:#0891b2"><h2>8. Reports &amp; Analytics</h2><span class="count">10 features</span></div>
+  <div class="section-body">
+    <table>
+      <thead><tr><th>Feature Key</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td class="key">reports_basic</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Essential reports</strong> — daily summary, payment method breakdown. The minimum.</td></tr>
+        <tr><td class="key">reports_advanced</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Full analytics</strong> — item-wise, category-wise, hourly, peak hours, comparisons. 70+ reports.</td></tr>
+        <tr><td class="key">reports_service_orders</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Service reports</strong> — turnaround time, pending deliveries, revenue by service type.</td></tr>
+        <tr><td class="key">reports_gst</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Tax reports</strong> — GST summary, HSN-wise, GSTR-1 data.</td></tr>
+        <tr><td class="key">reports_customer</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Customer analytics</strong> — top spenders, frequency, loyalty activity.</td></tr>
+        <tr><td class="key">reports_staff</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Staff performance</strong> — sales per operator, void frequency, discount patterns.</td></tr>
+        <tr><td class="key">reports_inventory</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Stock reports</strong> — movement, low stock, batch expiry.</td></tr>
+        <tr><td class="key">reports_export</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Download reports</strong> — CSV/Excel export for Tally, Zoho, offline analysis.</td></tr>
+        <tr><td class="key">reports_scheduled</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Auto-email reports</strong> — daily/weekly/monthly reports sent automatically.</td></tr>
+        <tr><td class="key">reports_custom_date_range</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Custom date range</strong> — pick any date range. Without this, only today/week/month presets.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══ GST ═══ -->
+<div class="section" id="gst">
+  <div class="section-head" style="background:#0d9488"><h2>9. GST &amp; Compliance</h2><span class="count">7 features</span></div>
+  <div class="section-body">
+    <table>
+      <thead><tr><th>Feature Key</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td class="key">gst_basic</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>GST calculation</strong> — auto CGST+SGST or IGST. Tax-inclusive/exclusive. Always on (legal requirement).</td></tr>
+        <tr><td class="key">gst_tax_invoice</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Formal tax invoices</strong> — with seller/buyer GSTIN, HSN/SAC codes, tax breakdown.</td></tr>
+        <tr><td class="key">gst_b2b_invoicing</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>B2B invoices</strong> — capture buyer GSTIN, company details. Required for business customers.</td></tr>
+        <tr><td class="key">gst_e_invoicing</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>E-invoicing (NIC/IRP)</strong> — push to government portal, get IRN and signed QR.</td></tr>
+        <tr><td class="key">gst_eway_bill</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>E-way bill</strong> — for goods transport above &#8377;50,000.</td></tr>
+        <tr><td class="key">gst_returns_data</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>GSTR-1 preparation</strong> — data organized for filing.</td></tr>
+        <tr><td class="key">gst_credit_debit_notes</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Credit/debit notes</strong> — for returns and price adjustments.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══ PRINTING ═══ -->
+<div class="section" id="printing">
+  <div class="section-head" style="background:#475569"><h2>10. Printing</h2><span class="count">7 features</span></div>
+  <div class="section-body">
+    <table>
+      <thead><tr><th>Feature Key</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td class="key">printing_receipt</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Thermal receipt</strong> — 58mm/80mm printer. Items, tax, payment, QR code.</td></tr>
+        <tr><td class="key">printing_kot_ticket</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Kitchen ticket</strong> — auto-print to kitchen with table, items, modifiers.</td></tr>
+        <tr><td class="key">printing_label</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Barcode/price labels</strong> — ZPL format for label printers.</td></tr>
+        <tr><td class="key">printing_settlement_report</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Day-end print</strong> — settlement report on thermal printer.</td></tr>
+        <tr><td class="key">printing_garment_tag</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Garment tags</strong> — per-garment tag for laundry rack tracking.</td></tr>
+        <tr><td class="key">printing_custom_header</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Custom branding</strong> — logo, header, footer on receipts.</td></tr>
+        <tr><td class="key">printing_reprint</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Reprint old receipts</strong> — look up past transaction and reprint.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══ NOTIFICATIONS ═══ -->
+<div class="section" id="notif">
+  <div class="section-head" style="background:#9333ea"><h2>11. Notifications</h2><span class="count">10 features</span></div>
+  <div class="section-body">
+    <table>
+      <thead><tr><th>Feature Key</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td class="key">notifications_sms_per_month</td><td><span class="type type-quota">quota</span></td><td class="desc"><strong>SMS quota</strong> — monthly SMS limit.</td></tr>
+        <tr><td class="key">notifications_whatsapp_per_month</td><td><span class="type type-quota">quota</span></td><td class="desc"><strong>WhatsApp quota</strong> — monthly WhatsApp limit. More engaging than SMS.</td></tr>
+        <tr><td class="key">notifications_email_per_month</td><td><span class="type type-quota">quota</span></td><td class="desc"><strong>Email quota</strong> — for receipts, invoices, reports.</td></tr>
+        <tr><td class="key">notification_order_ready</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>"Order is ready"</strong> — auto-notify when service order status → ready.</td></tr>
+        <tr><td class="key">notification_order_status</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Every status change</strong> — received → in progress → ready → delivered.</td></tr>
+        <tr><td class="key">notification_payment_receipt</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Digital receipt</strong> — send after every payment.</td></tr>
+        <tr><td class="key">notification_delivery_confirmation</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Delivery proof</strong> — confirm when order is delivered.</td></tr>
+        <tr><td class="key">notification_payment_reminder</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Credit reminders</strong> — remind customers with outstanding amounts.</td></tr>
+        <tr><td class="key">notification_owner_daily_summary</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Owner's daily digest</strong> — WhatsApp at closing with sales summary.</td></tr>
+        <tr><td class="key">notification_owner_alerts</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Critical alerts</strong> — big refund, cash variance, credit limit exceeded.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══ OFFLINE ═══ -->
+<div class="section" id="offline">
+  <div class="section-head" style="background:#4f46e5"><h2>12. Offline &amp; Sync</h2><span class="count">4 features</span></div>
+  <div class="section-body">
+    <table>
+      <thead><tr><th>Feature Key</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td class="key">offline_mode</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Work without internet</strong> — full offline operation. Syncs when connectivity returns.</td></tr>
+        <tr><td class="key">offline_billing_range</td><td><span class="type type-quota">quota</span></td><td class="desc"><strong>Pre-allocated bill numbers</strong> — how many bills terminal can process offline.</td></tr>
+        <tr><td class="key">sync_photo_upload</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Auto-upload photos</strong> — service order photos uploaded to cloud when online.</td></tr>
+        <tr><td class="key">sync_realtime_websocket</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Real-time sync</strong> — instant via WebSocket. Without this, polling every 30 seconds.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══ SETTLEMENT ═══ -->
+<div class="section" id="settle">
+  <div class="section-head" style="background:#b45309"><h2>13. Settlement</h2><span class="count">5 features</span></div>
+  <div class="section-body">
+    <table>
+      <thead><tr><th>Feature Key</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td class="key">settlement_basic</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Day-end close</strong> — close register, see totals. The minimum.</td></tr>
+        <tr><td class="key">settlement_denomination</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Cash counting</strong> — enter notes by denomination. System compares with expected.</td></tr>
+        <tr><td class="key">settlement_manager_approval</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Manager sign-off</strong> — manager reviews variance and approves.</td></tr>
+        <tr><td class="key">settlement_variance_alerts</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Variance alerts</strong> — notify owner when cash doesn't match.</td></tr>
+        <tr><td class="key">cash_drawer_integration</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Auto-open cash drawer</strong> — opens on cash payment. ESC/POS kick pulse.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══ MULTI-STORE ═══ -->
+<div class="section" id="multi">
+  <div class="section-head" style="background:#0369a1"><h2>14. Multi-Store</h2><span class="count">5 features</span></div>
+  <div class="section-body">
+    <table>
+      <thead><tr><th>Feature Key</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td class="key">multi_store_dashboard</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>All stores in one view</strong> — combined sales, compare branches.</td></tr>
+        <tr><td class="key">multi_store_inventory</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Cross-store stock</strong> — see stock at other locations from POS.</td></tr>
+        <tr><td class="key">multi_store_transfer</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Stock transfers</strong> — move inventory between stores.</td></tr>
+        <tr><td class="key">multi_store_customer_sync</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Shared customers</strong> — same customer database across all stores.</td></tr>
+        <tr><td class="key">operations_live_dashboard</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Live operations</strong> — real-time terminal status, queue depth.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══ INTEGRATIONS ═══ -->
+<div class="section" id="integrations">
+  <div class="section-head" style="background:#6d28d9"><h2>15. Integrations</h2><span class="count">8 features</span></div>
+  <div class="section-body">
+    <table>
+      <thead><tr><th>Feature Key</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td class="key">integration_edc_device</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Payment terminals</strong> — Pine Labs, Razorpay POS, Paytm EDC.</td></tr>
+        <tr><td class="key">integration_accounting</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Auto-post to elaccounts</strong> — journal entries created automatically.</td></tr>
+        <tr><td class="key">integration_inventory</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Real-time stock</strong> — check and deduct from inventory service.</td></tr>
+        <tr><td class="key">integration_crm</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Customer sync to el-crm</strong> — POS customers flow into CRM.</td></tr>
+        <tr><td class="key">integration_catalog</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Central catalog</strong> — products from elcatalogs instead of manual entry.</td></tr>
+        <tr><td class="key">integration_aggregators</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Swiggy/Zomato</strong> — food delivery orders into KOT.</td></tr>
+        <tr><td class="key">api_access</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>REST API</strong> — external systems read POS data.</td></tr>
+        <tr><td class="key">webhook_access</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Webhooks</strong> — push events to external URLs.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══ BRANDING ═══ -->
+<div class="section" id="branding">
+  <div class="section-head" style="background:#c026d3"><h2>16. Branding</h2><span class="count">4 features</span></div>
+  <div class="section-body">
+    <table>
+      <thead><tr><th>Feature Key</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td class="key">custom_receipt_branding</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Logo on receipts</strong> — custom header, footer, contact info.</td></tr>
+        <tr><td class="key">custom_ui_theme</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Custom POS colors</strong> — match business branding.</td></tr>
+        <tr><td class="key">white_label</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Remove elSapiens branding</strong> — appears as the business's own software.</td></tr>
+        <tr><td class="key">custom_domain</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Custom web address</strong> — mybusiness.elsapiens.com.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══ DATA ═══ -->
+<div class="section" id="data">
+  <div class="section-head" style="background:#64748b"><h2>17. Data &amp; Storage</h2><span class="count">3 features</span></div>
+  <div class="section-body">
+    <table>
+      <thead><tr><th>Feature Key</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td class="key">data_retention_days</td><td><span class="type type-quota">quota</span></td><td class="desc"><strong>Data retention</strong> — how long history is kept. 90/365/unlimited days.</td></tr>
+        <tr><td class="key">photo_storage_gb</td><td><span class="type type-quota">quota</span></td><td class="desc"><strong>Photo storage</strong> — cloud storage for service order photos. 1/10/100 GB.</td></tr>
+        <tr><td class="key">data_backup_frequency</td><td><span class="type type-quota">quota</span></td><td class="desc"><strong>Backup frequency</strong> — how often data is backed up. 24/12/1 hours.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══ SECURITY ═══ -->
+<div class="section" id="security">
+  <div class="section-head" style="background:#1e293b"><h2>18. Security</h2><span class="count">5 features</span></div>
+  <div class="section-body">
+    <table>
+      <thead><tr><th>Feature Key</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td class="key">staff_roles</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Role-based access</strong> — Cashier, Manager, Owner roles with different permissions.</td></tr>
+        <tr><td class="key">manager_pin_required</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>PIN for sensitive actions</strong> — voids, refunds, discounts need manager PIN.</td></tr>
+        <tr><td class="key">audit_trail</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Full activity log</strong> — who did what, when. For accountability.</td></tr>
+        <tr><td class="key">session_timeout</td><td><span class="type type-quota">quota</span></td><td class="desc"><strong>Auto-logout</strong> — lock after N minutes of inactivity.</td></tr>
+        <tr><td class="key">ip_restriction</td><td><span class="type type-bool">boolean</span></td><td class="desc"><strong>Network restriction</strong> — POS only accessible from specific IPs/WiFi.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══ SAMPLE PLANS ═══ -->
+<div class="section" id="plans">
+  <div class="section-head" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)"><h2>Sample Plan Comparison</h2></div>
+  <div class="section-body plan-table">
+    <table>
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th><span class="plan-header">Starter</span><br><span class="price">&#8377;999/month</span></th>
+          <th><span class="plan-header">Pro</span><br><span class="price">&#8377;2,499/month</span></th>
+          <th><span class="plan-header">Enterprise</span><br><span class="price">&#8377;9,999/month</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Terminals</td><td class="val">1</td><td class="val">3</td><td class="val">Unlimited</td></tr>
+        <tr><td>Stores</td><td class="val">1</td><td class="val">2</td><td class="val">Unlimited</td></tr>
+        <tr><td>Retail mode</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+        <tr><td>Service mode</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+        <tr><td>KOT/Restaurant</td><td class="no">No</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+        <tr><td>Transactions/month</td><td class="val">500</td><td class="val">Unlimited</td><td class="val">Unlimited</td></tr>
+        <tr><td>Card/UPI payments</td><td class="no">No</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+        <tr><td>Split payment</td><td class="no">No</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+        <tr><td>Photo capture</td><td class="val">4/order</td><td class="val">10/order</td><td class="val">Unlimited</td></tr>
+        <tr><td>Customers</td><td class="val">500</td><td class="val">Unlimited</td><td class="val">Unlimited</td></tr>
+        <tr><td>Loyalty points</td><td class="no">No</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+        <tr><td>Customer plans</td><td class="no">No</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+        <tr><td>Basic reports</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+        <tr><td>Advanced reports</td><td class="no">No</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+        <tr><td>Export reports</td><td class="no">No</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+        <tr><td>GST basic</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+        <tr><td>E-invoicing</td><td class="no">No</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+        <tr><td>Receipt printing</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+        <tr><td>Label printing</td><td class="no">No</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+        <tr><td>SMS/month</td><td class="val">0</td><td class="val">200</td><td class="val">2,000</td></tr>
+        <tr><td>WhatsApp/month</td><td class="val">0</td><td class="val">500</td><td class="val">5,000</td></tr>
+        <tr><td>Offline mode</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+        <tr><td>Multi-store dashboard</td><td class="no">No</td><td class="no">No</td><td class="yes">Yes</td></tr>
+        <tr><td>EDC integration</td><td class="no">No</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+        <tr><td>Accounting integration</td><td class="no">No</td><td class="no">No</td><td class="yes">Yes</td></tr>
+        <tr><td>API access</td><td class="no">No</td><td class="no">No</td><td class="yes">Yes</td></tr>
+        <tr><td>Custom branding</td><td class="no">No</td><td class="no">No</td><td class="yes">Yes</td></tr>
+        <tr><td>White label</td><td class="no">No</td><td class="no">No</td><td class="yes">Yes</td></tr>
+        <tr><td>Photo storage</td><td class="val">1 GB</td><td class="val">10 GB</td><td class="val">100 GB</td></tr>
+        <tr><td>Data retention</td><td class="val">90 days</td><td class="val">1 year</td><td class="val">Unlimited</td></tr>
+        <tr><td>Staff roles</td><td class="no">No</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+        <tr><td>Audit trail</td><td class="no">No</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</div>
+
+<div class="footer">
+  elPOS Feature Registry — Part of the elSapiens Ecosystem — March 2026
+</div>
+
+</body>
+</html>
