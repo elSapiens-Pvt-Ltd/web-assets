@@ -1,0 +1,1473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>elPOS Complete Reference — Modules, APIs, Frontend &amp; Data Flows</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#f8fafc;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b;--light:#94a3b8;--green:#22c55e;--amber:#f59e0b;--red:#ef4444;--blue:#3b82f6;--purple:#8b5cf6;--cyan:#06b6d4;--pink:#ec4899;--indigo:#6366f1}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:13px;line-height:1.6}
+.nav{position:sticky;top:0;z-index:100;background:#0f172a;padding:0 12px;display:flex;align-items:center;height:42px;gap:8px;box-shadow:0 2px 12px rgba(0,0,0,.25);overflow-x:auto}
+.nav .brand{color:#fff;font-weight:800;font-size:13px;white-space:nowrap;margin-right:8px}
+.nav a{color:#94a3b8;font-size:10px;font-weight:500;text-decoration:none;white-space:nowrap;padding:4px 6px;border-radius:4px}
+.nav a:hover{color:#fff;background:rgba(255,255,255,.1)}
+.header{background:linear-gradient(135deg,#1e293b,#0f172a);color:#fff;padding:36px 24px 28px;text-align:center}
+.header h1{font-size:22px;font-weight:800}
+.header p{font-size:12px;color:#94a3b8;margin-top:6px}
+.container{max-width:1200px;margin:0 auto;padding:16px}
+
+/* Flow diagram */
+.flow-section{margin-bottom:24px}
+.flow-title{font-size:16px;font-weight:800;color:var(--text);margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--border)}
+.flow-desc{font-size:12px;color:var(--muted);margin-bottom:16px}
+
+/* Module card */
+.module{background:var(--card);border:1.5px solid var(--border);border-radius:10px;margin-bottom:16px;overflow:hidden}
+.module-head{padding:12px 16px;display:flex;align-items:center;gap:10px;color:#fff}
+.module-head h3{font-size:14px;font-weight:700}
+.module-head .tag{font-size:9px;background:rgba(255,255,255,.2);padding:2px 8px;border-radius:4px;font-weight:600;margin-left:auto}
+.module-body{padding:0}
+
+/* Sub-sections inside module */
+.sub{border-bottom:1px solid #f1f5f9}
+.sub:last-child{border-bottom:none}
+.sub-head{padding:8px 16px;background:#f8fafc;display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.sub-head .dot{width:8px;height:8px;border-radius:50%}
+
+/* Table inside sub */
+.action-table{width:100%;border-collapse:collapse}
+.action-table th{padding:6px 16px;text-align:left;font-size:9px;font-weight:700;color:var(--light);text-transform:uppercase;letter-spacing:.4px;background:#fafbfc;border-bottom:1px solid var(--border)}
+.action-table td{padding:6px 16px;border-bottom:1px solid #f8fafc;font-size:11.5px;vertical-align:top}
+.action-table tr:hover td{background:#f8fafc}
+.ep{font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:500;color:#1e40af}
+.method{display:inline-block;font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px;margin-right:4px;font-family:'JetBrains Mono',monospace}
+.method-get{background:#dcfce7;color:#166534}
+.method-post{background:#dbeafe;color:#1e40af}
+.method-put{background:#fef3c7;color:#92400e}
+.method-patch{background:#fce7f3;color:#9d174d}
+.method-del{background:#fee2e2;color:#991b1b}
+.desc-cell{color:var(--muted);font-size:11px}
+.source{font-size:9px;padding:1px 6px;border-radius:3px;font-weight:600}
+.src-own{background:#dcfce7;color:#166534}
+.src-inv{background:#dbeafe;color:#1e40af}
+.src-cat{background:#fef3c7;color:#92400e}
+.src-geo{background:#f3e8ff;color:#6b21a8}
+.src-acc{background:#fce7f3;color:#9d174d}
+.src-msg{background:#ecfeff;color:#0e7490}
+.src-pay{background:#fef3c7;color:#92400e}
+
+/* JSON code blocks */
+pre.json{background:#1e293b;color:#e2e8f0;padding:12px;border-radius:6px;font-size:11px;font-family:'JetBrains Mono',monospace;overflow-x:auto;line-height:1.5;margin:8px 16px 12px}
+pre.json .k{color:#7dd3fc}
+pre.json .v{color:#86efac}
+pre.json .n{color:#fde68a}
+pre.json .c{color:#64748b}
+pre.json .t{color:#c4b5fd}
+
+/* Param table */
+.ptable{width:100%;border-collapse:collapse;font-size:11px;margin:4px 0 8px}
+.ptable th{padding:4px 16px;text-align:left;font-size:9px;font-weight:700;color:var(--light);text-transform:uppercase;background:#fafbfc;border-bottom:1px solid var(--border)}
+.ptable td{padding:4px 16px;border-bottom:1px solid #f8fafc;vertical-align:top}
+.ptable .pn{font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--text);font-size:11px}
+.ptable .pt{font-family:'JetBrains Mono',monospace;color:var(--purple);font-size:10px}
+.rq{color:var(--red);font-size:9px;font-weight:700}
+.op{color:var(--light);font-size:9px;font-weight:700}
+
+/* FE detail block */
+.fe-detail{padding:8px 16px 12px;font-size:11.5px;color:var(--muted);line-height:1.6}
+.fe-detail strong{color:var(--text)}
+
+/* Component list */
+.comp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;padding:12px 16px}
+.comp{padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:11px}
+.comp-name{font-weight:700;font-size:11.5px;color:var(--text);margin-bottom:2px;font-family:'JetBrains Mono',monospace}
+.comp-desc{color:var(--muted);font-size:10px}
+.comp-status{font-size:9px;margin-top:3px;font-weight:600}
+.comp-new{color:var(--blue)}
+.comp-modify{color:var(--amber)}
+.comp-exists{color:var(--green)}
+
+/* Flow arrows */
+.flow-box{background:#f8fafc;border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin:12px 16px;font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.8;overflow-x:auto;white-space:pre}
+.flow-box .hl{color:var(--blue);font-weight:600}
+.flow-box .grpc{color:#9d174d;font-weight:600}
+.flow-box .db{color:#166534;font-weight:600}
+.flow-box .arrow{color:var(--muted)}
+
+/* Ecosystem connections */
+.eco-section{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:16px}
+.eco-section h3{font-size:14px;font-weight:700;margin-bottom:12px}
+.eco-table{width:100%;border-collapse:collapse}
+.eco-table th{padding:6px 12px;text-align:left;font-size:9px;font-weight:700;color:var(--light);text-transform:uppercase;background:#fafbfc;border-bottom:1px solid var(--border)}
+.eco-table td{padding:6px 12px;border-bottom:1px solid #f8fafc;font-size:11.5px}
+.eco-table .svc{font-weight:700;color:var(--text)}
+
+.footer{text-align:center;padding:24px;color:var(--muted);font-size:11px;border-top:1px solid var(--border);margin-top:16px}
+@media(max-width:768px){.comp-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <span class="brand">elSapiens</span>
+  <a href="#ecosystem-conn">Ecosystem</a>
+  <a href="#mod-auth">Auth</a>
+  <a href="#mod-terminal">Terminals</a>
+  <a href="#mod-gst">GST</a>
+  <a href="#mod-sale">Sales</a>
+  <a href="#mod-payment">Payments</a>
+  <a href="#mod-settle">Settlement</a>
+  <a href="#mod-customer">Customers</a>
+  <a href="#mod-service">Service Orders</a>
+  <a href="#mod-print">Printing</a>
+  <a href="#mod-sync">Offline Sync</a>
+  <a href="#mod-report">Reports</a>
+  <a href="#frontend">Frontend</a>
+  <a href="#flows">Flows</a>
+  <a href="#overview-all">Bird's Eye</a>
+</nav>
+
+<header class="header">
+  <h1>elPOS Complete Reference</h1>
+  <p>Every module, API request/response, frontend component with forms/lists/actions, and data flows — single source of truth</p>
+</header>
+
+<div class="container">
+
+<!-- ═══════════════════════════ -->
+<!-- ECOSYSTEM CONNECTIONS       -->
+<!-- ═══════════════════════════ -->
+<div class="eco-section" id="ecosystem-conn">
+  <h3>Ecosystem Service Connections</h3>
+  <table class="eco-table">
+    <thead><tr><th>Service</th><th>Protocol</th><th>What elPOS Calls</th><th>When</th><th>Cache</th><th>Circuit Breaker</th></tr></thead>
+    <tbody>
+      <tr><td class="svc">elAuth</td><td>JWT + gRPC</td><td>Token validation, RBAC claims</td><td>Every request (JWT), role check on sensitive actions</td><td>No (per-request)</td><td>No (local JWT validation)</td></tr>
+      <tr><td class="svc">Inventory</td><td>gRPC</td><td>ListStores, GetStore, CreateStore, CreateWarehouse, DeductStock, RestoreStock, CreateStockReceipt</td><td>Setup wizard, terminal registration, sale completion, returns</td><td>Stores: 15min</td><td>Yes — fallback to cache</td></tr>
+      <tr><td class="svc">elCatalogs</td><td>gRPC</td><td>SearchItems, GetItem, ListCategories, GetItemPricing, CreateItem, CreateCategory</td><td>Product search, add to cart, setup wizard, quick-add</td><td>Products: 15min</td><td>Yes — fallback to cache</td></tr>
+      <tr><td class="svc">Geolocations</td><td>gRPC</td><td>GetState, ListStates</td><td>GST calculation (state tax code for CGST/SGST vs IGST)</td><td>States: 24hr</td><td>Yes — hardcoded fallback</td></tr>
+      <tr><td class="svc">elAccounts</td><td>gRPC</td><td>FindPersonByIdentifier, GetPersonProfile, CreateIndividualAccount</td><td>Customer search, customer sync</td><td>No (search is dynamic)</td><td>Yes — use local cache</td></tr>
+      <tr><td class="svc">elmessagehub</td><td>gRPC</td><td>SendMessage (WhatsApp/SMS)</td><td>Order ready, delivery confirm, owner summary, payment reminder</td><td>No</td><td>Yes — failure never blocks</td></tr>
+      <tr><td class="svc">elCurrency</td><td>gRPC</td><td>GetRate, Convert</td><td>Multi-currency display (future)</td><td>Rates: 1hr</td><td>Yes</td></tr>
+      <tr><td class="svc">Pine Labs</td><td>REST</td><td>UploadBilledTransaction, GetStatus, CancelTransaction</td><td>Card payment</td><td>No</td><td>Yes — timeout handling</td></tr>
+      <tr><td class="svc">Razorpay/PhonePe</td><td>REST</td><td>CreateQR, GetPaymentStatus</td><td>UPI payment</td><td>No</td><td>Yes — timeout handling</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════════════════ -->
+<!-- MODULE: AUTH MIDDLEWARE      -->
+<!-- ═══════════════════════════ -->
+<div class="module" id="mod-auth">
+  <div class="module-head" style="background:var(--indigo)"><h3>Auth &amp; Tenant Middleware</h3><span class="tag">internal/middleware</span></div>
+  <div class="module-body">
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--indigo)"></div>Components</div>
+      <div class="comp-grid">
+        <div class="comp"><div class="comp-name">auth.go</div><div class="comp-desc">JWT validation (mock + real mode). Reads access_token cookie or Authorization header. Extracts person_id, entity_id, reseller_id, workspace_ids from claims.</div><div class="comp-status comp-new">NEW</div></div>
+        <div class="comp"><div class="comp-name">tenant.go</div><div class="comp-desc">Extracts active workspace from X-Workspace-ID header. Validates against JWT workspace list. Creates TenantContext.</div><div class="comp-status comp-new">NEW</div></div>
+        <div class="comp"><div class="comp-name">context.go</div><div class="comp-desc">TenantContext struct with helpers: GetPersonID(ctx), GetOrgID(ctx), GetWorkspaceID(ctx), GetResellerID(ctx).</div><div class="comp-status comp-new">NEW</div></div>
+        <div class="comp"><div class="comp-name">logging.go</div><div class="comp-desc">Logs every request: method, path, status, duration, request_id, org_id.</div><div class="comp-status comp-new">NEW</div></div>
+        <div class="comp"><div class="comp-name">recovery.go</div><div class="comp-desc">Catches panics, logs stack trace, returns 500.</div><div class="comp-status comp-new">NEW</div></div>
+        <div class="comp"><div class="comp-name">cors.go</div><div class="comp-desc">Allows frontend origin, credentials (cookie), correct methods/headers.</div><div class="comp-status comp-new">NEW</div></div>
+      </div>
+    </div>
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--green)"></div>Data Flow</div>
+      <div class="flow-box"><span class="hl">Request arrives</span> <span class="arrow">→</span> CORS <span class="arrow">→</span> Request ID <span class="arrow">→</span> Logging <span class="arrow">→</span> Recovery
+    <span class="arrow">→</span> <span class="grpc">Auth (validate JWT)</span> <span class="arrow">→</span> <span class="grpc">Tenant (extract workspace)</span>
+    <span class="arrow">→</span> <span class="hl">Handler</span> <span class="arrow">→</span> Service <span class="arrow">→</span> Repository <span class="arrow">→</span> <span class="db">PostgreSQL</span>
+    <span class="arrow">→</span> Response <span class="arrow">→</span> Logging (duration)</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ -->
+<!-- MODULE: TERMINALS            -->
+<!-- ═══════════════════════════ -->
+<div class="module" id="mod-terminal">
+  <div class="module-head" style="background:#8b5cf6"><h3>Terminals &amp; Sessions</h3><span class="tag">Module 01 — 7 endpoints</span></div>
+  <div class="module-body">
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:#8b5cf6"></div>Backend Components</div>
+      <div class="comp-grid">
+        <div class="comp"><div class="comp-name">models/terminal.go</div><div class="comp-desc">Terminal, BillingSeries, RegisterSession structs. Create/Update request types.</div><div class="comp-status comp-new">NEW</div></div>
+        <div class="comp"><div class="comp-name">repository/terminal_repo.go</div><div class="comp-desc">CRUD for terminals. ExistsWithCode for uniqueness check.</div><div class="comp-status comp-new">NEW</div></div>
+        <div class="comp"><div class="comp-name">repository/session_repo.go</div><div class="comp-desc">Open, Close, GetCurrent, GetByID for register sessions.</div><div class="comp-status comp-new">NEW</div></div>
+        <div class="comp"><div class="comp-name">services/terminal_service.go</div><div class="comp-desc">Validation, billing_prefix generation, uniqueness enforcement.</div><div class="comp-status comp-new">NEW</div></div>
+        <div class="comp"><div class="comp-name">services/session_service.go</div><div class="comp-desc">Open/close logic, single-session-per-terminal enforcement.</div><div class="comp-status comp-new">NEW</div></div>
+        <div class="comp"><div class="comp-name">services/numbering_service.go</div><div class="comp-desc">Billing series allocation, atomic NextNumber, offline fallback format.</div><div class="comp-status comp-new">NEW</div></div>
+        <div class="comp"><div class="comp-name">handlers/terminal_handler.go</div><div class="comp-desc">HTTP handlers for all terminal endpoints.</div><div class="comp-status comp-new">NEW</div></div>
+        <div class="comp"><div class="comp-name">handlers/session_handler.go</div><div class="comp-desc">HTTP handlers for session endpoints.</div><div class="comp-status comp-new">NEW</div></div>
+        <div class="comp"><div class="comp-name">handlers/store_handler.go</div><div class="comp-desc">Proxy to Inventory service. GET /stores passthrough.</div><div class="comp-status comp-new">NEW</div></div>
+        <div class="comp"><div class="comp-name">grpc/inventory_client.go</div><div class="comp-desc">gRPC client for Inventory ListStores, GetStore, CreateStore, CreateWarehouse.</div><div class="comp-status comp-new">NEW</div></div>
+      </div>
+    </div>
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--blue)"></div>API Endpoints</div>
+      <table class="action-table">
+        <thead><tr><th>Method</th><th>Endpoint</th><th>Description</th><th>Data Source</th></tr></thead>
+        <tbody>
+          <tr><td><span class="method method-post">POST</span></td><td class="ep">/api/v1/terminals</td><td class="desc-cell">Register a new POS terminal at a store. Requires store_id, code, name, mode.</td><td><span class="source src-own">elPOS DB</span></td></tr>
+          <tr><td><span class="method method-get">GET</span></td><td class="ep">/api/v1/terminals</td><td class="desc-cell">List all terminals. Optional filter: ?store_id=</td><td><span class="source src-own">elPOS DB</span></td></tr>
+          <tr><td><span class="method method-get">GET</span></td><td class="ep">/api/v1/terminals/{id}</td><td class="desc-cell">Get single terminal with config details.</td><td><span class="source src-own">elPOS DB</span></td></tr>
+          <tr><td><span class="method method-put">PUT</span></td><td class="ep">/api/v1/terminals/{id}</td><td class="desc-cell">Update terminal name, mode, config. Code is immutable.</td><td><span class="source src-own">elPOS DB</span></td></tr>
+          <tr><td><span class="method method-post">POST</span></td><td class="ep">/api/v1/sessions/open</td><td class="desc-cell">Open register with terminal_id and opening_float. One open session per terminal.</td><td><span class="source src-own">elPOS DB</span></td></tr>
+          <tr><td><span class="method method-post">POST</span></td><td class="ep">/api/v1/sessions/{id}/close</td><td class="desc-cell">Close register. Sets closed_at and closed_by.</td><td><span class="source src-own">elPOS DB</span></td></tr>
+          <tr><td><span class="method method-get">GET</span></td><td class="ep">/api/v1/sessions/current</td><td class="desc-cell">Get current open session for a terminal. ?terminal_id= required.</td><td><span class="source src-own">elPOS DB</span></td></tr>
+          <tr><td><span class="method method-get">GET</span></td><td class="ep">/api/v1/stores</td><td class="desc-cell">List stores for this workspace. Proxied to Inventory service.</td><td><span class="source src-inv">Inventory gRPC</span></td></tr>
+          <tr><td><span class="method method-post">POST</span></td><td class="ep">/api/v1/stores</td><td class="desc-cell">Create store + warehouse. Proxied to Inventory. Used by setup wizard.</td><td><span class="source src-inv">Inventory gRPC</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--cyan)"></div>API Request / Response</div>
+      <pre class="json"><span class="c">// POST /api/v1/terminals — Register terminal</span>
+<span class="c">// Request:</span>
+{
+  <span class="k">"store_id"</span>: <span class="v">"store-uuid-from-inventory"</span>,
+  <span class="k">"code"</span>: <span class="v">"T1"</span>,
+  <span class="k">"name"</span>: <span class="v">"Main Counter"</span>,
+  <span class="k">"mode"</span>: <span class="v">"service"</span>    <span class="c">// retail | service | hybrid | restaurant</span>
+}
+<span class="c">// Response 201:</span>
+{
+  <span class="k">"data"</span>: {
+    <span class="k">"id"</span>: <span class="v">"terminal-uuid"</span>, <span class="k">"code"</span>: <span class="v">"T1"</span>, <span class="k">"name"</span>: <span class="v">"Main Counter"</span>,
+    <span class="k">"mode"</span>: <span class="v">"service"</span>, <span class="k">"billing_prefix"</span>: <span class="v">"T1-"</span>, <span class="k">"is_active"</span>: <span class="n">true</span>,
+    <span class="k">"config"</span>: { <span class="k">"auto_print_receipt"</span>: <span class="n">false</span>, <span class="k">"default_payment_method"</span>: <span class="v">"cash"</span>, <span class="k">"tax_inclusive"</span>: <span class="n">false</span> }
+  }
+}
+<span class="c">// Error 409: { "error": { "code": "conflict", "message": "Terminal code 'T1' already exists in this store" } }</span>
+
+<span class="c">─────────────────────────────────────────────────</span>
+
+<span class="c">// POST /api/v1/sessions/open — Open register</span>
+<span class="c">// Request:</span>
+{ <span class="k">"terminal_id"</span>: <span class="v">"terminal-uuid"</span>, <span class="k">"opening_float"</span>: <span class="v">"5000.00"</span> }
+<span class="c">// Response 201:</span>
+{
+  <span class="k">"data"</span>: {
+    <span class="k">"id"</span>: <span class="v">"session-uuid"</span>, <span class="k">"terminal_id"</span>: <span class="v">"terminal-uuid"</span>,
+    <span class="k">"opened_by"</span>: <span class="v">"person-uuid"</span>, <span class="k">"opened_at"</span>: <span class="v">"2026-04-01T09:00:00Z"</span>,
+    <span class="k">"opening_float"</span>: <span class="v">"5000.00"</span>, <span class="k">"status"</span>: <span class="v">"open"</span>
+  }
+}
+<span class="c">// Error 409: { "error": { "code": "conflict", "message": "Terminal T1 already has an open session" } }</span>
+
+<span class="c">─────────────────────────────────────────────────</span>
+
+<span class="c">// GET /api/v1/sessions/current?terminal_id=xxx — Check open session</span>
+<span class="c">// 200: { "data": { "id": "...", "status": "open", ... } }</span>
+<span class="c">// 404: { "error": { "code": "not_found", "message": "No open session for this terminal" } }</span>
+
+<span class="c">─────────────────────────────────────────────────</span>
+
+<span class="c">// GET /api/v1/stores — List stores (proxy to Inventory)</span>
+<span class="c">// Response:</span>
+{
+  <span class="k">"data"</span>: [{
+    <span class="k">"id"</span>: <span class="v">"store-uuid"</span>, <span class="k">"code"</span>: <span class="v">"MGROAD"</span>, <span class="k">"name"</span>: <span class="v">"MG Road Branch"</span>,
+    <span class="k">"store_type"</span>: <span class="v">"RETAIL"</span>,
+    <span class="k">"address"</span>: { <span class="k">"line1"</span>: <span class="v">"123 MG Road"</span>, <span class="k">"city"</span>: <span class="v">"Bangalore"</span>, <span class="k">"state"</span>: <span class="v">"Karnataka"</span>, <span class="k">"state_code"</span>: <span class="v">"29"</span>, <span class="k">"gstin"</span>: <span class="v">"29ABCDE1234F1Z5"</span> }
+  }]
+}</pre>
+    </div>
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--purple)"></div>Frontend Components</div>
+      <div class="comp-grid">
+        <div class="comp"><div class="comp-name">SetupWizard.tsx</div><div class="comp-desc">First-time setup: create store → register terminal → open register. 3-step flow.</div><div class="comp-status comp-new">NEW page</div></div>
+        <div class="comp"><div class="comp-name">OpenRegister.tsx</div><div class="comp-desc">Daily screen: terminal info, opening cash input, Open Register button.</div><div class="comp-status comp-new">NEW page</div></div>
+        <div class="comp"><div class="comp-name">TerminalList.tsx</div><div class="comp-desc">Settings: list all terminals with code, name, mode, status.</div><div class="comp-status comp-new">NEW component</div></div>
+        <div class="comp"><div class="comp-name">RegisterTerminalModal.tsx</div><div class="comp-desc">Form: store dropdown, code, name, mode selection.</div><div class="comp-status comp-new">NEW component</div></div>
+      </div>
+      <div class="fe-detail">
+        <strong>SetupWizard — Step 1: Create Store Form</strong><br>
+        Fields: Store Name* (text), Store Code* (text, auto-suggest), Address Line 1 (text), Address Line 2 (text), City* (text), State* (dropdown — from Geolocations), PIN Code (text), GSTIN (text, validated), Phone (text)<br>
+        Actions: [Next →] — calls POST /stores<br><br>
+
+        <strong>SetupWizard — Step 2: Register Terminal Form</strong><br>
+        Fields: Store (auto-selected from step 1), Terminal Code* (text, auto-suggest T1/T2), Terminal Name* (text), Mode* (radio cards: Retail / Services / Both / Restaurant — each with icon + description)<br>
+        Actions: [← Back] [Next →] — calls POST /terminals<br><br>
+
+        <strong>SetupWizard — Step 3: Open Register</strong><br>
+        Shows: summary of store + terminal. Fields: Opening Cash (number input, ₹ prefix). Actions: [← Back] [Start Billing →] — calls POST /sessions/open<br><br>
+
+        <strong>OpenRegister Screen</strong><br>
+        Shows: Terminal code + name, Store name + address. Fields: Opening Cash* (number). Actions: [Open Register →]<br><br>
+
+        <strong>TerminalList (in Settings)</strong><br>
+        List columns: Code (bold), Name, Mode (colored badge: green=retail, amber=service, blue=hybrid, red=restaurant), Store, Status (green dot=active, grey=inactive), [Edit] button<br>
+        Empty state: "No terminals. Register your first terminal."<br>
+        Actions: [+ Register New Terminal] button → opens RegisterTerminalModal<br><br>
+
+        <strong>RegisterTerminalModal — Form</strong><br>
+        Fields: Store* (dropdown — from GET /stores), Terminal Code* (text, max 20 chars, unique check), Terminal Name* (text, max 100 chars), Mode* (radio: retail/service/hybrid/restaurant with descriptions)<br>
+        Actions: [Cancel] [Register] — calls POST /terminals<br>
+        Error: "Code T1 already exists" shown under code field on 409<br><br>
+
+        <strong>EditTerminalModal — Form</strong><br>
+        Fields: Terminal Code (read-only, greyed out), Terminal Name* (editable), Mode* (editable), Status (toggle: Active/Inactive), Receipt Header (multiline text), Receipt Footer (multiline text), Auto-print Receipt (toggle), Default Payment Method (dropdown: cash/card/upi), Tax Inclusive (toggle), Cash Drawer Enabled (toggle)<br>
+        Actions: [Cancel] [Save Changes] — calls PUT /terminals/{id}
+      </div>
+    </div>
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--green)"></div>Frontend — API Client Functions</div>
+      <div class="comp-grid">
+        <div class="comp"><div class="comp-name">api/sessions.ts</div><div class="comp-desc">openSession(), closeSession(), getCurrentSession()</div><div class="comp-status comp-new">NEW</div></div>
+        <div class="comp"><div class="comp-name">api/terminals.ts</div><div class="comp-desc">createTerminal(), listTerminals(), updateTerminal()</div><div class="comp-status comp-new">NEW</div></div>
+        <div class="comp"><div class="comp-name">api/stores.ts</div><div class="comp-desc">listStores(), createStore()</div><div class="comp-status comp-new">NEW</div></div>
+      </div>
+    </div>
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--amber)"></div>Data Flow: Open Register</div>
+      <div class="flow-box"><span class="hl">POS loads</span> <span class="arrow">→</span> GET /sessions/current?terminal_id=T1
+    <span class="arrow">→</span> <span class="db">No session found</span>
+    <span class="arrow">→</span> <span class="hl">Show "Open Register" screen</span>
+    <span class="arrow">→</span> Staff enters ₹5,000 float <span class="arrow">→</span> POST /sessions/open
+    <span class="arrow">→</span> <span class="db">INSERT register_sessions (status=open)</span>
+    <span class="arrow">→</span> <span class="hl">POS screen loads — ready for billing</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ -->
+<!-- MODULE: GST                  -->
+<!-- ═══════════════════════════ -->
+<div class="module" id="mod-gst">
+  <div class="module-head" style="background:var(--cyan)"><h3>GST Calculation Engine</h3><span class="tag">internal/gst — No API endpoints (internal service)</span></div>
+  <div class="module-body">
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--cyan)"></div>Components</div>
+      <div class="comp-grid">
+        <div class="comp"><div class="comp-name">gst/calculator.go</div><div class="comp-desc">CalculateGST(amount, rate, sellerState, buyerState, inclusive) → GSTResult with CGST/SGST/IGST/cess breakdown.</div><div class="comp-status comp-new">NEW</div></div>
+        <div class="comp"><div class="comp-name">grpc/geolocations_client.go</div><div class="comp-desc">GetState() for tax codes. Redis 24hr cache. Circuit breaker with hardcoded fallback.</div><div class="comp-status comp-new">NEW</div></div>
+      </div>
+    </div>
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--amber)"></div>Calculation Flow</div>
+      <div class="flow-box"><span class="hl">Sale item added</span> <span class="arrow">→</span> Get HSN/SAC code from <span class="grpc">elCatalogs</span> <span class="arrow">→</span> Get GST rate
+    <span class="arrow">→</span> Get seller state from <span class="grpc">Inventory (store address)</span>
+    <span class="arrow">→</span> Get buyer state from customer (or default to seller state for B2C)
+    <span class="arrow">→</span> <span class="hl">Same state?</span>
+        YES <span class="arrow">→</span> CGST = rate/2, SGST = rate/2 (e.g., 9% + 9% = 18%)
+        NO  <span class="arrow">→</span> IGST = full rate (e.g., 18%)
+    <span class="arrow">→</span> If tax-inclusive: reverse calculate (base = amount / (1 + rate/100))
+    <span class="arrow">→</span> Return: taxable, CGST amt, SGST amt, IGST amt, cess</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ -->
+<!-- MODULE: SALES                -->
+<!-- ═══════════════════════════ -->
+<div class="module" id="mod-sale">
+  <div class="module-head" style="background:var(--green)"><h3>Product Sales</h3><span class="tag">Module 02 — 12 endpoints</span></div>
+  <div class="module-body">
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--green)"></div>Backend Components</div>
+      <div class="comp-grid">
+        <div class="comp"><div class="comp-name">models/sale.go</div><div class="comp-desc">Sale, SaleItem structs. All amount fields use Money type. Status: draft, held, completed, voided, returned.</div><div class="comp-status comp-new">NEW</div></div>
+        <div class="comp"><div class="comp-name">repository/sale_repo.go</div><div class="comp-desc">CRUD with filters (date, status, terminal, customer). AddItem, UpdateItem, RemoveItem. Pagination.</div><div class="comp-status comp-new">NEW</div></div>
+        <div class="comp"><div class="comp-name">services/sale_service.go</div><div class="comp-desc">Full lifecycle: Create(draft) → AddItem (catalog+GST) → Hold/Recall → Complete (bill#) → Void. Recalculate totals on every change.</div><div class="comp-status comp-new">NEW</div></div>
+        <div class="comp"><div class="comp-name">handlers/sale_handler.go</div><div class="comp-desc">HTTP handlers for all 10 sale endpoints.</div><div class="comp-status comp-new">NEW</div></div>
+        <div class="comp"><div class="comp-name">handlers/product_handler.go</div><div class="comp-desc">Proxy to elCatalogs: product search, categories, pricing.</div><div class="comp-status comp-new">NEW</div></div>
+        <div class="comp"><div class="comp-name">grpc/catalogs_client.go</div><div class="comp-desc">gRPC client for elCatalogs: SearchItems, GetItem, ListCategories, GetItemPricing, CreateItem.</div><div class="comp-status comp-new">NEW</div></div>
+      </div>
+    </div>
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--blue)"></div>API Endpoints</div>
+      <table class="action-table">
+        <thead><tr><th>Method</th><th>Endpoint</th><th>Description</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td><span class="method method-post">POST</span></td><td class="ep">/api/v1/sales</td><td class="desc-cell">Create new sale in draft status. Linked to terminal and session.</td><td><span class="source src-own">elPOS DB</span></td></tr>
+          <tr><td><span class="method method-get">GET</span></td><td class="ep">/api/v1/sales</td><td class="desc-cell">List sales. Filters: ?date=, ?status=, ?terminal_id=, ?customer_id=</td><td><span class="source src-own">elPOS DB</span></td></tr>
+          <tr><td><span class="method method-get">GET</span></td><td class="ep">/api/v1/sales/{id}</td><td class="desc-cell">Get sale with all items, tax breakdown, payment details.</td><td><span class="source src-own">elPOS DB</span></td></tr>
+          <tr><td><span class="method method-post">POST</span></td><td class="ep">/api/v1/sales/{id}/items</td><td class="desc-cell">Add product to sale. Fetches from elCatalogs, calculates GST, updates totals.</td><td><span class="source src-own">elPOS DB</span> + <span class="source src-cat">elCatalogs</span></td></tr>
+          <tr><td><span class="method method-put">PUT</span></td><td class="ep">/api/v1/sales/{id}/items/{itemId}</td><td class="desc-cell">Update quantity, apply item discount. Recalculates totals.</td><td><span class="source src-own">elPOS DB</span></td></tr>
+          <tr><td><span class="method method-del">DEL</span></td><td class="ep">/api/v1/sales/{id}/items/{itemId}</td><td class="desc-cell">Remove item from sale. Recalculates totals.</td><td><span class="source src-own">elPOS DB</span></td></tr>
+          <tr><td><span class="method method-post">POST</span></td><td class="ep">/api/v1/sales/{id}/hold</td><td class="desc-cell">Park/hold bill with label. Status → held.</td><td><span class="source src-own">elPOS DB</span></td></tr>
+          <tr><td><span class="method method-post">POST</span></td><td class="ep">/api/v1/sales/{id}/recall</td><td class="desc-cell">Recall held bill. Status → draft.</td><td><span class="source src-own">elPOS DB</span></td></tr>
+          <tr><td><span class="method method-patch">PATCH</span></td><td class="ep">/api/v1/sales/{id}/complete</td><td class="desc-cell">Complete sale. Assigns bill number. Deducts inventory. Posts accounting.</td><td><span class="source src-own">elPOS DB</span> + <span class="source src-inv">Inventory</span></td></tr>
+          <tr><td><span class="method method-post">POST</span></td><td class="ep">/api/v1/sales/{id}/void</td><td class="desc-cell">Void completed sale with reason. Audit trail created.</td><td><span class="source src-own">elPOS DB</span></td></tr>
+          <tr><td><span class="method method-post">POST</span></td><td class="ep">/api/v1/sales/{id}/return</td><td class="desc-cell">Return items from original sale. Partial return supported. Refund to cash or store credit.</td><td><span class="source src-own">elPOS DB</span> + <span class="source src-inv">Inventory</span></td></tr>
+          <tr><td><span class="method method-get">GET</span></td><td class="ep">/api/v1/products</td><td class="desc-cell">Search products. ?search=, ?category_id=, ?nature=GOODS. Proxied to elCatalogs.</td><td><span class="source src-cat">elCatalogs gRPC</span></td></tr>
+          <tr><td><span class="method method-get">GET</span></td><td class="ep">/api/v1/categories</td><td class="desc-cell">List product categories. Proxied to elCatalogs.</td><td><span class="source src-cat">elCatalogs gRPC</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--cyan)"></div>API Request / Response</div>
+      <pre class="json"><span class="c">// POST /api/v1/sales — Create draft sale</span>
+<span class="c">// Request:</span>
+{ <span class="k">"terminal_id"</span>: <span class="v">"terminal-uuid"</span>, <span class="k">"session_id"</span>: <span class="v">"session-uuid"</span> }
+<span class="c">// Response 201:</span>
+{ <span class="k">"data"</span>: { <span class="k">"id"</span>: <span class="v">"sale-uuid"</span>, <span class="k">"status"</span>: <span class="v">"draft"</span>, <span class="k">"bill_number"</span>: <span class="t">null</span>, <span class="k">"items"</span>: [], <span class="k">"net_total"</span>: <span class="v">"0.0000"</span> } }
+
+<span class="c">─────────────────────────────────────────────────</span>
+
+<span class="c">// POST /api/v1/sales/{id}/items — Add product to cart</span>
+<span class="c">// Request:</span>
+{
+  <span class="k">"item_id"</span>: <span class="v">"catalog-item-uuid"</span>,    <span class="c">// from elCatalogs</span>
+  <span class="k">"quantity"</span>: <span class="n">2</span>,
+  <span class="k">"discount_type"</span>: <span class="v">"percentage"</span>,      <span class="c">// optional: "percentage" or "fixed"</span>
+  <span class="k">"discount_value"</span>: <span class="v">"10.00"</span>           <span class="c">// optional: 10% off this item</span>
+}
+<span class="c">// Response 200 — returns FULL updated sale with all items + recalculated totals:</span>
+{
+  <span class="k">"data"</span>: {
+    <span class="k">"id"</span>: <span class="v">"sale-uuid"</span>, <span class="k">"status"</span>: <span class="v">"draft"</span>,
+    <span class="k">"subtotal"</span>: <span class="v">"450.0000"</span>, <span class="k">"discount_amount"</span>: <span class="v">"50.0000"</span>,
+    <span class="k">"tax_amount"</span>: <span class="v">"72.0000"</span>, <span class="k">"total"</span>: <span class="v">"472.0000"</span>,
+    <span class="k">"round_off"</span>: <span class="v">"0.0000"</span>, <span class="k">"net_total"</span>: <span class="v">"472.0000"</span>,
+    <span class="k">"items"</span>: [{
+      <span class="k">"id"</span>: <span class="v">"item-uuid"</span>, <span class="k">"name"</span>: <span class="v">"Surf Excel 1kg"</span>, <span class="k">"sku"</span>: <span class="v">"SE-1KG"</span>,
+      <span class="k">"hsn_sac_code"</span>: <span class="v">"3402"</span>, <span class="k">"quantity"</span>: <span class="v">"2.000"</span>, <span class="k">"unit_price"</span>: <span class="v">"250.0000"</span>,
+      <span class="k">"discount_amount"</span>: <span class="v">"50.0000"</span>,
+      <span class="k">"taxable_amount"</span>: <span class="v">"450.0000"</span>,
+      <span class="k">"cgst_rate"</span>: <span class="v">"9.0000"</span>, <span class="k">"cgst_amount"</span>: <span class="v">"36.0000"</span>,
+      <span class="k">"sgst_rate"</span>: <span class="v">"9.0000"</span>, <span class="k">"sgst_amount"</span>: <span class="v">"36.0000"</span>,
+      <span class="k">"igst_rate"</span>: <span class="v">"0.0000"</span>, <span class="k">"igst_amount"</span>: <span class="v">"0.0000"</span>,  <span class="c">// 0 = same-state</span>
+      <span class="k">"total"</span>: <span class="v">"522.0000"</span>
+    }]
+  }
+}
+
+<span class="c">─────────────────────────────────────────────────</span>
+
+<span class="c">// POST /api/v1/sales/{id}/hold — Park bill</span>
+<span class="c">// Request:</span>
+{ <span class="k">"label"</span>: <span class="v">"Blue shirt lady"</span> }
+<span class="c">// Response: { "data": { "id": "...", "status": "held", "held_name": "Blue shirt lady" } }</span>
+
+<span class="c">─────────────────────────────────────────────────</span>
+
+<span class="c">// PATCH /api/v1/sales/{id}/complete — Complete sale (after payment)</span>
+<span class="c">// No request body — triggered after full payment</span>
+<span class="c">// Response:</span>
+{
+  <span class="k">"data"</span>: {
+    <span class="k">"id"</span>: <span class="v">"sale-uuid"</span>, <span class="k">"bill_number"</span>: <span class="v">"T1-INV-2526-0001"</span>,
+    <span class="k">"status"</span>: <span class="v">"completed"</span>, <span class="k">"net_total"</span>: <span class="v">"472.0000"</span>
+  }
+}
+
+<span class="c">─────────────────────────────────────────────────</span>
+
+<span class="c">// GET /api/v1/products?search=rice&amp;nature=GOODS — Search products (proxy to elCatalogs)</span>
+<span class="c">// Response:</span>
+{
+  <span class="k">"data"</span>: [{
+    <span class="k">"id"</span>: <span class="v">"item-uuid"</span>, <span class="k">"name"</span>: <span class="v">"Basmati Rice 5kg"</span>, <span class="k">"nature"</span>: <span class="v">"GOODS"</span>,
+    <span class="k">"sku"</span>: <span class="v">"RICE-BAS-5KG"</span>, <span class="k">"hsn_code"</span>: <span class="v">"1006"</span>, <span class="k">"base_price"</span>: <span class="v">"350.0000"</span>,
+    <span class="k">"category"</span>: { <span class="k">"id"</span>: <span class="v">"..."</span>, <span class="k">"name"</span>: <span class="v">"Grocery"</span> },
+    <span class="k">"stock_available"</span>: <span class="n">45</span>
+  }]
+}</pre>
+      <div class="fe-detail">
+        <strong>Frontend: RetailPOS.tsx</strong> — Currently hardcoded products. Change to:<br>
+        On load: <code>GET /categories</code> → populate tabs. <code>GET /products?nature=GOODS</code> → populate grid. <code>POST /sales</code> → create draft.<br>
+        On search: <code>GET /products?search={query}</code> debounced 300ms.<br>
+        On tap product: <code>POST /sales/{id}/items</code> → cart updates with real GST from backend.<br><br>
+        <strong>Frontend: CartPanel.tsx</strong> — Currently local Zustand state. Change to:<br>
+        Display <code>sale.items</code> from backend. Quantity change: <code>PUT /sales/{id}/items/{itemId}</code>. Remove: <code>DELETE</code>. Hold: <code>POST /sales/{id}/hold</code>. All totals from backend, not calculated client-side.
+      </div>
+    </div>
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--purple)"></div>Frontend Components</div>
+      <div class="comp-grid">
+        <div class="comp"><div class="comp-name">RetailPOS.tsx</div><div class="comp-desc">Product search bar + category grid + item cards. Currently hardcoded — connect to /products and /categories APIs.</div><div class="comp-status comp-modify">MODIFY (connect API)</div></div>
+        <div class="comp"><div class="comp-name">CartPanel.tsx</div><div class="comp-desc">Cart items, quantity controls, discounts, GST display, totals. Currently local state — sync with backend sale.</div><div class="comp-status comp-modify">MODIFY (sync backend)</div></div>
+        <div class="comp"><div class="comp-name">HeldBillsDrawer.tsx</div><div class="comp-desc">List held bills, recall. Currently local — connect to /sales?status=held API.</div><div class="comp-status comp-modify">MODIFY (connect API)</div></div>
+        <div class="comp"><div class="comp-name">api/sales.ts</div><div class="comp-desc">createSale(), addItem(), updateItem(), removeItem(), holdSale(), recallSale(), completeSale(), voidSale()</div><div class="comp-status comp-new">NEW</div></div>
+        <div class="comp"><div class="comp-name">api/products.ts</div><div class="comp-desc">searchProducts(), listCategories(), getProduct()</div><div class="comp-status comp-new">NEW</div></div>
+      </div>
+      <div class="fe-detail">
+        <strong>RetailPOS — Left Panel</strong><br>
+        Top: Search bar (text input, placeholder "Search products...", debounced 300ms → GET /products?search=)<br>
+        Below search: Category tabs [All] [Grocery] [Household] [...] — from GET /categories. Active tab highlighted.<br>
+        Below tabs: Product grid (cards). Each card shows: Product image (if available), Name, Price (₹), Stock count (if low: "Only 3 left" in red). Tap card → POST /sales/{id}/items<br>
+        Actions on grid: Barcode scan button (camera icon), Favorites tab (if implemented)<br><br>
+
+        <strong>CartPanel — Right Panel</strong><br>
+        Top: Customer section (phone search, quick-add link, B2B toggle)<br>
+        Middle: Cart items list. Each row: Item name, SKU, Qty controls (- [qty] +), Unit price, Line discount (if applied), Line total, [×] remove button. Tap row → expand to show: discount input, notes input<br>
+        Below items: Totals section: Subtotal, Discount (if any), Tax breakdown (CGST + SGST or IGST), Round off, Net Total (bold, large font)<br>
+        Bottom: [Hold] [Pay] buttons. Hold → asks for label → POST /hold. Pay → opens PaymentModal<br><br>
+
+        <strong>HeldBillsDrawer</strong><br>
+        List columns: Label ("Blue shirt lady"), Item count (3 items), Total (₹450), Time ("5 min ago")<br>
+        Actions per held bill: [Recall] → POST /recall, [Delete] → DELETE /sales/{id}<br><br>
+
+        <strong>PaymentModal</strong><br>
+        Shows: Net Total prominently. Payment method tabs: [Cash] [Card] [UPI] [Split]<br>
+        Cash tab: Tendered input (₹), Quick amount buttons (₹100, ₹500, ₹1000, ₹2000, Exact), Change display (calculated live). [Complete Payment] button<br>
+        Card tab: "Amount: ₹X. Complete payment on card machine." Loading spinner. [Cancel] button. On success: shows card last 4, approval code<br>
+        UPI tab: QR code displayed with amount. "Scan with any UPI app". Timer countdown. [Cancel] button. On success: shows reference number<br>
+        Split tab: Method 1 dropdown + amount input + [Add]. Shows running total of payments vs remaining. Add more until remaining = 0. [Complete]<br>
+        Success screen: Checkmark animation, bill number, payment summary. [Print Receipt] [New Sale] buttons
+      </div>
+    </div>
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--amber)"></div>Data Flow: Complete Sale</div>
+      <div class="flow-box"><span class="hl">Staff taps [Pay] → [Cash] → enters ₹500</span>
+    <span class="arrow">→</span> POST /payments (cash, ₹390, tendered ₹500, change ₹110)
+    <span class="arrow">→</span> <span class="db">INSERT payments</span>
+    <span class="arrow">→</span> Sum payments >= net_total? <span class="hl">YES</span>
+    <span class="arrow">→</span> PATCH /sales/{id}/complete
+    <span class="arrow">→</span> <span class="hl">Assign bill number</span> (T1-INV-2526-0001) via NumberingService
+    <span class="arrow">→</span> <span class="db">UPDATE sales SET status='completed', bill_number=...</span>
+    <span class="arrow">→</span> <span class="grpc">Inventory: DeductStock(items)</span> (async, don't block)
+    <span class="arrow">→</span> <span class="grpc">elAccounts: PostJournalEntry()</span> (async, don't block)
+    <span class="arrow">→</span> <span class="hl">Receipt prints</span>
+    <span class="arrow">→</span> Frontend: success animation → cart resets</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ -->
+<!-- MODULE: PAYMENTS             -->
+<!-- ═══════════════════════════ -->
+<div class="module" id="mod-payment">
+  <div class="module-head" style="background:var(--purple)"><h3>Payments</h3><span class="tag">Module 05 — 2 endpoints + payment provider integrations</span></div>
+  <div class="module-body">
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--purple)"></div>Backend Components</div>
+      <div class="comp-grid">
+        <div class="comp"><div class="comp-name">models/payment.go</div><div class="comp-desc">Payment struct. Methods: cash, card, upi, credit, gift_card. Provider tracking, verification flag.</div><div class="comp-status comp-new">NEW</div></div>
+        <div class="comp"><div class="comp-name">services/payment_service.go</div><div class="comp-desc">Cash (change calc), card (Pine Labs push), UPI (QR gen + poll), split (multiple per sale).</div><div class="comp-status comp-new">NEW</div></div>
+        <div class="comp"><div class="comp-name">grpc/pinelabs_client.go</div><div class="comp-desc">Pine Labs REST: UploadBilledTransaction, GetStatus, CancelTransaction.</div><div class="comp-status comp-new">NEW</div></div>
+        <div class="comp"><div class="comp-name">grpc/upi_client.go</div><div class="comp-desc">Razorpay/PhonePe: generate QR, poll payment status, verify.</div><div class="comp-status comp-new">NEW</div></div>
+      </div>
+    </div>
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--blue)"></div>API Endpoints</div>
+      <table class="action-table">
+        <thead><tr><th>Method</th><th>Endpoint</th><th>Description</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td><span class="method method-post">POST</span></td><td class="ep">/api/v1/payments</td><td class="desc-cell">Record payment against sale. Method, amount, provider details. Triggers sale completion if fully paid.</td><td><span class="source src-own">elPOS DB</span> + <span class="source src-pay">Payment Provider</span></td></tr>
+          <tr><td><span class="method method-get">GET</span></td><td class="ep">/api/v1/payments</td><td class="desc-cell">List payments. ?sale_id= to get all payments for a sale.</td><td><span class="source src-own">elPOS DB</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--cyan)"></div>API Request / Response</div>
+      <pre class="json"><span class="c">// POST /api/v1/payments — Cash payment</span>
+<span class="c">// Request:</span>
+{ <span class="k">"sale_id"</span>: <span class="v">"sale-uuid"</span>, <span class="k">"method"</span>: <span class="v">"cash"</span>, <span class="k">"amount"</span>: <span class="v">"472.0000"</span>, <span class="k">"tendered"</span>: <span class="v">"500.0000"</span> }
+<span class="c">// Response 201:</span>
+{
+  <span class="k">"data"</span>: {
+    <span class="k">"id"</span>: <span class="v">"payment-uuid"</span>, <span class="k">"method"</span>: <span class="v">"cash"</span>, <span class="k">"amount"</span>: <span class="v">"472.0000"</span>,
+    <span class="k">"tendered"</span>: <span class="v">"500.0000"</span>, <span class="k">"change_amount"</span>: <span class="v">"28.0000"</span>,
+    <span class="k">"status"</span>: <span class="v">"completed"</span>, <span class="k">"verified"</span>: <span class="n">true</span>,
+    <span class="k">"sale_status"</span>: <span class="v">"completed"</span>  <span class="c">// sale auto-completed when fully paid</span>
+  }
+}
+
+<span class="c">─────────────────────────────────────────────────</span>
+
+<span class="c">// POST /api/v1/payments — Card payment (Pine Labs)</span>
+<span class="c">// Request:</span>
+{ <span class="k">"sale_id"</span>: <span class="v">"sale-uuid"</span>, <span class="k">"method"</span>: <span class="v">"card"</span>, <span class="k">"amount"</span>: <span class="v">"2350.0000"</span> }
+<span class="c">// Response 201 (pending — waiting for terminal):</span>
+{ <span class="k">"data"</span>: { <span class="k">"id"</span>: <span class="v">"payment-uuid"</span>, <span class="k">"status"</span>: <span class="v">"pending"</span>, <span class="k">"provider"</span>: <span class="v">"pinelabs"</span> } }
+<span class="c">// Frontend polls GET /api/v1/payments/{id} every 3 seconds</span>
+<span class="c">// When Pine Labs confirms:</span>
+{
+  <span class="k">"data"</span>: {
+    <span class="k">"status"</span>: <span class="v">"completed"</span>, <span class="k">"verified"</span>: <span class="n">true</span>,
+    <span class="k">"reference_number"</span>: <span class="v">"000792514130"</span>, <span class="k">"approval_code"</span>: <span class="v">"849035"</span>,
+    <span class="k">"card_last_four"</span>: <span class="v">"4567"</span>, <span class="k">"card_network"</span>: <span class="v">"visa"</span>
+  }
+}
+
+<span class="c">─────────────────────────────────────────────────</span>
+
+<span class="c">// POST /api/v1/payments — UPI payment</span>
+<span class="c">// Request:</span>
+{ <span class="k">"sale_id"</span>: <span class="v">"sale-uuid"</span>, <span class="k">"method"</span>: <span class="v">"upi"</span>, <span class="k">"amount"</span>: <span class="v">"549.0000"</span> }
+<span class="c">// Response 201 (QR generated, waiting for customer scan):</span>
+{
+  <span class="k">"data"</span>: {
+    <span class="k">"id"</span>: <span class="v">"payment-uuid"</span>, <span class="k">"status"</span>: <span class="v">"pending"</span>,
+    <span class="k">"qr_data"</span>: <span class="v">"upi://pay?pa=merchant@upi&amp;am=549.00&amp;tn=T1-INV-2526-0001"</span>,
+    <span class="k">"expires_in"</span>: <span class="n">300</span>  <span class="c">// 5 min</span>
+  }
+}
+<span class="c">// Frontend displays QR, polls every 3s until status=completed</span></pre>
+      <div class="fe-detail">
+        <strong>Frontend: PaymentModal.tsx</strong> — Currently saves to IndexedDB only. Change to:<br>
+        <strong>Cash:</strong> Enter tendered → show change → POST /payments → success animation → cart resets.<br>
+        <strong>Card:</strong> Tap "Card" → POST /payments(method=card) → show "Complete on terminal..." → poll GET /payments/{id} every 3s → success when confirmed.<br>
+        <strong>UPI:</strong> Tap "UPI" → POST /payments(method=upi) → display QR code from qr_data → poll every 3s → success when confirmed.<br>
+        <strong>Split:</strong> Add first payment (e.g., cash ₹500) → remaining shown → add second payment (e.g., UPI ₹200) → complete when sum >= net_total.
+      </div>
+    </div>
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--purple)"></div>Frontend Components</div>
+      <div class="comp-grid">
+        <div class="comp"><div class="comp-name">PaymentModal.tsx</div><div class="comp-desc">Cash: tendered/change. Card: "waiting for terminal...". UPI: QR code + polling. Split: multiple methods. Currently IndexedDB only — connect to API.</div><div class="comp-status comp-modify">MODIFY (connect API)</div></div>
+        <div class="comp"><div class="comp-name">api/payments.ts</div><div class="comp-desc">createPayment(), listPayments(), generateUpiQr(), checkPaymentStatus()</div><div class="comp-status comp-new">NEW</div></div>
+      </div>
+    </div>
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--amber)"></div>Data Flow: Card Payment via Pine Labs</div>
+      <div class="flow-box"><span class="hl">Staff taps [Card]</span>
+    <span class="arrow">→</span> POST /payments (method=card, amount=2350)
+    <span class="arrow">→</span> Backend calls <span class="grpc">Pine Labs: UploadBilledTransaction(₹235000 paisa)</span>
+    <span class="arrow">→</span> Pine Labs returns PTRID=501
+    <span class="arrow">→</span> Frontend shows "Complete payment on card machine..."
+    <span class="arrow">→</span> Pine Labs terminal: "₹2,350 — Tap or Insert card"
+    <span class="arrow">→</span> Customer taps card → enters PIN → bank approves
+    <span class="arrow">→</span> Backend polls <span class="grpc">Pine Labs: GetStatus(PTRID=501)</span> every 3 seconds
+    <span class="arrow">→</span> Response: APPROVED, card=****4567, RRN=000792514130
+    <span class="arrow">→</span> <span class="db">INSERT payments (method=card, verified=true)</span>
+    <span class="arrow">→</span> Sale completed</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ -->
+<!-- MODULE: SETTLEMENT           -->
+<!-- ═══════════════════════════ -->
+<div class="module" id="mod-settle">
+  <div class="module-head" style="background:#ca8a04"><h3>Settlement</h3><span class="tag">Module 06 — 4 endpoints</span></div>
+  <div class="module-body">
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--blue)"></div>API Endpoints</div>
+      <table class="action-table">
+        <thead><tr><th>Method</th><th>Endpoint</th><th>Description</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td><span class="method method-post">POST</span></td><td class="ep">/api/v1/settlements</td><td class="desc-cell">Create settlement with denomination count. Calculates expected, computes variance.</td><td><span class="source src-own">elPOS DB</span></td></tr>
+          <tr><td><span class="method method-get">GET</span></td><td class="ep">/api/v1/settlements/{id}</td><td class="desc-cell">Get settlement with expected vs actual, variance, denominations.</td><td><span class="source src-own">elPOS DB</span></td></tr>
+          <tr><td><span class="method method-patch">PATCH</span></td><td class="ep">/api/v1/settlements/{id}/approve</td><td class="desc-cell">Manager approves settlement. Closes the register session.</td><td><span class="source src-own">elPOS DB</span></td></tr>
+          <tr><td><span class="method method-patch">PATCH</span></td><td class="ep">/api/v1/settlements/{id}/dispute</td><td class="desc-cell">Manager disputes. Flags for investigation.</td><td><span class="source src-own">elPOS DB</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--cyan)"></div>API Request / Response</div>
+      <pre class="json"><span class="c">// POST /api/v1/settlements — Submit cash count</span>
+<span class="c">// Request:</span>
+{
+  <span class="k">"session_id"</span>: <span class="v">"session-uuid"</span>,
+  <span class="k">"actual_cash"</span>: <span class="v">"21525.0000"</span>, <span class="k">"actual_card"</span>: <span class="v">"15200.0000"</span>, <span class="k">"actual_upi"</span>: <span class="v">"11205.0000"</span>,
+  <span class="k">"denominations"</span>: { <span class="k">"2000"</span>: <span class="n">2</span>, <span class="k">"500"</span>: <span class="n">28</span>, <span class="k">"200"</span>: <span class="n">5</span>, <span class="k">"100"</span>: <span class="n">22</span>, <span class="k">"50"</span>: <span class="n">4</span>, <span class="k">"20"</span>: <span class="n">3</span>, <span class="k">"10"</span>: <span class="n">5</span>, <span class="k">"5"</span>: <span class="n">3</span> }
+}
+<span class="c">// Response 201:</span>
+{
+  <span class="k">"data"</span>: {
+    <span class="k">"expected_cash"</span>: <span class="v">"21525.0000"</span>, <span class="k">"actual_cash"</span>: <span class="v">"21525.0000"</span>, <span class="k">"cash_variance"</span>: <span class="v">"0.0000"</span>,
+    <span class="k">"expected_card"</span>: <span class="v">"15200.0000"</span>, <span class="k">"card_variance"</span>: <span class="v">"0.0000"</span>,
+    <span class="k">"expected_upi"</span>: <span class="v">"11205.0000"</span>, <span class="k">"upi_variance"</span>: <span class="v">"0.0000"</span>,
+    <span class="k">"status"</span>: <span class="v">"pending"</span>
+  }
+}
+<span class="c">// PATCH /{id}/approve → { "status": "approved" } → session auto-closes</span></pre>
+      <div class="fe-detail">
+        <strong>Frontend: SettlementPage.tsx</strong> — NEW page. Denomination inputs auto-calculate total. Color-coded variance. Submit → "Awaiting approval". Manager approves → session closes → redirect to Open Register.
+      </div>
+    </div>
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--purple)"></div>Frontend Components</div>
+      <div class="comp-grid">
+        <div class="comp"><div class="comp-name">SettlementPage.tsx</div><div class="comp-desc">Denomination counting form (₹2000 × ?, ₹500 × ?...), expected vs actual, color-coded variance, submit for approval.</div><div class="comp-status comp-new">NEW page</div></div>
+        <div class="comp"><div class="comp-name">api/settlements.ts</div><div class="comp-desc">createSettlement(), getSettlement(), approveSettlement()</div><div class="comp-status comp-new">NEW</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ -->
+<!-- MODULE: CUSTOMERS            -->
+<!-- ═══════════════════════════ -->
+<div class="module" id="mod-customer">
+  <div class="module-head" style="background:var(--pink)"><h3>Customers</h3><span class="tag">Module 12 — 4 endpoints</span></div>
+  <div class="module-body">
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--blue)"></div>API Endpoints</div>
+      <table class="action-table">
+        <thead><tr><th>Method</th><th>Endpoint</th><th>Description</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td><span class="method method-post">POST</span></td><td class="ep">/api/v1/customers</td><td class="desc-cell">Quick-add: name + phone. Minimal fields for speed at the counter.</td><td><span class="source src-own">elPOS DB</span> + <span class="source src-acc">elAccounts</span></td></tr>
+          <tr><td><span class="method method-get">GET</span></td><td class="ep">/api/v1/customers</td><td class="desc-cell">Search by ?phone=, ?name=, ?gstin=. Searches local cache first, then elAccounts.</td><td><span class="source src-own">elPOS DB</span> + <span class="source src-acc">elAccounts</span></td></tr>
+          <tr><td><span class="method method-get">GET</span></td><td class="ep">/api/v1/customers/{id}</td><td class="desc-cell">Full profile: name, phone, email, GSTIN, address, loyalty, credit, tags.</td><td><span class="source src-own">elPOS DB</span></td></tr>
+          <tr><td><span class="method method-put">PUT</span></td><td class="ep">/api/v1/customers/{id}</td><td class="desc-cell">Update customer details.</td><td><span class="source src-own">elPOS DB</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--cyan)"></div>API Request / Response</div>
+      <pre class="json"><span class="c">// POST /api/v1/customers — Quick-add (minimal for speed at counter)</span>
+<span class="c">// Request:</span>
+{ <span class="k">"name"</span>: <span class="v">"Meera Sharma"</span>, <span class="k">"phone"</span>: <span class="v">"9876543210"</span> }
+<span class="c">// Response 201:</span>
+{
+  <span class="k">"data"</span>: {
+    <span class="k">"id"</span>: <span class="v">"customer-uuid"</span>, <span class="k">"name"</span>: <span class="v">"Meera Sharma"</span>, <span class="k">"phone"</span>: <span class="v">"9876543210"</span>,
+    <span class="k">"email"</span>: <span class="t">null</span>, <span class="k">"gstin"</span>: <span class="t">null</span>,
+    <span class="k">"loyalty_points"</span>: <span class="n">0</span>, <span class="k">"credit_balance"</span>: <span class="v">"0.0000"</span>, <span class="k">"tags"</span>: []
+  }
+}
+
+<span class="c">─────────────────────────────────────────────────</span>
+
+<span class="c">// GET /api/v1/customers?phone=9876543210 — Search</span>
+<span class="c">// Searches local pos_customers first (fast, works offline)</span>
+<span class="c">// Then elAccounts via gRPC if not found locally</span>
+<span class="c">// Response:</span>
+{ <span class="k">"data"</span>: [{ <span class="k">"id"</span>: <span class="v">"..."</span>, <span class="k">"name"</span>: <span class="v">"Meera Sharma"</span>, <span class="k">"phone"</span>: <span class="v">"9876543210"</span>, <span class="k">"source"</span>: <span class="v">"local"</span> }] }</pre>
+      <div class="fe-detail">
+        <strong>Frontend: CustomerSection.tsx</strong> — Currently no backend. Change to: phone search via <code>GET /customers?phone=</code>. Quick-add inline via <code>POST /customers</code>. Attach to sale/order.<br>
+        <strong>Frontend: Customers.tsx</strong> — Currently empty page. Populate with <code>GET /customers</code>. Show name, phone, loyalty, credit, tags.
+      </div>
+    </div>
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--purple)"></div>Frontend Components</div>
+      <div class="comp-grid">
+        <div class="comp"><div class="comp-name">CustomerSection.tsx</div><div class="comp-desc">Inline in POS: phone search, quick-add, B2B toggle with GSTIN. Currently no backend — connect to API.</div><div class="comp-status comp-modify">MODIFY</div></div>
+        <div class="comp"><div class="comp-name">Customers.tsx</div><div class="comp-desc">Customer list page. Currently empty state — populate from API.</div><div class="comp-status comp-modify">MODIFY</div></div>
+        <div class="comp"><div class="comp-name">api/customers.ts</div><div class="comp-desc">searchCustomers(), createCustomer(), getCustomer(), updateCustomer()</div><div class="comp-status comp-new">NEW</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ -->
+<!-- MODULE: SERVICE ORDERS       -->
+<!-- ═══════════════════════════ -->
+<div class="module" id="mod-service">
+  <div class="module-head" style="background:var(--red)"><h3>Service Orders</h3><span class="tag">Module 03 — 8 endpoints — THE DIFFERENTIATOR</span></div>
+  <div class="module-body">
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--blue)"></div>API Endpoints</div>
+      <table class="action-table">
+        <thead><tr><th>Method</th><th>Endpoint</th><th>Description</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td><span class="method method-post">POST</span></td><td class="ep">/api/v1/orders</td><td class="desc-cell">Create service order. Customer required. Garments + services + promised date + priority.</td><td><span class="source src-own">elPOS DB</span></td></tr>
+          <tr><td><span class="method method-get">GET</span></td><td class="ep">/api/v1/orders</td><td class="desc-cell">List orders. Filters: ?status=, ?date=, ?customer_id=, ?service_type=</td><td><span class="source src-own">elPOS DB</span></td></tr>
+          <tr><td><span class="method method-get">GET</span></td><td class="ep">/api/v1/orders/{id}</td><td class="desc-cell">Get order with items, photos, condition notes, status history.</td><td><span class="source src-own">elPOS DB</span></td></tr>
+          <tr><td><span class="method method-patch">PATCH</span></td><td class="ep">/api/v1/orders/{id}/status</td><td class="desc-cell">Update status: received → in_progress → ready → delivered. Validated state machine.</td><td><span class="source src-own">elPOS DB</span> + <span class="source src-msg">elmessagehub</span></td></tr>
+          <tr><td><span class="method method-post">POST</span></td><td class="ep">/api/v1/orders/{id}/photos</td><td class="desc-cell">Upload garment photo. Stored in IndexedDB offline, S3 when online.</td><td><span class="source src-own">elPOS DB + S3</span></td></tr>
+          <tr><td><span class="method method-post">POST</span></td><td class="ep">/api/v1/orders/{id}/deliver</td><td class="desc-cell">Mark as delivered. Normal (with token) or without token (requires photo + signature).</td><td><span class="source src-own">elPOS DB</span> + <span class="source src-msg">elmessagehub</span></td></tr>
+          <tr><td><span class="method method-post">POST</span></td><td class="ep">/api/v1/orders/{id}/invoice</td><td class="desc-cell">Generate sale from delivered order. Creates sale + sale_items with GST. Assigns bill number.</td><td><span class="source src-own">elPOS DB</span></td></tr>
+          <tr><td><span class="method method-post">POST</span></td><td class="ep">/api/v1/orders/{id}/partial-deliver</td><td class="desc-cell">Deliver subset of items. Invoice for delivered only. Rest stays pending.</td><td><span class="source src-own">elPOS DB</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--cyan)"></div>API Request / Response</div>
+      <pre class="json"><span class="c">// POST /api/v1/orders — Create service order</span>
+<span class="c">// Request:</span>
+{
+  <span class="k">"terminal_id"</span>: <span class="v">"terminal-uuid"</span>,
+  <span class="k">"session_id"</span>: <span class="v">"session-uuid"</span>,
+  <span class="k">"customer_id"</span>: <span class="v">"customer-uuid"</span>,       <span class="c">// REQUIRED (unlike retail)</span>
+  <span class="k">"service_type"</span>: <span class="v">"laundry"</span>,            <span class="c">// laundry | car_wash | car_service | repair | custom</span>
+  <span class="k">"priority"</span>: <span class="v">"normal"</span>,                <span class="c">// low | normal | high | urgent</span>
+  <span class="k">"promised_at"</span>: <span class="v">"2026-04-03T18:00:00Z"</span>,
+  <span class="k">"notes"</span>: <span class="v">"Handle blazer carefully"</span>,
+  <span class="k">"items"</span>: [
+    { <span class="k">"service_id"</span>: <span class="v">"wet-clean-uuid"</span>, <span class="k">"garment_id"</span>: <span class="v">"shirt-uuid"</span>,
+      <span class="k">"name"</span>: <span class="v">"Shirt — Wet Clean"</span>, <span class="k">"quantity"</span>: <span class="n">2</span>, <span class="k">"unit_price"</span>: <span class="v">"40.0000"</span> },
+    { <span class="k">"service_id"</span>: <span class="v">"dry-clean-uuid"</span>, <span class="k">"garment_id"</span>: <span class="v">"blazer-uuid"</span>,
+      <span class="k">"name"</span>: <span class="v">"Blazer — Dry Clean"</span>, <span class="k">"quantity"</span>: <span class="n">1</span>, <span class="k">"unit_price"</span>: <span class="v">"350.0000"</span>,
+      <span class="k">"conditions"</span>: [<span class="v">"stain_front"</span>, <span class="v">"minor_fade"</span>] }
+  ]
+}
+<span class="c">// Response 201:</span>
+{
+  <span class="k">"data"</span>: {
+    <span class="k">"id"</span>: <span class="v">"order-uuid"</span>, <span class="k">"order_number"</span>: <span class="v">"T1-SO-2526-0001"</span>,
+    <span class="k">"customer_name"</span>: <span class="v">"Meera Sharma"</span>, <span class="k">"status"</span>: <span class="v">"received"</span>,
+    <span class="k">"subtotal"</span>: <span class="v">"430.0000"</span>, <span class="k">"tax_amount"</span>: <span class="v">"77.4000"</span>, <span class="k">"total"</span>: <span class="v">"507.0000"</span>,
+    <span class="k">"promised_at"</span>: <span class="v">"2026-04-03T18:00:00Z"</span>,
+    <span class="k">"items"</span>: [...], <span class="k">"photos"</span>: []
+  }
+}
+
+<span class="c">─────────────────────────────────────────────────</span>
+
+<span class="c">// PATCH /api/v1/orders/{id}/status — Update status</span>
+<span class="c">// Request:</span>
+{ <span class="k">"status"</span>: <span class="v">"in_progress"</span> }
+<span class="c">// Valid: received→in_progress→ready→delivered. Invalid returns 422.</span>
+<span class="c">// Side effect: if "ready" → elmessagehub WhatsApp "Your order is ready!"</span>
+
+<span class="c">─────────────────────────────────────────────────</span>
+
+<span class="c">// POST /api/v1/orders/{id}/deliver — Normal delivery</span>
+{ <span class="k">"delivery_type"</span>: <span class="v">"with_token"</span> }
+
+<span class="c">// POST /api/v1/orders/{id}/deliver — Without order form (lost receipt)</span>
+{
+  <span class="k">"delivery_type"</span>: <span class="v">"without_token"</span>,
+  <span class="k">"customer_photo"</span>: <span class="v">"base64-image-data"</span>,         <span class="c">// REQUIRED</span>
+  <span class="k">"customer_signature"</span>: <span class="v">"base64-signature-data"</span>,   <span class="c">// REQUIRED</span>
+  <span class="k">"identity_proof"</span>: <span class="v">"photo"</span>,                      <span class="c">// photo | aadhaar | known_customer</span>
+  <span class="k">"delivery_notes"</span>: <span class="v">"Customer identified by phone. Described items correctly."</span>
+}
+<span class="c">// Side effect: SMS to customer "Order delivered on [date]. Contact us if not you."</span>
+
+<span class="c">─────────────────────────────────────────────────</span>
+
+<span class="c">// POST /api/v1/orders/{id}/invoice — Generate sale from delivered order</span>
+<span class="c">// No request body. Creates sale + sale_items + assigns bill number.</span>
+<span class="c">// Response: { "data": { "sale_id": "new-sale-uuid", "bill_number": "T1-INV-2526-0002" } }</span>
+<span class="c">// Then collect payment via POST /payments against the new sale_id.</span></pre>
+      <div class="fe-detail">
+        <strong>Frontend: ServicePOS.tsx</strong> — Currently hardcoded garments.ts (257 garments). Change to:<br>
+        On load: <code>GET /categories?nature=SERVICES</code> → garment categories. <code>GET /products?nature=SERVICES</code> → garment list with icons.<br>
+        On tap garment: show service picker (prices from catalog). On tap service: add to order items (local state).<br>
+        Camera auto-initialized. Photos: IndexedDB → <code>POST /orders/{id}/photos</code> → S3 upload.<br>
+        On "Create Order": <code>POST /customers</code> (if new) → <code>POST /orders</code>.<br><br>
+        <strong>Frontend: Orders.tsx</strong> — Currently empty. Change to:<br>
+        Tabs: [All] [Received] [In Progress] [Ready] [Delivered]. Each: <code>GET /orders?status={tab}</code>.<br>
+        Order cards: number, customer, items, due date, status badge, action button.<br>
+        Status update: <code>PATCH /orders/{id}/status</code>. Deliver: opens DeliveryFlow component.<br><br>
+        <strong>Frontend: DeliveryFlow.tsx</strong> — NEW component:<br>
+        Normal: scan order → show items → "Deliver" → invoice → payment.<br>
+        Without token: phone search → select order → MANDATORY photo + signature + notes → deliver → SMS sent.
+      </div>
+    </div>
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--purple)"></div>Frontend Components</div>
+      <div class="comp-grid">
+        <div class="comp"><div class="comp-name">ServicePOS.tsx</div><div class="comp-desc">Garment grid + service picker + photo capture + customer entry + delivery date. Currently hardcoded garments — connect to elCatalogs.</div><div class="comp-status comp-modify">MODIFY (connect API)</div></div>
+        <div class="comp"><div class="comp-name">KOTPOS.tsx</div><div class="comp-desc">Table management + KOT. Not in scope for now (Phase 2+).</div><div class="comp-status comp-exists">EXISTS (defer)</div></div>
+        <div class="comp"><div class="comp-name">Orders.tsx</div><div class="comp-desc">Order list with status filter tabs. Status update buttons. Currently empty — connect to API.</div><div class="comp-status comp-modify">MODIFY</div></div>
+        <div class="comp"><div class="comp-name">DeliveryFlow.tsx</div><div class="comp-desc">Normal delivery + delivery without token (photo capture + signature pad + notes).</div><div class="comp-status comp-new">NEW component</div></div>
+        <div class="comp"><div class="comp-name">PieceDetailsModal.tsx</div><div class="comp-desc">Per-garment condition tagging, photo capture, notes. Exists — connect to API.</div><div class="comp-status comp-modify">MODIFY</div></div>
+        <div class="comp"><div class="comp-name">api/orders.ts</div><div class="comp-desc">createOrder(), listOrders(), updateStatus(), uploadPhoto(), deliverOrder(), invoiceOrder()</div><div class="comp-status comp-new">NEW</div></div>
+      </div>
+      <div class="fe-detail">
+        <strong>ServicePOS — Left Panel (Garment Grid)</strong><br>
+        Top: Customer section — Phone input (search on type → GET /customers?phone=), Name display, [+ Quick Add] link, B2B toggle with GSTIN field<br>
+        Categories: [All] [Upper Body] [Lower Body] [Traditional] [Outerwear] [Footwear] [Home Textiles] — from GET /categories?nature=SERVICES<br>
+        Grid: Garment cards with icon image, garment name, base price. Tap garment → service picker slides up<br>
+        Service Picker: Row of service buttons for selected garment: [Wet Clean ₹40] [Dry Clean ₹80] [Pressing ₹20] [Starch ₹30]. Prices from catalog. Tap service → item added to cart<br>
+        Camera button: Opens camera for current garment → photo saved → thumbnail shown on garment card<br>
+        Keyboard shortcuts: / = focus search, F2 = add garment, arrow keys = navigate grid, Enter = select<br><br>
+
+        <strong>ServicePOS — Right Panel (Order Summary)</strong><br>
+        Customer: Name + Phone displayed. Delivery date: Date+time picker. Priority: dropdown (Normal/High/Urgent)<br>
+        Items list: Each row: Garment icon, Garment name, Service name, Qty (- [n] +), Price, Conditions (tags: stain/fade/damage), Photos (thumbnails), [×] remove<br>
+        Tap row → expand: per-piece detail (condition toggles, photo capture, notes)<br>
+        Totals: Subtotal, GST, Total (payable on delivery)<br>
+        Actions: [Create Order] → POST /orders → prints order receipt + garment tags<br><br>
+
+        <strong>Orders.tsx — Order List Page</strong><br>
+        Tabs: [All] [Received] [In Progress] [Ready] [Delivered] — each calls GET /orders?status={tab}<br>
+        Each order card shows: Order# (bold), Customer name + phone, Item count + names (e.g., "3 items: 2×Shirt, 1×Blazer"), Due date (red if overdue), Priority badge (if high/urgent), Status badge (color-coded)<br>
+        Actions per card: [Start Processing] (received→in_progress), [Mark Ready] (in_progress→ready), [Deliver] (ready→opens DeliveryFlow)<br>
+        Search: by order number or customer phone<br>
+        Sort: by due date, by creation date<br><br>
+
+        <strong>DeliveryFlow.tsx — NEW Component</strong><br>
+        Mode 1 (with order form): Staff enters order number → GET /orders/{id} → shows items + photos + conditions → [Deliver + Collect Payment] button → POST /orders/{id}/deliver(with_token) → POST /orders/{id}/invoice → opens PaymentModal<br><br>
+        Mode 2 (without order form): Staff searches by phone → GET /customers?phone= → sees customer's pending orders → selects order → Verification screen:<br>
+        - Customer Photo* — camera capture (mandatory)<br>
+        - Customer Signature* — touch signature canvas (mandatory)<br>
+        - Identity Proof type — dropdown: photo/aadhaar/known_customer<br>
+        - Staff Notes* — textarea (mandatory)<br>
+        [Confirm Delivery] → POST /orders/{id}/deliver(without_token) → SMS sent → invoice → payment<br><br>
+
+        <strong>PieceDetailsModal.tsx — Per-garment Detail</strong><br>
+        Condition toggles: [Stain] [Fade] [Damage] [Color Spread] [Missing Button] — multi-select<br>
+        Photo capture: Up to 4 photos per garment, camera preview, thumbnail gallery<br>
+        Notes: textarea for free-text<br>
+        Navigation: ← → arrows to move between garments in the order<br>
+        Keyboard: S=stain, F=fade, D=damage, C=color, P=photo, N=notes, arrows=navigate
+      </div>
+    </div>
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--amber)"></div>Data Flow: Laundry Order Lifecycle</div>
+      <div class="flow-box"><span class="hl">Customer drops off clothes</span>
+    <span class="arrow">→</span> Staff searches customer by phone <span class="arrow">→</span> GET /customers?phone=9876543210
+    <span class="arrow">→</span> Staff selects garments from grid <span class="arrow">→</span> Products from <span class="grpc">elCatalogs</span>
+    <span class="arrow">→</span> Staff picks services per garment (wet clean, dry clean, pressing)
+    <span class="arrow">→</span> Staff photographs each garment <span class="arrow">→</span> Saved to IndexedDB
+    <span class="arrow">→</span> Staff tags conditions (stain, fade, damage)
+    <span class="arrow">→</span> Staff sets delivery date: 28-Mar 6PM
+    <span class="arrow">→</span> POST /orders <span class="arrow">→</span> <span class="db">INSERT service_orders (status=received)</span>
+    <span class="arrow">→</span> Garment tags print (one per item)
+    <span class="arrow">→</span> Order receipt given to customer
+
+<span class="hl">Processing</span>
+    <span class="arrow">→</span> Staff taps "Start Processing" <span class="arrow">→</span> PATCH /orders/{id}/status (→ in_progress)
+    <span class="arrow">→</span> <span class="grpc">elmessagehub: WhatsApp "Your order is being processed"</span>
+    <span class="arrow">→</span> Staff marks each item done individually
+    <span class="arrow">→</span> All items done <span class="arrow">→</span> Staff taps "Mark Ready" <span class="arrow">→</span> PATCH /status (→ ready)
+    <span class="arrow">→</span> <span class="grpc">elmessagehub: WhatsApp "Your order is READY for pickup!"</span>
+
+<span class="hl">Pickup</span>
+    <span class="arrow">→</span> Customer arrives with receipt
+    <span class="arrow">→</span> Staff scans order number <span class="arrow">→</span> GET /orders/{id}
+    <span class="arrow">→</span> POST /orders/{id}/deliver
+    <span class="arrow">→</span> POST /orders/{id}/invoice <span class="arrow">→</span> Creates sale with GST
+    <span class="arrow">→</span> POST /payments (UPI ₹549) <span class="arrow">→</span> QR generated <span class="arrow">→</span> customer pays
+    <span class="arrow">→</span> Receipt prints <span class="arrow">→</span> Done</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ -->
+<!-- MODULE: PRINTING             -->
+<!-- ═══════════════════════════ -->
+<div class="module" id="mod-print">
+  <div class="module-head" style="background:#475569"><h3>Receipts &amp; Printing</h3><span class="tag">Module 09 — internal service + frontend</span></div>
+  <div class="module-body">
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:#475569"></div>Components</div>
+      <div class="comp-grid">
+        <div class="comp"><div class="comp-name">print/receipt.go</div><div class="comp-desc">Takes Sale → generates formatted receipt text. Header (store name, GSTIN), items, GST breakdown, payment, footer.</div><div class="comp-status comp-new">NEW</div></div>
+        <div class="comp"><div class="comp-name">print/escpos.go</div><div class="comp-desc">Converts text → ESC/POS binary: bold, alignment, font size, barcode, QR code, cut paper.</div><div class="comp-status comp-new">NEW</div></div>
+        <div class="comp"><div class="comp-name">print/tag.go</div><div class="comp-desc">Garment tag generator: order#, customer name, garment type. For laundry rack tracking.</div><div class="comp-status comp-new">NEW</div></div>
+        <div class="comp"><div class="comp-name">ReceiptPreview.tsx</div><div class="comp-desc">On-screen receipt view. Print button → WebBluetooth/USB/network printer.</div><div class="comp-status comp-new">NEW frontend component</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ -->
+<!-- MODULE: OFFLINE SYNC         -->
+<!-- ═══════════════════════════ -->
+<div class="module" id="mod-sync">
+  <div class="module-head" style="background:var(--indigo)"><h3>Offline Sync</h3><span class="tag">Module 08 — 3 endpoints + frontend sync engine</span></div>
+  <div class="module-body">
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--blue)"></div>API Endpoints</div>
+      <table class="action-table">
+        <thead><tr><th>Method</th><th>Endpoint</th><th>Description</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td><span class="method method-post">POST</span></td><td class="ep">/api/v1/sync/push</td><td class="desc-cell">Terminal pushes offline events to server. Batch, FIFO. Idempotent via offline_id.</td><td><span class="source src-own">elPOS DB</span></td></tr>
+          <tr><td><span class="method method-get">GET</span></td><td class="ep">/api/v1/sync/pull</td><td class="desc-cell">Terminal pulls changes since last seq_num. Gets other terminals' sales/orders.</td><td><span class="source src-own">elPOS DB</span></td></tr>
+          <tr><td><span class="method method-post">POST</span></td><td class="ep">/api/v1/sync/photo-upload</td><td class="desc-cell">Get signed S3 URL for photo upload. Used after offline photo capture.</td><td><span class="source src-own">S3/MinIO</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--purple)"></div>Frontend Components</div>
+      <div class="comp-grid">
+        <div class="comp"><div class="comp-name">db.ts</div><div class="comp-desc">Dexie IndexedDB schema: orders, customers, syncQueue tables. Currently exists — add sync queue processing.</div><div class="comp-status comp-modify">MODIFY</div></div>
+        <div class="comp"><div class="comp-name">sync.ts</div><div class="comp-desc">Currently no-op. Implement: startAutoSync(), pushQueue(), pullChanges(), resolveConflicts().</div><div class="comp-status comp-modify">MODIFY (implement)</div></div>
+        <div class="comp"><div class="comp-name">ConnectivityStatus.tsx</div><div class="comp-desc">Online/offline indicator + pending sync count. Exists — connect to real sync status.</div><div class="comp-status comp-modify">MODIFY</div></div>
+        <div class="comp"><div class="comp-name">useOnlineStatus.ts</div><div class="comp-desc">Hook for online/offline detection + sync count. Exists — enhance with real queue count.</div><div class="comp-status comp-modify">MODIFY</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ -->
+<!-- MODULE: REPORTS              -->
+<!-- ═══════════════════════════ -->
+<div class="module" id="mod-report">
+  <div class="module-head" style="background:var(--blue)"><h3>Reports</h3><span class="tag">Module 13 — ~15 endpoints</span></div>
+  <div class="module-body">
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--blue)"></div>API Endpoints</div>
+      <table class="action-table">
+        <thead><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><span class="method method-get">GET</span></td><td class="ep">/api/v1/reports/sales/daily-summary</td><td class="desc-cell">Total sales, transaction count, average ticket, payment method breakdown.</td></tr>
+          <tr><td><span class="method method-get">GET</span></td><td class="ep">/api/v1/reports/sales/item-wise</td><td class="desc-cell">Revenue per product/service. Quantity sold. Sorted by revenue.</td></tr>
+          <tr><td><span class="method method-get">GET</span></td><td class="ep">/api/v1/reports/sales/by-category</td><td class="desc-cell">Revenue grouped by product category.</td></tr>
+          <tr><td><span class="method method-get">GET</span></td><td class="ep">/api/v1/reports/sales/hourly</td><td class="desc-cell">Revenue by hour. Identify peak hours.</td></tr>
+          <tr><td><span class="method method-get">GET</span></td><td class="ep">/api/v1/reports/sales/by-payment-method</td><td class="desc-cell">Cash vs card vs UPI breakdown.</td></tr>
+          <tr><td><span class="method method-get">GET</span></td><td class="ep">/api/v1/reports/sales/by-operator</td><td class="desc-cell">Sales per staff member.</td></tr>
+          <tr><td><span class="method method-get">GET</span></td><td class="ep">/api/v1/reports/service/by-type</td><td class="desc-cell">Revenue by service type (wet clean, dry clean, pressing).</td></tr>
+          <tr><td><span class="method method-get">GET</span></td><td class="ep">/api/v1/reports/service/turnaround</td><td class="desc-cell">Average time from received to delivered.</td></tr>
+          <tr><td><span class="method method-get">GET</span></td><td class="ep">/api/v1/reports/service/pending</td><td class="desc-cell">Overdue orders past promised delivery date.</td></tr>
+          <tr><td><span class="method method-get">GET</span></td><td class="ep">/api/v1/reports/gst/summary</td><td class="desc-cell">GST collected by rate (5%, 12%, 18%, 28%). CGST/SGST/IGST split.</td></tr>
+          <tr><td><span class="method method-get">GET</span></td><td class="ep">/api/v1/reports/gst/hsn-wise</td><td class="desc-cell">Tax summary grouped by HSN/SAC code.</td></tr>
+          <tr><td><span class="method method-get">GET</span></td><td class="ep">/api/v1/reports/customers/top</td><td class="desc-cell">Top spending customers.</td></tr>
+          <tr><td><span class="method method-get">GET</span></td><td class="ep">/api/v1/reports/settlement/history</td><td class="desc-cell">Past settlements with variance trends.</td></tr>
+        </tbody>
+      </table>
+      <p style="padding:8px 16px;font-size:10px;color:var(--muted)">All reports support: ?from=, ?to=, ?store_id=, ?terminal_id= filters. CSV export via ?format=csv.</p>
+    </div>
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--purple)"></div>Frontend</div>
+      <div class="comp-grid">
+        <div class="comp"><div class="comp-name">Reports.tsx</div><div class="comp-desc">Currently empty page. Build: date range picker, chart components (bar, line, pie), data tables, export button.</div><div class="comp-status comp-modify">MODIFY (build full page)</div></div>
+        <div class="comp"><div class="comp-name">api/reports.ts</div><div class="comp-desc">getDailySummary(), getItemWise(), getHourly(), getGstSummary(), exportCsv()</div><div class="comp-status comp-new">NEW</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ -->
+<!-- FRONTEND OVERVIEW            -->
+<!-- ═══════════════════════════ -->
+<div class="flow-section" id="frontend">
+  <div class="flow-title">Frontend Component Summary</div>
+  <div class="flow-desc">All frontend files with their current status and what needs to change.</div>
+</div>
+
+<div class="module">
+  <div class="module-head" style="background:#0f172a"><h3>Pages &amp; Key Components</h3><span class="tag">client/src/</span></div>
+  <div class="module-body">
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--green)"></div>Pages (routes)</div>
+      <div class="comp-grid">
+        <div class="comp"><div class="comp-name">POS.tsx</div><div class="comp-desc">Mode router: selects RetailPOS, ServicePOS, or KOTPOS based on terminal mode.</div><div class="comp-status comp-exists">EXISTS — no change</div></div>
+        <div class="comp"><div class="comp-name">SetupWizard.tsx</div><div class="comp-desc">First-time setup: store + terminal + register. 3-step wizard.</div><div class="comp-status comp-new">NEW page</div></div>
+        <div class="comp"><div class="comp-name">OpenRegister.tsx</div><div class="comp-desc">Daily: enter float, open register.</div><div class="comp-status comp-new">NEW page</div></div>
+        <div class="comp"><div class="comp-name">SettlementPage.tsx</div><div class="comp-desc">Denomination counting, variance, approval.</div><div class="comp-status comp-new">NEW page</div></div>
+        <div class="comp"><div class="comp-name">Orders.tsx</div><div class="comp-desc">Order list with status tabs. Currently empty.</div><div class="comp-status comp-modify">MODIFY</div></div>
+        <div class="comp"><div class="comp-name">Customers.tsx</div><div class="comp-desc">Customer list. Currently empty.</div><div class="comp-status comp-modify">MODIFY</div></div>
+        <div class="comp"><div class="comp-name">Reports.tsx</div><div class="comp-desc">Analytics dashboard. Currently empty.</div><div class="comp-status comp-modify">MODIFY</div></div>
+        <div class="comp"><div class="comp-name">SettingsPage.tsx</div><div class="comp-desc">Add: terminal management, store management, product management.</div><div class="comp-status comp-modify">MODIFY</div></div>
+      </div>
+    </div>
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--amber)"></div>POS Features (exist, need API connection)</div>
+      <div class="comp-grid">
+        <div class="comp"><div class="comp-name">RetailPOS.tsx</div><div class="comp-desc">Product grid + search. Hardcoded items → connect to elCatalogs API.</div><div class="comp-status comp-modify">MODIFY</div></div>
+        <div class="comp"><div class="comp-name">ServicePOS.tsx</div><div class="comp-desc">Garment grid + service picker + camera. Hardcoded garments.ts → connect to API.</div><div class="comp-status comp-modify">MODIFY</div></div>
+        <div class="comp"><div class="comp-name">CartPanel.tsx</div><div class="comp-desc">Cart with quantities, discounts, GST. Local state → sync with backend sale.</div><div class="comp-status comp-modify">MODIFY</div></div>
+        <div class="comp"><div class="comp-name">PaymentModal.tsx</div><div class="comp-desc">Cash/Card/UPI. IndexedDB only → connect to payment API.</div><div class="comp-status comp-modify">MODIFY</div></div>
+        <div class="comp"><div class="comp-name">CustomerSection.tsx</div><div class="comp-desc">Phone search + quick-add + B2B. No backend → connect to customer API.</div><div class="comp-status comp-modify">MODIFY</div></div>
+        <div class="comp"><div class="comp-name">HeldBillsDrawer.tsx</div><div class="comp-desc">Held bills list + recall. Local state → connect to API.</div><div class="comp-status comp-modify">MODIFY</div></div>
+        <div class="comp"><div class="comp-name">PieceDetailsModal.tsx</div><div class="comp-desc">Per-garment conditions + photos + notes. Exists — connect to order API.</div><div class="comp-status comp-modify">MODIFY</div></div>
+        <div class="comp"><div class="comp-name">ConnectivityStatus.tsx</div><div class="comp-desc">Online/offline + sync count. Exists — connect to real sync.</div><div class="comp-status comp-modify">MODIFY</div></div>
+      </div>
+    </div>
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--blue)"></div>New API Client Files (all NEW)</div>
+      <div class="comp-grid">
+        <div class="comp"><div class="comp-name">api/client.ts</div><div class="comp-desc">Base fetch wrapper: cookie auth, JSON parsing, error handling, retry.</div><div class="comp-status comp-new">NEW</div></div>
+        <div class="comp"><div class="comp-name">api/sessions.ts</div><div class="comp-desc">openSession, closeSession, getCurrentSession</div><div class="comp-status comp-new">NEW</div></div>
+        <div class="comp"><div class="comp-name">api/terminals.ts</div><div class="comp-desc">createTerminal, listTerminals, updateTerminal</div><div class="comp-status comp-new">NEW</div></div>
+        <div class="comp"><div class="comp-name">api/stores.ts</div><div class="comp-desc">listStores, createStore</div><div class="comp-status comp-new">NEW</div></div>
+        <div class="comp"><div class="comp-name">api/sales.ts</div><div class="comp-desc">createSale, addItem, updateItem, removeItem, holdSale, completeSale, voidSale</div><div class="comp-status comp-new">NEW</div></div>
+        <div class="comp"><div class="comp-name">api/products.ts</div><div class="comp-desc">searchProducts, listCategories, getProduct</div><div class="comp-status comp-new">NEW</div></div>
+        <div class="comp"><div class="comp-name">api/payments.ts</div><div class="comp-desc">createPayment, listPayments, generateUpiQr, checkPaymentStatus</div><div class="comp-status comp-new">NEW</div></div>
+        <div class="comp"><div class="comp-name">api/settlements.ts</div><div class="comp-desc">createSettlement, approveSettlement</div><div class="comp-status comp-new">NEW</div></div>
+        <div class="comp"><div class="comp-name">api/customers.ts</div><div class="comp-desc">searchCustomers, createCustomer, getCustomer</div><div class="comp-status comp-new">NEW</div></div>
+        <div class="comp"><div class="comp-name">api/orders.ts</div><div class="comp-desc">createOrder, listOrders, updateStatus, uploadPhoto, deliverOrder, invoiceOrder</div><div class="comp-status comp-new">NEW</div></div>
+        <div class="comp"><div class="comp-name">api/reports.ts</div><div class="comp-desc">getDailySummary, getItemWise, getHourly, getGstSummary, exportCsv</div><div class="comp-status comp-new">NEW</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ -->
+<!-- KEY FLOWS                    -->
+<!-- ═══════════════════════════ -->
+<div class="flow-section" id="flows">
+  <div class="flow-title">Key User Flows</div>
+</div>
+
+<div class="module">
+  <div class="module-head" style="background:#166534"><h3>Flow 1: First Time User</h3></div>
+  <div class="module-body">
+    <div class="flow-box"><span class="hl">User opens pos.elsapiens.com</span>
+    <span class="arrow">→</span> JWT cookie present? <span class="arrow">→</span> NO <span class="arrow">→</span> Redirect to auth.elsapiens.com <span class="arrow">→</span> Login <span class="arrow">→</span> Back with JWT
+    <span class="arrow">→</span> JWT valid <span class="arrow">→</span> elPOS loads
+    <span class="arrow">→</span> GET /stores <span class="arrow">→</span> Empty <span class="arrow">→</span> <span class="hl">Show Setup Wizard</span>
+    <span class="arrow">→</span> Step 1: Create Store <span class="arrow">→</span> POST /stores <span class="arrow">→</span> <span class="grpc">Inventory: CreateStore + CreateWarehouse</span>
+    <span class="arrow">→</span> Step 2: Register Terminal <span class="arrow">→</span> POST /terminals <span class="arrow">→</span> <span class="db">INSERT terminals</span>
+    <span class="arrow">→</span> Step 3: Open Register <span class="arrow">→</span> POST /sessions/open <span class="arrow">→</span> <span class="db">INSERT register_sessions</span>
+    <span class="arrow">→</span> <span class="hl">POS screen loads — ready for first sale</span></div>
+  </div>
+</div>
+
+<div class="module">
+  <div class="module-head" style="background:#1e40af"><h3>Flow 2: Daily Sale (Returning User)</h3></div>
+  <div class="module-body">
+    <div class="flow-box"><span class="hl">Staff opens tablet</span> <span class="arrow">→</span> JWT cookie valid <span class="arrow">→</span> elPOS loads
+    <span class="arrow">→</span> GET /sessions/current?terminal_id=T1 <span class="arrow">→</span> No session <span class="arrow">→</span> Show "Open Register"
+    <span class="arrow">→</span> Enter ₹5,000 float <span class="arrow">→</span> POST /sessions/open <span class="arrow">→</span> POS ready
+
+    <span class="hl">Customer arrives</span>
+    <span class="arrow">→</span> Type "rice" <span class="arrow">→</span> GET /products?search=rice <span class="arrow">→</span> <span class="grpc">elCatalogs: SearchItems</span> <span class="arrow">→</span> Results shown
+    <span class="arrow">→</span> Tap "Rice 5kg" <span class="arrow">→</span> POST /sales/{id}/items <span class="arrow">→</span> GST calculated <span class="arrow">→</span> Cart updates
+    <span class="arrow">→</span> Tap "Dal 1kg" × 2 <span class="arrow">→</span> POST /sales/{id}/items <span class="arrow">→</span> Cart: ₹590 + ₹29.50 GST = ₹620
+    <span class="arrow">→</span> Tap [Pay] → [Cash] <span class="arrow">→</span> Customer gives ₹700 <span class="arrow">→</span> Change ₹80
+    <span class="arrow">→</span> POST /payments <span class="arrow">→</span> Sale completed <span class="arrow">→</span> Bill# T1-INV-2526-0001
+    <span class="arrow">→</span> <span class="grpc">Inventory: DeductStock</span> (async) <span class="arrow">→</span> <span class="grpc">elAccounts: PostJournal</span> (async)
+    <span class="arrow">→</span> Receipt prints <span class="arrow">→</span> Cart resets <span class="arrow">→</span> Ready for next customer</div>
+  </div>
+</div>
+
+<div class="module">
+  <div class="module-head" style="background:#9d174d"><h3>Flow 3: Laundry Service Order</h3></div>
+  <div class="module-body">
+    <div class="flow-box"><span class="hl">Customer drops off clothes</span>
+    <span class="arrow">→</span> Search customer phone <span class="arrow">→</span> GET /customers?phone=9876 <span class="arrow">→</span> Found: Meera
+    <span class="arrow">→</span> Tap garments: 2×Shirt, 1×Pants, 1×Blazer
+    <span class="arrow">→</span> Select services: Shirt→Wet Clean(₹40), Blazer→Dry Clean(₹350)
+    <span class="arrow">→</span> Photograph each garment (camera pre-initialized)
+    <span class="arrow">→</span> Tag blazer: [Stain] [Minor Fade]
+    <span class="arrow">→</span> Set delivery: 28-Mar 6PM
+    <span class="arrow">→</span> POST /orders <span class="arrow">→</span> Order #T1-SO-2526-0001 created (status: received)
+    <span class="arrow">→</span> Garment tags print <span class="arrow">→</span> Receipt given to Meera
+
+    <span class="hl">2 days later — processing</span>
+    <span class="arrow">→</span> Staff opens Orders page <span class="arrow">→</span> Taps "Start Processing"
+    <span class="arrow">→</span> PATCH /orders/{id}/status → in_progress
+    <span class="arrow">→</span> <span class="grpc">elmessagehub: "Your order is being processed"</span>
+    <span class="arrow">→</span> Staff marks each item done <span class="arrow">→</span> All done <span class="arrow">→</span> Taps "Mark Ready"
+    <span class="arrow">→</span> PATCH /orders/{id}/status → ready
+    <span class="arrow">→</span> <span class="grpc">elmessagehub: "Your order is READY for pickup!"</span>
+
+    <span class="hl">Meera picks up</span>
+    <span class="arrow">→</span> Scan order# <span class="arrow">→</span> GET /orders/{id} <span class="arrow">→</span> Status: READY
+    <span class="arrow">→</span> POST /orders/{id}/deliver <span class="arrow">→</span> status → delivered
+    <span class="arrow">→</span> POST /orders/{id}/invoice <span class="arrow">→</span> Sale created: ₹549 with GST
+    <span class="arrow">→</span> POST /payments (UPI) <span class="arrow">→</span> QR shown <span class="arrow">→</span> Meera scans <span class="arrow">→</span> Paid
+    <span class="arrow">→</span> Receipt prints <span class="arrow">→</span> Done</div>
+  </div>
+</div>
+
+<div class="module">
+  <div class="module-head" style="background:#b45309"><h3>Flow 4: End of Day Settlement</h3></div>
+  <div class="module-body">
+    <div class="flow-box"><span class="hl">End of shift — Priya closes register</span>
+    <span class="arrow">→</span> Tap [Settle] or press F12
+    <span class="arrow">→</span> System calculates expected: opening float + cash sales - change given
+    <span class="arrow">→</span> Priya counts cash by denomination:
+        ₹2000 × 2 = ₹4,000
+        ₹500 × 28 = ₹14,000
+        ₹100 × 22 = ₹2,200  ... total: ₹21,525
+    <span class="arrow">→</span> POST /settlements (actual=₹21,525, expected=₹21,525, variance=₹0)
+    <span class="arrow">→</span> Submitted for manager approval
+
+    <span class="hl">Manager Rahul reviews</span>
+    <span class="arrow">→</span> PATCH /settlements/{id}/approve <span class="arrow">→</span> Session closed
+    <span class="arrow">→</span> <span class="grpc">elmessagehub: Daily summary to Rahul's WhatsApp</span>
+        "Sales: ₹44,905 | 23 txns | Cash: ₹21,525 | Card: ₹15,200 | UPI: ₹11,205 | Variance: ₹0 ✓"</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- BIRD'S EYE VIEW — ALL BACKEND + FRONTEND MODULES & COMPONENTS -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+
+<div class="flow-section" id="overview-all">
+  <div class="flow-title">Bird's Eye View — All Backend &amp; Frontend Modules</div>
+  <div class="flow-desc">Every Go file, every React component, every API client function — at a glance.</div>
+</div>
+
+<!-- BACKEND OVERVIEW -->
+<div class="module">
+  <div class="module-head" style="background:#0f172a"><h3>Backend (Go) — File &amp; Module Map</h3><span class="tag">backend/</span></div>
+  <div class="module-body">
+
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--indigo)"></div>cmd/ — Entry Point</div>
+      <table class="action-table">
+        <thead><tr><th>File</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td class="ep">cmd/server/main.go</td><td class="desc-cell">Application entry point. Loads config, connects DB + Redis, sets up router, starts HTTP server with graceful shutdown.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--purple)"></div>internal/config/ — Configuration</div>
+      <table class="action-table">
+        <thead><tr><th>File</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td class="ep">config/config.go</td><td class="desc-cell">Reads .env: DATABASE_URL, REDIS_URL, AUTH_MODE, all gRPC addresses, LOG_LEVEL. Validates required fields.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--red)"></div>internal/middleware/ — Request Pipeline</div>
+      <table class="action-table">
+        <thead><tr><th>File</th><th>Purpose</th><th>Runs On</th></tr></thead>
+        <tbody>
+          <tr><td class="ep">middleware/auth.go</td><td class="desc-cell">JWT validation (mock or real). Reads access_token cookie. Extracts person_id, entity_id, reseller_id.</td><td>Every request</td></tr>
+          <tr><td class="ep">middleware/tenant.go</td><td class="desc-cell">Extracts workspace_id from X-Workspace-ID header. Validates against JWT claims. Creates TenantContext.</td><td>Every request</td></tr>
+          <tr><td class="ep">middleware/context.go</td><td class="desc-cell">TenantContext struct. Helpers: GetPersonID(ctx), GetOrgID(ctx), GetWorkspaceID(ctx).</td><td>—</td></tr>
+          <tr><td class="ep">middleware/logging.go</td><td class="desc-cell">Logs: method, path, status, duration, request_id, org_id.</td><td>Every request</td></tr>
+          <tr><td class="ep">middleware/recovery.go</td><td class="desc-cell">Catches panics, logs stack trace, returns 500.</td><td>Every request</td></tr>
+          <tr><td class="ep">middleware/cors.go</td><td class="desc-cell">Allows frontend origin + credentials (cookie). Configured per environment.</td><td>Every request</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--cyan)"></div>internal/helpers/ — Shared Utilities</div>
+      <table class="action-table">
+        <thead><tr><th>File</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td class="ep">helpers/response.go</td><td class="desc-cell">RespondJSON(), RespondError(), RespondValidationError(), RespondPaginated(). Standard response format for all endpoints.</td></tr>
+          <tr><td class="ep">helpers/errors.go</td><td class="desc-cell">Error codes: not_found, validation_error, conflict, unauthorized, forbidden, internal_server_error.</td></tr>
+          <tr><td class="ep">helpers/decimal.go</td><td class="desc-cell">Money type (shopspring/decimal). Add, Sub, Mul, Round, RoundToRupee, Paisa. Never float64 for money.</td></tr>
+          <tr><td class="ep">helpers/logger.go</td><td class="desc-cell">Zap structured logger. JSON output. Timestamp, level, request_id, org_id, message.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--green)"></div>internal/models/ — Data Structures</div>
+      <table class="action-table">
+        <thead><tr><th>File</th><th>Structs</th><th>Key Fields</th></tr></thead>
+        <tbody>
+          <tr><td class="ep">models/terminal.go</td><td>Terminal, TerminalConfig, CreateTerminalRequest, UpdateTerminalRequest</td><td>id, store_id, code, name, mode, billing_prefix, is_active, config</td></tr>
+          <tr><td class="ep">models/session.go</td><td>RegisterSession, OpenSessionRequest, CloseSessionRequest</td><td>id, terminal_id, opened_by, opening_float, status, opened_at, closed_at</td></tr>
+          <tr><td class="ep">models/sale.go</td><td>Sale, SaleItem, CreateSaleRequest, AddItemRequest, SaleTotals</td><td>id, bill_number, status, subtotal, discount, tax, round_off, net_total, items[]</td></tr>
+          <tr><td class="ep">models/payment.go</td><td>Payment, CreatePaymentRequest</td><td>id, sale_id, method, amount, tendered, change, reference_number, card_last_four, verified</td></tr>
+          <tr><td class="ep">models/settlement.go</td><td>Settlement, CreateSettlementRequest</td><td>id, session_id, expected_cash/card/upi, actual_cash/card/upi, variance, denominations, status</td></tr>
+          <tr><td class="ep">models/customer.go</td><td>Customer, CreateCustomerRequest</td><td>id, name, phone, email, gstin, loyalty_points, credit_balance, tags[]</td></tr>
+          <tr><td class="ep">models/service_order.go</td><td>ServiceOrder, ServiceOrderItem, ServiceOrderPhoto, CreateOrderRequest</td><td>id, order_number, customer_id, service_type, status, priority, promised_at, items[], photos[]</td></tr>
+          <tr><td class="ep">models/billing_series.go</td><td>BillingSeries</td><td>id, terminal_id, series_type, prefix, fiscal_year, range_start, range_end, current_seq</td></tr>
+          <tr><td class="ep">models/gst_invoice.go</td><td>GSTInvoice</td><td>id, sale_id, invoice_number, seller/buyer GSTIN, tax totals, irn, signed_qr</td></tr>
+          <tr><td class="ep">models/sync_event.go</td><td>SyncEvent</td><td>id, terminal_id, event_type, entity_type, entity_id, payload, seq_num</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--blue)"></div>internal/repository/ — Database Layer</div>
+      <table class="action-table">
+        <thead><tr><th>File</th><th>Interface Methods</th></tr></thead>
+        <tbody>
+          <tr><td class="ep">repository/db.go</td><td>NewPool(), Ping(), Close() — pgx/v5 connection pool</td></tr>
+          <tr><td class="ep">repository/terminal_repo.go</td><td>Create, GetByID, List, Update, ExistsWithCode</td></tr>
+          <tr><td class="ep">repository/session_repo.go</td><td>Open, Close, GetCurrent, GetByID</td></tr>
+          <tr><td class="ep">repository/sale_repo.go</td><td>Create, GetByID, List(filters), UpdateStatus, UpdateTotals, AddItem, UpdateItem, RemoveItem, ListItems</td></tr>
+          <tr><td class="ep">repository/payment_repo.go</td><td>Create, GetByID, ListBySale, UpdateStatus</td></tr>
+          <tr><td class="ep">repository/settlement_repo.go</td><td>Create, GetByID, Approve, Dispute, GetBySession</td></tr>
+          <tr><td class="ep">repository/customer_repo.go</td><td>Create, GetByID, SearchByPhone, SearchByName, Update</td></tr>
+          <tr><td class="ep">repository/order_repo.go</td><td>Create, GetByID, List(filters), UpdateStatus, AddPhoto, Deliver, CreateInvoice</td></tr>
+          <tr><td class="ep">repository/billing_repo.go</td><td>AllocateRange, NextNumber, GetCurrentSeries</td></tr>
+          <tr><td class="ep">repository/sync_repo.go</td><td>PushEvents, PullEvents(sinceSeq), GetConflicts</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--amber)"></div>internal/services/ — Business Logic</div>
+      <table class="action-table">
+        <thead><tr><th>File</th><th>Key Methods</th><th>Depends On</th></tr></thead>
+        <tbody>
+          <tr><td class="ep">services/terminal_service.go</td><td>Create (validate, gen prefix), GetByID, List, Update</td><td>terminal_repo</td></tr>
+          <tr><td class="ep">services/session_service.go</td><td>Open (check no duplicate), Close, GetCurrent</td><td>session_repo, terminal_repo</td></tr>
+          <tr><td class="ep">services/sale_service.go</td><td>Create, AddItem (catalog+GST), Hold, Recall, Complete (bill#), Void, Return</td><td>sale_repo, catalogs_client, gst_calculator, numbering_service</td></tr>
+          <tr><td class="ep">services/payment_service.go</td><td>ProcessCash, ProcessCard, ProcessUPI, ProcessSplit</td><td>payment_repo, pinelabs_client, upi_client</td></tr>
+          <tr><td class="ep">services/settlement_service.go</td><td>Create (calc expected), Approve (close session), Dispute</td><td>settlement_repo, payment_repo, session_repo</td></tr>
+          <tr><td class="ep">services/customer_service.go</td><td>QuickAdd, Search (local + elAccounts), Get, Update</td><td>customer_repo, accounts_client</td></tr>
+          <tr><td class="ep">services/order_service.go</td><td>Create, UpdateStatus (state machine), Deliver, DeliverWithoutToken, Invoice, PartialDeliver</td><td>order_repo, gst_calculator, numbering_service, messagehub_client</td></tr>
+          <tr><td class="ep">services/numbering_service.go</td><td>AllocateRange, NextNumber (atomic), OfflineFallback</td><td>billing_repo</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--pink)"></div>internal/gst/ — Tax Engine</div>
+      <table class="action-table">
+        <thead><tr><th>File</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td class="ep">gst/calculator.go</td><td>CalculateGST(amount, rate, sellerState, buyerState, inclusive) → GSTResult{taxable, CGST, SGST, IGST, cess}. Same state=CGST+SGST. Different=IGST. Reverse calc for inclusive.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:#475569"></div>internal/print/ — Receipt &amp; Label</div>
+      <table class="action-table">
+        <thead><tr><th>File</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td class="ep">print/receipt.go</td><td>Sale → formatted receipt text. Header (store name, GSTIN), items, GST breakdown, payment, footer.</td></tr>
+          <tr><td class="ep">print/escpos.go</td><td>Text → ESC/POS binary commands. Bold, alignment, font size, barcode, QR code, cut paper.</td></tr>
+          <tr><td class="ep">print/tag.go</td><td>Garment tag: order#, customer name, garment type, rack slot. For laundry tracking.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--red)"></div>internal/handlers/ — HTTP Endpoints</div>
+      <table class="action-table">
+        <thead><tr><th>File</th><th>Endpoints</th><th>Count</th></tr></thead>
+        <tbody>
+          <tr><td class="ep">handlers/terminal_handler.go</td><td>POST /terminals, GET /terminals, GET /{id}, PUT /{id}</td><td>4</td></tr>
+          <tr><td class="ep">handlers/session_handler.go</td><td>POST /sessions/open, POST /sessions/{id}/close, GET /sessions/current</td><td>3</td></tr>
+          <tr><td class="ep">handlers/store_handler.go</td><td>GET /stores, POST /stores (proxy to Inventory)</td><td>2</td></tr>
+          <tr><td class="ep">handlers/product_handler.go</td><td>GET /products, GET /categories, POST /products (proxy to elCatalogs)</td><td>3</td></tr>
+          <tr><td class="ep">handlers/sale_handler.go</td><td>POST /sales, GET /sales, GET /{id}, POST /items, PUT /items, DEL /items, POST /hold, POST /recall, PATCH /complete, POST /void, POST /return</td><td>11</td></tr>
+          <tr><td class="ep">handlers/payment_handler.go</td><td>POST /payments, GET /payments, GET /payments/{id}</td><td>3</td></tr>
+          <tr><td class="ep">handlers/settlement_handler.go</td><td>POST /settlements, GET /{id}, PATCH /approve, PATCH /dispute</td><td>4</td></tr>
+          <tr><td class="ep">handlers/customer_handler.go</td><td>POST /customers, GET /customers, GET /{id}, PUT /{id}</td><td>4</td></tr>
+          <tr><td class="ep">handlers/order_handler.go</td><td>POST /orders, GET /orders, GET /{id}, PATCH /status, POST /photos, POST /deliver, POST /invoice, POST /partial-deliver</td><td>8</td></tr>
+          <tr><td class="ep">handlers/report_handler.go</td><td>GET /reports/sales/daily-summary, /item-wise, /hourly, /by-payment, /by-operator, /gst/summary, /gst/hsn, /service/by-type, /service/turnaround, /customers/top, /settlement/history</td><td>~15</td></tr>
+          <tr><td class="ep">handlers/sync_handler.go</td><td>POST /sync/push, GET /sync/pull, POST /sync/photo-upload</td><td>3</td></tr>
+          <tr><td class="ep" style="font-weight:700">TOTAL</td><td></td><td style="font-weight:700">~60</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--purple)"></div>internal/grpc/ — Ecosystem Clients</div>
+      <table class="action-table">
+        <thead><tr><th>File</th><th>Service Called</th><th>Methods</th><th>Cache</th></tr></thead>
+        <tbody>
+          <tr><td class="ep">grpc/inventory_client.go</td><td>Inventory</td><td>ListStores, GetStore, CreateStore, CreateWarehouse, DeductStock, RestoreStock</td><td>Stores: 15min</td></tr>
+          <tr><td class="ep">grpc/catalogs_client.go</td><td>elCatalogs</td><td>SearchItems, GetItem, ListCategories, GetItemPricing, CreateItem</td><td>Products: 15min</td></tr>
+          <tr><td class="ep">grpc/geolocations_client.go</td><td>Geolocations</td><td>GetState, ListStates</td><td>States: 24hr</td></tr>
+          <tr><td class="ep">grpc/accounts_client.go</td><td>elAccounts</td><td>FindPersonByIdentifier, GetPersonProfile, CreateIndividualAccount</td><td>No</td></tr>
+          <tr><td class="ep">grpc/messagehub_client.go</td><td>elmessagehub</td><td>SendMessage (WhatsApp/SMS)</td><td>No</td></tr>
+          <tr><td class="ep">grpc/pinelabs_client.go</td><td>Pine Labs (REST)</td><td>UploadBilledTransaction, GetStatus, CancelTransaction</td><td>No</td></tr>
+          <tr><td class="ep">grpc/upi_client.go</td><td>Razorpay/PhonePe</td><td>GenerateQR, GetPaymentStatus</td><td>No</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--green)"></div>migrations/ — Database Tables</div>
+      <table class="action-table">
+        <thead><tr><th>Migration</th><th>Tables Created</th><th>Columns</th></tr></thead>
+        <tbody>
+          <tr><td class="ep">000001_init.up.sql</td><td>trigger_set_updated_at() function</td><td>—</td></tr>
+          <tr><td class="ep">000002_terminals.up.sql</td><td>terminals, billing_series, register_sessions</td><td>12 + 10 + 11</td></tr>
+          <tr><td class="ep">000003_sales.up.sql</td><td>sales, sale_items</td><td>24 + 27</td></tr>
+          <tr><td class="ep">000004_payments.up.sql</td><td>payments</td><td>18</td></tr>
+          <tr><td class="ep">000005_settlements.up.sql</td><td>settlements</td><td>16</td></tr>
+          <tr><td class="ep">000006_service_orders.up.sql</td><td>service_orders, service_order_items, service_order_photos</td><td>22 + 15 + 9</td></tr>
+          <tr><td class="ep">000007_customers.up.sql</td><td>pos_customers</td><td>14</td></tr>
+          <tr><td class="ep">000008_gst_invoices.up.sql</td><td>gst_invoices</td><td>20</td></tr>
+          <tr><td class="ep">000009_sync_events.up.sql</td><td>sync_events</td><td>13</td></tr>
+          <tr><td class="ep" style="font-weight:700">TOTAL</td><td style="font-weight:700">10 tables</td><td style="font-weight:700">~170 columns</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<!-- FRONTEND OVERVIEW -->
+<div class="module">
+  <div class="module-head" style="background:#0f172a"><h3>Frontend (React) — File &amp; Component Map</h3><span class="tag">client/src/</span></div>
+  <div class="module-body">
+
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--blue)"></div>Pages (Routes) — What User Navigates To</div>
+      <table class="action-table">
+        <thead><tr><th>File</th><th>Route</th><th>Status</th><th>What It Shows</th><th>Data From</th></tr></thead>
+        <tbody>
+          <tr><td class="ep">SetupWizard.tsx</td><td>/setup</td><td><span class="source src-own" style="background:#dbeafe;color:#1e40af">NEW</span></td><td>3-step wizard: Create Store form → Register Terminal form → Open Register form</td><td>POST /stores, POST /terminals, POST /sessions/open</td></tr>
+          <tr><td class="ep">OpenRegister.tsx</td><td>/open</td><td><span class="source src-own" style="background:#dbeafe;color:#1e40af">NEW</span></td><td>Terminal name, store name, opening cash input, [Open Register] button</td><td>GET /sessions/current, POST /sessions/open</td></tr>
+          <tr><td class="ep">POS.tsx</td><td>/</td><td><span class="source src-own" style="background:#dcfce7;color:#166534">EXISTS</span></td><td>Mode router: shows RetailPOS, ServicePOS, or KOTPOS based on terminal mode</td><td>—</td></tr>
+          <tr><td class="ep">SettlementPage.tsx</td><td>/settle</td><td><span class="source src-own" style="background:#dbeafe;color:#1e40af">NEW</span></td><td>Denomination form (₹2000×?, ₹500×?...), expected vs actual, variance, [Submit]</td><td>POST /settlements, PATCH /approve</td></tr>
+          <tr><td class="ep">Orders.tsx</td><td>/orders</td><td><span class="source src-own" style="background:#fef3c7;color:#92400e">MODIFY</span></td><td>Order list with status tabs [Received][In Progress][Ready][Delivered], action buttons</td><td>GET /orders?status=</td></tr>
+          <tr><td class="ep">Customers.tsx</td><td>/customers</td><td><span class="source src-own" style="background:#fef3c7;color:#92400e">MODIFY</span></td><td>Customer list: name, phone, loyalty points, credit balance, tags. Search bar</td><td>GET /customers</td></tr>
+          <tr><td class="ep">Reports.tsx</td><td>/reports</td><td><span class="source src-own" style="background:#fef3c7;color:#92400e">MODIFY</span></td><td>Date picker, sales chart, payment pie, hourly bar, top items table, [Export CSV]</td><td>GET /reports/*</td></tr>
+          <tr><td class="ep">SettingsPage.tsx</td><td>/settings</td><td><span class="source src-own" style="background:#fef3c7;color:#92400e">MODIFY</span></td><td>Terminal list, store management, product management, appearance, garment config</td><td>GET /terminals, GET /stores</td></tr>
+          <tr><td class="ep">GarmentConfigPage.tsx</td><td>/settings/garments</td><td><span class="source src-own" style="background:#dcfce7;color:#166534">EXISTS</span></td><td>Per-garment service enable/disable, price override per service</td><td>elCatalogs data</td></tr>
+          <tr><td class="ep">AppearanceSettingsPage.tsx</td><td>/settings/appearance</td><td><span class="source src-own" style="background:#dcfce7;color:#166534">EXISTS</span></td><td>Theme (light/dark/system), color scheme, background effect, density</td><td>elAuth appearance API</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--green)"></div>POS Features — Core Billing Components</div>
+      <table class="action-table">
+        <thead><tr><th>Component</th><th>Status</th><th>What User Sees</th><th>Form Fields / List Columns</th><th>Actions / Buttons</th></tr></thead>
+        <tbody>
+          <tr><td class="ep">RetailPOS.tsx</td><td><span class="source src-own" style="background:#fef3c7;color:#92400e">MODIFY</span></td><td>Left panel: product search + category tabs + product grid</td><td>Search bar (text, debounced). Category tabs from API. Product cards: image, name, price, stock badge</td><td>Tap product → adds to cart. Barcode scan button. Category filter</td></tr>
+          <tr><td class="ep">ServicePOS.tsx</td><td><span class="source src-own" style="background:#fef3c7;color:#92400e">MODIFY</span></td><td>Left panel: garment grid + service picker + camera</td><td>Customer phone (search input). Garment grid: icon, name. Service picker: buttons with prices. Delivery date (datetime picker). Priority (dropdown)</td><td>Tap garment → service picker. Tap service → add to order. Camera → capture photo. [Create Order]</td></tr>
+          <tr><td class="ep">CartPanel.tsx</td><td><span class="source src-own" style="background:#fef3c7;color:#92400e">MODIFY</span></td><td>Right panel: cart items + totals + pay button</td><td>Per item: name, SKU, qty (- [n] +), unit price, discount, line total, [×] remove. Totals: subtotal, discount, GST (CGST+SGST or IGST), round-off, net total (bold)</td><td>Qty +/-, [×] remove, expand for discount input. [Hold] [Pay] buttons</td></tr>
+          <tr><td class="ep">PaymentModal.tsx</td><td><span class="source src-own" style="background:#fef3c7;color:#92400e">MODIFY</span></td><td>Modal: payment method selection + amount entry</td><td>Cash: tendered input (₹), quick buttons (₹100/500/1000/2000/Exact), change display. Card: amount shown, waiting indicator. UPI: QR code, timer. Split: method dropdown + amount per payment</td><td>[Cash] [Card] [UPI] [Split] tabs. [Complete Payment]. [Cancel]. Success: [Print Receipt] [New Sale]</td></tr>
+          <tr><td class="ep">CustomerSection.tsx</td><td><span class="source src-own" style="background:#fef3c7;color:#92400e">MODIFY</span></td><td>Inline in cart panel: customer lookup</td><td>Phone input (search on type), Name display, [+ Quick Add] link. B2B toggle → GSTIN input, Company name, Address</td><td>Type phone → search. [+ Quick Add] → name+phone form. B2B toggle → expand fields</td></tr>
+          <tr><td class="ep">HeldBillsDrawer.tsx</td><td><span class="source src-own" style="background:#fef3c7;color:#92400e">MODIFY</span></td><td>Slide-out drawer: parked bills list</td><td>Per bill: Label ("Blue shirt lady"), item count, total (₹), time ago ("5 min ago")</td><td>[Recall] → restore to cart. [Delete] → discard</td></tr>
+          <tr><td class="ep">PieceDetailsModal.tsx</td><td><span class="source src-own" style="background:#fef3c7;color:#92400e">MODIFY</span></td><td>Modal: per-garment condition detail</td><td>Condition toggles: [Stain] [Fade] [Damage] [Color Spread] [Missing Button]. Photo gallery (up to 4). Notes textarea. Piece navigation (← garment 1/5 →)</td><td>Toggle conditions. [📷 Capture Photo]. Type notes. Arrow keys navigate pieces</td></tr>
+          <tr><td class="ep">ConnectivityStatus.tsx</td><td><span class="source src-own" style="background:#fef3c7;color:#92400e">MODIFY</span></td><td>Status bar: online/offline indicator</td><td>● Online (green) or ● Offline (red). "3 pending sync" count</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--red)"></div>New Components to Build</div>
+      <table class="action-table">
+        <thead><tr><th>Component</th><th>What User Sees</th><th>Form Fields / Data Shown</th><th>Actions / Buttons</th></tr></thead>
+        <tbody>
+          <tr><td class="ep">DeliveryFlow.tsx</td><td>Delivery screen: normal or without-token</td><td>Normal: order# input → items display → totals. Without token: phone search → pending orders → MANDATORY: customer photo (camera), signature (canvas pad), identity proof (dropdown), staff notes (textarea)</td><td>[Deliver] → invoice → payment. [Deliver Without Slip] → verification → deliver → SMS sent</td></tr>
+          <tr><td class="ep">TerminalList.tsx</td><td>Settings: all terminals</td><td>List: Code (bold), Name, Mode (badge), Store name, Status (● active/○ inactive)</td><td>[+ Register Terminal] → modal. [Edit] per row → edit modal</td></tr>
+          <tr><td class="ep">RegisterTerminalModal.tsx</td><td>Modal: register new terminal</td><td>Store* (dropdown), Code* (text, unique check), Name* (text), Mode* (radio cards with descriptions)</td><td>[Cancel] [Register]. Error on 409: "Code already exists"</td></tr>
+          <tr><td class="ep">EditTerminalModal.tsx</td><td>Modal: edit terminal settings</td><td>Code (read-only), Name*, Mode*, Status (toggle), Receipt Header (multiline), Receipt Footer (multiline), Auto-print (toggle), Default Payment (dropdown), Tax Inclusive (toggle), Cash Drawer (toggle)</td><td>[Cancel] [Save Changes]</td></tr>
+          <tr><td class="ep">ReceiptPreview.tsx</td><td>Receipt on screen</td><td>Formatted: store name/address/GSTIN, bill#, date, items, GST breakdown, payment, footer</td><td>[Print] → send to printer. [Close]</td></tr>
+          <tr><td class="ep">SignaturePad.tsx</td><td>Touch canvas for customer signature</td><td>White canvas, draw with finger/stylus. Signature preview</td><td>[Clear] [Done]. Returns base64 image</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--purple)"></div>API Client Layer — client/src/lib/api/</div>
+      <table class="action-table">
+        <thead><tr><th>File</th><th>Functions</th><th>Called By</th></tr></thead>
+        <tbody>
+          <tr><td class="ep">api/client.ts</td><td>fetchAPI(method, path, body) — base wrapper. Handles: cookie auth, JSON parse, error handling, retry on 5xx</td><td>All other api/ files</td></tr>
+          <tr><td class="ep">api/sessions.ts</td><td>openSession(terminalId, float), closeSession(id), getCurrentSession(terminalId)</td><td>OpenRegister, SetupWizard</td></tr>
+          <tr><td class="ep">api/terminals.ts</td><td>createTerminal(data), listTerminals(storeId?), getTerminal(id), updateTerminal(id, data)</td><td>SetupWizard, TerminalList, EditModal</td></tr>
+          <tr><td class="ep">api/stores.ts</td><td>listStores(), createStore(data)</td><td>SetupWizard, TerminalList (dropdown)</td></tr>
+          <tr><td class="ep">api/products.ts</td><td>searchProducts(query, nature?), listCategories(), getProduct(id)</td><td>RetailPOS, ServicePOS</td></tr>
+          <tr><td class="ep">api/sales.ts</td><td>createSale(terminalId, sessionId), addItem(saleId, data), updateItem(saleId, itemId, data), removeItem(saleId, itemId), holdSale(saleId, label), recallSale(saleId), completeSale(saleId), voidSale(saleId, reason), listSales(filters), getSale(id)</td><td>RetailPOS, CartPanel, HeldBills, Orders</td></tr>
+          <tr><td class="ep">api/payments.ts</td><td>createPayment(data), getPayment(id), listPayments(saleId)</td><td>PaymentModal</td></tr>
+          <tr><td class="ep">api/settlements.ts</td><td>createSettlement(data), getSettlement(id), approveSettlement(id), disputeSettlement(id)</td><td>SettlementPage</td></tr>
+          <tr><td class="ep">api/customers.ts</td><td>searchCustomers(phone?, name?), createCustomer(data), getCustomer(id), updateCustomer(id, data)</td><td>CustomerSection, Customers page</td></tr>
+          <tr><td class="ep">api/orders.ts</td><td>createOrder(data), listOrders(filters), getOrder(id), updateOrderStatus(id, status), uploadPhoto(orderId, file), deliverOrder(id, data), invoiceOrder(id), partialDeliver(id, itemIds)</td><td>ServicePOS, Orders page, DeliveryFlow</td></tr>
+          <tr><td class="ep">api/reports.ts</td><td>getDailySummary(from, to), getItemWise(from, to), getHourly(date), getPaymentBreakdown(from, to), getGstSummary(from, to), exportCsv(reportType, from, to)</td><td>Reports page</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--amber)"></div>State Management — Zustand Stores</div>
+      <table class="action-table">
+        <thead><tr><th>File</th><th>State</th><th>Persistence</th><th>Change Needed</th></tr></thead>
+        <tbody>
+          <tr><td class="ep">store/cartStore.ts</td><td>Cart items, customer, B2B details, held bills, piece details</td><td>In-memory (resets on refresh)</td><td>MODIFY: sync with backend sale. Cart reflects backend state, not local-only</td></tr>
+          <tr><td class="ep">store/workspaceSettingsStore.ts</td><td>Enabled modes (retail/service/kot), default mode, camera ready</td><td>localStorage per workspace</td><td>MODIFY: may come from terminal config or plan features</td></tr>
+          <tr><td class="ep">store/garmentConfigStore.ts</td><td>Per-garment service enable/disable, price overrides</td><td>localStorage per workspace</td><td>MODIFY: should read from elCatalogs instead of localStorage</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--indigo)"></div>Offline / Sync Layer</div>
+      <table class="action-table">
+        <thead><tr><th>File</th><th>Purpose</th><th>Change Needed</th></tr></thead>
+        <tbody>
+          <tr><td class="ep">lib/db.ts</td><td>Dexie IndexedDB: orders, customers, syncQueue tables</td><td>MODIFY: add sync queue processing, conflict tracking</td></tr>
+          <tr><td class="ep">lib/sync.ts</td><td>Currently no-op (does nothing)</td><td>MODIFY: implement startAutoSync(), pushQueue(), pullChanges(). 30s polling or WebSocket</td></tr>
+          <tr><td class="ep">hooks/useOnlineStatus.ts</td><td>Browser online/offline detection, pending sync count</td><td>MODIFY: connect to real sync queue count</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sub">
+      <div class="sub-head"><div class="dot" style="background:var(--green)"></div>Layout &amp; Shell (from elSDK — no changes needed)</div>
+      <table class="action-table">
+        <thead><tr><th>Component</th><th>From</th><th>What It Does</th></tr></thead>
+        <tbody>
+          <tr><td class="ep">POSLayout.tsx</td><td>elPOS own</td><td>Responsive layout: desktop icon rail sidebar + mobile drawer. Wraps all pages.</td></tr>
+          <tr><td class="ep">AppShell</td><td>@elsapiens/layout</td><td>Sidebar + TopBar + content area. Standard across all ecosystem apps.</td></tr>
+          <tr><td class="ep">AuthGuard</td><td>@elsapiens/shell</td><td>Checks JWT cookie. Redirects to auth.elsapiens.com if not logged in.</td></tr>
+          <tr><td class="ep">ThemeProvider</td><td>@elsapiens/providers</td><td>Dark/light/system mode. Color schemes. Background effects.</td></tr>
+          <tr><td class="ep">AuthProvider</td><td>@elsapiens/providers</td><td>User state, hasPermission(), hasRole(). Reads user_data cookie.</td></tr>
+          <tr><td class="ep">LocaleProvider</td><td>@elsapiens/providers</td><td>i18n translations. Currently English only.</td></tr>
+          <tr><td class="ep">ShortcutProvider</td><td>@elsapiens/providers</td><td>Keyboard shortcuts: F1-F12, Ctrl+F, +/-, Enter, Esc. Help panel.</td></tr>
+          <tr><td class="ep">HelpProvider</td><td>@elsapiens/providers</td><td>Contextual help topics, search, panel.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<div class="footer">
+  elPOS Complete Reference — Modules, APIs, Frontend Components &amp; Data Flows — elSapiens Ecosystem — March 2026
+</div>
+
+</body>
+</html>
