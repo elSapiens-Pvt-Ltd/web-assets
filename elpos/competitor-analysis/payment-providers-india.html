@@ -1,0 +1,1583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>POS Device &amp; Terminal Providers — India 2025</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c50: #f0f3f8; --c100: #dce3ef; --c200: #b9c7df; --c300: #8197c0;
+  --c400: #6b82b3; --c500: #536da0; --c600: #3f5580; --c700: #2d3d5c;
+  --c800: #1e2a40; --c900: #111827;
+  --success: #22c55e; --success-light: #dcfce7;
+  --warning: #f59e0b; --warning-light: #fef3c7;
+  --danger: #ef4444; --danger-light: #fee2e2;
+  --info: #3b82f6; --info-light: #dbeafe;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--c900); background: var(--c50); line-height: 1.6; font-size: 15px;
+}
+a { color: var(--c500); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.top-nav {
+  position: sticky; top: 0; z-index: 100; background: var(--c800);
+  padding: 0 16px; overflow-x: auto; white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25);
+}
+.top-nav a {
+  display: inline-block; color: var(--c200); text-decoration: none;
+  font-size: 13px; padding: 10px 12px; transition: all .2s;
+}
+.top-nav a:hover { color: #fff; background: var(--c700); }
+
+.hero {
+  background: linear-gradient(135deg, var(--c700) 0%, var(--c800) 100%);
+  color: #fff; padding: 40px 24px; text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,.15);
+}
+.hero h1 {
+  font-size: 36px; font-weight: 800; margin-bottom: 12px; letter-spacing: -0.5px;
+}
+.hero p {
+  font-size: 17px; color: var(--c200); max-width: 720px; margin: 0 auto;
+}
+
+.stats {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px; margin: 28px auto; max-width: 1400px; padding: 0 20px;
+}
+.stat-card {
+  background: #fff; border-radius: 8px; padding: 24px; text-align: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,.1); border: 1px solid var(--c100);
+}
+.stat-number {
+  font-size: 32px; font-weight: 800; color: var(--c700); margin-bottom: 6px;
+}
+.stat-label {
+  font-size: 13px; color: var(--c400); text-transform: uppercase;
+  letter-spacing: 0.5px; font-weight: 600;
+}
+
+.container { max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+
+.section { padding: 48px 0; }
+.section + .section { border-top: 1px solid var(--c100); }
+.section-title {
+  font-size: 28px; font-weight: 700; color: var(--c700);
+  margin-bottom: 8px; display: flex; align-items: center; gap: 12px;
+}
+.section-subtitle {
+  font-size: 15px; color: var(--c400); margin-bottom: 36px;
+}
+
+.provider-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+  gap: 28px; margin-bottom: 40px;
+}
+
+.provider-card {
+  background: #fff; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,.08);
+  border: 1px solid var(--c100); overflow: hidden; transition: all .3s;
+}
+.provider-card:hover {
+  transform: translateY(-4px); box-shadow: 0 8px 16px rgba(0,0,0,.12);
+}
+
+.provider-header {
+  padding: 24px; border-bottom: 2px solid var(--c100);
+  display: flex; align-items: center; gap: 18px;
+}
+.provider-logo {
+  width: 64px; height: 64px; background: var(--c50); border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 22px; color: var(--c600); flex-shrink: 0;
+}
+.provider-name {
+  font-size: 22px; font-weight: 700; color: var(--c800); margin-bottom: 4px;
+}
+.provider-tagline {
+  font-size: 13px; color: var(--c400); font-weight: 500;
+}
+
+.provider-body { padding: 24px; }
+
+.provider-section { margin-bottom: 22px; }
+.provider-section:last-child { margin-bottom: 0; }
+.provider-section h4 {
+  font-size: 13px; font-weight: 700; color: var(--c600);
+  text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;
+}
+
+.feature-list {
+  list-style: none; padding: 0;
+}
+.feature-list li {
+  padding: 7px 0 7px 24px; position: relative; font-size: 14px; color: var(--c700);
+}
+.feature-list li::before {
+  content: "✓"; position: absolute; left: 0; color: var(--success);
+  font-weight: 700; font-size: 16px;
+}
+
+.tag-list {
+  display: flex; flex-wrap: wrap; gap: 7px;
+}
+.tag {
+  display: inline-block; padding: 5px 12px; background: var(--c50);
+  color: var(--c700); border-radius: 5px; font-size: 12px;
+  font-weight: 600; border: 1px solid var(--c100);
+}
+.tag.success { background: var(--success-light); color: #15803d; border-color: #86efac; }
+.tag.info { background: var(--info-light); color: #1e40af; border-color: #93c5fd; }
+.tag.warning { background: var(--warning-light); color: #92400e; border-color: #fcd34d; }
+.tag.danger { background: var(--danger-light); color: #b91c1c; border-color: #fca5a5; }
+
+.info-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 9px 0; border-bottom: 1px solid var(--c50); font-size: 14px;
+}
+.info-row:last-child { border-bottom: none; }
+.info-label { color: var(--c400); font-weight: 600; }
+.info-value { color: var(--c800); font-weight: 600; }
+
+.api-link {
+  display: inline-block; margin-top: 14px; padding: 12px 20px;
+  background: var(--c600); color: #fff; border-radius: 8px;
+  font-size: 14px; font-weight: 600; text-decoration: none;
+  transition: background .2s;
+}
+.api-link:hover { background: var(--c700); text-decoration: none; }
+
+.comparison-table {
+  width: 100%; background: #fff; border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,.08); border: 1px solid var(--c100);
+  overflow-x: auto; margin-top: 28px;
+}
+.comparison-table table {
+  width: 100%; border-collapse: collapse; min-width: 900px;
+}
+.comparison-table th {
+  background: var(--c700); color: #fff; padding: 16px;
+  text-align: left; font-size: 13px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.comparison-table td {
+  padding: 16px; border-bottom: 1px solid var(--c50);
+  font-size: 14px; color: var(--c700);
+}
+.comparison-table tr:last-child td { border-bottom: none; }
+.comparison-table tr:nth-child(even) { background: #fafbfc; }
+.comparison-table .provider-name-cell {
+  font-weight: 700; color: var(--c800);
+}
+
+.alert {
+  padding: 18px 20px; border-radius: 8px; margin: 24px 0; border-left: 4px solid;
+  font-size: 14px; line-height: 1.6;
+}
+.alert.info { background: var(--info-light); border-color: var(--info); color: #1e40af; }
+.alert.success { background: var(--success-light); border-color: var(--success); color: #15803d; }
+.alert.warning { background: var(--warning-light); border-color: var(--warning); color: #92400e; }
+.alert strong { display: block; font-weight: 700; margin-bottom: 6px; font-size: 15px; }
+
+@media (max-width: 768px) {
+  .provider-grid { grid-template-columns: 1fr; }
+  .stats { grid-template-columns: repeat(2, 1fr); }
+  .hero h1 { font-size: 26px; }
+}
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <a href="#overview">Overview</a>
+  <a href="#providers">Device Providers</a>
+  <a href="#integration">API Integration</a>
+  <a href="#bank-edc">Bank EDC</a>
+  <a href="#comparison">Comparison</a>
+  <a href="database-schema.html">Database Schema</a>
+  <a href="index.html">Home</a>
+</nav>
+
+<header class="hero">
+  <h1>POS Device &amp; Terminal Providers — India 2025</h1>
+  <p>Payment providers that offer physical POS/EDC hardware devices for in-store payments</p>
+</header>
+
+<div class="stats">
+  <div class="stat-card">
+    <div class="stat-number">7</div>
+    <div class="stat-label">Device Providers</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-number">10.7M+</div>
+    <div class="stat-label">POS Terminals</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-number">$80B+</div>
+    <div class="stat-label">Annual Volume</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-number">13%</div>
+    <div class="stat-label">YoY Growth</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-number">1.2M+</div>
+    <div class="stat-label">Businesses</div>
+  </div>
+</div>
+
+<div class="container">
+
+  <section class="section" id="overview">
+    <h2 class="section-title">📊 Market Overview</h2>
+    <p class="section-subtitle">POS terminal and EDC device providers in India with API integration capabilities</p>
+
+    <div class="alert info">
+      <strong>2025 Market Status</strong>
+      India has 10.7 million+ POS/EDC terminals deployed with 13% annual growth. The market is dominated by Pine Labs (smart POS), Paytm (soundboxes + EDC), Razorpay/Ezetap (Android POS), and Mswipe (mobile POS). PhonePe and BharatPe are fast-growing entrants with their own devices. Cashfree offers SoftPOS — turning any NFC-enabled phone into a terminal without additional hardware.
+    </div>
+  </section>
+
+  <section class="section" id="providers">
+    <h2 class="section-title">🏢 POS Device Providers</h2>
+    <p class="section-subtitle">Providers that offer physical POS/EDC terminals or SoftPOS solutions</p>
+
+    <div class="provider-grid">
+
+      <!-- 1. Pine Labs -->
+      <div class="provider-card">
+        <div class="provider-header">
+          <div class="provider-logo">PL</div>
+          <div>
+            <div class="provider-name">Pine Labs</div>
+            <div class="provider-tagline">Market Leader • 500K+ Merchants</div>
+          </div>
+        </div>
+        <div class="provider-body">
+          <div class="provider-section">
+            <h4>Overview</h4>
+            <p style="font-size: 14px; color: var(--c600);">
+              India's largest merchant commerce platform. Cloud-based smart POS with EMI, loyalty, gift cards. Dominates offline retail and restaurant segments.
+            </p>
+          </div>
+          <div class="provider-section">
+            <h4>Key Features</h4>
+            <ul class="feature-list">
+              <li>Push-to-device payment model</li>
+              <li>180-day refund support</li>
+              <li>Contactless NFC payments</li>
+              <li>Developer portal with SDKs</li>
+            </ul>
+          </div>
+          <div class="provider-section">
+            <h4>Supported Methods</h4>
+            <div class="tag-list">
+              <span class="tag success">Cards</span>
+              <span class="tag success">NFC</span>
+              <span class="tag info">EMI</span>
+            </div>
+          </div>
+          <div class="provider-section">
+            <div class="info-row">
+              <span class="info-label">API:</span>
+              <span class="info-value">REST API</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Base URL:</span>
+              <span class="info-value">api.pinelabs.com</span>
+            </div>
+          </div>
+          <a href="https://developer.pinelabs.com/" class="api-link" target="_blank">API Docs →</a>
+        </div>
+      </div>
+
+      <!-- 2. PhonePe -->
+      <div class="provider-card">
+        <div class="provider-header">
+          <div class="provider-logo" style="background: #5f259f; color: #fff;">PP</div>
+          <div>
+            <div class="provider-name">PhonePe</div>
+            <div class="provider-tagline">UPI Pioneer • Fast Growing</div>
+          </div>
+        </div>
+        <div class="provider-body">
+          <div class="provider-section">
+            <h4>Overview</h4>
+            <p style="font-size: 14px; color: var(--c600);">
+              Launched POS devices in 2024 with touchscreen, printer, WiFi/4G. PhonePe PG Bolt for seamless in-app payments. Zero transaction fees (limited time).
+            </p>
+          </div>
+          <div class="provider-section">
+            <h4>Key Features</h4>
+            <ul class="feature-list">
+              <li>Standard & Custom checkout</li>
+              <li>Real-time webhooks</li>
+              <li>Sandbox environment</li>
+              <li>No PCI DSS required (Standard)</li>
+            </ul>
+          </div>
+          <div class="provider-section">
+            <h4>Payment Methods</h4>
+            <div class="tag-list">
+              <span class="tag success">UPI</span>
+              <span class="tag success">Cards</span>
+              <span class="tag info">Net Banking</span>
+            </div>
+          </div>
+          <div class="provider-section">
+            <div class="info-row">
+              <span class="info-label">SDK:</span>
+              <span class="info-value">Android, iOS, Flutter</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Auth:</span>
+              <span class="info-value">Token-based</span>
+            </div>
+          </div>
+          <a href="https://developer.phonepe.com/" class="api-link" target="_blank">API Docs →</a>
+        </div>
+      </div>
+
+      <!-- 3. Razorpay -->
+      <div class="provider-card">
+        <div class="provider-header">
+          <div class="provider-logo" style="background: #3395ff; color: #fff;">RZ</div>
+          <div>
+            <div class="provider-name">Razorpay</div>
+            <div class="provider-tagline">Mid-Market Leader • Developer-First</div>
+          </div>
+        </div>
+        <div class="provider-body">
+          <div class="provider-section">
+            <h4>Overview</h4>
+            <p style="font-size: 14px; color: var(--c600);">
+              Full-stack payment solution via Ezetap acquisition. Unified API for all methods. Smart routing, subscriptions, payouts. PCI DSS Level 1 compliant.
+            </p>
+          </div>
+          <div class="provider-section">
+            <h4>Key Features</h4>
+            <ul class="feature-list">
+              <li>Auto & manual capture</li>
+              <li>Recurring billing</li>
+              <li>Comprehensive webhooks</li>
+              <li>Smart payment routing</li>
+            </ul>
+          </div>
+          <div class="provider-section">
+            <h4>Supported Methods</h4>
+            <div class="tag-list">
+              <span class="tag success">UPI</span>
+              <span class="tag success">Cards</span>
+              <span class="tag info">Wallets</span>
+              <span class="tag warning">BNPL</span>
+            </div>
+          </div>
+          <div class="provider-section">
+            <div class="info-row">
+              <span class="info-label">Base URL:</span>
+              <span class="info-value">api.razorpay.com/v1</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">SDK:</span>
+              <span class="info-value">JS, PHP, Python, Node, Ruby</span>
+            </div>
+          </div>
+          <a href="https://razorpay.com/docs/" class="api-link" target="_blank">API Docs →</a>
+        </div>
+      </div>
+
+      <!-- 4. Paytm -->
+      <div class="provider-card">
+        <div class="provider-header">
+          <div class="provider-logo" style="background: #00baf2; color: #fff;">PT</div>
+          <div>
+            <div class="provider-name">Paytm</div>
+            <div class="provider-tagline">7.9M Devices • 109% YoY Growth</div>
+          </div>
+        </div>
+        <div class="provider-body">
+          <div class="provider-section">
+            <h4>Overview</h4>
+            <p style="font-size: 14px; color: var(--c600);">
+              Massive deployment of soundboxes and POS devices. Integrated business solutions with strong offline presence. POS Payment Request API for physical stores.
+            </p>
+          </div>
+          <div class="provider-section">
+            <h4>Key Features</h4>
+            <ul class="feature-list">
+              <li>Send payment via SMS</li>
+              <li>Transaction status API</li>
+              <li>Void transaction capability</li>
+              <li>Multi-language SDKs</li>
+            </ul>
+          </div>
+          <div class="provider-section">
+            <h4>Payment Options</h4>
+            <div class="tag-list">
+              <span class="tag success">UPI</span>
+              <span class="tag success">Cards</span>
+              <span class="tag success">Paytm Wallet</span>
+            </div>
+          </div>
+          <div class="provider-section">
+            <div class="info-row">
+              <span class="info-label">Base URL:</span>
+              <span class="info-value">securegw.paytm.in</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">IP Whitelist:</span>
+              <span class="info-value">Required</span>
+            </div>
+          </div>
+          <a href="https://business.paytm.com/docs" class="api-link" target="_blank">API Docs →</a>
+        </div>
+      </div>
+
+      <!-- 5. Cashfree -->
+      <div class="provider-card">
+        <div class="provider-header">
+          <div class="provider-logo" style="background: #ff6e31; color: #fff;">CF</div>
+          <div>
+            <div class="provider-name">Cashfree Payments</div>
+            <div class="provider-tagline">1.2M Businesses • $80B Volume</div>
+          </div>
+        </div>
+        <div class="provider-body">
+          <div class="provider-section">
+            <h4>Overview</h4>
+            <p style="font-size: 14px; color: var(--c600);">
+              Licensed aggregator backed by Y Combinator, PayPal, SBI. SoftPOS solution. Zero setup fees, competitive pricing. PCI DSS 3.2 Level 1.
+            </p>
+          </div>
+          <div class="provider-section">
+            <h4>Key Features</h4>
+            <ul class="feature-list">
+              <li>SoftPOS for mobile devices</li>
+              <li>Bulk payouts & subscriptions</li>
+              <li>Real-time notifications</li>
+              <li>Customizable checkout</li>
+            </ul>
+          </div>
+          <div class="provider-section">
+            <h4>Methods</h4>
+            <div class="tag-list">
+              <span class="tag success">UPI</span>
+              <span class="tag success">65+ Banks</span>
+              <span class="tag warning">EMI/BNPL</span>
+            </div>
+          </div>
+          <div class="provider-section">
+            <div class="info-row">
+              <span class="info-label">Setup Fee:</span>
+              <span class="info-value">Zero</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Response:</span>
+              <span class="info-value">JSON</span>
+            </div>
+          </div>
+          <a href="https://www.cashfree.com/docs/" class="api-link" target="_blank">API Docs →</a>
+        </div>
+      </div>
+
+      <!-- 6. BharatPe -->
+      <div class="provider-card">
+        <div class="provider-header">
+          <div class="provider-logo" style="background: #ff5353; color: #fff;">BP</div>
+          <div>
+            <div class="provider-name">BharatPe</div>
+            <div class="provider-tagline">All-in-One POS • QR Focus</div>
+          </div>
+        </div>
+        <div class="provider-body">
+          <div class="provider-section">
+            <h4>Overview</h4>
+            <p style="font-size: 14px; color: var(--c600);">
+              India's first all-in-one payment device (POS + QR + speaker). Zero rental POS machines. Primarily UPI-focused. Merchant loans via NBFC partnerships.
+            </p>
+          </div>
+          <div class="provider-section">
+            <h4>Key Features</h4>
+            <ul class="feature-list">
+              <li>BharatPe One device</li>
+              <li>QR code-based payments</li>
+              <li>All major UPI apps</li>
+              <li>Working capital loans</li>
+            </ul>
+          </div>
+          <div class="provider-section">
+            <h4>Methods</h4>
+            <div class="tag-list">
+              <span class="tag success">UPI Only</span>
+              <span class="tag info">QR Codes</span>
+            </div>
+          </div>
+          <div class="provider-section">
+            <div class="info-row">
+              <span class="info-label">API:</span>
+              <span class="info-value">Limited (UPI focus)</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Best For:</span>
+              <span class="info-value">Small merchants</span>
+            </div>
+          </div>
+          <a href="https://bharatpe.com/" class="api-link" target="_blank">Website →</a>
+        </div>
+      </div>
+
+      <!-- 7. Mswipe -->
+      <div class="provider-card">
+        <div class="provider-header">
+          <div class="provider-logo" style="background: #1976d2; color: #fff;">MS</div>
+          <div>
+            <div class="provider-name">Mswipe</div>
+            <div class="provider-tagline">Mobile POS Leader</div>
+          </div>
+        </div>
+        <div class="provider-body">
+          <div class="provider-section">
+            <h4>Overview</h4>
+            <p style="font-size: 14px; color: var(--c600);">
+              Leading mobile POS provider. Low-code APIs and SDKs. Compatible with all major programming languages. RBI-licensed payment aggregator.
+            </p>
+          </div>
+          <div class="provider-section">
+            <h4>Key Features</h4>
+            <ul class="feature-list">
+              <li>Mobile POS machines</li>
+              <li>SDK for billing apps</li>
+              <li>Pre-built platform plugins</li>
+              <li>PCI DSS compliance</li>
+            </ul>
+          </div>
+          <div class="provider-section">
+            <h4>Methods</h4>
+            <div class="tag-list">
+              <span class="tag success">UPI</span>
+              <span class="tag success">Cards</span>
+              <span class="tag info">Net Banking</span>
+            </div>
+          </div>
+          <div class="provider-section">
+            <div class="info-row">
+              <span class="info-label">SDK:</span>
+              <span class="info-value">Java, PHP, Python, Node</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Plugins:</span>
+              <span class="info-value">WooCommerce, Magento</span>
+            </div>
+          </div>
+          <a href="https://www.mswipe.com/" class="api-link" target="_blank">Website →</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- API INTEGRATION GUIDES -->
+  <section class="section" id="integration">
+    <h2 class="section-title">🔌 Step-by-Step API Integration Guides</h2>
+    <p class="section-subtitle">How to integrate each POS device provider with your billing software — verified from official documentation</p>
+
+    <div class="alert info">
+      <strong>How POS Device Integration Works</strong>
+      Your billing software (elPOS) runs on a tablet/laptop. When the customer pays, elPOS sends a payment request to the EDC/POS device via API. The device handles the card tap/swipe or UPI scan, then sends the result back. Your billing software never touches card data — the device handles all the sensitive stuff.
+    </div>
+
+    <!-- ═══ PINE LABS ═══ -->
+    <div style="background:#fff;border:1px solid var(--c100);border-radius:10px;margin-bottom:28px;overflow:hidden">
+      <div style="padding:18px 24px;background:linear-gradient(135deg,#1b5e20,#2e7d32);color:#fff">
+        <h3 style="font-size:18px;font-weight:700;margin-bottom:4px">1. Pine Labs — Cloud Integration</h3>
+        <p style="font-size:13px;opacity:.8">REST API • No local cable needed • Works over internet</p>
+      </div>
+      <div style="padding:24px">
+
+        <p style="font-size:14px;color:var(--c600);margin-bottom:16px">
+          <strong>Source:</strong> <a href="https://developer.pinelabs.com/in/instore/cloud-integration" target="_blank">developer.pinelabs.com/in/instore/cloud-integration</a>
+        </p>
+
+        <h4 style="font-size:14px;font-weight:700;color:var(--c700);margin-bottom:10px">Prerequisites</h4>
+        <ul class="feature-list" style="margin-bottom:20px">
+          <li>Pine Labs merchant account with <strong>MerchantID</strong> and <strong>SecurityToken</strong> (UUID format)</li>
+          <li>Pine Labs EDC terminal deployed at your store</li>
+          <li>Internet connectivity on both billing device and terminal</li>
+        </ul>
+
+        <h4 style="font-size:14px;font-weight:700;color:var(--c700);margin-bottom:10px">Base URLs</h4>
+        <div style="background:var(--c50);padding:12px 16px;border-radius:6px;font-family:monospace;font-size:13px;margin-bottom:20px">
+          <div><strong>UAT (Testing):</strong> https://www.plutuscloudserviceuat.in:8201/</div>
+          <div><strong>Production:</strong> Provided by Pine Labs on go-live</div>
+        </div>
+
+        <h4 style="font-size:14px;font-weight:700;color:var(--c700);margin-bottom:10px">Step-by-Step Flow</h4>
+        <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px">
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <div style="min-width:32px;height:32px;background:var(--success);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px">1</div>
+            <div>
+              <strong style="font-size:14px">Send Payment Request</strong>
+              <p style="font-size:13px;color:var(--c600)">Your billing app calls <code>UploadBilledTransaction</code> API with amount, payment mode, and transaction number. Pine Labs returns a <strong>PTRID</strong> (Plutus Transaction Reference ID).</p>
+              <pre style="background:#1e293b;color:#e2e8f0;padding:12px;border-radius:6px;font-size:12px;margin-top:8px;overflow-x:auto">POST /UploadBilledTransaction
+{
+  "TransactionNumber": "INV-2025-001",
+  "SequenceNumber": 1,
+  "AllowedPaymentMode": "1",     // 1=Card, 10=UPI
+  "Amount": 150000,               // In paisa (₹1500.00)
+  "MerchantID": 1234,
+  "SecurityToken": "70D7509C-0A90-4938-...",
+  "StoreId": 60588,
+  "AutoCancelDurationInMinutes": 5
+}
+
+// Response
+{
+  "ResponseCode": 0,
+  "ResponseMessage": "APPROVED",
+  "PlutusTransactionReferenceID": 501
+}</pre>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <div style="min-width:32px;height:32px;background:var(--success);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px">2</div>
+            <div>
+              <strong style="font-size:14px">Customer Pays on Terminal</strong>
+              <p style="font-size:13px;color:var(--c600)">Cashier enters the PTRID on the Pine Labs terminal (or the terminal automatically picks it up). Customer taps/inserts card or scans UPI. The terminal processes the payment with the bank.</p>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <div style="min-width:32px;height:32px;background:var(--success);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px">3</div>
+            <div>
+              <strong style="font-size:14px">Check Payment Status</strong>
+              <p style="font-size:13px;color:var(--c600)">Your billing app polls <code>GetStatus</code> API with the PTRID. Alternatively, Pine Labs can push the result to your <strong>PostBack URL</strong> (webhook).</p>
+              <pre style="background:#1e293b;color:#e2e8f0;padding:12px;border-radius:6px;font-size:12px;margin-top:8px;overflow-x:auto">POST /GetStatus
+{
+  "MerchantID": "1234",
+  "SecurityToken": "70D7509C-...",
+  "StoreID": "12301001",
+  "PlutusTransactionReferenceID": 501
+}
+
+// Response
+{
+  "ResponseCode": 0,
+  "ResponseMessage": "TXN APPROVED",
+  "TransactionData": [
+    {"Tag": "PaymentMode", "Value": "CARD"},
+    {"Tag": "Amount", "Value": "1500"},
+    {"Tag": "RRN", "Value": "000792514130"},
+    {"Tag": "ApprovalCode", "Value": "849035"},
+    {"Tag": "CardNumber", "Value": "XXXXXXXXXXXX1234"}
+  ]
+}</pre>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <div style="min-width:32px;height:32px;background:var(--success);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px">4</div>
+            <div>
+              <strong style="font-size:14px">Mark Sale Complete</strong>
+              <p style="font-size:13px;color:var(--c600)">On success, mark the sale as paid in your billing system. Print receipt. To cancel a pending payment, use <code>CancelTransaction</code> API.</p>
+            </div>
+          </div>
+        </div>
+
+        <h4 style="font-size:14px;font-weight:700;color:var(--c700);margin-bottom:10px">Payment Mode Codes</h4>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px">
+          <span class="tag">1 = Card</span>
+          <span class="tag">10 = UPI</span>
+          <span class="tag">6 = Brand EMI</span>
+          <span class="tag">20 = Bank EMI</span>
+          <span class="tag">11 = Bharat QR</span>
+          <span class="tag">21 = Amazon Pay</span>
+        </div>
+
+        <h4 style="font-size:14px;font-weight:700;color:var(--c700);margin-bottom:10px">Other APIs</h4>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          <span class="tag info">CancelTransaction</span>
+          <span class="tag info">ForceCancel</span>
+          <span class="tag warning">Void/Refund (TxnType=1)</span>
+          <span class="tag">Split Payment (SequenceNumber)</span>
+          <span class="tag success">GST fields supported</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ RAZORPAY POS ═══ -->
+    <div style="background:#fff;border:1px solid var(--c100);border-radius:10px;margin-bottom:28px;overflow:hidden">
+      <div style="padding:18px 24px;background:linear-gradient(135deg,#1565c0,#1976d2);color:#fff">
+        <h3 style="font-size:18px;font-weight:700;margin-bottom:4px">2. Razorpay POS — Android SDK (Ezetap)</h3>
+        <p style="font-size:13px;opacity:.8">Android SDK • On-device or Bluetooth • Universal Pay API</p>
+      </div>
+      <div style="padding:24px">
+
+        <p style="font-size:14px;color:var(--c600);margin-bottom:16px">
+          <strong>Source:</strong> <a href="https://github.com/AtifQEzetap/razorpay-pos-payment-sdk" target="_blank">Razorpay POS Payment SDK (GitHub)</a>
+        </p>
+
+        <h4 style="font-size:14px;font-weight:700;color:var(--c700);margin-bottom:10px">Prerequisites</h4>
+        <ul class="feature-list" style="margin-bottom:20px">
+          <li>Razorpay POS merchant account — contact Razorpay team for API keys</li>
+          <li>Demo and Production app keys</li>
+          <li>Android billing app (SDK is Android-native, Java/Kotlin)</li>
+          <li>Razorpay POS device (Android Smart POS, Mini POS, or external card reader via Bluetooth/USB)</li>
+        </ul>
+
+        <h4 style="font-size:14px;font-weight:700;color:var(--c700);margin-bottom:10px">Step-by-Step Flow</h4>
+        <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px">
+
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <div style="min-width:32px;height:32px;background:#1976d2;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px">1</div>
+            <div>
+              <strong style="font-size:14px">Add SDK Dependency</strong>
+              <pre style="background:#1e293b;color:#e2e8f0;padding:12px;border-radius:6px;font-size:12px;margin-top:8px;overflow-x:auto">// build.gradle (project)
+maven { url 'https://jitpack.io' }
+
+// build.gradle (app)
+implementation 'com.github.AtifQEzetap:razorpay-pos-payment-sdk:2.2'</pre>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <div style="min-width:32px;height:32px;background:#1976d2;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px">2</div>
+            <div>
+              <strong style="font-size:14px">Initialize SDK</strong>
+              <p style="font-size:13px;color:var(--c600)">Call <code>EzeAPI.initialize()</code> once on app startup. This connects to Razorpay servers and sets up the device.</p>
+              <pre style="background:#1e293b;color:#e2e8f0;padding:12px;border-radius:6px;font-size:12px;margin-top:8px;overflow-x:auto">InitializeRequest req = new InitializeRequest();
+req.setDemoAppKey("your_demo_key");    // or setProdAppKey()
+req.setMerchantName("Your Store");
+req.setUserName("merchant_id");
+req.setCurrencyCode("INR");
+req.setCommunicationChannel("BT");     // BT, USB, or NONE
+
+EzeAPI.initialize(activity, REQUEST_CODE, req);</pre>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <div style="min-width:32px;height:32px;background:#1976d2;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px">3</div>
+            <div>
+              <strong style="font-size:14px">Prepare Device</strong>
+              <p style="font-size:13px;color:var(--c600)">Initialize the card reader with latest encryption keys from the bank.</p>
+              <pre style="background:#1e293b;color:#e2e8f0;padding:12px;border-radius:6px;font-size:12px;margin-top:8px;overflow-x:auto">EzeAPI.prepareDevice(activity, REQUEST_CODE);</pre>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <div style="min-width:32px;height:32px;background:#1976d2;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px">4</div>
+            <div>
+              <strong style="font-size:14px">Process Payment (Universal Pay API)</strong>
+              <p style="font-size:13px;color:var(--c600)">Single API call for all payment modes — card, UPI, wallet. The SDK handles the device interaction.</p>
+              <pre style="background:#1e293b;color:#e2e8f0;padding:12px;border-radius:6px;font-size:12px;margin-top:8px;overflow-x:auto">GenericPayment payment = new GenericPayment();
+payment.setAmount(150000);              // In paisa (₹1500.00)
+payment.setTxnType("PAY");
+payment.setPaymentMode("CARD");         // or "UPI"
+
+// Optional: add GST, customer info, references
+payment.setGst(sgst, cgst, igst, cess);
+payment.setCustomer(name, email, mobile);
+payment.setReference1("INV-2025-001");
+
+EzeAPI.performTransaction(activity, REQUEST_CODE, payment);</pre>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <div style="min-width:32px;height:32px;background:#1976d2;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px">5</div>
+            <div>
+              <strong style="font-size:14px">Handle Response</strong>
+              <p style="font-size:13px;color:var(--c600)">Result arrives in <code>onActivityResult()</code>. Contains transaction ID, RRN, card last 4, approval code.</p>
+            </div>
+          </div>
+        </div>
+
+        <h4 style="font-size:14px;font-weight:700;color:var(--c700);margin-bottom:10px">Other APIs</h4>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          <span class="tag info">EzeAPI.getCardInfo()</span>
+          <span class="tag info">EzeAPI.sendReceipt()</span>
+          <span class="tag info">EzeAPI.serviceRequest()</span>
+          <span class="tag success">GST fields supported</span>
+          <span class="tag">7 reference fields for context</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ PAYTM POS ═══ -->
+    <div style="background:#fff;border:1px solid var(--c100);border-radius:10px;margin-bottom:28px;overflow:hidden">
+      <div style="padding:18px 24px;background:linear-gradient(135deg,#0288d1,#00baf2);color:#fff">
+        <h3 style="font-size:18px;font-weight:700;margin-bottom:4px">3. Paytm POS — Billing Integration</h3>
+        <p style="font-size:13px;opacity:.8">Multiple connection modes • Sale, Status, Void, Refund APIs</p>
+      </div>
+      <div style="padding:24px">
+
+        <p style="font-size:14px;color:var(--c600);margin-bottom:16px">
+          <strong>Source:</strong> <a href="https://business.paytm.com/docs/pos-introduction-to-paytm-pos/" target="_blank">business.paytm.com/docs/pos-introduction-to-paytm-pos</a>
+        </p>
+
+        <h4 style="font-size:14px;font-weight:700;color:var(--c700);margin-bottom:10px">Connection Modes</h4>
+        <div style="overflow-x:auto;margin-bottom:20px">
+          <table style="width:100%;border-collapse:collapse;font-size:13px">
+            <thead><tr style="background:var(--c50)">
+              <th style="padding:8px 12px;text-align:left;font-weight:700;color:var(--c700)">Mode</th>
+              <th style="padding:8px 12px;text-align:left;font-weight:700;color:var(--c700)">Method</th>
+              <th style="padding:8px 12px;text-align:left;font-weight:700;color:var(--c700)">Best For</th>
+            </tr></thead>
+            <tbody>
+              <tr style="border-bottom:1px solid var(--c100)"><td style="padding:8px 12px"><strong>Wireless</strong></td><td style="padding:8px 12px">Internet / Cloud</td><td style="padding:8px 12px">Enterprise retail, seamless billing integration</td></tr>
+              <tr style="border-bottom:1px solid var(--c100)"><td style="padding:8px 12px"><strong>Bluetooth</strong></td><td style="padding:8px 12px">Short-range wireless</td><td style="padding:8px 12px">Small businesses without internet</td></tr>
+              <tr style="border-bottom:1px solid var(--c100)"><td style="padding:8px 12px"><strong>Wired</strong></td><td style="padding:8px 12px">USB / Serial port</td><td style="padding:8px 12px">Poor WiFi locations</td></tr>
+              <tr style="border-bottom:1px solid var(--c100)"><td style="padding:8px 12px"><strong>App Invoke</strong></td><td style="padding:8px 12px">Mobile app-to-app</td><td style="padding:8px 12px">Mobile / commute merchants</td></tr>
+              <tr><td style="padding:8px 12px"><strong>Payment Request</strong></td><td style="padding:8px 12px">Queue-based server</td><td style="padding:8px 12px">High-volume retail with concurrent processing</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4 style="font-size:14px;font-weight:700;color:var(--c700);margin-bottom:10px">Step-by-Step Flow</h4>
+        <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px">
+
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <div style="min-width:32px;height:32px;background:#00baf2;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px">1</div>
+            <div>
+              <strong style="font-size:14px">Send Sale Request</strong>
+              <p style="font-size:13px;color:var(--c600)">Billing system sends payment request to Paytm POS device with transaction amount, currency, and unique reference number.</p>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <div style="min-width:32px;height:32px;background:#00baf2;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px">2</div>
+            <div>
+              <strong style="font-size:14px">Customer Pays on Device</strong>
+              <p style="font-size:13px;color:var(--c600)">Device shows card insert/tap prompt with available payment options. Customer enters PIN and confirms.</p>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <div style="min-width:32px;height:32px;background:#00baf2;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px">3</div>
+            <div>
+              <strong style="font-size:14px">Middleware Processes &amp; Returns Result</strong>
+              <p style="font-size:13px;color:var(--c600)">Paytm middleware processes the transaction. Success/failure response displays on device and returns to your billing system.</p>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <div style="min-width:32px;height:32px;background:#00baf2;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px">4</div>
+            <div>
+              <strong style="font-size:14px">Verify with Status API</strong>
+              <p style="font-size:13px;color:var(--c600)">Call Status Enquiry API to confirm the transaction. Use Void API to cancel if needed.</p>
+            </div>
+          </div>
+        </div>
+
+        <h4 style="font-size:14px;font-weight:700;color:var(--c700);margin-bottom:10px">Available APIs</h4>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          <span class="tag success">Sale API</span>
+          <span class="tag info">Status Enquiry API</span>
+          <span class="tag warning">Void API</span>
+          <span class="tag info">Refund API</span>
+          <span class="tag">Post Facto (Split Settlement)</span>
+        </div>
+
+        <div class="alert warning" style="margin-top:16px;font-size:13px">
+          <strong>Note</strong>
+          Detailed API endpoints and request/response formats require access to Paytm's developer portal after merchant onboarding. The above flow is from their official POS introduction documentation. Contact Paytm business team for full API credentials.
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ PHONEPE ═══ -->
+    <div style="background:#fff;border:1px solid var(--c100);border-radius:10px;margin-bottom:28px;overflow:hidden">
+      <div style="padding:18px 24px;background:linear-gradient(135deg,#4a148c,#5f259f);color:#fff">
+        <h3 style="font-size:18px;font-weight:700;margin-bottom:4px">4. PhonePe — Collect Call (Request Payment API)</h3>
+        <p style="font-size:13px;opacity:.8">REST API • Server-to-server • Push payment to customer's phone</p>
+      </div>
+      <div style="padding:24px">
+
+        <p style="font-size:14px;color:var(--c600);margin-bottom:16px">
+          <strong>Source:</strong> <a href="https://developer.phonepe.com/offline-integration/collect-call-solution/request-payment-api" target="_blank">developer.phonepe.com — Request Payment API</a>
+        </p>
+
+        <h4 style="font-size:14px;font-weight:700;color:var(--c700);margin-bottom:10px">Prerequisites</h4>
+        <ul class="feature-list" style="margin-bottom:20px">
+          <li>PhonePe merchant account with <strong>merchantId</strong>, <strong>saltKey</strong>, and <strong>saltIndex</strong></li>
+          <li>Customer's mobile number (payment request is sent to their PhonePe app)</li>
+        </ul>
+
+        <h4 style="font-size:14px;font-weight:700;color:var(--c700);margin-bottom:10px">Base URLs</h4>
+        <div style="background:var(--c50);padding:12px 16px;border-radius:6px;font-family:monospace;font-size:13px;margin-bottom:20px">
+          <div><strong>UAT:</strong> https://mercury-uat.phonepe.com/enterprise-sandbox/v3/charge</div>
+          <div><strong>Production:</strong> https://mercury-t2.phonepe.com/v3/charge</div>
+        </div>
+
+        <h4 style="font-size:14px;font-weight:700;color:var(--c700);margin-bottom:10px">Authentication</h4>
+        <div style="background:var(--c50);padding:12px 16px;border-radius:6px;font-family:monospace;font-size:12px;margin-bottom:20px">
+          X-VERIFY: SHA256(base64_payload + '/v3/charge' + saltKey) + '###' + saltIndex
+        </div>
+
+        <h4 style="font-size:14px;font-weight:700;color:var(--c700);margin-bottom:10px">Step-by-Step Flow</h4>
+        <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px">
+
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <div style="min-width:32px;height:32px;background:#5f259f;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px">1</div>
+            <div>
+              <strong style="font-size:14px">Send Payment Request</strong>
+              <pre style="background:#1e293b;color:#e2e8f0;padding:12px;border-radius:6px;font-size:12px;margin-top:8px;overflow-x:auto">POST /v3/charge
+Headers:
+  Content-Type: application/json
+  X-VERIFY: {checksum}###1
+  X-CALLBACK-URL: https://yoursite.com/webhook  (optional)
+
+// Payload (base64 encoded in "request" field)
+{
+  "merchantId": "YOUR_MERCHANT_ID",
+  "transactionId": "TXN-2025-001",      // Unique, &lt;35 chars
+  "merchantOrderId": "INV-2025-001",
+  "amount": 150000,                       // In paisa (₹1500)
+  "instrumentType": "MOBILE",
+  "instrumentReference": "9876543210",    // Customer phone
+  "storeId": "STORE-01",
+  "expiresIn": 300                        // 5 min timeout
+}
+
+// Response
+{
+  "success": true,
+  "code": "SUCCESS",
+  "data": {
+    "transactionId": "TXN-2025-001",
+    "amount": 150000,
+    "merchantId": "YOUR_MERCHANT_ID"
+  }
+}</pre>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <div style="min-width:32px;height:32px;background:#5f259f;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px">2</div>
+            <div>
+              <strong style="font-size:14px">Customer Gets Notification</strong>
+              <p style="font-size:13px;color:var(--c600)">PhonePe sends a payment request to the customer's phone. Customer opens PhonePe app, sees the amount, and confirms payment.</p>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <div style="min-width:32px;height:32px;background:#5f259f;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px">3</div>
+            <div>
+              <strong style="font-size:14px">Receive Callback or Poll Status</strong>
+              <p style="font-size:13px;color:var(--c600)">PhonePe sends webhook to your X-CALLBACK-URL on success/failure. For pending transactions, poll the status API:</p>
+              <pre style="background:#1e293b;color:#e2e8f0;padding:12px;border-radius:6px;font-size:12px;margin-top:8px;overflow-x:auto">GET /v3/transaction/{merchantId}/{transactionId}/status</pre>
+            </div>
+          </div>
+        </div>
+
+        <h4 style="font-size:14px;font-weight:700;color:var(--c700);margin-bottom:10px">Key Response Codes</h4>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          <span class="tag success">SUCCESS — Request sent</span>
+          <span class="tag danger">AUTHORIZATION_FAILED — Bad checksum</span>
+          <span class="tag warning">BAD_REQUEST — Missing params</span>
+          <span class="tag">INVALID_TRANSACTION_ID — Duplicate</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ MSWIPE ═══ -->
+    <div style="background:#fff;border:1px solid var(--c100);border-radius:10px;margin-bottom:28px;overflow:hidden">
+      <div style="padding:18px 24px;background:linear-gradient(135deg,#1565c0,#1976d2);color:#fff">
+        <h3 style="font-size:18px;font-weight:700;margin-bottom:4px">5. Mswipe — SDK &amp; API Integration</h3>
+        <p style="font-size:13px;opacity:.8">Android SDK • Hardware &amp; Gateway SDKs • WisePad / WisePOS</p>
+      </div>
+      <div style="padding:24px">
+
+        <p style="font-size:14px;color:var(--c600);margin-bottom:16px">
+          <strong>Source:</strong> <a href="https://www.mswipe.com/" target="_blank">mswipe.com</a> — Developer documentation is available post merchant onboarding
+        </p>
+
+        <h4 style="font-size:14px;font-weight:700;color:var(--c700);margin-bottom:10px">What's Available</h4>
+        <ul class="feature-list" style="margin-bottom:20px">
+          <li>Android SDK (WisePad API) for integrating card reader into Android billing apps</li>
+          <li>Hardware SDKs for WisePOS Plus and WisePad devices</li>
+          <li>Gateway APIs for payments, billing, inventory, and merchant services</li>
+          <li>Pre-built plugins for WooCommerce, Magento, and other platforms</li>
+          <li>Supports Java, PHP, Python, Node.js</li>
+        </ul>
+
+        <h4 style="font-size:14px;font-weight:700;color:var(--c700);margin-bottom:10px">Integration Approach</h4>
+        <p style="font-size:13px;color:var(--c600);margin-bottom:12px">Mswipe's WisePOS Plus integrates with billing systems via their API and SDK. The device connects via Bluetooth or USB to your billing app. Contact Mswipe's technical support team for SDK access and documentation after merchant onboarding.</p>
+
+        <div class="alert warning" style="font-size:13px">
+          <strong>Note</strong>
+          Mswipe's detailed API documentation (endpoints, request formats, authentication) is not publicly available. It is provided after signing a merchant agreement. The above is based on publicly available information from their website and partner integrations.
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ CASHFREE SOFTPOS ═══ -->
+    <div style="background:#fff;border:1px solid var(--c100);border-radius:10px;margin-bottom:28px;overflow:hidden">
+      <div style="padding:18px 24px;background:linear-gradient(135deg,#e65100,#ff6e31);color:#fff">
+        <h3 style="font-size:18px;font-weight:700;margin-bottom:4px">6. Cashfree — SoftPOS (Tap to Pay)</h3>
+        <p style="font-size:13px;opacity:.8">Android App/SDK • NFC Tap &amp; Pay • No hardware needed</p>
+      </div>
+      <div style="padding:24px">
+
+        <p style="font-size:14px;color:var(--c600);margin-bottom:16px">
+          <strong>Source:</strong> <a href="https://www.cashfree.com/soft-pos/" target="_blank">cashfree.com/soft-pos</a>
+        </p>
+
+        <h4 style="font-size:14px;font-weight:700;color:var(--c700);margin-bottom:10px">How SoftPOS Works</h4>
+        <p style="font-size:13px;color:var(--c600);margin-bottom:16px">
+          No separate hardware device needed. Cashfree SoftPOS is an Android app/SDK that turns any NFC-enabled Android phone into a card payment terminal. Customer taps their card on the merchant's phone.
+        </p>
+
+        <h4 style="font-size:14px;font-weight:700;color:var(--c700);margin-bottom:10px">Device Requirements</h4>
+        <ul class="feature-list" style="margin-bottom:20px">
+          <li><strong>Tap &amp; Pay (NFC):</strong> Android 9 (Pie) or above — phones from 2018+</li>
+          <li><strong>Other methods (QR, links):</strong> Android 6 (Marshmallow) or above</li>
+          <li>NFC hardware required on the phone for card tap</li>
+        </ul>
+
+        <h4 style="font-size:14px;font-weight:700;color:var(--c700);margin-bottom:10px">Supported Payment Methods</h4>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px">
+          <span class="tag success">Card Tap &amp; Pay (NFC)</span>
+          <span class="tag success">UPI QR Code</span>
+          <span class="tag info">Payment Links</span>
+          <span class="tag info">Wallets</span>
+          <span class="tag warning">EMI / BNPL</span>
+        </div>
+
+        <div class="alert info" style="font-size:13px">
+          <strong>Integration Note</strong>
+          Cashfree SoftPOS is distributed as a standalone app or embeddable SDK. For API-level integration with billing software, refer to the <a href="https://www.cashfree.com/docs/api-reference/payments/latest/overview" target="_blank">Cashfree Payments API documentation</a>. The SoftPOS SDK handles the NFC card read locally and processes via Cashfree's payment gateway.
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ BHARATPE ═══ -->
+    <div style="background:#fff;border:1px solid var(--c100);border-radius:10px;margin-bottom:28px;overflow:hidden">
+      <div style="padding:18px 24px;background:linear-gradient(135deg,#c62828,#ff5353);color:#fff">
+        <h3 style="font-size:18px;font-weight:700;margin-bottom:4px">7. BharatPe — No Public API</h3>
+        <p style="font-size:13px;opacity:.8">Closed ecosystem • UPI QR focus • Merchant Plugin model</p>
+      </div>
+      <div style="padding:24px">
+        <div class="alert warning" style="font-size:13px">
+          <strong>No Third-Party API Available</strong>
+          BharatPe does <strong>not</strong> offer a publicly available API for third-party billing software integration. Their POS devices (BharatPe One, SwipeX) operate as closed systems. Payment processing is handled entirely within the BharatPe app ecosystem.
+        </div>
+
+        <h4 style="font-size:14px;font-weight:700;color:var(--c700);margin:16px 0 10px">What BharatPe Offers Instead</h4>
+        <ul class="feature-list" style="margin-bottom:16px">
+          <li><strong>Merchant Plugin:</strong> In collaboration with Unity Bank, BharatPe offers a UPI Plug-In that merchants can embed in their own apps to accept UPI payments without redirecting to a third-party app</li>
+          <li><strong>QR Code Payments:</strong> Static and dynamic QR — works with all UPI apps (GPay, PhonePe, Paytm, etc.)</li>
+          <li><strong>BharatPe One Device:</strong> Standalone all-in-one POS with built-in billing — not designed to integrate with external billing software</li>
+        </ul>
+
+        <p style="font-size:13px;color:var(--c600)">
+          <strong>For elPOS:</strong> BharatPe is not suitable for API integration. Use Pine Labs, Razorpay, or Paytm for card payments, and PhonePe or standard UPI QR for UPI payments instead.
+        </p>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- BANK EDC TERMINALS -->
+  <section class="section" id="bank-edc">
+    <h2 class="section-title">🏦 Bank-Provided EDC Terminals</h2>
+    <p class="section-subtitle">Banks that deploy EDC machines to their merchant account holders — these are bank-locked devices sourced from OEMs like Ingenico, Verifone, and PAX</p>
+
+    <div class="alert info">
+      <strong>How Bank EDC Differs from Aggregator POS</strong>
+      Banks provide EDC terminals as part of their merchant acquiring service. The device is tied to the merchant's bank account — payments settle directly into it. Unlike aggregators (Pine Labs, Razorpay), bank EDC devices generally do not offer open APIs for third-party POS software integration. The bank controls the software on the device.
+    </div>
+
+    <div class="provider-grid">
+
+      <!-- HDFC Bank -->
+      <div class="provider-card">
+        <div class="provider-header">
+          <div class="provider-logo" style="background: #004c8f; color: #fff;">HDFC</div>
+          <div>
+            <div class="provider-name">HDFC Bank</div>
+            <div class="provider-tagline">Largest Acquirer • 1M+ Terminals</div>
+          </div>
+        </div>
+        <div class="provider-body">
+          <div class="provider-section">
+            <h4>Overview</h4>
+            <p style="font-size: 14px; color: var(--c600);">
+              India's largest merchant acquiring bank. Deploys over 1 million POS terminals. Devices sourced from Ingenico and Verifone. Offers countertop, portable, and mobile terminals.
+            </p>
+          </div>
+          <div class="provider-section">
+            <h4>Devices Offered</h4>
+            <ul class="feature-list">
+              <li>Countertop EDC (Ingenico/Verifone)</li>
+              <li>Portable wireless terminals (GPRS/WiFi)</li>
+              <li>Android Smart POS</li>
+              <li>UPI QR standees</li>
+            </ul>
+          </div>
+          <div class="provider-section">
+            <h4>Payment Methods</h4>
+            <div class="tag-list">
+              <span class="tag success">Cards (Tap/Swipe/Insert)</span>
+              <span class="tag success">UPI</span>
+              <span class="tag info">EMI on Cards</span>
+              <span class="tag info">BharatQR</span>
+            </div>
+          </div>
+          <div class="provider-section">
+            <div class="info-row">
+              <span class="info-label">Hardware OEM:</span>
+              <span class="info-value">Ingenico, Verifone</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Settlement:</span>
+              <span class="info-value">T+1 to HDFC account</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Open API:</span>
+              <span class="info-value">No (bank-locked)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ICICI Bank -->
+      <div class="provider-card">
+        <div class="provider-header">
+          <div class="provider-logo" style="background: #f37920; color: #fff;">ICICI</div>
+          <div>
+            <div class="provider-name">ICICI Bank</div>
+            <div class="provider-tagline">Major Acquirer • Eazypay</div>
+          </div>
+        </div>
+        <div class="provider-body">
+          <div class="provider-section">
+            <h4>Overview</h4>
+            <p style="font-size: 14px; color: var(--c600);">
+              Second largest acquiring bank. Offers POS terminals under Eazypay brand. Supports contactless, chip, and magnetic stripe. Also offers mPOS for small merchants.
+            </p>
+          </div>
+          <div class="provider-section">
+            <h4>Devices Offered</h4>
+            <ul class="feature-list">
+              <li>Standard countertop POS</li>
+              <li>Wireless GPRS terminals</li>
+              <li>mPOS (phone-connected reader)</li>
+              <li>Eazypay QR for UPI</li>
+            </ul>
+          </div>
+          <div class="provider-section">
+            <h4>Payment Methods</h4>
+            <div class="tag-list">
+              <span class="tag success">Cards</span>
+              <span class="tag success">UPI</span>
+              <span class="tag info">Contactless</span>
+            </div>
+          </div>
+          <div class="provider-section">
+            <div class="info-row">
+              <span class="info-label">Hardware OEM:</span>
+              <span class="info-value">Ingenico, PAX</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Settlement:</span>
+              <span class="info-value">T+1 to ICICI account</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Open API:</span>
+              <span class="info-value">No (bank-locked)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SBI -->
+      <div class="provider-card">
+        <div class="provider-header">
+          <div class="provider-logo" style="background: #1a237e; color: #fff;">SBI</div>
+          <div>
+            <div class="provider-name">State Bank of India</div>
+            <div class="provider-tagline">Largest Bank • Widest Reach</div>
+          </div>
+        </div>
+        <div class="provider-body">
+          <div class="provider-section">
+            <h4>Overview</h4>
+            <p style="font-size: 14px; color: var(--c600);">
+              India's largest public bank with massive rural and semi-urban reach. SBI POS terminals through partnership with Worldline (formerly Ingenico). Also runs YONO Merchant app.
+            </p>
+          </div>
+          <div class="provider-section">
+            <h4>Devices Offered</h4>
+            <ul class="feature-list">
+              <li>Worldline/Ingenico countertop POS</li>
+              <li>Wireless GPRS terminals</li>
+              <li>YONO SBI Merchant (mPOS app)</li>
+              <li>UPI QR (BHIM SBI Pay)</li>
+            </ul>
+          </div>
+          <div class="provider-section">
+            <h4>Payment Methods</h4>
+            <div class="tag-list">
+              <span class="tag success">Cards</span>
+              <span class="tag success">UPI</span>
+              <span class="tag info">RuPay</span>
+            </div>
+          </div>
+          <div class="provider-section">
+            <div class="info-row">
+              <span class="info-label">Hardware OEM:</span>
+              <span class="info-value">Worldline (Ingenico)</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Settlement:</span>
+              <span class="info-value">T+1 to SBI account</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Open API:</span>
+              <span class="info-value">No (bank-locked)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Axis Bank -->
+      <div class="provider-card">
+        <div class="provider-header">
+          <div class="provider-logo" style="background: #97144d; color: #fff;">AXIS</div>
+          <div>
+            <div class="provider-name">Axis Bank</div>
+            <div class="provider-tagline">Third Largest Private • Growing POS</div>
+          </div>
+        </div>
+        <div class="provider-body">
+          <div class="provider-section">
+            <h4>Overview</h4>
+            <p style="font-size: 14px; color: var(--c600);">
+              Major acquiring bank with growing merchant POS network. Offers Android-based smart POS through partnerships. Also provides Axis Merchant app for mPOS and QR payments.
+            </p>
+          </div>
+          <div class="provider-section">
+            <h4>Devices Offered</h4>
+            <ul class="feature-list">
+              <li>Countertop and wireless POS</li>
+              <li>Android Smart POS terminals</li>
+              <li>Axis Merchant mPOS app</li>
+              <li>UPI QR / BharatQR</li>
+            </ul>
+          </div>
+          <div class="provider-section">
+            <h4>Payment Methods</h4>
+            <div class="tag-list">
+              <span class="tag success">Cards</span>
+              <span class="tag success">UPI</span>
+              <span class="tag info">Contactless</span>
+              <span class="tag info">EMI</span>
+            </div>
+          </div>
+          <div class="provider-section">
+            <div class="info-row">
+              <span class="info-label">Hardware OEM:</span>
+              <span class="info-value">PAX, Verifone</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Settlement:</span>
+              <span class="info-value">T+1 to Axis account</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Open API:</span>
+              <span class="info-value">No (bank-locked)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Kotak Mahindra -->
+      <div class="provider-card">
+        <div class="provider-header">
+          <div class="provider-logo" style="background: #e62020; color: #fff;">KMB</div>
+          <div>
+            <div class="provider-name">Kotak Mahindra Bank</div>
+            <div class="provider-tagline">Growing Merchant Network</div>
+          </div>
+        </div>
+        <div class="provider-body">
+          <div class="provider-section">
+            <h4>Overview</h4>
+            <p style="font-size: 14px; color: var(--c600);">
+              Expanding POS terminal deployment. Offers standard and smart POS through Ingenico partnership. Kotak SuperPOS bundles billing + payments on a single Android device.
+            </p>
+          </div>
+          <div class="provider-section">
+            <h4>Devices Offered</h4>
+            <ul class="feature-list">
+              <li>Standard countertop POS</li>
+              <li>Kotak SuperPOS (Android smart terminal)</li>
+              <li>Wireless terminals</li>
+              <li>UPI QR payments</li>
+            </ul>
+          </div>
+          <div class="provider-section">
+            <h4>Payment Methods</h4>
+            <div class="tag-list">
+              <span class="tag success">Cards</span>
+              <span class="tag success">UPI</span>
+              <span class="tag info">Contactless</span>
+            </div>
+          </div>
+          <div class="provider-section">
+            <div class="info-row">
+              <span class="info-label">Hardware OEM:</span>
+              <span class="info-value">Ingenico</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Settlement:</span>
+              <span class="info-value">T+1 to Kotak account</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Open API:</span>
+              <span class="info-value">No (bank-locked)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bank of Baroda -->
+      <div class="provider-card">
+        <div class="provider-header">
+          <div class="provider-logo" style="background: #f15a22; color: #fff;">BOB</div>
+          <div>
+            <div class="provider-name">Bank of Baroda</div>
+            <div class="provider-tagline">Public Sector • Wide Network</div>
+          </div>
+        </div>
+        <div class="provider-body">
+          <div class="provider-section">
+            <h4>Overview</h4>
+            <p style="font-size: 14px; color: var(--c600);">
+              Major public sector bank with wide POS coverage. Partners with Worldline for terminal deployment. Strong in tier-2/3 cities and rural areas.
+            </p>
+          </div>
+          <div class="provider-section">
+            <h4>Devices Offered</h4>
+            <ul class="feature-list">
+              <li>Worldline countertop POS</li>
+              <li>GPRS wireless terminals</li>
+              <li>bob World Merchant app</li>
+              <li>BHIM UPI QR</li>
+            </ul>
+          </div>
+          <div class="provider-section">
+            <h4>Payment Methods</h4>
+            <div class="tag-list">
+              <span class="tag success">Cards</span>
+              <span class="tag success">UPI</span>
+              <span class="tag info">RuPay</span>
+            </div>
+          </div>
+          <div class="provider-section">
+            <div class="info-row">
+              <span class="info-label">Hardware OEM:</span>
+              <span class="info-value">Worldline</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Settlement:</span>
+              <span class="info-value">T+1 to BOB account</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Open API:</span>
+              <span class="info-value">No (bank-locked)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="comparison-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Bank</th>
+            <th>Hardware OEM</th>
+            <th>Device Types</th>
+            <th>Settlement</th>
+            <th>Open API</th>
+            <th>Reach</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="provider-name-cell">HDFC Bank</td>
+            <td>Ingenico, Verifone</td>
+            <td>Countertop, Wireless, Smart POS</td>
+            <td>T+1</td>
+            <td>No</td>
+            <td>Pan-India, urban focus</td>
+          </tr>
+          <tr>
+            <td class="provider-name-cell">ICICI Bank</td>
+            <td>Ingenico, PAX</td>
+            <td>Countertop, Wireless, mPOS</td>
+            <td>T+1</td>
+            <td>No</td>
+            <td>Pan-India</td>
+          </tr>
+          <tr>
+            <td class="provider-name-cell">SBI</td>
+            <td>Worldline (Ingenico)</td>
+            <td>Countertop, Wireless, YONO mPOS</td>
+            <td>T+1</td>
+            <td>No</td>
+            <td>Widest reach, rural+urban</td>
+          </tr>
+          <tr>
+            <td class="provider-name-cell">Axis Bank</td>
+            <td>PAX, Verifone</td>
+            <td>Countertop, Wireless, Smart POS</td>
+            <td>T+1</td>
+            <td>No</td>
+            <td>Metro + Tier-1 cities</td>
+          </tr>
+          <tr>
+            <td class="provider-name-cell">Kotak Mahindra</td>
+            <td>Ingenico</td>
+            <td>Countertop, SuperPOS, Wireless</td>
+            <td>T+1</td>
+            <td>No</td>
+            <td>Urban focus</td>
+          </tr>
+          <tr>
+            <td class="provider-name-cell">Bank of Baroda</td>
+            <td>Worldline</td>
+            <td>Countertop, Wireless</td>
+            <td>T+1</td>
+            <td>No</td>
+            <td>Strong in Tier-2/3</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="alert warning" style="margin-top: 24px;">
+      <strong>Key Difference: Bank EDC vs Aggregator POS</strong>
+      Bank terminals are <strong>closed systems</strong> — they only process payments and settle to that bank's account. They cannot be integrated with third-party billing software like elPOS via API. For elPOS integration, use aggregator providers (Pine Labs, Razorpay/Ezetap, etc.) which offer open APIs and push-to-device models that work alongside any billing system.
+    </div>
+  </section>
+
+  <!-- COMPARISON TABLE -->
+  <section class="section" id="comparison">
+    <h2 class="section-title">⚖️ Device Comparison</h2>
+    <p class="section-subtitle">Side-by-side comparison of all 7 POS device providers</p>
+
+    <div class="comparison-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Provider</th>
+            <th>Market Position</th>
+            <th>POS/Hardware</th>
+            <th>API Quality</th>
+            <th>Best For</th>
+            <th>Ease</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="provider-name-cell">Pine Labs</td>
+            <td>Market Leader</td>
+            <td>Smart POS Hardware</td>
+            <td>Excellent</td>
+            <td>Large retail, restaurants</td>
+            <td>Moderate</td>
+          </tr>
+          <tr>
+            <td class="provider-name-cell">PhonePe</td>
+            <td>Fast Growing</td>
+            <td>Touchscreen POS</td>
+            <td>Very Good</td>
+            <td>SMEs, quick commerce</td>
+            <td>Easy</td>
+          </tr>
+          <tr>
+            <td class="provider-name-cell">Razorpay</td>
+            <td>Mid-Market Leader</td>
+            <td>Ezetap POS</td>
+            <td>Excellent</td>
+            <td>Tech-savvy businesses</td>
+            <td>Very Easy</td>
+          </tr>
+          <tr>
+            <td class="provider-name-cell">Paytm</td>
+            <td>High Volume</td>
+            <td>Soundbox + POS</td>
+            <td>Good</td>
+            <td>High-volume merchants</td>
+            <td>Moderate</td>
+          </tr>
+          <tr>
+            <td class="provider-name-cell">Cashfree</td>
+            <td>Growing Strong</td>
+            <td>SoftPOS</td>
+            <td>Very Good</td>
+            <td>Startups, online+offline</td>
+            <td>Easy</td>
+          </tr>
+          <tr>
+            <td class="provider-name-cell">BharatPe</td>
+            <td>UPI-Focused</td>
+            <td>All-in-One Device</td>
+            <td>Limited</td>
+            <td>Small UPI merchants</td>
+            <td>Very Easy</td>
+          </tr>
+          <tr>
+            <td class="provider-name-cell">Mswipe</td>
+            <td>Mobile POS Leader</td>
+            <td>Mobile POS</td>
+            <td>Good</td>
+            <td>Mobile merchants</td>
+            <td>Easy</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="alert warning" style="margin-top: 32px;">
+      <strong>Selection Guide for elPOS</strong>
+      Pine Labs for large retail/restaurants (best API, push-to-device model). Razorpay/Ezetap for developer-friendly Android POS. Paytm for high-volume merchants (soundbox + EDC). Mswipe for mobile/portable needs. BharatPe for UPI-only small merchants. Cashfree SoftPOS for zero-hardware setup. PhonePe for growing businesses wanting bundled POS.
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <section class="section">
+    <div style="text-align: center; padding: 48px 0; border-top: 2px solid var(--c100);">
+      <div class="tag-list" style="justify-content: center; margin-bottom: 20px;">
+        <span class="tag success">7 Device Providers</span>
+        <span class="tag info">All with APIs</span>
+        <span class="tag warning">Updated March 2025</span>
+      </div>
+      <p style="color: var(--c400); font-size: 14px; margin-bottom: 10px;">
+        <strong>Complete Payment Provider Documentation</strong>
+      </p>
+      <p style="color: var(--c400); font-size: 13px;">
+        For elPOS implementation, see
+        <a href="../elpos/docs/05-payments/payment-provider-abstraction.md" style="color: var(--c600);">
+          payment-provider-abstraction.md
+        </a>
+      </p>
+    </div>
+  </section>
+
+</div>
+
+</body>
+</html>
