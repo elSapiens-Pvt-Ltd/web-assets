@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>elSapiens — elPOS Database Schema</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f8fafc;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b;--light:#94a3b8;
+  --core:#6366f1;--sales:#059669;--service:#d97706;--kot:#dc2626;--pay:#7c3aed;--gst:#0891b2;--sync:#4f46e5;--cust:#be185d;
+}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:13px;line-height:1.5}
+
+/* Nav */
+.nav{position:sticky;top:0;z-index:100;background:#0f172a;padding:0 20px;display:flex;align-items:center;height:44px;gap:20px;box-shadow:0 2px 12px rgba(0,0,0,.25)}
+.nav .brand{color:#fff;font-weight:800;font-size:14px;letter-spacing:.4px}
+.nav a{color:#94a3b8;font-size:11.5px;font-weight:500;text-decoration:none;transition:color .15s}
+.nav a:hover{color:#fff}
+.nav-links{display:flex;gap:14px;margin-left:auto}
+
+/* Header */
+.header{background:linear-gradient(135deg,#1e293b 0%,#0f172a 100%);color:#fff;padding:36px 24px 28px;text-align:center}
+.header h1{font-size:22px;font-weight:800;letter-spacing:-.3px}
+.header p{font-size:12.5px;color:#94a3b8;margin-top:4px}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:16px 20px 12px}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center}
+.stat-n{font-size:20px;font-weight:800;color:#1e293b}
+.stat-l{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+
+/* Legend */
+.legend{display:flex;flex-wrap:wrap;gap:14px;padding:10px 20px;margin:0 20px 16px;background:var(--card);border-radius:8px;border:1px solid var(--border);align-items:center}
+.legend-item{display:flex;align-items:center;gap:4px;font-size:10.5px;font-weight:500;color:var(--muted)}
+.legend-dot{width:10px;height:10px;border-radius:3px}
+.legend-line{width:24px;height:0;border-bottom:2px solid #94a3b8}
+.legend-line.dashed{border-bottom-style:dashed}
+
+/* ER Diagram - full width, no scroll */
+.er-section{margin:0 20px 24px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:24px}
+.er-section h2{font-size:16px;font-weight:700;color:var(--text);margin-bottom:16px}
+.er-section svg{width:100%;height:auto;display:block}
+
+/* Container */
+.container{max-width:1400px;margin:0 auto;padding:0 20px 40px}
+
+/* Module sections */
+.mod-section{margin-bottom:28px}
+.mod-title{font-size:14px;font-weight:700;padding:9px 14px;border-radius:8px 8px 0 0;color:#fff;display:flex;align-items:center;gap:8px}
+.mod-title .num{background:rgba(255,255,255,.22);padding:1px 6px;border-radius:4px;font-size:9px}
+.mod-body{background:var(--card);border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;overflow-x:auto}
+table.schema{width:100%;border-collapse:collapse;font-size:12px}
+table.schema th{background:#f8fafc;padding:5px 12px;text-align:left;font-weight:600;color:var(--muted);font-size:9.5px;text-transform:uppercase;letter-spacing:.4px;border-bottom:2px solid var(--border)}
+table.schema td{padding:4px 12px;border-bottom:1px solid #f1f5f9;font-family:'JetBrains Mono',monospace;font-size:11px}
+table.schema tr:hover td{background:#f8fafc}
+table.schema .pk-cell{color:#92400e;font-weight:700}
+table.schema .fk-cell{color:#1e40af;font-weight:600}
+table.schema .type-cell{color:var(--light)}
+table.schema .null-cell{font-size:9.5px;color:var(--light)}
+.tbl-name-row{background:#f8fafc}
+.tbl-name-row td{font-weight:800;font-size:12.5px;padding:8px 12px;font-family:'Inter',system-ui;color:var(--text);border-bottom:2px solid var(--border)}
+
+/* Enum */
+.enum-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px;padding:14px}
+.enum-card{border:1px solid var(--border);border-radius:6px;padding:8px 10px}
+.enum-card h4{font-size:10.5px;color:var(--muted);margin-bottom:4px;font-family:'JetBrains Mono',monospace}
+.ev{display:inline-block;background:#f1f5f9;padding:1px 7px;border-radius:3px;font-size:10px;font-family:'JetBrains Mono',monospace;margin:1px}
+
+/* FK list */
+.fk-list{padding:14px}
+.fk-row{display:flex;align-items:center;gap:6px;padding:3px 0;font-size:11.5px;font-family:'JetBrains Mono',monospace}
+.fk-badge{font-size:9px;background:#e2e8f0;color:var(--text);padding:1px 5px;border-radius:3px;font-weight:700;min-width:28px;text-align:center}
+.fk-arrow{color:#3b82f6;font-weight:700}
+
+@media print{.nav{display:none}.header{padding:16px}body{font-size:10px}}
+@media(max-width:768px){.stats{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <span class="brand">elSapiens</span>
+  <div class="nav-links">
+    <a href="#er-diagram">ER Diagram</a>
+    <a href="#detail-core">Core</a>
+    <a href="#detail-sales">Sales</a>
+    <a href="#detail-service">Service</a>
+    <a href="#detail-kot">KOT</a>
+    <a href="#detail-pay">Payment</a>
+    <a href="#detail-gst">GST</a>
+    <a href="#detail-sync">Sync</a>
+    <a href="#detail-cust">Customer</a>
+    <a href="#enums">Enums</a>
+    <a href="#fk-summary">FK Map</a>
+  </div>
+</nav>
+
+<header class="header">
+  <h1>elPOS Database Schema</h1>
+  <p>17 tables across 8 modules — Complete entity-relationship diagram with full column definitions</p>
+</header>
+
+<div class="stats">
+  <div class="stat"><div class="stat-n">17</div><div class="stat-l">Tables</div></div>
+  <div class="stat"><div class="stat-n">8</div><div class="stat-l">Modules</div></div>
+  <div class="stat"><div class="stat-n">17</div><div class="stat-l">Foreign Keys</div></div>
+  <div class="stat"><div class="stat-n">~170</div><div class="stat-l">Columns</div></div>
+  <div class="stat"><div class="stat-n">UUID</div><div class="stat-l">All PKs</div></div>
+  <div class="stat"><div class="stat-n">DECIMAL</div><div class="stat-l">Money Fields</div></div>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:var(--core)"></div>Core</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--sales)"></div>Sales</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--service)"></div>Service</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--kot)"></div>KOT</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--pay)"></div>Payment</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--gst)"></div>GST</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--sync)"></div>Sync</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--cust)"></div>Customer</div>
+  <div class="legend-item" style="margin-left:auto"><div class="legend-line"></div>Required FK</div>
+  <div class="legend-item"><div class="legend-line dashed"></div>Optional FK</div>
+  <div class="legend-item"><span style="font-size:8px;font-weight:700;background:#fef3c7;color:#92400e;padding:1px 4px;border-radius:2px">PK</span>Primary Key</div>
+  <div class="legend-item"><span style="font-size:8px;font-weight:700;background:#dbeafe;color:#1e40af;padding:1px 4px;border-radius:2px">FK</span>Foreign Key</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--  ER DIAGRAM — Clean full-width SVG             -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="er-section" id="er-diagram">
+  <h2>Entity-Relationship Diagram</h2>
+  <svg viewBox="0 0 1200 940" xmlns="http://www.w3.org/2000/svg" font-family="Inter,system-ui,sans-serif">
+    <defs>
+      <marker id="ah" viewBox="0 0 8 6" refX="8" refY="3" markerWidth="8" markerHeight="6" orient="auto"><path d="M0 0L8 3L0 6z" fill="#94a3b8"/></marker>
+      <marker id="ah-c" viewBox="0 0 8 6" refX="8" refY="3" markerWidth="8" markerHeight="6" orient="auto"><path d="M0 0L8 3L0 6z" fill="#6366f1" opacity=".5"/></marker>
+      <filter id="sh"><feDropShadow dx="0" dy="1" stdDeviation="3" flood-opacity=".07"/></filter>
+    </defs>
+
+    <!-- ═══ MODULE BACKGROUND REGIONS ═══ -->
+    <rect x="16" y="12" width="370" height="262" rx="10" fill="#6366f1" opacity=".035"/>
+    <text x="28" y="28" font-size="8" font-weight="700" fill="#6366f1" opacity=".5" letter-spacing="1.5">CORE</text>
+
+    <rect x="406" y="12" width="370" height="410" rx="10" fill="#059669" opacity=".035"/>
+    <text x="418" y="28" font-size="8" font-weight="700" fill="#059669" opacity=".5" letter-spacing="1.5">SALES</text>
+
+    <rect x="796" y="12" width="388" height="410" rx="10" fill="#7c3aed" opacity=".035"/>
+    <text x="808" y="28" font-size="8" font-weight="700" fill="#7c3aed" opacity=".5" letter-spacing="1.5">PAYMENTS &amp; COMPLIANCE</text>
+
+    <rect x="16" y="290" width="370" height="290" rx="10" fill="#d97706" opacity=".035"/>
+    <text x="28" y="306" font-size="8" font-weight="700" fill="#d97706" opacity=".5" letter-spacing="1.5">SERVICE ORDERS</text>
+
+    <rect x="406" y="440" width="370" height="140" rx="10" fill="#be185d" opacity=".035"/>
+    <text x="418" y="456" font-size="8" font-weight="700" fill="#be185d" opacity=".5" letter-spacing="1.5">CUSTOMERS</text>
+
+    <rect x="16" y="596" width="760" height="330" rx="10" fill="#dc2626" opacity=".035"/>
+    <text x="28" y="612" font-size="8" font-weight="700" fill="#dc2626" opacity=".5" letter-spacing="1.5">KOT / RESTAURANT</text>
+
+    <rect x="796" y="440" width="388" height="130" rx="10" fill="#4f46e5" opacity=".035"/>
+    <text x="808" y="456" font-size="8" font-weight="700" fill="#4f46e5" opacity=".5" letter-spacing="1.5">OFFLINE SYNC</text>
+
+    <!-- ═══ RELATIONSHIP LINES ═══ -->
+    <g fill="none" stroke-width="1.3">
+      <!-- terminals → billing_series -->
+      <path d="M120,150 L120,180" stroke="#6366f1" opacity=".6" marker-end="url(#ah-c)"/>
+      <!-- terminals → register_sessions -->
+      <path d="M240,150 L300,180" stroke="#6366f1" opacity=".6" marker-end="url(#ah-c)"/>
+      <!-- terminals → sales (right) -->
+      <path d="M370,90 L422,90" stroke="#94a3b8" marker-end="url(#ah)"/>
+      <!-- register_sessions → sales -->
+      <path d="M370,220 L406,140" stroke="#94a3b8" marker-end="url(#ah)"/>
+      <!-- sales → sale_items -->
+      <path d="M560,190 L560,240" stroke="#059669" opacity=".7" marker-end="url(#ah)"/>
+      <!-- sales → payments (right) -->
+      <path d="M760,100 L812,100" stroke="#7c3aed" opacity=".6" marker-end="url(#ah)"/>
+      <!-- sales → gst_invoices -->
+      <path d="M760,160 L812,240" stroke="#0891b2" opacity=".6" marker-end="url(#ah)"/>
+      <!-- register_sessions → settlements -->
+      <path d="M370,240 Q390,350 812,350" stroke="#7c3aed" opacity=".4" stroke-dasharray="5,4" marker-end="url(#ah)"/>
+      <!-- pos_customers → sales (dashed, optional) -->
+      <path d="M580,460 L620,190" stroke="#be185d" opacity=".4" stroke-dasharray="5,4" marker-end="url(#ah)"/>
+      <!-- pos_customers → service_orders -->
+      <path d="M422,490 L370,450" stroke="#be185d" opacity=".6" marker-end="url(#ah)"/>
+      <!-- terminals → service_orders (dashed) -->
+      <path d="M100,150 L100,316" stroke="#d97706" opacity=".4" stroke-dasharray="5,4" marker-end="url(#ah)"/>
+      <!-- service_orders → service_order_items -->
+      <path d="M120,448 L120,476" stroke="#d97706" opacity=".6" marker-end="url(#ah)"/>
+      <!-- service_orders → service_order_photos -->
+      <path d="M260,448 L300,476" stroke="#d97706" opacity=".6" marker-end="url(#ah)"/>
+      <!-- service_orders → sales (dashed, sale_id) -->
+      <path d="M300,360 Q400,280 500,190" stroke="#d97706" opacity=".35" stroke-dasharray="5,4" marker-end="url(#ah)"/>
+      <!-- kot_floors (28,624 h74) → kot_tables (28,730) -->
+      <path d="M128,698 L128,728" stroke="#dc2626" opacity=".6" marker-end="url(#ah)"/>
+      <!-- kot_tables (28,730 w200) → kot_table_sessions (260,730) -->
+      <path d="M228,774 L258,774" stroke="#dc2626" opacity=".6" marker-end="url(#ah)"/>
+      <!-- kot_table_sessions (260,730 h88) → kot_orders (28,838) -->
+      <path d="M365,818 L365,828 L158,828 L158,836" stroke="#dc2626" opacity=".6" marker-end="url(#ah)"/>
+      <!-- kot_orders (28,838 w260) → kot_order_items (320,838) -->
+      <path d="M288,875 L318,875" stroke="#dc2626" opacity=".6" marker-end="url(#ah)"/>
+      <!-- kot_table_sessions → sales (dashed) -->
+      <path d="M470,740 Q520,580 640,190" stroke="#dc2626" opacity=".3" stroke-dasharray="5,4" marker-end="url(#ah)"/>
+      <!-- terminals → sync_events (dotted) -->
+      <path d="M220,150 Q400,400 820,480" stroke="#4f46e5" opacity=".25" stroke-dasharray="3,5" marker-end="url(#ah)"/>
+    </g>
+
+    <!-- ═══ CARDINALITY LABELS ═══ -->
+    <g font-size="7.5" font-weight="700" text-anchor="middle">
+      <rect x="106" y="158" width="22" height="12" rx="3" fill="#eef2ff" stroke="#6366f1" stroke-width=".4"/><text x="117" y="167" fill="#6366f1">1:N</text>
+      <rect x="258" y="160" width="22" height="12" rx="3" fill="#eef2ff" stroke="#6366f1" stroke-width=".4"/><text x="269" y="169" fill="#6366f1">1:N</text>
+      <rect x="384" y="78" width="22" height="12" rx="3" fill="#f1f5f9" stroke="#94a3b8" stroke-width=".4"/><text x="395" y="87" fill="#64748b">1:N</text>
+      <rect x="378" y="168" width="22" height="12" rx="3" fill="#f1f5f9" stroke="#94a3b8" stroke-width=".4"/><text x="389" y="177" fill="#64748b">1:N</text>
+      <rect x="548" y="206" width="22" height="12" rx="3" fill="#ecfdf5" stroke="#059669" stroke-width=".4"/><text x="559" y="215" fill="#059669">1:N</text>
+      <rect x="776" y="88" width="22" height="12" rx="3" fill="#f5f3ff" stroke="#7c3aed" stroke-width=".4"/><text x="787" y="97" fill="#7c3aed">1:N</text>
+      <rect x="780" y="192" width="20" height="12" rx="3" fill="#ecfeff" stroke="#0891b2" stroke-width=".4"/><text x="790" y="201" fill="#0891b2">1:1</text>
+      <rect x="570" y="333" width="20" height="12" rx="3" fill="#f5f3ff" stroke="#7c3aed" stroke-width=".4"/><text x="580" y="342" fill="#7c3aed">1:1</text>
+      <rect x="384" y="462" width="22" height="12" rx="3" fill="#fdf2f8" stroke="#be185d" stroke-width=".4"/><text x="395" y="471" fill="#be185d">1:N</text>
+      <rect x="106" y="454" width="22" height="12" rx="3" fill="#fffbeb" stroke="#d97706" stroke-width=".4"/><text x="117" y="463" fill="#d97706">1:N</text>
+      <rect x="268" y="454" width="22" height="12" rx="3" fill="#fffbeb" stroke="#d97706" stroke-width=".4"/><text x="279" y="463" fill="#d97706">1:N</text>
+      <rect x="114" y="706" width="22" height="12" rx="3" fill="#fef2f2" stroke="#dc2626" stroke-width=".4"/><text x="125" y="715" fill="#dc2626">1:N</text>
+      <rect x="230" y="768" width="22" height="12" rx="3" fill="#fef2f2" stroke="#dc2626" stroke-width=".4"/><text x="241" y="777" fill="#dc2626">1:N</text>
+      <rect x="240" y="822" width="22" height="12" rx="3" fill="#fef2f2" stroke="#dc2626" stroke-width=".4"/><text x="251" y="831" fill="#dc2626">1:N</text>
+      <rect x="290" y="868" width="22" height="12" rx="3" fill="#fef2f2" stroke="#dc2626" stroke-width=".4"/><text x="301" y="877" fill="#dc2626">1:N</text>
+    </g>
+
+    <!-- ═══ TABLE CARDS ═══ -->
+    <!-- Each card: colored header bar + white body with key columns -->
+
+    <!-- ── terminals ── -->
+    <g transform="translate(28,40)" filter="url(#sh)">
+      <rect width="240" height="108" rx="6" fill="#fff" stroke="#ddd" stroke-width=".5"/>
+      <rect width="240" height="24" rx="6" fill="#6366f1"/><rect y="12" width="240" height="12" fill="#6366f1"/>
+      <text x="12" y="17" fill="#fff" font-size="11" font-weight="700">terminals</text>
+      <text x="204" y="17" fill="rgba(255,255,255,.6)" font-size="8" font-weight="600">12 cols</text>
+      <text x="10" y="40" font-size="9" fill="#92400e" font-weight="700">PK <tspan fill="#334155" font-weight="500">id</tspan> <tspan fill="#94a3b8" font-size="8">UUID</tspan></text>
+      <text x="10" y="54" font-size="9" fill="#64748b">organization_id, store_id</text>
+      <text x="10" y="68" font-size="9" fill="#64748b">code, name, mode</text>
+      <text x="10" y="82" font-size="9" fill="#64748b">billing_prefix, device_id</text>
+      <text x="10" y="96" font-size="9" fill="#94a3b8">is_active, config (JSONB)</text>
+    </g>
+
+    <!-- ── billing_series ── -->
+    <g transform="translate(28,180)" filter="url(#sh)">
+      <rect width="180" height="94" rx="6" fill="#fff" stroke="#ddd" stroke-width=".5"/>
+      <rect width="180" height="24" rx="6" fill="#6366f1"/><rect y="12" width="180" height="12" fill="#6366f1"/>
+      <text x="12" y="17" fill="#fff" font-size="11" font-weight="700">billing_series</text>
+      <text x="10" y="40" font-size="9" fill="#92400e" font-weight="700">PK <tspan fill="#334155" font-weight="500">id</tspan></text>
+      <text x="10" y="54" font-size="9" fill="#1e40af" font-weight="600">FK <tspan font-weight="500">terminal_id</tspan></text>
+      <text x="10" y="68" font-size="9" fill="#64748b">series_type, prefix, fiscal_year</text>
+      <text x="10" y="82" font-size="9" fill="#64748b">range_start / end / current_seq</text>
+    </g>
+
+    <!-- ── register_sessions ── -->
+    <g transform="translate(220,180)" filter="url(#sh)">
+      <rect width="160" height="94" rx="6" fill="#fff" stroke="#ddd" stroke-width=".5"/>
+      <rect width="160" height="24" rx="6" fill="#6366f1"/><rect y="12" width="160" height="12" fill="#6366f1"/>
+      <text x="12" y="17" fill="#fff" font-size="10" font-weight="700">register_sessions</text>
+      <text x="10" y="40" font-size="9" fill="#92400e" font-weight="700">PK <tspan fill="#334155" font-weight="500">id</tspan></text>
+      <text x="10" y="54" font-size="9" fill="#1e40af" font-weight="600">FK <tspan font-weight="500">terminal_id</tspan></text>
+      <text x="10" y="68" font-size="9" fill="#64748b">opened_by, status</text>
+      <text x="10" y="82" font-size="9" fill="#64748b">opening_float, opened_at</text>
+    </g>
+
+    <!-- ── sales ── -->
+    <g transform="translate(422,40)" filter="url(#sh)">
+      <rect width="340" height="148" rx="6" fill="#fff" stroke="#ddd" stroke-width=".5"/>
+      <rect width="340" height="24" rx="6" fill="#059669"/><rect y="12" width="340" height="12" fill="#059669"/>
+      <text x="12" y="17" fill="#fff" font-size="11" font-weight="700">sales</text>
+      <text x="296" y="17" fill="rgba(255,255,255,.6)" font-size="8" font-weight="600">24 cols</text>
+      <text x="10" y="40" font-size="9" fill="#92400e" font-weight="700">PK <tspan fill="#334155" font-weight="500">id</tspan> <tspan fill="#94a3b8" font-size="8">UUID</tspan></text>
+      <text x="10" y="54" font-size="9" fill="#1e40af" font-weight="600">FK <tspan font-weight="500">terminal_id, session_id</tspan></text>
+      <text x="10" y="68" font-size="9" fill="#64748b">bill_number, customer_id <tspan fill="#94a3b8" font-size="8">(nullable)</tspan></text>
+      <text x="10" y="82" font-size="9" fill="#64748b">sale_type, status</text>
+      <line x1="10" y1="88" x2="330" y2="88" stroke="#f1f5f9" stroke-width=".5"/>
+      <text x="10" y="100" font-size="9" fill="#64748b">subtotal, discount_amount, tax_amount</text>
+      <text x="10" y="114" font-size="9" fill="#64748b">total, round_off, net_total</text>
+      <text x="10" y="128" font-size="9" fill="#64748b">is_tax_inclusive, place_of_supply</text>
+      <text x="10" y="142" font-size="9" fill="#94a3b8">held_name, offline_id, synced</text>
+    </g>
+
+    <!-- ── sale_items ── -->
+    <g transform="translate(422,244)" filter="url(#sh)">
+      <rect width="340" height="162" rx="6" fill="#fff" stroke="#ddd" stroke-width=".5"/>
+      <rect width="340" height="24" rx="6" fill="#059669"/><rect y="12" width="340" height="12" fill="#059669"/>
+      <text x="12" y="17" fill="#fff" font-size="11" font-weight="700">sale_items</text>
+      <text x="286" y="17" fill="rgba(255,255,255,.6)" font-size="8" font-weight="600">27 cols</text>
+      <text x="10" y="40" font-size="9" fill="#92400e" font-weight="700">PK <tspan fill="#334155" font-weight="500">id</tspan></text>
+      <text x="10" y="54" font-size="9" fill="#1e40af" font-weight="600">FK <tspan font-weight="500">sale_id</tspan> <tspan fill="#94a3b8" font-size="8">CASCADE</tspan></text>
+      <text x="10" y="68" font-size="9" fill="#64748b">item_id, item_type, name, sku</text>
+      <text x="10" y="82" font-size="9" fill="#64748b">hsn_sac_code, quantity, uom, unit_price</text>
+      <line x1="10" y1="88" x2="330" y2="88" stroke="#f1f5f9" stroke-width=".5"/>
+      <text x="10" y="100" font-size="9" fill="#64748b">discount_amount / type / value</text>
+      <text x="10" y="114" font-size="9" fill="#64748b">taxable_amount</text>
+      <text x="10" y="128" font-size="9" fill="#64748b">cgst / sgst / igst / cess (rate + amount)</text>
+      <text x="10" y="142" font-size="9" fill="#64748b">total, batch_id, serial_number</text>
+      <text x="10" y="156" font-size="9" fill="#94a3b8">sort_order, notes</text>
+    </g>
+
+    <!-- ── payments ── -->
+    <g transform="translate(812,40)" filter="url(#sh)">
+      <rect width="362" height="148" rx="6" fill="#fff" stroke="#ddd" stroke-width=".5"/>
+      <rect width="362" height="24" rx="6" fill="#7c3aed"/><rect y="12" width="362" height="12" fill="#7c3aed"/>
+      <text x="12" y="17" fill="#fff" font-size="11" font-weight="700">payments</text>
+      <text x="310" y="17" fill="rgba(255,255,255,.6)" font-size="8" font-weight="600">18 cols</text>
+      <text x="10" y="40" font-size="9" fill="#92400e" font-weight="700">PK <tspan fill="#334155" font-weight="500">id</tspan></text>
+      <text x="10" y="54" font-size="9" fill="#1e40af" font-weight="600">FK <tspan font-weight="500">sale_id, terminal_id</tspan></text>
+      <text x="10" y="68" font-size="9" fill="#64748b">method, provider, amount</text>
+      <text x="10" y="82" font-size="9" fill="#64748b">tendered, change_amount</text>
+      <line x1="10" y1="88" x2="350" y2="88" stroke="#f1f5f9" stroke-width=".5"/>
+      <text x="10" y="100" font-size="9" fill="#64748b">reference_number, approval_code</text>
+      <text x="10" y="114" font-size="9" fill="#64748b">card_last_four, card_network</text>
+      <text x="10" y="128" font-size="9" fill="#64748b">status, verified</text>
+      <text x="10" y="142" font-size="9" fill="#94a3b8">offline_id, synced</text>
+    </g>
+
+    <!-- ── gst_invoices ── -->
+    <g transform="translate(812,210)" filter="url(#sh)">
+      <rect width="362" height="134" rx="6" fill="#fff" stroke="#ddd" stroke-width=".5"/>
+      <rect width="362" height="24" rx="6" fill="#0891b2"/><rect y="12" width="362" height="12" fill="#0891b2"/>
+      <text x="12" y="17" fill="#fff" font-size="11" font-weight="700">gst_invoices</text>
+      <text x="300" y="17" fill="rgba(255,255,255,.6)" font-size="8" font-weight="600">20 cols</text>
+      <text x="10" y="40" font-size="9" fill="#92400e" font-weight="700">PK <tspan fill="#334155" font-weight="500">id</tspan></text>
+      <text x="10" y="54" font-size="9" fill="#1e40af" font-weight="600">FK <tspan font-weight="500">sale_id</tspan> <tspan fill="#94a3b8" font-size="8">(1:1)</tspan></text>
+      <text x="10" y="68" font-size="9" fill="#64748b">invoice_number, invoice_type</text>
+      <text x="10" y="82" font-size="9" fill="#64748b">seller: gstin, name, address, state_code</text>
+      <text x="10" y="96" font-size="9" fill="#64748b">buyer: gstin, name, address, state_code</text>
+      <text x="10" y="110" font-size="9" fill="#64748b">total_cgst / sgst / igst / cess</text>
+      <text x="10" y="124" font-size="9" fill="#94a3b8">irn, signed_qr, einvoice_status</text>
+    </g>
+
+    <!-- ── settlements ── -->
+    <g transform="translate(812,354)" filter="url(#sh)">
+      <rect width="362" height="108" rx="6" fill="#fff" stroke="#ddd" stroke-width=".5"/>
+      <rect width="362" height="24" rx="6" fill="#7c3aed"/><rect y="12" width="362" height="12" fill="#7c3aed"/>
+      <text x="12" y="17" fill="#fff" font-size="11" font-weight="700">settlements</text>
+      <text x="10" y="40" font-size="9" fill="#92400e" font-weight="700">PK <tspan fill="#334155" font-weight="500">id</tspan></text>
+      <text x="10" y="54" font-size="9" fill="#1e40af" font-weight="600">FK <tspan font-weight="500">session_id</tspan> <tspan fill="#94a3b8" font-size="8">(1:1)</tspan>, <tspan font-weight="500" fill="#1e40af">terminal_id</tspan></text>
+      <text x="10" y="68" font-size="9" fill="#64748b">expected_cash / card / upi / credit</text>
+      <text x="10" y="82" font-size="9" fill="#64748b">actual_cash / card / upi, variance</text>
+      <text x="10" y="96" font-size="9" fill="#94a3b8">denominations (JSONB), status, approved_by</text>
+    </g>
+
+    <!-- ── service_orders ── -->
+    <g transform="translate(28,316)" filter="url(#sh)">
+      <rect width="340" height="130" rx="6" fill="#fff" stroke="#ddd" stroke-width=".5"/>
+      <rect width="340" height="24" rx="6" fill="#d97706"/><rect y="12" width="340" height="12" fill="#d97706"/>
+      <text x="12" y="17" fill="#fff" font-size="11" font-weight="700">service_orders</text>
+      <text x="278" y="17" fill="rgba(255,255,255,.6)" font-size="8" font-weight="600">22 cols</text>
+      <text x="10" y="40" font-size="9" fill="#92400e" font-weight="700">PK <tspan fill="#334155" font-weight="500">id</tspan></text>
+      <text x="10" y="54" font-size="9" fill="#1e40af" font-weight="600">FK <tspan font-weight="500">terminal_id, session_id, customer_id</tspan></text>
+      <text x="10" y="68" font-size="9" fill="#64748b">order_number, service_type, status, priority</text>
+      <text x="10" y="82" font-size="9" fill="#64748b">promised_at, delivered_at, invoiced_at</text>
+      <text x="10" y="96" font-size="9" fill="#1e40af" font-weight="600">FK <tspan font-weight="500">sale_id</tspan> <tspan fill="#94a3b8" font-size="8" font-weight="400">(nullable — linked on invoice)</tspan></text>
+      <text x="10" y="110" font-size="9" fill="#64748b">customer_items (JSONB), vehicle_info (JSONB)</text>
+      <text x="10" y="124" font-size="9" fill="#64748b">subtotal, tax_amount, total</text>
+    </g>
+
+    <!-- ── service_order_items ── -->
+    <g transform="translate(28,478)" filter="url(#sh)">
+      <rect width="190" height="94" rx="6" fill="#fff" stroke="#ddd" stroke-width=".5"/>
+      <rect width="190" height="24" rx="6" fill="#d97706"/><rect y="12" width="190" height="12" fill="#d97706"/>
+      <text x="12" y="17" fill="#fff" font-size="9.5" font-weight="700">service_order_items</text>
+      <text x="10" y="40" font-size="9" fill="#92400e" font-weight="700">PK <tspan fill="#334155" font-weight="500">id</tspan></text>
+      <text x="10" y="54" font-size="9" fill="#1e40af" font-weight="600">FK <tspan font-weight="500">order_id</tspan></text>
+      <text x="10" y="68" font-size="9" fill="#64748b">service_id, name, sac_code</text>
+      <text x="10" y="82" font-size="9" fill="#64748b">qty, price, tax, total, status</text>
+    </g>
+
+    <!-- ── service_order_photos ── -->
+    <g transform="translate(230,478)" filter="url(#sh)">
+      <rect width="150" height="94" rx="6" fill="#fff" stroke="#ddd" stroke-width=".5"/>
+      <rect width="150" height="24" rx="6" fill="#d97706"/><rect y="12" width="150" height="12" fill="#d97706"/>
+      <text x="12" y="17" fill="#fff" font-size="9.5" font-weight="700">service_order_photos</text>
+      <text x="10" y="40" font-size="9" fill="#92400e" font-weight="700">PK <tspan fill="#334155" font-weight="500">id</tspan></text>
+      <text x="10" y="54" font-size="9" fill="#1e40af" font-weight="600">FK <tspan font-weight="500">order_id</tspan></text>
+      <text x="10" y="68" font-size="9" fill="#64748b">filename, s3_key</text>
+      <text x="10" y="82" font-size="9" fill="#94a3b8">synced, offline_blob_id</text>
+    </g>
+
+    <!-- ── pos_customers ── -->
+    <g transform="translate(422,462)" filter="url(#sh)">
+      <rect width="340" height="108" rx="6" fill="#fff" stroke="#ddd" stroke-width=".5"/>
+      <rect width="340" height="24" rx="6" fill="#be185d"/><rect y="12" width="340" height="12" fill="#be185d"/>
+      <text x="12" y="17" fill="#fff" font-size="11" font-weight="700">pos_customers</text>
+      <text x="280" y="17" fill="rgba(255,255,255,.6)" font-size="8" font-weight="600">14 cols</text>
+      <text x="10" y="40" font-size="9" fill="#92400e" font-weight="700">PK <tspan fill="#334155" font-weight="500">id</tspan> <tspan fill="#94a3b8" font-size="8" font-weight="400">+ external_id (CRM link)</tspan></text>
+      <text x="10" y="54" font-size="9" fill="#64748b">name, phone, email, gstin</text>
+      <text x="10" y="68" font-size="9" fill="#64748b">address (JSONB)</text>
+      <text x="10" y="82" font-size="9" fill="#64748b">loyalty_points, credit_balance</text>
+      <text x="10" y="96" font-size="9" fill="#94a3b8">tags[], deleted_at (soft delete)</text>
+    </g>
+
+    <!-- ── sync_events ── -->
+    <g transform="translate(812,462)" filter="url(#sh)">
+      <rect width="362" height="94" rx="6" fill="#fff" stroke="#ddd" stroke-width=".5"/>
+      <rect width="362" height="24" rx="6" fill="#4f46e5"/><rect y="12" width="362" height="12" fill="#4f46e5"/>
+      <text x="12" y="17" fill="#fff" font-size="11" font-weight="700">sync_events</text>
+      <text x="10" y="40" font-size="9" fill="#92400e" font-weight="700">PK <tspan fill="#334155" font-weight="500">id</tspan></text>
+      <text x="10" y="54" font-size="9" fill="#1e40af" font-weight="600">FK <tspan font-weight="500">terminal_id</tspan></text>
+      <text x="10" y="68" font-size="9" fill="#64748b">event_type, entity_type, entity_id, payload (JSONB)</text>
+      <text x="10" y="82" font-size="9" fill="#64748b">seq_num <tspan fill="#94a3b8" font-size="8">BIGSERIAL</tspan>, status, conflict_data</text>
+    </g>
+
+    <!-- ── kot_floors ── -->
+    <g transform="translate(28,624)" filter="url(#sh)">
+      <rect width="200" height="74" rx="6" fill="#fff" stroke="#ddd" stroke-width=".5"/>
+      <rect width="200" height="24" rx="6" fill="#dc2626"/><rect y="12" width="200" height="12" fill="#dc2626"/>
+      <text x="12" y="17" fill="#fff" font-size="11" font-weight="700">kot_floors</text>
+      <text x="10" y="40" font-size="9" fill="#92400e" font-weight="700">PK <tspan fill="#334155" font-weight="500">id</tspan></text>
+      <text x="10" y="54" font-size="9" fill="#64748b">org_id, store_id, name</text>
+      <text x="10" y="68" font-size="9" fill="#94a3b8">sort_order, is_active</text>
+    </g>
+
+    <!-- ── kot_tables ── -->
+    <g transform="translate(28,730)" filter="url(#sh)">
+      <rect width="200" height="88" rx="6" fill="#fff" stroke="#ddd" stroke-width=".5"/>
+      <rect width="200" height="24" rx="6" fill="#dc2626"/><rect y="12" width="200" height="12" fill="#dc2626"/>
+      <text x="12" y="17" fill="#fff" font-size="11" font-weight="700">kot_tables</text>
+      <text x="10" y="40" font-size="9" fill="#92400e" font-weight="700">PK <tspan fill="#334155" font-weight="500">id</tspan></text>
+      <text x="10" y="54" font-size="9" fill="#1e40af" font-weight="600">FK <tspan font-weight="500">floor_id</tspan></text>
+      <text x="10" y="68" font-size="9" fill="#64748b">number, seats, shape</text>
+      <text x="10" y="82" font-size="9" fill="#64748b">position_x/y, status</text>
+    </g>
+
+    <!-- ── kot_table_sessions ── -->
+    <g transform="translate(260,730)" filter="url(#sh)">
+      <rect width="210" height="88" rx="6" fill="#fff" stroke="#ddd" stroke-width=".5"/>
+      <rect width="210" height="24" rx="6" fill="#dc2626"/><rect y="12" width="210" height="12" fill="#dc2626"/>
+      <text x="12" y="17" fill="#fff" font-size="10" font-weight="700">kot_table_sessions</text>
+      <text x="10" y="40" font-size="9" fill="#92400e" font-weight="700">PK <tspan fill="#334155" font-weight="500">id</tspan></text>
+      <text x="10" y="54" font-size="9" fill="#1e40af" font-weight="600">FK <tspan font-weight="500">table_id, sale_id</tspan> <tspan fill="#94a3b8" font-size="8" font-weight="400">(opt)</tspan></text>
+      <text x="10" y="68" font-size="9" fill="#64748b">covers, server_id, status</text>
+      <text x="10" y="82" font-size="9" fill="#94a3b8">opened_at, closed_at</text>
+    </g>
+
+    <!-- ── kot_orders ── -->
+    <g transform="translate(28,838)" filter="url(#sh)">
+      <rect width="260" height="74" rx="6" fill="#fff" stroke="#ddd" stroke-width=".5"/>
+      <rect width="260" height="24" rx="6" fill="#dc2626"/><rect y="12" width="260" height="12" fill="#dc2626"/>
+      <text x="12" y="17" fill="#fff" font-size="11" font-weight="700">kot_orders</text>
+      <text x="10" y="40" font-size="9" fill="#92400e" font-weight="700">PK <tspan fill="#334155" font-weight="500">id</tspan></text>
+      <text x="10" y="54" font-size="9" fill="#1e40af" font-weight="600">FK <tspan font-weight="500">table_session_id, terminal_id</tspan></text>
+      <text x="10" y="68" font-size="9" fill="#64748b">kot_number, status, course, kitchen timestamps</text>
+    </g>
+
+    <!-- ── kot_order_items ── -->
+    <g transform="translate(320,838)" filter="url(#sh)">
+      <rect width="240" height="74" rx="6" fill="#fff" stroke="#ddd" stroke-width=".5"/>
+      <rect width="240" height="24" rx="6" fill="#dc2626"/><rect y="12" width="240" height="12" fill="#dc2626"/>
+      <text x="12" y="17" fill="#fff" font-size="11" font-weight="700">kot_order_items</text>
+      <text x="10" y="40" font-size="9" fill="#92400e" font-weight="700">PK <tspan fill="#334155" font-weight="500">id</tspan></text>
+      <text x="10" y="54" font-size="9" fill="#1e40af" font-weight="600">FK <tspan font-weight="500">kot_order_id</tspan> <tspan fill="#94a3b8" font-size="8">CASCADE</tspan></text>
+      <text x="10" y="68" font-size="9" fill="#64748b">item_id, name, seat, qty, price, modifiers, status</text>
+    </g>
+
+  </svg>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--  DETAIL TABLES                                 -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="container">
+
+<section class="mod-section" id="detail-core">
+<div class="mod-title" style="background:var(--core)"><span class="num">01</span>Core: Terminals &amp; Sessions</div>
+<div class="mod-body">
+<table class="schema">
+<thead><tr><th></th><th>Column</th><th>Type</th><th>Nullable</th><th>Default</th><th>Notes</th></tr></thead>
+<tbody>
+<tr class="tbl-name-row"><td colspan="6">terminals</td></tr>
+<tr><td class="pk-cell">PK</td><td class="pk-cell">id</td><td class="type-cell">UUID</td><td class="null-cell">NOT NULL</td><td>gen_random_uuid()</td><td></td></tr>
+<tr><td></td><td>organization_id</td><td class="type-cell">UUID</td><td class="null-cell">NOT NULL</td><td></td><td>Tenant ID from JWT</td></tr>
+<tr><td></td><td>store_id</td><td class="type-cell">UUID</td><td class="null-cell">NOT NULL</td><td></td><td>Store/branch</td></tr>
+<tr><td></td><td>code</td><td class="type-cell">VARCHAR(20)</td><td class="null-cell">NOT NULL</td><td></td><td>Unique within store</td></tr>
+<tr><td></td><td>name</td><td class="type-cell">VARCHAR(100)</td><td class="null-cell">NOT NULL</td><td></td><td></td></tr>
+<tr><td></td><td>mode</td><td class="type-cell">VARCHAR(20)</td><td class="null-cell">NOT NULL</td><td></td><td>retail | service | hybrid | restaurant</td></tr>
+<tr><td></td><td>billing_prefix</td><td class="type-cell">VARCHAR(10)</td><td class="null-cell">NOT NULL</td><td></td><td></td></tr>
+<tr><td></td><td>device_id</td><td class="type-cell">VARCHAR(255)</td><td class="null-cell">NULLABLE</td><td></td><td>Hardware fingerprint</td></tr>
+<tr><td></td><td>is_active</td><td class="type-cell">BOOLEAN</td><td class="null-cell">NOT NULL</td><td>true</td><td></td></tr>
+<tr><td></td><td>config</td><td class="type-cell">JSONB</td><td class="null-cell">NOT NULL</td><td>'{}'</td><td>Receipt, printer, tax settings</td></tr>
+<tr><td></td><td>created_at / updated_at</td><td class="type-cell">TIMESTAMPTZ</td><td class="null-cell">NOT NULL</td><td>now()</td><td></td></tr>
+<tr class="tbl-name-row"><td colspan="6">billing_series</td></tr>
+<tr><td class="pk-cell">PK</td><td class="pk-cell">id</td><td class="type-cell">UUID</td><td class="null-cell">NOT NULL</td><td></td><td></td></tr>
+<tr><td class="fk-cell">FK</td><td class="fk-cell">terminal_id</td><td class="type-cell">UUID</td><td class="null-cell">NOT NULL</td><td></td><td>RESTRICT</td></tr>
+<tr><td></td><td>series_type</td><td class="type-cell">VARCHAR(20)</td><td class="null-cell">NOT NULL</td><td></td><td>sale | invoice | kot | credit_note</td></tr>
+<tr><td></td><td>prefix</td><td class="type-cell">VARCHAR(20)</td><td class="null-cell">NOT NULL</td><td></td><td>e.g. T1-INV-2526-</td></tr>
+<tr><td></td><td>fiscal_year</td><td class="type-cell">VARCHAR(10)</td><td class="null-cell">NOT NULL</td><td></td><td></td></tr>
+<tr><td></td><td>range_start / range_end / current_seq</td><td class="type-cell">BIGINT</td><td class="null-cell">NOT NULL</td><td></td><td>Pre-allocated range for offline</td></tr>
+<tr class="tbl-name-row"><td colspan="6">register_sessions</td></tr>
+<tr><td class="pk-cell">PK</td><td class="pk-cell">id</td><td class="type-cell">UUID</td><td class="null-cell">NOT NULL</td><td></td><td></td></tr>
+<tr><td class="fk-cell">FK</td><td class="fk-cell">terminal_id</td><td class="type-cell">UUID</td><td class="null-cell">NOT NULL</td><td></td><td>RESTRICT</td></tr>
+<tr><td></td><td>opened_by / closed_by</td><td class="type-cell">UUID</td><td class="null-cell">NOT NULL / NULL</td><td></td><td>Operator user IDs</td></tr>
+<tr><td></td><td>opened_at / closed_at</td><td class="type-cell">TIMESTAMPTZ</td><td class="null-cell">NOT NULL / NULL</td><td></td><td></td></tr>
+<tr><td></td><td>opening_float</td><td class="type-cell">DECIMAL(19,4)</td><td class="null-cell">NOT NULL</td><td>0</td><td></td></tr>
+<tr><td></td><td>status</td><td class="type-cell">VARCHAR(20)</td><td class="null-cell">NOT NULL</td><td>'open'</td><td>open | closing | closed</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section class="mod-section" id="detail-sales">
+<div class="mod-title" style="background:var(--sales)"><span class="num">02</span>Product Sales — <em style="font-weight:400">sales + sale_items</em></div>
+<div class="mod-body">
+<table class="schema">
+<thead><tr><th></th><th>Column</th><th>Type</th><th>Nullable</th><th>Default</th><th>Notes</th></tr></thead>
+<tbody>
+<tr class="tbl-name-row"><td colspan="6">sales &mdash; 24 columns</td></tr>
+<tr><td class="pk-cell">PK</td><td class="pk-cell">id</td><td class="type-cell">UUID</td><td class="null-cell">NOT NULL</td><td></td><td></td></tr>
+<tr><td class="fk-cell">FK</td><td class="fk-cell">terminal_id</td><td class="type-cell">UUID</td><td class="null-cell">NOT NULL</td><td></td><td>RESTRICT</td></tr>
+<tr><td class="fk-cell">FK</td><td class="fk-cell">session_id</td><td class="type-cell">UUID</td><td class="null-cell">NOT NULL</td><td></td><td>RESTRICT</td></tr>
+<tr><td></td><td>bill_number</td><td class="type-cell">VARCHAR(50)</td><td class="null-cell">NOT NULL</td><td></td><td>Unique within org</td></tr>
+<tr><td></td><td>customer_id</td><td class="type-cell">UUID</td><td class="null-cell">NULLABLE</td><td></td><td>Walk-in if NULL</td></tr>
+<tr><td></td><td>sale_type</td><td class="type-cell">VARCHAR(20)</td><td class="null-cell">NOT NULL</td><td></td><td>sale | return</td></tr>
+<tr><td></td><td>status</td><td class="type-cell">VARCHAR(20)</td><td class="null-cell">NOT NULL</td><td>'draft'</td><td>draft | held | completed | voided | returned</td></tr>
+<tr><td></td><td>subtotal / discount_amount / tax_amount</td><td class="type-cell">DECIMAL(19,4)</td><td class="null-cell">NOT NULL</td><td>0</td><td></td></tr>
+<tr><td></td><td>total / round_off / net_total</td><td class="type-cell">DECIMAL(19,4)</td><td class="null-cell">NOT NULL</td><td>0</td><td></td></tr>
+<tr><td></td><td>is_tax_inclusive</td><td class="type-cell">BOOLEAN</td><td class="null-cell">NOT NULL</td><td>false</td><td></td></tr>
+<tr><td></td><td>place_of_supply</td><td class="type-cell">VARCHAR(2)</td><td class="null-cell">NULLABLE</td><td></td><td>State code for CGST/SGST vs IGST</td></tr>
+<tr><td></td><td>held_name</td><td class="type-cell">VARCHAR(100)</td><td class="null-cell">NULLABLE</td><td></td><td>Label when parked</td></tr>
+<tr><td></td><td>offline_id / synced</td><td class="type-cell">VARCHAR / BOOL</td><td></td><td></td><td>Sync fields</td></tr>
+<tr class="tbl-name-row"><td colspan="6">sale_items &mdash; 27 columns</td></tr>
+<tr><td class="pk-cell">PK</td><td class="pk-cell">id</td><td class="type-cell">UUID</td><td></td><td></td><td></td></tr>
+<tr><td class="fk-cell">FK</td><td class="fk-cell">sale_id</td><td class="type-cell">UUID</td><td class="null-cell">NOT NULL</td><td></td><td>CASCADE</td></tr>
+<tr><td></td><td>item_id / item_type / name / sku</td><td class="type-cell">UUID / VARCHAR</td><td></td><td></td><td>Denormalized from catalog</td></tr>
+<tr><td></td><td>hsn_sac_code</td><td class="type-cell">VARCHAR(10)</td><td class="null-cell">NULLABLE</td><td></td><td></td></tr>
+<tr><td></td><td>quantity / uom / unit_price</td><td class="type-cell">DECIMAL</td><td class="null-cell">NOT NULL</td><td></td><td></td></tr>
+<tr><td></td><td>discount_amount / type / value</td><td class="type-cell">DECIMAL / VARCHAR</td><td></td><td></td><td></td></tr>
+<tr><td></td><td>taxable_amount</td><td class="type-cell">DECIMAL(19,4)</td><td class="null-cell">NOT NULL</td><td></td><td></td></tr>
+<tr><td></td><td>cgst / sgst / igst / cess (rate + amount)</td><td class="type-cell">DECIMAL(7,4) + (15,2)</td><td></td><td>0</td><td>8 columns total</td></tr>
+<tr><td></td><td>total</td><td class="type-cell">DECIMAL(19,4)</td><td class="null-cell">NOT NULL</td><td></td><td></td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section class="mod-section" id="detail-service">
+<div class="mod-title" style="background:var(--service)"><span class="num">03</span>Service Orders</div>
+<div class="mod-body">
+<table class="schema">
+<thead><tr><th></th><th>Column</th><th>Type</th><th>Nullable</th><th>Default</th><th>Notes</th></tr></thead>
+<tbody>
+<tr class="tbl-name-row"><td colspan="6">service_orders &mdash; 22 columns</td></tr>
+<tr><td class="pk-cell">PK</td><td class="pk-cell">id</td><td class="type-cell">UUID</td><td></td><td></td><td></td></tr>
+<tr><td class="fk-cell">FK</td><td class="fk-cell">terminal_id, session_id</td><td class="type-cell">UUID</td><td class="null-cell">NOT NULL</td><td></td><td>RESTRICT</td></tr>
+<tr><td class="fk-cell">FK</td><td class="fk-cell">customer_id</td><td class="type-cell">UUID</td><td class="null-cell">NOT NULL</td><td></td><td>Always required (unlike sales)</td></tr>
+<tr><td></td><td>service_type</td><td class="type-cell">VARCHAR(20)</td><td class="null-cell">NOT NULL</td><td></td><td>laundry | car_wash | car_service | repair | custom</td></tr>
+<tr><td></td><td>status / priority</td><td class="type-cell">VARCHAR</td><td></td><td></td><td>Varies by service_type</td></tr>
+<tr><td></td><td>promised_at / delivered_at / invoiced_at</td><td class="type-cell">TIMESTAMPTZ</td><td class="null-cell">NULLABLE</td><td></td><td></td></tr>
+<tr><td class="fk-cell">FK</td><td class="fk-cell">sale_id</td><td class="type-cell">UUID</td><td class="null-cell">NULLABLE</td><td></td><td>SET NULL — linked when invoiced</td></tr>
+<tr><td></td><td>customer_items / vehicle_info</td><td class="type-cell">JSONB</td><td class="null-cell">NULLABLE</td><td></td><td></td></tr>
+<tr><td></td><td>subtotal / tax_amount / total</td><td class="type-cell">DECIMAL(19,4)</td><td></td><td>0</td><td></td></tr>
+<tr class="tbl-name-row"><td colspan="6">service_order_items &mdash; same tax pattern as sale_items</td></tr>
+<tr><td class="fk-cell">FK</td><td class="fk-cell">order_id</td><td class="type-cell">UUID</td><td class="null-cell">NOT NULL</td><td></td><td>CASCADE</td></tr>
+<tr><td></td><td>service_id, name, sac_code, qty, price, tax columns, total, status</td><td class="type-cell">VARIOUS</td><td></td><td></td><td></td></tr>
+<tr class="tbl-name-row"><td colspan="6">service_order_photos</td></tr>
+<tr><td class="fk-cell">FK</td><td class="fk-cell">order_id</td><td class="type-cell">UUID</td><td class="null-cell">NOT NULL</td><td></td><td>CASCADE</td></tr>
+<tr><td></td><td>filename, s3_key, mime_type, size_bytes, taken_at, synced, offline_blob_id</td><td class="type-cell">VARIOUS</td><td></td><td></td><td></td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section class="mod-section" id="detail-kot">
+<div class="mod-title" style="background:var(--kot)"><span class="num">04</span>KOT / Restaurant &mdash; 5-table hierarchy</div>
+<div class="mod-body">
+<table class="schema">
+<thead><tr><th></th><th>Table</th><th>Key Columns</th><th>FK</th><th>ON DELETE</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td class="pk-cell">PK</td><td><strong>kot_floors</strong></td><td class="type-cell">name, sort_order, is_active</td><td></td><td></td><td>Org + store scoped</td></tr>
+<tr><td class="pk-cell">PK</td><td><strong>kot_tables</strong></td><td class="type-cell">number, seats, shape, position_x/y, status</td><td class="fk-cell">floor_id</td><td>RESTRICT</td><td></td></tr>
+<tr><td class="pk-cell">PK</td><td><strong>kot_table_sessions</strong></td><td class="type-cell">covers, server_id, status, opened_at</td><td class="fk-cell">table_id, sale_id (opt)</td><td>RESTRICT / SET NULL</td><td>sale_id links to billing</td></tr>
+<tr><td class="pk-cell">PK</td><td><strong>kot_orders</strong></td><td class="type-cell">kot_number, status, course, kitchen timestamps</td><td class="fk-cell">table_session_id, terminal_id</td><td>RESTRICT</td><td></td></tr>
+<tr><td class="pk-cell">PK</td><td><strong>kot_order_items</strong></td><td class="type-cell">item_id, name, seat_number, qty, unit_price, modifiers (JSONB), status</td><td class="fk-cell">kot_order_id</td><td>CASCADE</td><td></td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section class="mod-section" id="detail-pay">
+<div class="mod-title" style="background:var(--pay)"><span class="num">05</span>Payments &amp; Settlement</div>
+<div class="mod-body">
+<table class="schema">
+<thead><tr><th></th><th>Column</th><th>Type</th><th>Nullable</th><th>Default</th><th>Notes</th></tr></thead>
+<tbody>
+<tr class="tbl-name-row"><td colspan="6">payments &mdash; 18 columns</td></tr>
+<tr><td class="fk-cell">FK</td><td class="fk-cell">sale_id, terminal_id</td><td class="type-cell">UUID</td><td class="null-cell">NOT NULL</td><td></td><td></td></tr>
+<tr><td></td><td>method</td><td class="type-cell">VARCHAR(20)</td><td></td><td></td><td>cash | card | upi | credit | gift_card</td></tr>
+<tr><td></td><td>provider</td><td class="type-cell">VARCHAR(30)</td><td class="null-cell">NULLABLE</td><td></td><td>pinelabs | razorpay | paytm</td></tr>
+<tr><td></td><td>amount</td><td class="type-cell">DECIMAL(19,4)</td><td class="null-cell">NOT NULL</td><td></td><td></td></tr>
+<tr><td></td><td>tendered / change_amount</td><td class="type-cell">DECIMAL(19,4)</td><td class="null-cell">NULLABLE</td><td></td><td>Cash payments only</td></tr>
+<tr><td></td><td>reference_number / approval_code</td><td class="type-cell">VARCHAR</td><td class="null-cell">NULLABLE</td><td></td><td>Card/UPI provider ref</td></tr>
+<tr><td></td><td>card_last_four / card_network</td><td class="type-cell">VARCHAR</td><td class="null-cell">NULLABLE</td><td></td><td></td></tr>
+<tr><td></td><td>status</td><td class="type-cell">VARCHAR(20)</td><td></td><td>'completed'</td><td>completed | pending | failed | refunded</td></tr>
+<tr><td></td><td>verified</td><td class="type-cell">BOOLEAN</td><td></td><td>false</td><td>Provider-confirmed vs offline</td></tr>
+<tr class="tbl-name-row"><td colspan="6">settlements &mdash; end-of-day reconciliation</td></tr>
+<tr><td class="fk-cell">FK</td><td class="fk-cell">session_id (1:1), terminal_id</td><td class="type-cell">UUID</td><td class="null-cell">NOT NULL</td><td></td><td></td></tr>
+<tr><td></td><td>expected_cash / card / upi / credit</td><td class="type-cell">DECIMAL(19,4)</td><td></td><td>0</td><td>System-calculated</td></tr>
+<tr><td></td><td>actual_cash / card / upi</td><td class="type-cell">DECIMAL(19,4)</td><td></td><td>0</td><td>Cashier-counted</td></tr>
+<tr><td></td><td>cash / card / upi_variance</td><td class="type-cell">DECIMAL(19,4)</td><td></td><td>0</td><td>actual - expected</td></tr>
+<tr><td></td><td>denominations</td><td class="type-cell">JSONB</td><td></td><td>'{}'</td><td>Cash breakdown</td></tr>
+<tr><td></td><td>status</td><td class="type-cell">VARCHAR(20)</td><td></td><td>'pending'</td><td>pending | approved | disputed</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section class="mod-section" id="detail-gst">
+<div class="mod-title" style="background:var(--gst)"><span class="num">07</span>GST Compliance &mdash; gst_invoices</div>
+<div class="mod-body">
+<table class="schema">
+<thead><tr><th></th><th>Column</th><th>Type</th><th>Nullable</th><th>Default</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td class="fk-cell">FK</td><td class="fk-cell">sale_id (1:1)</td><td class="type-cell">UUID</td><td class="null-cell">NOT NULL</td><td></td><td></td></tr>
+<tr><td></td><td>invoice_number / invoice_type</td><td class="type-cell">VARCHAR</td><td></td><td></td><td>b2b | b2c_large | b2c_small | export | credit_note</td></tr>
+<tr><td></td><td>seller_gstin / name / address / state_code</td><td class="type-cell">VARCHAR / JSONB</td><td class="null-cell">NOT NULL</td><td></td><td>Snapshot at invoice time</td></tr>
+<tr><td></td><td>buyer_gstin / name / address / state_code</td><td class="type-cell">VARCHAR / JSONB</td><td class="null-cell">NULLABLE</td><td></td><td>B2C may be null</td></tr>
+<tr><td></td><td>place_of_supply</td><td class="type-cell">VARCHAR(2)</td><td class="null-cell">NOT NULL</td><td></td><td>Determines CGST+SGST vs IGST</td></tr>
+<tr><td></td><td>total_taxable / cgst / sgst / igst / cess</td><td class="type-cell">DECIMAL(19,4)</td><td></td><td>0</td><td></td></tr>
+<tr><td></td><td>irn</td><td class="type-cell">VARCHAR(64)</td><td class="null-cell">NULLABLE</td><td></td><td>Invoice Reference Number from NIC</td></tr>
+<tr><td></td><td>signed_qr</td><td class="type-cell">TEXT</td><td class="null-cell">NULLABLE</td><td></td><td>For receipt printing</td></tr>
+<tr><td></td><td>einvoice_status</td><td class="type-cell">VARCHAR(20)</td><td></td><td>'pending'</td><td>pending | generated | cancelled | na</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section class="mod-section" id="detail-sync">
+<div class="mod-title" style="background:var(--sync)"><span class="num">08</span>Offline Sync &mdash; sync_events</div>
+<div class="mod-body">
+<table class="schema">
+<thead><tr><th></th><th>Column</th><th>Type</th><th>Nullable</th><th>Default</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td class="fk-cell">FK</td><td class="fk-cell">terminal_id</td><td class="type-cell">UUID</td><td class="null-cell">NOT NULL</td><td></td><td></td></tr>
+<tr><td></td><td>event_type / entity_type / entity_id</td><td class="type-cell">VARCHAR</td><td class="null-cell">NOT NULL</td><td></td><td></td></tr>
+<tr><td></td><td>payload</td><td class="type-cell">JSONB</td><td class="null-cell">NOT NULL</td><td></td><td>Full entity snapshot</td></tr>
+<tr><td></td><td>seq_num</td><td class="type-cell">BIGSERIAL</td><td></td><td>AUTO</td><td>Global ordering for pull sync</td></tr>
+<tr><td></td><td>status</td><td class="type-cell">VARCHAR(20)</td><td></td><td>'received'</td><td>received | applied | conflict | resolved</td></tr>
+<tr><td></td><td>conflict_data</td><td class="type-cell">JSONB</td><td class="null-cell">NULLABLE</td><td></td><td>Server version on conflict</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section class="mod-section" id="detail-cust">
+<div class="mod-title" style="background:var(--cust)"><span class="num">12</span>Customers &mdash; pos_customers</div>
+<div class="mod-body">
+<table class="schema">
+<thead><tr><th></th><th>Column</th><th>Type</th><th>Nullable</th><th>Default</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td></td><td>external_id</td><td class="type-cell">UUID</td><td class="null-cell">NULLABLE</td><td></td><td>Link to el-crm</td></tr>
+<tr><td></td><td>name / phone / email</td><td class="type-cell">VARCHAR</td><td></td><td></td><td>Phone is primary search key</td></tr>
+<tr><td></td><td>gstin</td><td class="type-cell">VARCHAR(15)</td><td class="null-cell">NULLABLE</td><td></td><td>For B2B invoicing</td></tr>
+<tr><td></td><td>address</td><td class="type-cell">JSONB</td><td class="null-cell">NULLABLE</td><td></td><td></td></tr>
+<tr><td></td><td>loyalty_points</td><td class="type-cell">INT</td><td></td><td>0</td><td></td></tr>
+<tr><td></td><td>credit_balance</td><td class="type-cell">DECIMAL(19,4)</td><td></td><td>0</td><td>Store credit</td></tr>
+<tr><td></td><td>tags</td><td class="type-cell">TEXT[]</td><td></td><td>'{}'</td><td>vip, wholesale, etc.</td></tr>
+<tr><td></td><td>deleted_at</td><td class="type-cell">TIMESTAMPTZ</td><td class="null-cell">NULLABLE</td><td></td><td>Soft delete</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<!-- ENUMS -->
+<section class="mod-section" id="enums">
+<div class="mod-title" style="background:#475569">Enum Values &amp; CHECK Constraints</div>
+<div class="mod-body">
+<div class="enum-grid">
+  <div class="enum-card"><h4>terminals.mode</h4><span class="ev">retail</span><span class="ev">service</span><span class="ev">hybrid</span><span class="ev">restaurant</span></div>
+  <div class="enum-card"><h4>billing_series.series_type</h4><span class="ev">sale</span><span class="ev">invoice</span><span class="ev">kot</span><span class="ev">credit_note</span></div>
+  <div class="enum-card"><h4>register_sessions.status</h4><span class="ev">open</span><span class="ev">closing</span><span class="ev">closed</span></div>
+  <div class="enum-card"><h4>sales.sale_type</h4><span class="ev">sale</span><span class="ev">return</span></div>
+  <div class="enum-card"><h4>sales.status</h4><span class="ev">draft</span><span class="ev">held</span><span class="ev">completed</span><span class="ev">voided</span><span class="ev">returned</span></div>
+  <div class="enum-card"><h4>service_orders.service_type</h4><span class="ev">laundry</span><span class="ev">car_wash</span><span class="ev">car_service</span><span class="ev">repair</span><span class="ev">custom</span></div>
+  <div class="enum-card"><h4>service_orders.priority</h4><span class="ev">low</span><span class="ev">normal</span><span class="ev">high</span><span class="ev">urgent</span></div>
+  <div class="enum-card"><h4>payments.method</h4><span class="ev">cash</span><span class="ev">card</span><span class="ev">upi</span><span class="ev">credit</span><span class="ev">gift_card</span></div>
+  <div class="enum-card"><h4>settlements.status</h4><span class="ev">pending</span><span class="ev">approved</span><span class="ev">disputed</span></div>
+  <div class="enum-card"><h4>kot_tables.status</h4><span class="ev">available</span><span class="ev">occupied</span><span class="ev">reserved</span><span class="ev">maintenance</span></div>
+  <div class="enum-card"><h4>kot_orders.course</h4><span class="ev">starter</span><span class="ev">soup</span><span class="ev">main</span><span class="ev">dessert</span><span class="ev">beverage</span></div>
+  <div class="enum-card"><h4>gst_invoices.invoice_type</h4><span class="ev">b2b</span><span class="ev">b2c_large</span><span class="ev">b2c_small</span><span class="ev">export</span><span class="ev">credit_note</span><span class="ev">debit_note</span></div>
+  <div class="enum-card"><h4>sync_events.status</h4><span class="ev">received</span><span class="ev">applied</span><span class="ev">conflict</span><span class="ev">resolved</span></div>
+  <div class="enum-card"><h4>discount_type</h4><span class="ev">percentage</span><span class="ev">fixed</span></div>
+</div>
+</div>
+</section>
+
+<!-- FK SUMMARY -->
+<section class="mod-section" id="fk-summary">
+<div class="mod-title" style="background:#475569">All Foreign Key Relationships</div>
+<div class="mod-body">
+<div class="fk-list">
+  <div class="fk-row"><span class="fk-badge">1:N</span><strong>terminals</strong> <span class="fk-arrow">&rarr;</span> billing_series <em style="color:var(--light)">(terminal_id, RESTRICT)</em></div>
+  <div class="fk-row"><span class="fk-badge">1:N</span><strong>terminals</strong> <span class="fk-arrow">&rarr;</span> register_sessions <em style="color:var(--light)">(terminal_id, RESTRICT)</em></div>
+  <div class="fk-row"><span class="fk-badge">N:1</span><strong>sales</strong> <span class="fk-arrow">&rarr;</span> terminals <em style="color:var(--light)">(terminal_id, RESTRICT)</em></div>
+  <div class="fk-row"><span class="fk-badge">N:1</span><strong>sales</strong> <span class="fk-arrow">&rarr;</span> register_sessions <em style="color:var(--light)">(session_id, RESTRICT)</em></div>
+  <div class="fk-row"><span class="fk-badge">1:N</span><strong>sales</strong> <span class="fk-arrow">&rarr;</span> sale_items <em style="color:var(--light)">(sale_id, CASCADE)</em></div>
+  <div class="fk-row"><span class="fk-badge">1:N</span><strong>sales</strong> <span class="fk-arrow">&rarr;</span> payments <em style="color:var(--light)">(sale_id, RESTRICT)</em></div>
+  <div class="fk-row"><span class="fk-badge">1:1</span><strong>sales</strong> <span class="fk-arrow">&rarr;</span> gst_invoices <em style="color:var(--light)">(sale_id, RESTRICT)</em></div>
+  <div class="fk-row"><span class="fk-badge">1:1</span><strong>register_sessions</strong> <span class="fk-arrow">&rarr;</span> settlements <em style="color:var(--light)">(session_id, RESTRICT)</em></div>
+  <div class="fk-row"><span class="fk-badge">N:1</span><strong>service_orders</strong> <span class="fk-arrow">&rarr;</span> pos_customers <em style="color:var(--light)">(customer_id, RESTRICT)</em></div>
+  <div class="fk-row"><span class="fk-badge">N:1</span><strong>service_orders</strong> <span class="fk-arrow">&rarr;</span> sales <em style="color:var(--light)">(sale_id, SET NULL)</em></div>
+  <div class="fk-row"><span class="fk-badge">1:N</span><strong>service_orders</strong> <span class="fk-arrow">&rarr;</span> service_order_items <em style="color:var(--light)">(order_id, CASCADE)</em></div>
+  <div class="fk-row"><span class="fk-badge">1:N</span><strong>service_orders</strong> <span class="fk-arrow">&rarr;</span> service_order_photos <em style="color:var(--light)">(order_id, CASCADE)</em></div>
+  <div class="fk-row"><span class="fk-badge">1:N</span><strong>kot_floors</strong> <span class="fk-arrow">&rarr;</span> kot_tables <em style="color:var(--light)">(floor_id, RESTRICT)</em></div>
+  <div class="fk-row"><span class="fk-badge">1:N</span><strong>kot_tables</strong> <span class="fk-arrow">&rarr;</span> kot_table_sessions <em style="color:var(--light)">(table_id, RESTRICT)</em></div>
+  <div class="fk-row"><span class="fk-badge">1:N</span><strong>kot_table_sessions</strong> <span class="fk-arrow">&rarr;</span> kot_orders <em style="color:var(--light)">(table_session_id, RESTRICT)</em></div>
+  <div class="fk-row"><span class="fk-badge">1:N</span><strong>kot_orders</strong> <span class="fk-arrow">&rarr;</span> kot_order_items <em style="color:var(--light)">(kot_order_id, CASCADE)</em></div>
+  <div class="fk-row"><span class="fk-badge">N:1</span><strong>kot_table_sessions</strong> <span class="fk-arrow">&rarr;</span> sales <em style="color:var(--light)">(sale_id, SET NULL)</em></div>
+  <div class="fk-row"><span class="fk-badge">N:1</span><strong>sync_events</strong> <span class="fk-arrow">&rarr;</span> terminals <em style="color:var(--light)">(terminal_id, RESTRICT)</em></div>
+</div>
+</div>
+</section>
+
+</div>
+</body>
+</html>
