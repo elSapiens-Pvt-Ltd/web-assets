@@ -152,7 +152,8 @@ pre.json .t{color:#c4b5fd}
       <tr><td class="svc">elmessagehub</td><td>gRPC</td><td>SendMessage (WhatsApp/SMS)</td><td>Order ready, delivery confirm, owner summary, payment reminder</td><td>No</td><td>Yes — failure never blocks</td></tr>
       <tr><td class="svc">elCurrency</td><td>gRPC</td><td>GetRate, Convert</td><td>Multi-currency display (future)</td><td>Rates: 1hr</td><td>Yes</td></tr>
       <tr><td class="svc">Pine Labs</td><td>REST</td><td>UploadBilledTransaction, GetStatus, CancelTransaction</td><td>Card payment</td><td>No</td><td>Yes — timeout handling</td></tr>
-      <tr><td class="svc">Razorpay/PhonePe</td><td>REST</td><td>CreateQR, GetPaymentStatus</td><td>UPI payment</td><td>No</td><td>Yes — timeout handling</td></tr>
+      <tr><td class="svc">Razorpay/PhonePe</td><td>REST</td><td>CreateQR, GetPaymentStatus, CreatePaymentLink</td><td>UPI payment, payment links</td><td>No</td><td>Yes — timeout handling</td></tr>
+      <tr><td class="svc"><strong>elbooks</strong></td><td><strong>gRPC</strong></td><td><strong>CreateInvoice, PostInvoice, VoidInvoice, RecordPayment, PostPayment, GetNextNumber, CreateParty, SearchParties</strong></td><td><strong>Every sale completion, every payment, invoice numbering, B2B parties</strong></td><td><strong>No (real-time)</strong></td><td><strong>Yes — offline fallback with temp numbers</strong></td></tr>
     </tbody>
   </table>
 </div>
@@ -1219,8 +1220,8 @@ pre.json .t{color:#c4b5fd}
           <tr><td class="ep">models/settlement.go</td><td>Settlement, CreateSettlementRequest</td><td>id, session_id, expected_cash/card/upi, actual_cash/card/upi, variance, denominations, status</td></tr>
           <tr><td class="ep">models/customer.go</td><td>Customer, CreateCustomerRequest</td><td>id, name, phone, email, gstin, loyalty_points, credit_balance, tags[]</td></tr>
           <tr><td class="ep">models/service_order.go</td><td>ServiceOrder, ServiceOrderItem, ServiceOrderPhoto, CreateOrderRequest</td><td>id, order_number, customer_id, service_type, status, priority, promised_at, items[], photos[]</td></tr>
-          <tr><td class="ep">models/billing_series.go</td><td>BillingSeries</td><td>id, terminal_id, series_type, prefix, fiscal_year, range_start, range_end, current_seq</td></tr>
-          <tr><td class="ep">models/gst_invoice.go</td><td>GSTInvoice</td><td>id, sale_id, invoice_number, seller/buyer GSTIN, tax totals, irn, signed_qr</td></tr>
+          <tr><td class="ep" style="text-decoration:line-through;color:var(--light)">models/billing_series.go</td><td style="color:var(--light)">REMOVED — elbooks handles numbering</td><td></td></tr>
+          <tr><td class="ep" style="text-decoration:line-through;color:var(--light)">models/gst_invoice.go</td><td style="color:var(--light)">REMOVED — elbooks handles invoices</td><td></td></tr>
           <tr><td class="ep">models/sync_event.go</td><td>SyncEvent</td><td>id, terminal_id, event_type, entity_type, entity_id, payload, seq_num</td></tr>
         </tbody>
       </table>
@@ -1235,11 +1236,11 @@ pre.json .t{color:#c4b5fd}
           <tr><td class="ep">repository/terminal_repo.go</td><td>Create, GetByID, List, Update, ExistsWithCode</td></tr>
           <tr><td class="ep">repository/session_repo.go</td><td>Open, Close, GetCurrent, GetByID</td></tr>
           <tr><td class="ep">repository/sale_repo.go</td><td>Create, GetByID, List(filters), UpdateStatus, UpdateTotals, AddItem, UpdateItem, RemoveItem, ListItems</td></tr>
-          <tr><td class="ep">repository/payment_repo.go</td><td>Create, GetByID, ListBySale, UpdateStatus</td></tr>
+          <tr><td class="ep" style="text-decoration:line-through;color:var(--light)">repository/payment_repo.go</td><td style="color:var(--light)">REMOVED — elbooks handles payments</td></tr>
           <tr><td class="ep">repository/settlement_repo.go</td><td>Create, GetByID, Approve, Dispute, GetBySession</td></tr>
           <tr><td class="ep">repository/customer_repo.go</td><td>Create, GetByID, SearchByPhone, SearchByName, Update</td></tr>
           <tr><td class="ep">repository/order_repo.go</td><td>Create, GetByID, List(filters), UpdateStatus, AddPhoto, Deliver, CreateInvoice</td></tr>
-          <tr><td class="ep">repository/billing_repo.go</td><td>AllocateRange, NextNumber, GetCurrentSeries</td></tr>
+          <tr><td class="ep" style="text-decoration:line-through;color:var(--light)">repository/billing_repo.go</td><td style="color:var(--light)">REMOVED — elbooks handles numbering</td></tr>
           <tr><td class="ep">repository/sync_repo.go</td><td>PushEvents, PullEvents(sinceSeq), GetConflicts</td></tr>
         </tbody>
       </table>
@@ -1253,11 +1254,12 @@ pre.json .t{color:#c4b5fd}
           <tr><td class="ep">services/terminal_service.go</td><td>Create (validate, gen prefix), GetByID, List, Update</td><td>terminal_repo</td></tr>
           <tr><td class="ep">services/session_service.go</td><td>Open (check no duplicate), Close, GetCurrent</td><td>session_repo, terminal_repo</td></tr>
           <tr><td class="ep">services/sale_service.go</td><td>Create, AddItem (catalog+GST), Hold, Recall, Complete (bill#), Void, Return</td><td>sale_repo, catalogs_client, gst_calculator, numbering_service</td></tr>
-          <tr><td class="ep">services/payment_service.go</td><td>ProcessCash, ProcessCard, ProcessUPI, ProcessSplit</td><td>payment_repo, pinelabs_client, upi_client</td></tr>
-          <tr><td class="ep">services/settlement_service.go</td><td>Create (calc expected), Approve (close session), Dispute</td><td>settlement_repo, payment_repo, session_repo</td></tr>
+          <tr><td class="ep" style="text-decoration:line-through;color:var(--light)">services/payment_service.go</td><td style="color:var(--light)">REMOVED — elbooks handles payments. elPOS calls elbooks PaymentService via gRPC</td><td></td></tr>
+          <tr><td class="ep">services/payment_proxy.go</td><td>ProxyCashPayment, ProxyCardPayment, ProxyUpiPayment — calls elbooks + payment providers</td><td>elbooks_client, pinelabs_client, upi_client</td></tr>
+          <tr><td class="ep">services/settlement_service.go</td><td>Create (calc expected from elbooks), Approve (close session), Dispute</td><td>settlement_repo, elbooks_client, session_repo</td></tr>
           <tr><td class="ep">services/customer_service.go</td><td>QuickAdd, Search (local + elAccounts), Get, Update</td><td>customer_repo, accounts_client</td></tr>
           <tr><td class="ep">services/order_service.go</td><td>Create, UpdateStatus (state machine), Deliver, DeliverWithoutToken, Invoice, PartialDeliver</td><td>order_repo, gst_calculator, numbering_service, messagehub_client</td></tr>
-          <tr><td class="ep">services/numbering_service.go</td><td>AllocateRange, NextNumber (atomic), OfflineFallback</td><td>billing_repo</td></tr>
+          <tr><td class="ep" style="text-decoration:line-through;color:var(--light)">services/numbering_service.go</td><td style="color:var(--light)">REMOVED — elbooks handles numbering. Offline fallback uses temp format</td><td></td></tr>
         </tbody>
       </table>
     </div>
@@ -1267,7 +1269,7 @@ pre.json .t{color:#c4b5fd}
       <table class="action-table">
         <thead><tr><th>File</th><th>Purpose</th></tr></thead>
         <tbody>
-          <tr><td class="ep">gst/calculator.go</td><td>CalculateGST(amount, rate, sellerState, buyerState, inclusive) → GSTResult{taxable, CGST, SGST, IGST, cess}. Same state=CGST+SGST. Different=IGST. Reverse calc for inclusive.</td></tr>
+          <tr><td class="ep">gst/offline_fallback.go</td><td>Simplified GST math for OFFLINE receipts ONLY. Basic: amount × rate / 100, split CGST/SGST or IGST. Real GST calculated by elbooks when online.</td></tr>
         </tbody>
       </table>
     </div>
@@ -1311,6 +1313,7 @@ pre.json .t{color:#c4b5fd}
         <thead><tr><th>File</th><th>Service Called</th><th>Methods</th><th>Cache</th></tr></thead>
         <tbody>
           <tr><td class="ep">grpc/inventory_client.go</td><td>Inventory</td><td>ListStores, GetStore, CreateStore, CreateWarehouse, DeductStock, RestoreStock</td><td>Stores: 15min</td></tr>
+          <tr><td class="ep">grpc/elbooks_client.go</td><td><strong>elbooks</strong></td><td>CreateInvoice, PostInvoice, VoidInvoice, RecordPayment, PostPayment, GetNextNumber, CreateParty, SearchParties</td><td>No (real-time)</td></tr>
           <tr><td class="ep">grpc/catalogs_client.go</td><td>elCatalogs</td><td>SearchItems, GetItem, ListCategories, GetItemPricing, CreateItem</td><td>Products: 15min</td></tr>
           <tr><td class="ep">grpc/geolocations_client.go</td><td>Geolocations</td><td>GetState, ListStates</td><td>States: 24hr</td></tr>
           <tr><td class="ep">grpc/accounts_client.go</td><td>elAccounts</td><td>FindPersonByIdentifier, GetPersonProfile, CreateIndividualAccount</td><td>No</td></tr>
@@ -1327,15 +1330,16 @@ pre.json .t{color:#c4b5fd}
         <thead><tr><th>Migration</th><th>Tables Created</th><th>Columns</th></tr></thead>
         <tbody>
           <tr><td class="ep">000001_init.up.sql</td><td>trigger_set_updated_at() function</td><td>—</td></tr>
-          <tr><td class="ep">000002_terminals.up.sql</td><td>terminals, billing_series, register_sessions</td><td>12 + 10 + 11</td></tr>
+          <tr><td class="ep">000002_terminals.up.sql</td><td>terminals, register_sessions (no billing_series — elbooks handles numbering)</td><td>12 + 11</td></tr>
           <tr><td class="ep">000003_sales.up.sql</td><td>sales, sale_items</td><td>24 + 27</td></tr>
-          <tr><td class="ep">000004_payments.up.sql</td><td>payments</td><td>18</td></tr>
+          <tr><td class="ep" style="text-decoration:line-through;color:var(--light)">000004_payments.up.sql</td><td style="color:var(--light)">REMOVED — elbooks handles payments</td><td></td></tr>
           <tr><td class="ep">000005_settlements.up.sql</td><td>settlements</td><td>16</td></tr>
           <tr><td class="ep">000006_service_orders.up.sql</td><td>service_orders, service_order_items, service_order_photos</td><td>22 + 15 + 9</td></tr>
           <tr><td class="ep">000007_customers.up.sql</td><td>pos_customers</td><td>14</td></tr>
-          <tr><td class="ep">000008_gst_invoices.up.sql</td><td>gst_invoices</td><td>20</td></tr>
+          <tr><td class="ep" style="text-decoration:line-through;color:var(--light)">000008_gst_invoices.up.sql</td><td style="color:var(--light)">REMOVED — elbooks handles invoices</td><td></td></tr>
+          <tr><td class="ep">000008_payment_links.up.sql</td><td>payment_links (for remote payment collection)</td><td>15</td></tr>
           <tr><td class="ep">000009_sync_events.up.sql</td><td>sync_events</td><td>13</td></tr>
-          <tr><td class="ep" style="font-weight:700">TOTAL</td><td style="font-weight:700">10 tables</td><td style="font-weight:700">~170 columns</td></tr>
+          <tr><td class="ep" style="font-weight:700">TOTAL</td><td style="font-weight:700">7 tables (3 removed — elbooks owns invoices, payments, billing series)</td><td style="font-weight:700">~120 columns</td></tr>
         </tbody>
       </table>
     </div>
