@@ -199,7 +199,7 @@ pre.json .t{color:#c4b5fd}
         <div class="comp"><div class="comp-name">repository/session_repo.go</div><div class="comp-desc">Open, Close, GetCurrent, GetByID for register sessions.</div><div class="comp-status comp-new">NEW</div></div>
         <div class="comp"><div class="comp-name">services/terminal_service.go</div><div class="comp-desc">Validation, billing_prefix generation, uniqueness enforcement.</div><div class="comp-status comp-new">NEW</div></div>
         <div class="comp"><div class="comp-name">services/session_service.go</div><div class="comp-desc">Open/close logic, single-session-per-terminal enforcement.</div><div class="comp-status comp-new">NEW</div></div>
-        <div class="comp"><div class="comp-name">services/numbering_service.go</div><div class="comp-desc">Billing series allocation, atomic NextNumber, offline fallback format.</div><div class="comp-status comp-new">NEW</div></div>
+        <div class="comp" style="opacity:.5;text-decoration:line-through"><div class="comp-name">services/numbering_service.go</div><div class="comp-desc">REMOVED — elbooks handles numbering. Offline uses temp format OFFLINE-T1-{timestamp}</div></div>
         <div class="comp"><div class="comp-name">handlers/terminal_handler.go</div><div class="comp-desc">HTTP handlers for all terminal endpoints.</div><div class="comp-status comp-new">NEW</div></div>
         <div class="comp"><div class="comp-name">handlers/session_handler.go</div><div class="comp-desc">HTTP handlers for session endpoints.</div><div class="comp-status comp-new">NEW</div></div>
         <div class="comp"><div class="comp-name">handlers/store_handler.go</div><div class="comp-desc">Proxy to Inventory service. GET /stores passthrough.</div><div class="comp-status comp-new">NEW</div></div>
@@ -338,25 +338,31 @@ pre.json .t{color:#c4b5fd}
 <!-- MODULE: GST                  -->
 <!-- ═══════════════════════════ -->
 <div class="module" id="mod-gst">
-  <div class="module-head" style="background:var(--cyan)"><h3>GST Calculation Engine</h3><span class="tag">internal/gst — No API endpoints (internal service)</span></div>
+  <div class="module-head" style="background:var(--cyan)"><h3>GST — Handled by elbooks (offline fallback only in elPOS)</h3><span class="tag">elbooks owns GST. elPOS has offline fallback only</span></div>
   <div class="module-body">
     <div class="sub">
       <div class="sub-head"><div class="dot" style="background:var(--cyan)"></div>Components</div>
       <div class="comp-grid">
-        <div class="comp"><div class="comp-name">gst/calculator.go</div><div class="comp-desc">CalculateGST(amount, rate, sellerState, buyerState, inclusive) → GSTResult with CGST/SGST/IGST/cess breakdown.</div><div class="comp-status comp-new">NEW</div></div>
+        <div class="comp"><div class="comp-name">gst/offline_fallback.go</div><div class="comp-desc">Simplified GST math for OFFLINE receipts only. Basic: amount × rate / 100, split CGST/SGST or IGST. Real GST done by elbooks when online.</div><div class="comp-status comp-new">NEW</div></div>
         <div class="comp"><div class="comp-name">grpc/geolocations_client.go</div><div class="comp-desc">GetState() for tax codes. Redis 24hr cache. Circuit breaker with hardcoded fallback.</div><div class="comp-status comp-new">NEW</div></div>
       </div>
     </div>
     <div class="sub">
-      <div class="sub-head"><div class="dot" style="background:var(--amber)"></div>Calculation Flow</div>
-      <div class="flow-box"><span class="hl">Sale item added</span> <span class="arrow">→</span> Get HSN/SAC code from <span class="grpc">elCatalogs</span> <span class="arrow">→</span> Get GST rate
-    <span class="arrow">→</span> Get seller state from <span class="grpc">Inventory (store address)</span>
-    <span class="arrow">→</span> Get buyer state from customer (or default to seller state for B2C)
-    <span class="arrow">→</span> <span class="hl">Same state?</span>
-        YES <span class="arrow">→</span> CGST = rate/2, SGST = rate/2 (e.g., 9% + 9% = 18%)
-        NO  <span class="arrow">→</span> IGST = full rate (e.g., 18%)
-    <span class="arrow">→</span> If tax-inclusive: reverse calculate (base = amount / (1 + rate/100))
-    <span class="arrow">→</span> Return: taxable, CGST amt, SGST amt, IGST amt, cess</div>
+      <div class="sub-head"><div class="dot" style="background:var(--amber)"></div>Flow — Online vs Offline</div>
+      <div class="flow-box"><span class="hl">ONLINE (normal):</span>
+    Staff completes sale <span class="arrow">→</span> elPOS calls <span class="grpc">elbooks: CreateInvoice(items, customer, store)</span>
+    <span class="arrow">→</span> elbooks handles EVERYTHING: HSN/SAC lookup, GST rate, seller/buyer state,
+       CGST/SGST vs IGST split, tax-inclusive reverse calc, invoice numbering
+    <span class="arrow">→</span> Returns: complete invoice with tax breakdown + invoice number
+    <span class="arrow">→</span> elPOS stores elbooks_invoice_id on the sale
+
+<span class="hl">OFFLINE (fallback — approximate only):</span>
+    Can't reach elbooks <span class="arrow">→</span> elPOS uses gst/offline_fallback.go
+    <span class="arrow">→</span> Basic math: amount × cached_rate / 100
+    <span class="arrow">→</span> State codes from <span class="grpc">Geolocations cache (24hr)</span>
+    <span class="arrow">→</span> Temp number: OFFLINE-T1-{timestamp}
+    <span class="arrow">→</span> Prints receipt with approximate GST
+    <span class="arrow">→</span> When online: syncs to elbooks for REAL invoice + correct GST</div>
     </div>
   </div>
 </div>
@@ -515,16 +521,15 @@ pre.json .t{color:#c4b5fd}
     <div class="sub">
       <div class="sub-head"><div class="dot" style="background:var(--amber)"></div>Data Flow: Complete Sale</div>
       <div class="flow-box"><span class="hl">Staff taps [Pay] → [Cash] → enters ₹500</span>
-    <span class="arrow">→</span> POST /payments (cash, ₹390, tendered ₹500, change ₹110)
-    <span class="arrow">→</span> <span class="db">INSERT payments</span>
-    <span class="arrow">→</span> Sum payments >= net_total? <span class="hl">YES</span>
-    <span class="arrow">→</span> PATCH /sales/{id}/complete
-    <span class="arrow">→</span> <span class="hl">Assign bill number</span> (T1-INV-2526-0001) via NumberingService
-    <span class="arrow">→</span> <span class="db">UPDATE sales SET status='completed', bill_number=...</span>
+    <span class="arrow">→</span> POST /sales/{id}/pay (cash, ₹390, tendered ₹500)
+    <span class="arrow">→</span> <span class="grpc">elbooks: CreateInvoice(items, customer, store)</span>
+    <span class="arrow">→</span> elbooks calculates GST, assigns invoice number (B-2526-0042)
+    <span class="arrow">→</span> <span class="grpc">elbooks: PostInvoice()</span>
+    <span class="arrow">→</span> <span class="grpc">elbooks: RecordPayment(cash, ₹390)</span> → elbooks auto-posts journal entry
+    <span class="arrow">→</span> <span class="db">UPDATE sales SET status='completed', elbooks_invoice_id=...</span>
     <span class="arrow">→</span> <span class="grpc">Inventory: DeductStock(items)</span> (async, don't block)
-    <span class="arrow">→</span> <span class="grpc">elAccounts: PostJournalEntry()</span> (async, don't block)
-    <span class="arrow">→</span> <span class="hl">Receipt prints</span>
-    <span class="arrow">→</span> Frontend: success animation → cart resets</div>
+    <span class="arrow">→</span> <span class="hl">Receipt prints</span> (invoice data from elbooks)
+    <span class="arrow">→</span> Frontend: success with invoice number → cart resets</div>
     </div>
   </div>
 </div>
@@ -626,8 +631,8 @@ pre.json .t{color:#c4b5fd}
     <span class="arrow">→</span> Customer taps card → enters PIN → bank approves
     <span class="arrow">→</span> Backend polls <span class="grpc">Pine Labs: GetStatus(PTRID=501)</span> every 3 seconds
     <span class="arrow">→</span> Response: APPROVED, card=****4567, RRN=000792514130
-    <span class="arrow">→</span> <span class="db">INSERT payments (method=card, verified=true)</span>
-    <span class="arrow">→</span> Sale completed</div>
+    <span class="arrow">→</span> <span class="grpc">elbooks: CreateInvoice + PostInvoice + RecordPayment(card, ref, approval code)</span>
+    <span class="arrow">→</span> Sale completed with elbooks invoice</div>
     </div>
   </div>
 </div>
@@ -909,8 +914,8 @@ pre.json .t{color:#c4b5fd}
     <span class="arrow">→</span> Customer arrives with receipt
     <span class="arrow">→</span> Staff scans order number <span class="arrow">→</span> GET /orders/{id}
     <span class="arrow">→</span> POST /orders/{id}/deliver
-    <span class="arrow">→</span> POST /orders/{id}/invoice <span class="arrow">→</span> Creates sale with GST
-    <span class="arrow">→</span> POST /payments (UPI ₹549) <span class="arrow">→</span> QR generated <span class="arrow">→</span> customer pays
+    <span class="arrow">→</span> POST /orders/{id}/invoice <span class="arrow">→</span> <span class="grpc">elbooks: CreateInvoice + PostInvoice</span> (GST calculated by elbooks)
+    <span class="arrow">→</span> POST /sales/{id}/pay (UPI ₹549) <span class="arrow">→</span> QR generated <span class="arrow">→</span> customer pays <span class="arrow">→</span> <span class="grpc">elbooks: RecordPayment</span>
     <span class="arrow">→</span> Receipt prints <span class="arrow">→</span> Done</div>
     </div>
   </div>
@@ -1087,12 +1092,13 @@ pre.json .t{color:#c4b5fd}
 
     <span class="hl">Customer arrives</span>
     <span class="arrow">→</span> Type "rice" <span class="arrow">→</span> GET /products?search=rice <span class="arrow">→</span> <span class="grpc">elCatalogs: SearchItems</span> <span class="arrow">→</span> Results shown
-    <span class="arrow">→</span> Tap "Rice 5kg" <span class="arrow">→</span> POST /sales/{id}/items <span class="arrow">→</span> GST calculated <span class="arrow">→</span> Cart updates
-    <span class="arrow">→</span> Tap "Dal 1kg" × 2 <span class="arrow">→</span> POST /sales/{id}/items <span class="arrow">→</span> Cart: ₹590 + ₹29.50 GST = ₹620
+    <span class="arrow">→</span> Tap "Rice 5kg" <span class="arrow">→</span> POST /sales/{id}/items <span class="arrow">→</span> Added to cart
+    <span class="arrow">→</span> Tap "Dal 1kg" × 2 <span class="arrow">→</span> POST /sales/{id}/items <span class="arrow">→</span> Cart: ₹590 + items
     <span class="arrow">→</span> Tap [Pay] → [Cash] <span class="arrow">→</span> Customer gives ₹700 <span class="arrow">→</span> Change ₹80
-    <span class="arrow">→</span> POST /payments <span class="arrow">→</span> Sale completed <span class="arrow">→</span> Bill# T1-INV-2526-0001
-    <span class="arrow">→</span> <span class="grpc">Inventory: DeductStock</span> (async) <span class="arrow">→</span> <span class="grpc">elAccounts: PostJournal</span> (async)
-    <span class="arrow">→</span> Receipt prints <span class="arrow">→</span> Cart resets <span class="arrow">→</span> Ready for next customer</div>
+    <span class="arrow">→</span> POST /sales/{id}/pay <span class="arrow">→</span> <span class="grpc">elbooks: CreateInvoice + PostInvoice + RecordPayment</span>
+    <span class="arrow">→</span> elbooks returns: Invoice B-2526-0042 with GST breakdown
+    <span class="arrow">→</span> <span class="grpc">Inventory: DeductStock</span> (async)
+    <span class="arrow">→</span> Receipt prints (data from elbooks invoice) <span class="arrow">→</span> Cart resets</div>
   </div>
 </div>
 
@@ -1120,7 +1126,7 @@ pre.json .t{color:#c4b5fd}
     <span class="hl">Meera picks up</span>
     <span class="arrow">→</span> Scan order# <span class="arrow">→</span> GET /orders/{id} <span class="arrow">→</span> Status: READY
     <span class="arrow">→</span> POST /orders/{id}/deliver <span class="arrow">→</span> status → delivered
-    <span class="arrow">→</span> POST /orders/{id}/invoice <span class="arrow">→</span> Sale created: ₹549 with GST
+    <span class="arrow">→</span> POST /orders/{id}/invoice <span class="arrow">→</span> <span class="grpc">elbooks: CreateInvoice + PostInvoice</span>
     <span class="arrow">→</span> POST /payments (UPI) <span class="arrow">→</span> QR shown <span class="arrow">→</span> Meera scans <span class="arrow">→</span> Paid
     <span class="arrow">→</span> Receipt prints <span class="arrow">→</span> Done</div>
   </div>
@@ -1253,12 +1259,12 @@ pre.json .t{color:#c4b5fd}
         <tbody>
           <tr><td class="ep">services/terminal_service.go</td><td>Create (validate, gen prefix), GetByID, List, Update</td><td>terminal_repo</td></tr>
           <tr><td class="ep">services/session_service.go</td><td>Open (check no duplicate), Close, GetCurrent</td><td>session_repo, terminal_repo</td></tr>
-          <tr><td class="ep">services/sale_service.go</td><td>Create, AddItem (catalog+GST), Hold, Recall, Complete (bill#), Void, Return</td><td>sale_repo, catalogs_client, gst_calculator, numbering_service</td></tr>
+          <tr><td class="ep">services/sale_service.go</td><td>Create, AddItem, Hold, Recall, Complete (calls elbooks for invoice+number+GST), Void (calls elbooks VoidInvoice)</td><td>sale_repo, catalogs_client, elbooks_client</td></tr>
           <tr><td class="ep" style="text-decoration:line-through;color:var(--light)">services/payment_service.go</td><td style="color:var(--light)">REMOVED — elbooks handles payments. elPOS calls elbooks PaymentService via gRPC</td><td></td></tr>
           <tr><td class="ep">services/payment_proxy.go</td><td>ProxyCashPayment, ProxyCardPayment, ProxyUpiPayment — calls elbooks + payment providers</td><td>elbooks_client, pinelabs_client, upi_client</td></tr>
           <tr><td class="ep">services/settlement_service.go</td><td>Create (calc expected from elbooks), Approve (close session), Dispute</td><td>settlement_repo, elbooks_client, session_repo</td></tr>
           <tr><td class="ep">services/customer_service.go</td><td>QuickAdd, Search (local + elAccounts), Get, Update</td><td>customer_repo, accounts_client</td></tr>
-          <tr><td class="ep">services/order_service.go</td><td>Create, UpdateStatus (state machine), Deliver, DeliverWithoutToken, Invoice, PartialDeliver</td><td>order_repo, gst_calculator, numbering_service, messagehub_client</td></tr>
+          <tr><td class="ep">services/order_service.go</td><td>Create, UpdateStatus (state machine), Deliver, DeliverWithoutToken, Invoice (via elbooks), PartialDeliver</td><td>order_repo, elbooks_client, messagehub_client</td></tr>
           <tr><td class="ep" style="text-decoration:line-through;color:var(--light)">services/numbering_service.go</td><td style="color:var(--light)">REMOVED — elbooks handles numbering. Offline fallback uses temp format</td><td></td></tr>
         </tbody>
       </table>
