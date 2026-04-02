@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>elLoyalty — Checkout Flow</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#f8fafc;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b;--light:#94a3b8;--primary:#7c3aed;--primary-light:#ede9fe;--primary-dark:#5b21b6;--radius:10px;--shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);--shadow-md:0 4px 6px rgba(0,0,0,.07)}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6}
+a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
+.nav{position:sticky;top:0;z-index:100;background:#0f172a;padding:0 24px;display:flex;align-items:center;height:48px;gap:24px;box-shadow:0 2px 12px rgba(0,0,0,.25)}
+.nav .brand{color:#fff;font-weight:800;font-size:15px;display:flex;align-items:center;gap:8px}
+.nav .brand span{background:var(--primary);padding:2px 8px;border-radius:5px;font-size:11px;font-weight:700}
+.nav-links{display:flex;gap:4px;margin-left:auto;overflow-x:auto}
+.nav-links a{color:#94a3b8;font-size:12px;font-weight:500;text-decoration:none;padding:6px 10px;border-radius:6px;transition:all .15s;white-space:nowrap}
+.nav-links a:hover,.nav-links a.active{color:#fff;background:rgba(255,255,255,.08)}
+.header{background:linear-gradient(135deg,#1e1b4b 0%,#312e81 40%,#4c1d95 100%);color:#fff;padding:36px 24px 28px;text-align:center}
+.header h1{font-size:26px;font-weight:800;letter-spacing:-.3px}.header p{font-size:13px;color:#c4b5fd;margin-top:4px}
+.container{max-width:1100px;margin:0 auto;padding:0 24px 48px}
+.section{padding:40px 0}.section+.section{border-top:1px solid var(--border)}
+.section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--primary);margin-bottom:6px}
+.section-title{font-size:22px;font-weight:800;color:var(--text);margin-bottom:4px}
+.section-sub{font-size:14px;color:var(--muted);margin-bottom:24px;max-width:700px}
+h3{font-size:17px;font-weight:700;color:var(--text);margin:28px 0 10px}
+p{margin-bottom:12px}
+.diagram{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:16px 0;overflow-x:auto;box-shadow:var(--shadow)}
+.diagram pre{font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.5;color:var(--text);white-space:pre}
+.code{background:#1e293b;border-radius:var(--radius);padding:20px;margin:16px 0;overflow-x:auto}
+.code code{font-family:'JetBrains Mono',monospace;font-size:12px;color:#e2e8f0;line-height:1.6;white-space:pre;display:block}
+.tbl-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);margin:16px 0;box-shadow:var(--shadow)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{background:#f1f5f9;padding:10px 14px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border)}
+tbody td{padding:10px 14px;border-bottom:1px solid var(--border)}
+tbody tr:hover td{background:#f8fafc}
+td code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#f1f5f9;padding:1px 6px;border-radius:4px}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;margin:16px 0}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+.card h4{font-size:15px;font-weight:700;margin-bottom:6px;color:var(--text)}
+.card p{font-size:13px;color:var(--muted);margin-bottom:0}
+ol,ul{margin:8px 0 16px 24px}li{margin-bottom:4px;font-size:13px}
+.step{display:flex;align-items:flex-start;gap:16px;padding:16px 0;border-bottom:1px solid var(--border)}
+.step:last-child{border-bottom:none}
+.step-num{background:var(--primary);color:#fff;min-width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0}
+.step-content h4{font-size:15px;font-weight:700;margin-bottom:4px}.step-content p{font-size:13px;color:var(--muted);margin-bottom:0}
+.footer{background:#0f172a;color:#94a3b8;padding:24px;text-align:center;font-size:12px;margin-top:48px}
+@media(max-width:768px){.card-grid{grid-template-columns:1fr}.nav-links{display:none}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="brand">elSapiens <span>elLoyalty</span></div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="architecture.html">Architecture</a>
+    <a href="benefit-engine.html">Benefit Engine</a>
+    <a href="checkout-flow.html" class="active">Checkout Flow</a>
+    <a href="domain-design.html">Domains</a>
+    <a href="database-schema.html">Schema</a>
+    <a href="rule-engine.html">Rules</a>
+    <a href="conflict-resolution.html">Conflicts</a>
+    <a href="ledger-design.html">Ledger</a>
+    <a href="offline-first.html">Offline</a>
+    <a href="ecosystem-integration.html">Ecosystem</a>
+    <a href="frontend-design.html">Frontend</a>
+    <a href="security.html">Security</a>
+    <a href="scalability.html">Scale</a>
+    <a href="edge-cases.html">Edge Cases</a>
+  </div>
+</nav>
+
+<header class="header">
+  <h1>03 — Checkout Flow</h1>
+  <p>End-to-end integration of elLoyalty with elPOS checkout — from cart evaluation to post-sale earning</p>
+</header>
+
+<div class="container">
+
+<div class="section">
+  <div class="section-label">Overview</div>
+  <h2 class="section-title">Checkout Sequence Overview</h2>
+  <p class="section-sub">The checkout flow has three phases: <strong>Evaluate</strong> (before payment), <strong>Apply</strong> (with payment), and <strong>Earn</strong> (after payment).</p>
+
+  <div class="diagram"><pre>
+┌─────────────────────────────────────────────────────────────────────────┐
+│                    CHECKOUT FLOW — SEQUENCE DIAGRAM                     │
+│                                                                         │
+│  POS Client          elPOS API          elLoyalty API        Database   │
+│      │                  │                    │                  │       │
+│      │── Add Items ────▶│                    │                  │       │
+│      │◀── Cart Total ──│                    │                  │       │
+│      │                  │                    │                  │       │
+│  ════════════════════  PHASE 1: EVALUATE  ════════════════════════      │
+│      │                  │                    │                  │       │
+│      │── Customer ID ──▶│                    │                  │       │
+│      │                  │── Evaluate ───────▶│                  │       │
+│      │                  │   {cart, customer}  │── Load rules ──▶│       │
+│      │                  │                    │◀── rules ───────│       │
+│      │                  │                    │── Load wallet ──▶│       │
+│      │                  │                    │◀── balances ────│       │
+│      │                  │◀── Available ─────│                  │       │
+│      │◀── Show Offers ─│   benefits         │                  │       │
+│      │                  │                    │                  │       │
+│  ════════════════════  PHASE 2: SELECT + APPLY  ══════════════════     │
+│      │                  │                    │                  │       │
+│      │── Select ───────▶│                    │                  │       │
+│      │   benefits       │── Apply ──────────▶│                  │       │
+│      │                  │   {selected IDs}   │── Re-validate ──▶│       │
+│      │                  │                    │── BEGIN TX ─────▶│       │
+│      │                  │                    │── Debit wallet ─▶│       │
+│      │                  │                    │── Mark coupon ──▶│       │
+│      │                  │                    │── Write ledger ─▶│       │
+│      │                  │                    │── COMMIT ───────▶│       │
+│      │                  │◀── Applied ───────│                  │       │
+│      │                  │   {discount total}  │                  │       │
+│      │                  │                    │                  │       │
+│      │── Pay ──────────▶│                    │                  │       │
+│      │◀── Receipt ─────│                    │                  │       │
+│      │                  │                    │                  │       │
+│  ════════════════════  PHASE 3: EARN  ════════════════════════════     │
+│      │                  │                    │                  │       │
+│      │                  │── Earn ───────────▶│                  │       │
+│      │                  │   {sale, customer}  │── Calc coins ──▶│       │
+│      │                  │                    │── Credit ───────▶│       │
+│      │                  │                    │── Calc cashback ▶│       │
+│      │                  │                    │── Queue delayed ▶│       │
+│      │                  │◀── EarnResult ────│                  │       │
+│      │◀── Earn Summary ─│                    │                  │       │
+│      │   (on receipt)   │                    │                  │       │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘</pre></div>
+</div>
+
+<div class="section">
+  <div class="section-label">Phase 1</div>
+  <h2 class="section-title">Evaluate Phase</h2>
+  <p class="section-sub">Triggered when a customer is attached to the cart, or when the cart changes after customer attachment.</p>
+
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-content">
+      <h4>POS attaches customer</h4>
+      <p>Operator scans loyalty card, enters phone number, or selects from recent customers. POS now has <code>customer_id</code>.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-content">
+      <h4>POS calls <code>POST /api/v1/benefits/evaluate</code></h4>
+      <p>Sends cart items (product IDs, quantities, prices, categories), customer ID, store ID, terminal ID, payment method (if known). This is a lightweight read-only call.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-content">
+      <h4>Engine gathers context</h4>
+      <p>Loads customer profile (tier, tags), wallet balances, active rules, active campaigns, and outstanding coupons — all with Redis caching.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-content">
+      <h4>Providers evaluate independently</h4>
+      <p>Each provider (Coins, Cashback, Wallet, Coupon, Campaign) evaluates the cart against its rules. Returns <code>[]CandidateBenefit</code>.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">5</div>
+    <div class="step-content">
+      <h4>Conflict resolution + scoring</h4>
+      <p>Engine scores candidates, resolves conflicts (exclusive vs stackable), and returns <code>EvaluationResult</code> with recommended selections.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">6</div>
+    <div class="step-content">
+      <h4>POS displays benefit panel</h4>
+      <p>Customer sees available benefits: "Use 200 coins (₹20 off)", "10% cashback", "Apply coupon SAVE50". Recommended benefits are pre-checked.</p>
+    </div>
+  </div>
+
+  <h3>Re-evaluation Triggers</h3>
+  <p>The POS must re-call <code>/evaluate</code> whenever the cart changes after initial evaluation:</p>
+  <ul>
+    <li>Item added or removed</li>
+    <li>Quantity changed</li>
+    <li>Payment method changed (some benefits are payment-method-specific)</li>
+    <li>Coupon code entered</li>
+  </ul>
+  <p>The engine debounces evaluations — a 500ms cooldown on the POS side prevents rapid re-calls during barcode scanning.</p>
+</div>
+
+<div class="section">
+  <div class="section-label">Phase 2</div>
+  <h2 class="section-title">Apply Phase</h2>
+  <p class="section-sub">Triggered when the customer confirms their benefit selections and the operator proceeds to payment.</p>
+
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-content">
+      <h4>Customer confirms selections</h4>
+      <p>Customer toggles benefits on/off. POS collects the list of <code>selected_benefit_ids</code>.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-content">
+      <h4>POS calls <code>POST /api/v1/benefits/apply</code></h4>
+      <p>Sends the original <code>EvaluationContext</code> plus <code>selected_benefit_ids</code>. This is a write operation.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-content">
+      <h4>Engine re-validates</h4>
+      <p>Re-runs evaluation to ensure benefits are still valid (anti-race condition). A coupon may have been used by another terminal in the interval.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-content">
+      <h4>Atomic transaction</h4>
+      <p>Within a single PostgreSQL transaction: debit wallet (if coins/cash used), mark coupon as redeemed, update campaign counters, write ledger entries.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">5</div>
+    <div class="step-content">
+      <h4>Return discount breakdown</h4>
+      <p>Returns total discount amount, per-benefit breakdown, and adjusted cart total. POS uses this for payment screen.</p>
+    </div>
+  </div>
+
+  <h3>Apply Response</h3>
+  <div class="code"><code>{
+  <span style="color:#86efac">"data"</span>: {
+    <span style="color:#86efac">"application_id"</span>: <span style="color:#86efac">"app_uuid"</span>,
+    <span style="color:#86efac">"total_discount"</span>: 5000,  <span style="color:#64748b">// ₹50.00 in paisa</span>
+    <span style="color:#86efac">"applied"</span>: [
+      {
+        <span style="color:#86efac">"benefit_id"</span>: <span style="color:#86efac">"ben_coins_200"</span>,
+        <span style="color:#86efac">"type"</span>: <span style="color:#86efac">"loyalty_coins"</span>,
+        <span style="color:#86efac">"discount"</span>: 2000, <span style="color:#64748b">// ₹20 from 200 coins</span>
+        <span style="color:#86efac">"coins_debited"</span>: 200
+      },
+      {
+        <span style="color:#86efac">"benefit_id"</span>: <span style="color:#86efac">"ben_coupon_save50"</span>,
+        <span style="color:#86efac">"type"</span>: <span style="color:#86efac">"coupon"</span>,
+        <span style="color:#86efac">"discount"</span>: 3000, <span style="color:#64748b">// ₹30 from coupon SAVE50</span>
+        <span style="color:#86efac">"coupon_code"</span>: <span style="color:#86efac">"SAVE50"</span>
+      }
+    ],
+    <span style="color:#86efac">"adjusted_total"</span>: 95000  <span style="color:#64748b">// ₹950/₹1000 after ₹50 discount</span>
+  }
+}</code></div>
+</div>
+
+<div class="section">
+  <div class="section-label">Phase 3</div>
+  <h2 class="section-title">Earn Phase</h2>
+  <p class="section-sub">Triggered after successful payment. Records what the customer earned from this sale.</p>
+
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-content">
+      <h4>elPOS confirms payment</h4>
+      <p>After the sale is finalized, elPOS calls <code>POST /api/v1/benefits/earn</code> with the completed sale data.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-content">
+      <h4>Calculate earning</h4>
+      <p>Engine evaluates earning rules: X coins per ₹Y spent, cashback percentage, bonus campaign rewards. Earning is calculated on the <strong>post-discount</strong> total.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-content">
+      <h4>Credit coins immediately</h4>
+      <p>Loyalty coins are credited to the customer's wallet instantly. They can be used in the next transaction.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-content">
+      <h4>Queue delayed cashback</h4>
+      <p>Cashback is queued with the configured delay (instant, T+1, T+7). A background worker processes the queue and credits wallets when the delay expires.</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">5</div>
+    <div class="step-content">
+      <h4>Print earn summary on receipt</h4>
+      <p>elPOS prints on the receipt: "You earned 95 coins! Total balance: 345 coins. ₹9.50 cashback pending."</p>
+    </div>
+  </div>
+
+  <h3>Earn Request</h3>
+  <div class="code"><code>{
+  <span style="color:#86efac">"sale_id"</span>: <span style="color:#86efac">"sale_uuid"</span>,
+  <span style="color:#86efac">"customer_id"</span>: <span style="color:#86efac">"cust_uuid"</span>,
+  <span style="color:#86efac">"sale_total"</span>: 95000,     <span style="color:#64748b">// ₹950 post-discount, paisa</span>
+  <span style="color:#86efac">"payment_method"</span>: <span style="color:#86efac">"upi"</span>,
+  <span style="color:#86efac">"items"</span>: [...],           <span style="color:#64748b">// same CartItem array</span>
+  <span style="color:#86efac">"application_id"</span>: <span style="color:#86efac">"app_uuid"</span>,  <span style="color:#64748b">// link to benefits applied</span>
+  <span style="color:#86efac">"store_id"</span>: <span style="color:#86efac">"store_uuid"</span>,
+  <span style="color:#86efac">"terminal_id"</span>: <span style="color:#86efac">"term_uuid"</span>,
+  <span style="color:#86efac">"operator_id"</span>: <span style="color:#86efac">"person_uuid"</span>
+}</code></div>
+
+  <h3>Earn Response</h3>
+  <div class="code"><code>{
+  <span style="color:#86efac">"data"</span>: {
+    <span style="color:#86efac">"coins_earned"</span>: 95,
+    <span style="color:#86efac">"coin_balance"</span>: 345,
+    <span style="color:#86efac">"cashback_amount"</span>: 950,    <span style="color:#64748b">// ₹9.50 pending</span>
+    <span style="color:#86efac">"cashback_available_at"</span>: <span style="color:#86efac">"2026-04-03T00:00:00Z"</span>,
+    <span style="color:#86efac">"bonus_coins"</span>: 0,
+    <span style="color:#86efac">"message"</span>: <span style="color:#86efac">"You earned 95 coins! ₹9.50 cashback will be available tomorrow."</span>
+  }
+}</code></div>
+</div>
+
+<div class="section">
+  <div class="section-label">Offline</div>
+  <h2 class="section-title">Offline Checkout Flow</h2>
+  <p class="section-sub">When the POS terminal is offline, the flow changes to use pre-allocated budgets and local rule cache.</p>
+
+  <div class="diagram"><pre>
+┌───────────────────────────────────────────────────────────────────┐
+│                  OFFLINE CHECKOUT FLOW                             │
+│                                                                   │
+│  POS Client (Offline)                         IndexedDB           │
+│      │                                           │                │
+│      │── Load cached rules ─────────────────────▶│                │
+│      │◀── rules (last sync) ────────────────────│                │
+│      │                                           │                │
+│      │── Load cached wallet ────────────────────▶│                │
+│      │◀── pre-allocated budget ─────────────────│                │
+│      │                                           │                │
+│      │── Evaluate locally ──────┐                │                │
+│      │   (approximate)          │                │                │
+│      │◀─────────────────────────┘                │                │
+│      │                                           │                │
+│      │── Apply locally ─────────┐                │                │
+│      │   (debit from budget)    │                │                │
+│      │◀─────────────────────────┘                │                │
+│      │                                           │                │
+│      │── Queue sync event ──────────────────────▶│                │
+│      │   {type: "benefit.applied.offline",       │                │
+│      │    offline_id: "uuid",                    │                │
+│      │    benefits: [...],                       │                │
+│      │    timestamp: ...}                        │                │
+│      │                                           │                │
+│ ─── RECONNECT ─────────────────────────────────────────────────  │
+│      │                                           │                │
+│      │── Push sync queue ──▶ elLoyalty API        │                │
+│      │   elLoyalty validates + reconciles         │                │
+│      │◀── Reconciliation result                  │                │
+│      │                                           │                │
+└───────────────────────────────────────────────────────────────────┘</pre></div>
+
+  <h3>Key Differences in Offline Mode</h3>
+  <div class="card-grid">
+    <div class="card">
+      <h4>Pre-Allocated Budget</h4>
+      <p>During last sync, elLoyalty sends a "coin budget" and "wallet budget" — max amounts the terminal can debit without server confirmation. Prevents double-spend.</p>
+    </div>
+    <div class="card">
+      <h4>Cached Rules Only</h4>
+      <p>Only rules cached during last sync are available. New campaigns or coupons created while offline won't appear until sync.</p>
+    </div>
+    <div class="card">
+      <h4>Approximate Earning</h4>
+      <p>Coins earned offline are estimated and displayed on receipt with "~" prefix. Exact earning is calculated on reconciliation.</p>
+    </div>
+    <div class="card">
+      <h4>No Coupon Validation</h4>
+      <p>Coupon codes entered offline cannot be validated against usage limits. They are queued and validated on sync — may be rejected post-facto.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Refund</div>
+  <h2 class="section-title">Refund & Reversal Flow</h2>
+  <p>When a sale is refunded, the applied benefits must be reversed:</p>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Benefit Type</th><th>Reversal Action</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Loyalty Coins (redeemed)</td><td>Re-credit coins to wallet</td><td>Coins restored with new ledger entry type <code>reversal</code></td></tr>
+        <tr><td>Loyalty Cash (spent)</td><td>Re-credit wallet balance</td><td>Wallet balance restored, not refunded to bank</td></tr>
+        <tr><td>Coupon (used)</td><td>Restore coupon usage count</td><td>Coupon becomes usable again (if not expired)</td></tr>
+        <tr><td>Cashback (earned)</td><td>Cancel or debit cashback</td><td>If pending → cancel. If credited → debit from wallet.</td></tr>
+        <tr><td>Coins (earned)</td><td>Debit earned coins</td><td>If balance insufficient, mark debt. Resolve on next earn.</td></tr>
+        <tr><td>Campaign reward</td><td>Reverse campaign counter</td><td>Campaign budget restored for other customers</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="code"><code><span style="color:#64748b">// POS calls on refund:</span>
+POST /api/v1/benefits/reverse
+{
+  <span style="color:#86efac">"application_id"</span>: <span style="color:#86efac">"app_uuid"</span>,   <span style="color:#64748b">// from original apply</span>
+  <span style="color:#86efac">"sale_id"</span>: <span style="color:#86efac">"sale_uuid"</span>,
+  <span style="color:#86efac">"reason"</span>: <span style="color:#86efac">"full_refund"</span>,
+  <span style="color:#86efac">"refund_amount"</span>: 95000     <span style="color:#64748b">// paisa</span>
+}</code></div>
+</div>
+
+<div class="section">
+  <div class="section-label">GST</div>
+  <h2 class="section-title">GST Compliance for Benefits</h2>
+  <p>India's GST rules require that discounts be applied <strong>before tax calculation</strong> (pre-tax discount) or explicitly listed as post-tax adjustments. elLoyalty follows the pre-tax approach:</p>
+
+  <ul>
+    <li>Benefits reduce the <strong>taxable value</strong> — GST is calculated on the discounted amount</li>
+    <li>This matches CBIC guidelines: discounts known at time of supply are deducted from transaction value</li>
+    <li>The <code>apply</code> response includes discount breakdown per item for SST/GST invoice line-item adjustments</li>
+    <li>Cashback earned post-sale is NOT a discount — it's a separate loyalty credit, no GST impact on original sale</li>
+    <li>Free items from campaigns (BOGO) are treated as samples with the applicable GST on deemed supply</li>
+  </ul>
+</div>
+
+</div><!-- /container -->
+
+<footer class="footer">
+  <p>elLoyalty Checkout Flow — <a href="index.html" style="color:#c4b5fd">Back to Index</a></p>
+</footer>
+</body>
+</html>

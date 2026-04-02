@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>elLoyalty — Core Architecture</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#f8fafc;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b;--light:#94a3b8;--primary:#7c3aed;--primary-light:#ede9fe;--primary-dark:#5b21b6;--radius:10px;--shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);--shadow-md:0 4px 6px rgba(0,0,0,.07)}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6}
+a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
+.nav{position:sticky;top:0;z-index:100;background:#0f172a;padding:0 24px;display:flex;align-items:center;height:48px;gap:24px;box-shadow:0 2px 12px rgba(0,0,0,.25)}
+.nav .brand{color:#fff;font-weight:800;font-size:15px;display:flex;align-items:center;gap:8px}
+.nav .brand span{background:var(--primary);padding:2px 8px;border-radius:5px;font-size:11px;font-weight:700}
+.nav-links{display:flex;gap:4px;margin-left:auto;overflow-x:auto}
+.nav-links a{color:#94a3b8;font-size:12px;font-weight:500;text-decoration:none;padding:6px 10px;border-radius:6px;transition:all .15s;white-space:nowrap}
+.nav-links a:hover,.nav-links a.active{color:#fff;background:rgba(255,255,255,.08)}
+.header{background:linear-gradient(135deg,#1e1b4b 0%,#312e81 40%,#4c1d95 100%);color:#fff;padding:36px 24px 28px;text-align:center}
+.header h1{font-size:26px;font-weight:800;letter-spacing:-.3px}.header p{font-size:13px;color:#c4b5fd;margin-top:4px}
+.container{max-width:1100px;margin:0 auto;padding:0 24px 48px}
+.section{padding:40px 0}.section+.section{border-top:1px solid var(--border)}
+.section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--primary);margin-bottom:6px}
+.section-title{font-size:22px;font-weight:800;color:var(--text);margin-bottom:4px}
+.section-sub{font-size:14px;color:var(--muted);margin-bottom:24px;max-width:700px}
+h3{font-size:17px;font-weight:700;color:var(--text);margin:28px 0 10px}
+p{margin-bottom:12px}
+.diagram{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:16px 0;overflow-x:auto;box-shadow:var(--shadow)}
+.diagram pre{font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.5;color:var(--text);white-space:pre}
+.code{background:#1e293b;border-radius:var(--radius);padding:20px;margin:16px 0;overflow-x:auto}
+.code code{font-family:'JetBrains Mono',monospace;font-size:12px;color:#e2e8f0;line-height:1.6;white-space:pre;display:block}
+.tbl-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);margin:16px 0;box-shadow:var(--shadow)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{background:#f1f5f9;padding:10px 14px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border)}
+tbody td{padding:10px 14px;border-bottom:1px solid var(--border)}
+tbody tr:hover td{background:#f8fafc}
+td code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#f1f5f9;padding:1px 6px;border-radius:4px}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;margin:16px 0}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+.card h4{font-size:15px;font-weight:700;margin-bottom:6px;color:var(--text)}
+.card p{font-size:13px;color:var(--muted);margin-bottom:0}
+.footer{background:#0f172a;color:#94a3b8;padding:24px;text-align:center;font-size:12px;margin-top:48px}
+@media(max-width:768px){.card-grid{grid-template-columns:1fr}.nav-links{display:none}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="brand">elSapiens <span>elLoyalty</span></div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="architecture.html" class="active">Architecture</a>
+    <a href="benefit-engine.html">Benefit Engine</a>
+    <a href="checkout-flow.html">Checkout Flow</a>
+    <a href="domain-design.html">Domains</a>
+    <a href="database-schema.html">Schema</a>
+    <a href="rule-engine.html">Rules</a>
+    <a href="conflict-resolution.html">Conflicts</a>
+    <a href="ledger-design.html">Ledger</a>
+    <a href="offline-first.html">Offline</a>
+    <a href="ecosystem-integration.html">Ecosystem</a>
+    <a href="frontend-design.html">Frontend</a>
+    <a href="security.html">Security</a>
+    <a href="scalability.html">Scale</a>
+    <a href="edge-cases.html">Edge Cases</a>
+  </div>
+</nav>
+
+<header class="header">
+  <h1>01 — Core Architecture</h1>
+  <p>System overview, technology stack, Clean Architecture layering, and multi-tenancy model</p>
+</header>
+
+<div class="container">
+
+<div class="section">
+  <div class="section-label">Overview</div>
+  <h2 class="section-title">System Purpose</h2>
+  <p class="section-sub">elLoyalty is a standalone microservice in the elsapiens ecosystem that manages all loyalty and benefit operations: earning, redemption, wallet management, rule evaluation, campaign execution, and audit.</p>
+
+  <p>The service is designed as a <strong>benefit authority</strong> — every benefit-related decision in the ecosystem flows through elLoyalty. No client application (POS, eCommerce, mobile) makes benefit calculations locally except for cached offline approximations.</p>
+
+  <h3>Go Module: <code>elsapiens/loyalty</code></h3>
+  <p>The backend follows the elsapiens convention of Go modules with Clean Architecture, matching the patterns used in elPOS, elbooks, and other ecosystem services.</p>
+</div>
+
+<div class="section">
+  <div class="section-label">Technology</div>
+  <h2 class="section-title">Technology Stack</h2>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Layer</th><th>Technology</th><th>Version</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td>Language</td><td><code>Go</code></td><td>1.24+</td><td>Backend API server</td></tr>
+        <tr><td>Database</td><td><code>PostgreSQL</code></td><td>16+</td><td>Primary data store — ledger, rules, wallets</td></tr>
+        <tr><td>Cache / Pub-Sub</td><td><code>Redis</code></td><td>7+</td><td>Balance cache, rule cache, rate limits, event pub/sub</td></tr>
+        <tr><td>HTTP Router</td><td><code>Chi</code></td><td>v5</td><td>REST API routing with middleware composition</td></tr>
+        <tr><td>DB Driver</td><td><code>pgx</code></td><td>v5</td><td>PostgreSQL driver with connection pooling</td></tr>
+        <tr><td>Migrations</td><td><code>golang-migrate</code></td><td>v4</td><td>Database schema versioning</td></tr>
+        <tr><td>JWT</td><td><code>golang-jwt</code></td><td>v5</td><td>JWT validation (shared secret with elAuth)</td></tr>
+        <tr><td>Decimal</td><td><code>shopspring/decimal</code></td><td>latest</td><td>Precise financial calculations</td></tr>
+        <tr><td>Logging</td><td><code>zap</code></td><td>latest</td><td>Structured JSON logging</td></tr>
+        <tr><td>Config</td><td><code>envconfig</code></td><td>latest</td><td>Environment-based configuration</td></tr>
+        <tr><td>Redis Client</td><td><code>go-redis</code></td><td>v9</td><td>Redis connection, caching, pub/sub</td></tr>
+        <tr><td>RPC</td><td><code>gRPC</code></td><td>latest</td><td>Ecosystem inter-service calls</td></tr>
+        <tr><td>Protobuf</td><td><code>protoc + buf</code></td><td>latest</td><td>gRPC service definitions</td></tr>
+        <tr><td>Circuit Breaker</td><td><code>sony/gobreaker</code></td><td>v1</td><td>gRPC client resilience</td></tr>
+        <tr><td>Testing</td><td><code>testify</code></td><td>v1.9+</td><td>Assertions and mocking</td></tr>
+        <tr><td>DB Mock</td><td><code>pgxmock</code></td><td>v4+</td><td>PostgreSQL mock for unit tests</td></tr>
+        <tr><td>Frontend</td><td><code>React</code></td><td>18+</td><td>Admin dashboard + POS widget</td></tr>
+        <tr><td>State</td><td><code>Zustand</code></td><td>4+</td><td>Lightweight state management</td></tr>
+        <tr><td>CSS</td><td><code>Tailwind + elSDK</code></td><td>3.4+</td><td>el-* prefixed styling</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Structure</div>
+  <h2 class="section-title">Project Directory Layout</h2>
+
+  <div class="code"><code>elloyalty/
+├── server/
+│   ├── cmd/server/
+│   │   └── main.go                       # Entry point: wires deps, starts HTTP + gRPC server
+│   ├── go.mod                            # Go module: elsapiens/loyalty
+│   ├── go.sum
+│   │
+│   ├── internal/
+│   │   ├── config/
+│   │   │   └── config.go                 # Env-based config struct (envconfig)
+│   │   │
+│   │   ├── server/
+│   │   │   └── server.go                 # Chi router + gRPC server + middleware wiring
+│   │   │
+│   │   ├── middleware/
+│   │   │   ├── auth.go                   # RequireAuth: JWT validation from elAuth
+│   │   │   ├── tenant.go                 # Workspace/org extraction + validation
+│   │   │   ├── ratelimit.go              # Redis-backed rate limiting
+│   │   │   └── logger.go                 # Zap structured request logging
+│   │   │
+│   │   ├── handlers/                     # HTTP handlers (REST API)
+│   │   │   ├── benefit.go                # Evaluate + apply benefits
+│   │   │   ├── wallet.go                 # Wallet balance, top-up, history
+│   │   │   ├── coupon.go                 # Coupon CRUD, assignment, validation
+│   │   │   ├── campaign.go               # Campaign CRUD, enrollment, status
+│   │   │   ├── rule.go                   # Benefit rule management
+│   │   │   ├── ledger.go                 # Transaction history, audit
+│   │   │   ├── customer.go               # Customer loyalty profile
+│   │   │   ├── admin.go                  # Admin dashboard data
+│   │   │   ├── sync.go                   # Offline sync endpoints
+│   │   │   └── health.go                 # Health check
+│   │   │
+│   │   ├── services/                     # Business logic
+│   │   │   ├── benefit_engine.go         # Central benefit evaluation engine
+│   │   │   ├── rule_engine.go            # Rule parsing + evaluation
+│   │   │   ├── conflict_resolver.go      # Conflict resolution logic
+│   │   │   ├── wallet_svc.go             # Wallet operations (coins, cashback, cash)
+│   │   │   ├── coupon_svc.go             # Coupon lifecycle
+│   │   │   ├── campaign_svc.go           # Campaign lifecycle + triggers
+│   │   │   ├── ledger_svc.go             # Immutable transaction ledger
+│   │   │   ├── customer_svc.go           # Customer loyalty profile
+│   │   │   ├── expiry_svc.go             # Expiry processor (cron)
+│   │   │   ├── sync_svc.go              # Offline sync processing
+│   │   │   └── notification_svc.go       # Event-to-notification mapping
+│   │   │
+│   │   ├── store/
+│   │   │   ├── postgres/
+│   │   │   │   ├── db.go                 # pgxpool + embedded migrations
+│   │   │   │   ├── migrations/           # SQL migration files
+│   │   │   │   │   ├── 000001_create_customers.up.sql
+│   │   │   │   │   ├── 000002_create_wallets.up.sql
+│   │   │   │   │   ├── 000003_create_ledger.up.sql
+│   │   │   │   │   ├── 000004_create_coupons.up.sql
+│   │   │   │   │   ├── 000005_create_campaigns.up.sql
+│   │   │   │   │   ├── 000006_create_rules.up.sql
+│   │   │   │   │   └── ...
+│   │   │   │   ├── wallet_repo.go        # WalletRepository
+│   │   │   │   ├── ledger_repo.go        # LedgerRepository
+│   │   │   │   ├── coupon_repo.go        # CouponRepository
+│   │   │   │   ├── campaign_repo.go      # CampaignRepository
+│   │   │   │   ├── rule_repo.go          # RuleRepository
+│   │   │   │   ├── customer_repo.go      # CustomerRepository
+│   │   │   │   └── sync_repo.go          # SyncRepository
+│   │   │   └── redis/
+│   │   │       └── client.go             # Balance cache, rule cache, pub/sub
+│   │   │
+│   │   ├── grpc/                         # gRPC server + client wrappers
+│   │   │   ├── server.go                 # gRPC server: LoyaltyService (for elPOS, eComm)
+│   │   │   ├── elauth_client.go          # gRPC client for elAuth
+│   │   │   ├── elbooks_client.go         # gRPC client for elbooks
+│   │   │   ├── catalog_client.go         # gRPC client for elCatalog
+│   │   │   └── messagehub_client.go      # gRPC client for elmessagehub
+│   │   │
+│   │   └── eventbus/
+│   │       └── bus.go                    # Redis pub/sub publisher + subscriber
+│   │
+│   ├── pkg/response/
+│   │   └── response.go                  # { "data": ... } / { "error": ... } helpers
+│   │
+│   └── proto/
+│       └── loyalty/v1/
+│           ├── loyalty_service.proto     # BenefitEngine gRPC (evaluate, apply, earn)
+│           ├── wallet_service.proto      # Wallet gRPC (balance, topup)
+│           └── admin_service.proto       # Admin gRPC (rules, campaigns, reports)
+│
+├── admin/                               # React admin dashboard
+└── widget/                              # POS integration React widget</code></div>
+</div>
+
+<div class="section">
+  <div class="section-label">Layering</div>
+  <h2 class="section-title">Clean Architecture: Handler → Service → Repository</h2>
+  <p class="section-sub">Strict separation of concerns. Each layer has a single responsibility and depends only on the layer below it.</p>
+
+  <div class="diagram"><pre>
+┌──────────────────────────────────────────────────────────────────────┐
+│                         Transport Layer                              │
+│                                                                      │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐               │
+│  │  REST API    │  │  gRPC Server │  │  Event Sub   │               │
+│  │  (handlers/) │  │  (grpc/)     │  │  (eventbus/) │               │
+│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘               │
+│         │                 │                  │                       │
+│         └─────────────────┼──────────────────┘                       │
+│                           │ calls                                    │
+│  ┌────────────────────────┴──────────────────────────────────────┐   │
+│  │                    Service Layer (services/)                   │   │
+│  │                                                               │   │
+│  │  BenefitEngine  RuleEngine  ConflictResolver  WalletService   │   │
+│  │  CouponService  CampaignService  LedgerService  ExpiryService │   │
+│  │                                                               │   │
+│  │  Dependencies: Repositories + gRPC clients + EventBus         │   │
+│  └────────────────────────┬──────────────────────────────────────┘   │
+│                           │ calls                                    │
+│  ┌────────────────────────┴──────────────────────────────────────┐   │
+│  │                  Repository Layer (store/)                     │   │
+│  │                                                               │   │
+│  │  WalletRepo  LedgerRepo  CouponRepo  CampaignRepo  RuleRepo  │   │
+│  │                                                               │   │
+│  │  Interfaces defined in services, implementations in store/    │   │
+│  └────────────────────────┬──────────────────────────────────────┘   │
+│                           │                                          │
+│         ┌─────────────────┼─────────────────┐                        │
+│  ┌──────┴──────┐   ┌──────┴──────┐   ┌──────┴──────┐                │
+│  │ PostgreSQL  │   │    Redis    │   │  gRPC Out   │                │
+│  │  (primary)  │   │  (cache+ps) │   │  (clients)  │                │
+│  └─────────────┘   └─────────────┘   └─────────────┘                │
+└──────────────────────────────────────────────────────────────────────┘</pre></div>
+
+  <h3>Layer Responsibilities</h3>
+  <div class="card-grid">
+    <div class="card">
+      <h4>Handlers (Transport)</h4>
+      <p>Parse HTTP/gRPC requests, validate input shape, call services, format responses. No business logic. No database access. Handlers are replaceable transport adapters.</p>
+    </div>
+    <div class="card">
+      <h4>Services (Business Logic)</h4>
+      <p>All domain logic lives here: benefit evaluation, rule matching, conflict resolution, wallet operations, ledger entries. Services depend on repository interfaces, not implementations.</p>
+    </div>
+    <div class="card">
+      <h4>Repositories (Data Access)</h4>
+      <p>PostgreSQL queries, Redis caching, transaction management. Repositories implement interfaces defined by services. Unit tests mock repositories via interfaces.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Dependency Injection</div>
+  <h2 class="section-title">Wiring in main.go</h2>
+
+  <div class="code"><code><span style="color:#64748b">// cmd/server/main.go</span>
+<span style="color:#c084fc">func</span> main() {
+    cfg := config.MustLoad()
+    logger := zap.Must(zap.NewProduction())
+
+    <span style="color:#64748b">// Database</span>
+    pool := postgres.MustConnect(cfg.DatabaseURL, cfg.DBPoolMax)
+    <span style="color:#c084fc">defer</span> pool.Close()
+
+    <span style="color:#64748b">// Redis</span>
+    rdb := redis.NewClient(cfg.RedisURL)
+    <span style="color:#c084fc">defer</span> rdb.Close()
+
+    <span style="color:#64748b">// gRPC clients (with circuit breakers)</span>
+    authClient := grpc.NewElAuthClient(cfg.ElAuthGRPCAddr)
+    booksClient := grpc.NewElBooksClient(cfg.ElBooksGRPCAddr)
+    catalogClient := grpc.NewCatalogClient(cfg.CatalogGRPCAddr)
+    msgClient := grpc.NewMessageHubClient(cfg.MessageHubGRPCAddr)
+
+    <span style="color:#64748b">// Event bus</span>
+    bus := eventbus.New(rdb, logger)
+
+    <span style="color:#64748b">// Repositories</span>
+    walletRepo := postgres.NewWalletRepo(pool)
+    ledgerRepo := postgres.NewLedgerRepo(pool)
+    couponRepo := postgres.NewCouponRepo(pool)
+    campaignRepo := postgres.NewCampaignRepo(pool)
+    ruleRepo := postgres.NewRuleRepo(pool)
+    customerRepo := postgres.NewCustomerRepo(pool)
+
+    <span style="color:#64748b">// Services</span>
+    walletSvc := services.NewWalletService(walletRepo, ledgerRepo, rdb, bus, logger)
+    ruleEngine := services.NewRuleEngine(ruleRepo, rdb, catalogClient, logger)
+    conflictResolver := services.NewConflictResolver(ruleEngine, logger)
+    couponSvc := services.NewCouponService(couponRepo, ruleEngine, bus, logger)
+    campaignSvc := services.NewCampaignService(campaignRepo, ruleEngine, bus, logger)
+    ledgerSvc := services.NewLedgerService(ledgerRepo, booksClient, logger)
+    benefitEngine := services.NewBenefitEngine(
+        walletSvc, couponSvc, campaignSvc, ruleEngine,
+        conflictResolver, ledgerSvc, bus, logger,
+    )
+
+    <span style="color:#64748b">// Server (REST + gRPC)</span>
+    srv := server.New(cfg, logger, server.Deps{
+        BenefitEngine: benefitEngine,
+        WalletSvc:     walletSvc,
+        CouponSvc:     couponSvc,
+        CampaignSvc:   campaignSvc,
+        LedgerSvc:     ledgerSvc,
+        RuleEngine:    ruleEngine,
+        AuthClient:    authClient,
+    })
+
+    srv.ListenAndServe()
+}</code></div>
+</div>
+
+<div class="section">
+  <div class="section-label">Multi-Tenancy</div>
+  <h2 class="section-title">Tenant Isolation Model</h2>
+  <p class="section-sub">Identical to the elsapiens ecosystem standard. All data rows scoped by (organization_id, workspace_id). JWT claims are the source of truth — never headers.</p>
+
+  <div class="diagram"><pre>
+Tenant Hierarchy:
+  Reseller → Workspace → Organization → Customer
+
+JWT Claims (from elAuth):
+  personId      → operator identity
+  entityId      → organization_id
+  resellerId    → reseller_id (for billing rollup)
+  workspaceIds  → authorized workspaces
+
+Middleware Flow:
+  1. Extract JWT from Cookie or Authorization header
+  2. Validate signature (HS256 shared secret)
+  3. Extract entityId → organization_id (immutable from JWT)
+  4. Extract workspaceIds → authorized list
+  5. Read X-Workspace-ID header → must be in workspaceIds
+  6. Inject TenantContext into request context
+
+Every SQL query:
+  WHERE organization_id = $1 AND workspace_id = $2 AND deleted_at IS NULL</pre></div>
+
+  <h3>Tenant Context in Go</h3>
+  <div class="code"><code><span style="color:#64748b">// internal/middleware/tenant.go</span>
+
+<span style="color:#c084fc">type</span> TenantContext <span style="color:#c084fc">struct</span> {
+    OrganizationID <span style="color:#93c5fd">string</span>  <span style="color:#64748b">// from JWT entityId — never from header</span>
+    WorkspaceID    <span style="color:#93c5fd">string</span>  <span style="color:#64748b">// from X-Workspace-ID, validated against JWT</span>
+    ResellerID     <span style="color:#93c5fd">string</span>  <span style="color:#64748b">// from JWT resellerId</span>
+    PersonID       <span style="color:#93c5fd">string</span>  <span style="color:#64748b">// from JWT personId</span>
+}
+
+<span style="color:#c084fc">func</span> RequireAuth(next http.Handler) http.Handler {
+    <span style="color:#c084fc">return</span> http.HandlerFunc(<span style="color:#c084fc">func</span>(w http.ResponseWriter, r *http.Request) {
+        claims := validateJWT(r)
+
+        requestedWS := r.Header.Get(<span style="color:#86efac">"X-Workspace-ID"</span>)
+        <span style="color:#c084fc">if</span> !contains(claims.WorkspaceIDs, requestedWS) {
+            respond403(w, <span style="color:#86efac">"Access denied to workspace"</span>)
+            <span style="color:#c084fc">return</span>
+        }
+
+        ctx := &TenantContext{
+            OrganizationID: claims.EntityID,
+            WorkspaceID:    requestedWS,
+            ResellerID:     claims.ResellerID,
+            PersonID:       claims.PersonID,
+        }
+
+        next.ServeHTTP(w, r.WithContext(withTenant(r.Context(), ctx)))
+    })
+}</code></div>
+</div>
+
+<div class="section">
+  <div class="section-label">API Design</div>
+  <h2 class="section-title">API Conventions</h2>
+
+  <h3>REST Endpoints (for external clients)</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Method</th><th>Path</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>POST</code></td><td><code>/api/v1/benefits/evaluate</code></td><td>Evaluate all applicable benefits for a cart</td></tr>
+        <tr><td><code>POST</code></td><td><code>/api/v1/benefits/apply</code></td><td>Apply selected benefits atomically</td></tr>
+        <tr><td><code>POST</code></td><td><code>/api/v1/benefits/earn</code></td><td>Record earning event (post-sale)</td></tr>
+        <tr><td><code>GET</code></td><td><code>/api/v1/wallets/{customer_id}</code></td><td>Get customer wallet balances</td></tr>
+        <tr><td><code>POST</code></td><td><code>/api/v1/wallets/{customer_id}/topup</code></td><td>Top up loyalty cash</td></tr>
+        <tr><td><code>GET</code></td><td><code>/api/v1/wallets/{customer_id}/transactions</code></td><td>Transaction history</td></tr>
+        <tr><td><code>GET/POST</code></td><td><code>/api/v1/coupons</code></td><td>List / create coupons</td></tr>
+        <tr><td><code>POST</code></td><td><code>/api/v1/coupons/{id}/validate</code></td><td>Validate coupon for a cart</td></tr>
+        <tr><td><code>GET/POST</code></td><td><code>/api/v1/campaigns</code></td><td>List / create campaigns</td></tr>
+        <tr><td><code>GET/POST</code></td><td><code>/api/v1/rules</code></td><td>List / create benefit rules</td></tr>
+        <tr><td><code>GET</code></td><td><code>/api/v1/ledger/{customer_id}</code></td><td>Full ledger view</td></tr>
+        <tr><td><code>POST</code></td><td><code>/api/v1/sync/push</code></td><td>Push offline events</td></tr>
+        <tr><td><code>GET</code></td><td><code>/api/v1/sync/pull</code></td><td>Pull updates since sequence</td></tr>
+        <tr><td><code>GET</code></td><td><code>/api/v1/health</code></td><td>Readiness/liveness</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Response Format</h3>
+  <div class="code"><code><span style="color:#64748b">// Success</span>
+{
+  <span style="color:#86efac">"data"</span>: { ... },
+  <span style="color:#86efac">"meta"</span>: {
+    <span style="color:#86efac">"request_id"</span>: <span style="color:#86efac">"uuid"</span>,
+    <span style="color:#86efac">"timestamp"</span>: <span style="color:#86efac">"2026-04-02T10:30:00Z"</span>
+  }
+}
+
+<span style="color:#64748b">// Error</span>
+{
+  <span style="color:#86efac">"error"</span>: {
+    <span style="color:#86efac">"code"</span>: <span style="color:#86efac">"insufficient_balance"</span>,
+    <span style="color:#86efac">"message"</span>: <span style="color:#86efac">"Customer has 250 coins but attempted to redeem 500"</span>
+  },
+  <span style="color:#86efac">"meta"</span>: { <span style="color:#86efac">"request_id"</span>: <span style="color:#86efac">"uuid"</span> }
+}</code></div>
+</div>
+
+<div class="section">
+  <div class="section-label">Configuration</div>
+  <h2 class="section-title">Environment Variables</h2>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Variable</th><th>Example</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>DATABASE_URL</code></td><td><code>postgres://user:pass@localhost:5432/elloyalty</code></td><td>PostgreSQL connection string</td></tr>
+        <tr><td><code>REDIS_URL</code></td><td><code>redis://localhost:6379/0</code></td><td>Redis connection</td></tr>
+        <tr><td><code>PORT</code></td><td><code>8090</code></td><td>REST API port</td></tr>
+        <tr><td><code>GRPC_PORT</code></td><td><code>6010</code></td><td>gRPC server port</td></tr>
+        <tr><td><code>JWT_SECRET</code></td><td><code>shared-with-elauth</code></td><td>HS256 JWT signing key</td></tr>
+        <tr><td><code>ELAUTH_GRPC_ADDR</code></td><td><code>localhost:6000</code></td><td>elAuth gRPC address</td></tr>
+        <tr><td><code>ELBOOKS_GRPC_ADDR</code></td><td><code>localhost:6020</code></td><td>elbooks gRPC address</td></tr>
+        <tr><td><code>CATALOG_GRPC_ADDR</code></td><td><code>localhost:6030</code></td><td>elCatalog gRPC address</td></tr>
+        <tr><td><code>MESSAGEHUB_GRPC_ADDR</code></td><td><code>localhost:6040</code></td><td>elmessagehub gRPC address</td></tr>
+        <tr><td><code>DB_POOL_MAX</code></td><td><code>25</code></td><td>Max DB connections</td></tr>
+        <tr><td><code>AUTO_MIGRATE</code></td><td><code>true</code></td><td>Run migrations on start (dev only)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<footer class="footer">
+  <p>elLoyalty Architecture Documentation — <a href="index.html" style="color:#c4b5fd">Back to Index</a></p>
+</footer>
+</body>
+</html>

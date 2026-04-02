@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>elLoyalty — Domain Design</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#f8fafc;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b;--light:#94a3b8;--primary:#7c3aed;--primary-light:#ede9fe;--primary-dark:#5b21b6;--radius:10px;--shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);--shadow-md:0 4px 6px rgba(0,0,0,.07)}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6}
+a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
+.nav{position:sticky;top:0;z-index:100;background:#0f172a;padding:0 24px;display:flex;align-items:center;height:48px;gap:24px;box-shadow:0 2px 12px rgba(0,0,0,.25)}
+.nav .brand{color:#fff;font-weight:800;font-size:15px;display:flex;align-items:center;gap:8px}
+.nav .brand span{background:var(--primary);padding:2px 8px;border-radius:5px;font-size:11px;font-weight:700}
+.nav-links{display:flex;gap:4px;margin-left:auto;overflow-x:auto}
+.nav-links a{color:#94a3b8;font-size:12px;font-weight:500;text-decoration:none;padding:6px 10px;border-radius:6px;transition:all .15s;white-space:nowrap}
+.nav-links a:hover,.nav-links a.active{color:#fff;background:rgba(255,255,255,.08)}
+.header{background:linear-gradient(135deg,#1e1b4b 0%,#312e81 40%,#4c1d95 100%);color:#fff;padding:36px 24px 28px;text-align:center}
+.header h1{font-size:26px;font-weight:800;letter-spacing:-.3px}.header p{font-size:13px;color:#c4b5fd;margin-top:4px}
+.container{max-width:1100px;margin:0 auto;padding:0 24px 48px}
+.section{padding:40px 0}.section+.section{border-top:1px solid var(--border)}
+.section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--primary);margin-bottom:6px}
+.section-title{font-size:22px;font-weight:800;color:var(--text);margin-bottom:4px}
+.section-sub{font-size:14px;color:var(--muted);margin-bottom:24px;max-width:700px}
+h3{font-size:17px;font-weight:700;color:var(--text);margin:28px 0 10px}
+p{margin-bottom:12px}
+.diagram{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:16px 0;overflow-x:auto;box-shadow:var(--shadow)}
+.diagram pre{font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.5;color:var(--text);white-space:pre}
+.code{background:#1e293b;border-radius:var(--radius);padding:20px;margin:16px 0;overflow-x:auto}
+.code code{font-family:'JetBrains Mono',monospace;font-size:12px;color:#e2e8f0;line-height:1.6;white-space:pre;display:block}
+.tbl-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);margin:16px 0;box-shadow:var(--shadow)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{background:#f1f5f9;padding:10px 14px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border)}
+tbody td{padding:10px 14px;border-bottom:1px solid var(--border)}
+tbody tr:hover td{background:#f8fafc}
+td code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#f1f5f9;padding:1px 6px;border-radius:4px}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;margin:16px 0}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+.card h4{font-size:15px;font-weight:700;margin-bottom:6px}.card p{font-size:13px;color:var(--muted);margin-bottom:0}
+.card .label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;display:block}
+.label-wallet{color:#1e40af}.label-rule{color:#dc2626}.label-campaign{color:#059669}
+.label-ledger{color:#d97706}.label-customer{color:#7c3aed}.label-coupon{color:#db2777}
+ol,ul{margin:8px 0 16px 24px}li{margin-bottom:4px;font-size:13px}
+.footer{background:#0f172a;color:#94a3b8;padding:24px;text-align:center;font-size:12px;margin-top:48px}
+@media(max-width:768px){.card-grid{grid-template-columns:1fr}.nav-links{display:none}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="brand">elSapiens <span>elLoyalty</span></div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="architecture.html">Architecture</a>
+    <a href="benefit-engine.html">Benefit Engine</a>
+    <a href="checkout-flow.html">Checkout Flow</a>
+    <a href="domain-design.html" class="active">Domains</a>
+    <a href="database-schema.html">Schema</a>
+    <a href="rule-engine.html">Rules</a>
+    <a href="conflict-resolution.html">Conflicts</a>
+    <a href="ledger-design.html">Ledger</a>
+    <a href="offline-first.html">Offline</a>
+    <a href="ecosystem-integration.html">Ecosystem</a>
+    <a href="frontend-design.html">Frontend</a>
+    <a href="security.html">Security</a>
+    <a href="scalability.html">Scale</a>
+    <a href="edge-cases.html">Edge Cases</a>
+  </div>
+</nav>
+
+<header class="header">
+  <h1>04 — Domain Design</h1>
+  <p>Bounded contexts, aggregate roots, value objects, and domain events</p>
+</header>
+
+<div class="container">
+
+<div class="section">
+  <div class="section-label">Bounded Contexts</div>
+  <h2 class="section-title">Six Bounded Contexts</h2>
+  <p class="section-sub">elLoyalty is decomposed into six bounded contexts, each with clear ownership boundaries. Contexts communicate via domain events within the same process.</p>
+
+  <div class="diagram"><pre>
+┌──────────────────────────────────────────────────────────────────────────┐
+│                      elLoyalty Bounded Contexts                          │
+│                                                                          │
+│  ┌──────────────────┐  ┌──────────────────┐  ┌──────────────────┐       │
+│  │  1. CUSTOMER     │  │  2. WALLET       │  │  3. BENEFIT      │       │
+│  │     IDENTITY     │  │                  │  │     ENGINE       │       │
+│  │                  │  │  • CoinWallet    │  │                  │       │
+│  │  • Profile       │  │  • CashWallet    │  │  • Evaluation    │       │
+│  │  • Tier          │  │  • CashbackPool  │  │  • Application   │       │
+│  │  • Tags          │  │  • Transaction   │  │  • Reversal      │       │
+│  │  • Preferences   │  │  • Balance       │  │  • Scoring       │       │
+│  │                  │  │                  │  │                  │       │
+│  └────────┬─────────┘  └────────┬─────────┘  └────────┬─────────┘       │
+│           │events               │events               │events           │
+│  ┌────────┴─────────┐  ┌────────┴─────────┐  ┌────────┴─────────┐       │
+│  │  4. RULE         │  │  5. CAMPAIGN     │  │  6. TRANSACTION  │       │
+│  │     ENGINE       │  │     ENGINE       │  │     LEDGER       │       │
+│  │                  │  │                  │  │                  │       │
+│  │  • Rule          │  │  • Campaign      │  │  • LedgerEntry   │       │
+│  │  • Condition     │  │  • Enrollment    │  │  • AuditTrail    │       │
+│  │  • Constraint    │  │  • Trigger       │  │  • Reconciliation│       │
+│  │  • StackPolicy   │  │  • Budget        │  │  • ExpiryEvent   │       │
+│  │                  │  │                  │  │                  │       │
+│  └──────────────────┘  └──────────────────┘  └──────────────────┘       │
+│                                                                          │
+│  Cross-cutting: Coupon is a Rule + Campaign composite (not a BC)         │
+│                                                                          │
+└──────────────────────────────────────────────────────────────────────────┘</pre></div>
+</div>
+
+<div class="section">
+  <div class="section-label">Context 1</div>
+  <h2 class="section-title">Customer Identity Context</h2>
+
+  <div class="card-grid">
+    <div class="card">
+      <span class="label label-customer">Aggregate Root</span>
+      <h4>LoyaltyCustomer</h4>
+      <p>Owned by elLoyalty. Links to the customer record in elPOS (via customer_id) and person in elAccounts (via person_id). Stores loyalty-specific data: tier, tags, preferences, enrollment date.</p>
+    </div>
+    <div class="card">
+      <span class="label label-customer">Value Object</span>
+      <h4>CustomerTier</h4>
+      <p>Bronze → Silver → Gold → Platinum. Tier is calculated from cumulative spend or points earned over a rolling period. Tier changes trigger notifications.</p>
+    </div>
+  </div>
+
+  <div class="code"><code><span style="color:#c084fc">type</span> LoyaltyCustomer <span style="color:#c084fc">struct</span> {
+    ID              <span style="color:#93c5fd">string</span>    <span style="color:#64748b">// UUID, primary key</span>
+    OrganizationID  <span style="color:#93c5fd">string</span>    <span style="color:#64748b">// tenant isolation</span>
+    WorkspaceID     <span style="color:#93c5fd">string</span>    <span style="color:#64748b">// workspace isolation</span>
+    CustomerID      <span style="color:#93c5fd">string</span>    <span style="color:#64748b">// ref: elPOS pos_customers.id</span>
+    PersonID        <span style="color:#93c5fd">string</span>    <span style="color:#64748b">// ref: elAccounts person</span>
+    Tier            CustomerTier
+    Tags            []<span style="color:#93c5fd">string</span>  <span style="color:#64748b">// ["vip", "staff", "wholesale"]</span>
+    TotalSpend      <span style="color:#93c5fd">int64</span>     <span style="color:#64748b">// lifetime spend, paisa</span>
+    TotalEarned     <span style="color:#93c5fd">int</span>       <span style="color:#64748b">// lifetime coins earned</span>
+    TotalRedeemed   <span style="color:#93c5fd">int</span>       <span style="color:#64748b">// lifetime coins redeemed</span>
+    EnrolledAt      time.Time
+    LastActiveAt    time.Time
+    Preferences     CustomerPreferences
+}
+
+<span style="color:#c084fc">type</span> CustomerTier <span style="color:#93c5fd">string</span>
+<span style="color:#c084fc">const</span> (
+    TierBronze   CustomerTier = <span style="color:#86efac">"bronze"</span>
+    TierSilver   CustomerTier = <span style="color:#86efac">"silver"</span>
+    TierGold     CustomerTier = <span style="color:#86efac">"gold"</span>
+    TierPlatinum CustomerTier = <span style="color:#86efac">"platinum"</span>
+)
+
+<span style="color:#c084fc">type</span> CustomerPreferences <span style="color:#c084fc">struct</span> {
+    SMSNotifications   <span style="color:#93c5fd">bool</span>
+    EmailNotifications <span style="color:#93c5fd">bool</span>
+    WhatsAppOptIn      <span style="color:#93c5fd">bool</span>
+    AutoRedeemCoins    <span style="color:#93c5fd">bool</span>  <span style="color:#64748b">// automatically apply coins at checkout</span>
+}</code></div>
+</div>
+
+<div class="section">
+  <div class="section-label">Context 2</div>
+  <h2 class="section-title">Wallet Context</h2>
+
+  <div class="card-grid">
+    <div class="card">
+      <span class="label label-wallet">Aggregate Root</span>
+      <h4>Wallet</h4>
+      <p>Each customer has one wallet with three sub-accounts: CoinBalance, CashbackBalance, and CashBalance (loyalty cash). Balance is always computed from the ledger — never stored directly.</p>
+    </div>
+    <div class="card">
+      <span class="label label-wallet">Entity</span>
+      <h4>WalletTransaction</h4>
+      <p>Every wallet mutation is a WalletTransaction: earn, redeem, topup, expire, adjust, reverse. Transactions are immutable — errors are corrected by adding new adjustment entries.</p>
+    </div>
+  </div>
+
+  <div class="code"><code><span style="color:#c084fc">type</span> Wallet <span style="color:#c084fc">struct</span> {
+    ID              <span style="color:#93c5fd">string</span>
+    CustomerID      <span style="color:#93c5fd">string</span>
+    OrganizationID  <span style="color:#93c5fd">string</span>
+    WorkspaceID     <span style="color:#93c5fd">string</span>
+
+    <span style="color:#64748b">// Computed balances (from ledger materialized view)</span>
+    CoinBalance     <span style="color:#93c5fd">int</span>    <span style="color:#64748b">// current coins</span>
+    CashbackPending <span style="color:#93c5fd">int64</span>  <span style="color:#64748b">// cashback waiting for settlement, paisa</span>
+    CashbackReady   <span style="color:#93c5fd">int64</span>  <span style="color:#64748b">// cashback available to spend, paisa</span>
+    CashBalance     <span style="color:#93c5fd">int64</span>  <span style="color:#64748b">// prepaid loyalty cash, paisa</span>
+
+    <span style="color:#64748b">// Offline budget (pre-allocated for offline use)</span>
+    OfflineCoinBudget <span style="color:#93c5fd">int</span>
+    OfflineCashBudget <span style="color:#93c5fd">int64</span>
+
+    UpdatedAt time.Time
+}
+
+<span style="color:#c084fc">type</span> WalletTransaction <span style="color:#c084fc">struct</span> {
+    ID              <span style="color:#93c5fd">string</span>
+    WalletID        <span style="color:#93c5fd">string</span>
+    Type            TxType     <span style="color:#64748b">// earn, redeem, topup, expire, adjust, reverse</span>
+    SubAccount      SubAccount <span style="color:#64748b">// coins, cashback, cash</span>
+    Amount          <span style="color:#93c5fd">int64</span>      <span style="color:#64748b">// positive = credit, negative = debit</span>
+    ReferenceType   <span style="color:#93c5fd">string</span>     <span style="color:#64748b">// "sale", "refund", "topup", "expiry"</span>
+    ReferenceID     <span style="color:#93c5fd">string</span>     <span style="color:#64748b">// sale_id, topup_id, etc.</span>
+    Description     <span style="color:#93c5fd">string</span>
+    CreatedAt       time.Time
+    OfflineID       *<span style="color:#93c5fd">string</span>    <span style="color:#64748b">// non-nil if created offline</span>
+}</code></div>
+</div>
+
+<div class="section">
+  <div class="section-label">Context 3</div>
+  <h2 class="section-title">Benefit Engine Context</h2>
+
+  <p>The Benefit Engine is the orchestrator — it doesn't own persistent data itself, but coordinates across all other contexts. Its aggregate is the <strong>BenefitApplication</strong>: a record of benefits applied to a specific sale.</p>
+
+  <div class="code"><code><span style="color:#c084fc">type</span> BenefitApplication <span style="color:#c084fc">struct</span> {
+    ID              <span style="color:#93c5fd">string</span>
+    SaleID          <span style="color:#93c5fd">string</span>     <span style="color:#64748b">// from elPOS</span>
+    CustomerID      <span style="color:#93c5fd">string</span>
+    OrganizationID  <span style="color:#93c5fd">string</span>
+    WorkspaceID     <span style="color:#93c5fd">string</span>
+    Status          AppStatus  <span style="color:#64748b">// pending, applied, reversed, partial_reversed</span>
+    TotalDiscount   <span style="color:#93c5fd">int64</span>      <span style="color:#64748b">// paisa</span>
+    Benefits        []AppliedBenefit
+    CreatedAt       time.Time
+    ReversedAt      *time.Time
+}
+
+<span style="color:#c084fc">type</span> AppliedBenefit <span style="color:#c084fc">struct</span> {
+    BenefitID      <span style="color:#93c5fd">string</span>
+    Type           BenefitType
+    RuleID         <span style="color:#93c5fd">string</span>
+    CampaignID     <span style="color:#93c5fd">string</span>
+    DiscountAmount <span style="color:#93c5fd">int64</span>
+    Details        json.RawMessage  <span style="color:#64748b">// type-specific: coins debited, coupon code, etc.</span>
+}</code></div>
+</div>
+
+<div class="section">
+  <div class="section-label">Context 4</div>
+  <h2 class="section-title">Rule Engine Context</h2>
+
+  <div class="card-grid">
+    <div class="card">
+      <span class="label label-rule">Aggregate Root</span>
+      <h4>BenefitRule</h4>
+      <p>Defines when and how benefits are granted. Has conditions (cart amount > X, category = Y), constraints (max usage, date range), and rewards (coin multiplier, discount percent). See <a href="rule-engine.html">Rule Engine</a> for full specification.</p>
+    </div>
+    <div class="card">
+      <span class="label label-rule">Entity</span>
+      <h4>RuleCondition</h4>
+      <p>Composable conditions using AND/OR trees. Each condition has a field, operator, and value. Supports cart-level (total, item count), item-level (category, SKU), and customer-level (tier, tags) conditions.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Context 5</div>
+  <h2 class="section-title">Campaign Engine Context</h2>
+
+  <div class="card-grid">
+    <div class="card">
+      <span class="label label-campaign">Aggregate Root</span>
+      <h4>Campaign</h4>
+      <p>Time-bound, budget-limited promotions. A campaign wraps one or more BenefitRules with additional constraints: start/end dates, total budget (₹ or quantity), customer enrollment, trigger event.</p>
+    </div>
+    <div class="card">
+      <span class="label label-campaign">Entity</span>
+      <h4>CampaignEnrollment</h4>
+      <p>Tracks which customers are enrolled in which campaigns. Some campaigns are auto-enroll (all customers), others require explicit opt-in or invitation.</p>
+    </div>
+  </div>
+
+  <div class="code"><code><span style="color:#c084fc">type</span> Campaign <span style="color:#c084fc">struct</span> {
+    ID              <span style="color:#93c5fd">string</span>
+    OrganizationID  <span style="color:#93c5fd">string</span>
+    WorkspaceID     <span style="color:#93c5fd">string</span>
+    Name            <span style="color:#93c5fd">string</span>
+    Description     <span style="color:#93c5fd">string</span>
+    Status          CampaignStatus  <span style="color:#64748b">// draft, active, paused, completed, cancelled</span>
+    StartAt         time.Time
+    EndAt           time.Time
+    BudgetType      BudgetType      <span style="color:#64748b">// amount, quantity, unlimited</span>
+    BudgetTotal     <span style="color:#93c5fd">int64</span>           <span style="color:#64748b">// max total discount in paisa (or count)</span>
+    BudgetUsed      <span style="color:#93c5fd">int64</span>           <span style="color:#64748b">// consumed so far</span>
+    EnrollmentType  EnrollmentType  <span style="color:#64748b">// auto, opt_in, invited</span>
+    RuleIDs         []<span style="color:#93c5fd">string</span>        <span style="color:#64748b">// benefit rules this campaign activates</span>
+    TriggerEvent    <span style="color:#93c5fd">string</span>          <span style="color:#64748b">// "first_purchase", "birthday", "referral", ""</span>
+    MaxPerCustomer  <span style="color:#93c5fd">int</span>             <span style="color:#64748b">// max times one customer can benefit</span>
+    CreatedBy       <span style="color:#93c5fd">string</span>
+    CreatedAt       time.Time
+    UpdatedAt       time.Time
+}</code></div>
+</div>
+
+<div class="section">
+  <div class="section-label">Context 6</div>
+  <h2 class="section-title">Transaction Ledger Context</h2>
+
+  <div class="card-grid">
+    <div class="card">
+      <span class="label label-ledger">Aggregate Root</span>
+      <h4>LedgerEntry</h4>
+      <p>Every financial event is an immutable ledger entry. The ledger is the source of truth for all balances. See <a href="ledger-design.html">Ledger Design</a> for full specification.</p>
+    </div>
+    <div class="card">
+      <span class="label label-ledger">Entity</span>
+      <h4>ExpiryEvent</h4>
+      <p>Scheduled expiry of coins or cashback. A background worker processes expiry events and creates debit ledger entries when coins expire.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Events</div>
+  <h2 class="section-title">Domain Events</h2>
+  <p class="section-sub">Contexts communicate via domain events published to the in-process event bus (Redis pub/sub for cross-service).</p>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Event</th><th>Publisher</th><th>Subscribers</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>customer.enrolled</code></td><td>Customer Identity</td><td>Wallet, Campaign</td><td>New loyalty customer created → create wallet, check auto-enroll campaigns</td></tr>
+        <tr><td><code>customer.tier.changed</code></td><td>Customer Identity</td><td>Rule Engine, Campaign</td><td>Tier upgrade/downgrade → re-evaluate eligible rules and campaigns</td></tr>
+        <tr><td><code>benefit.evaluated</code></td><td>Benefit Engine</td><td>Analytics</td><td>Evaluation completed → log for analytics (conversion tracking)</td></tr>
+        <tr><td><code>benefit.applied</code></td><td>Benefit Engine</td><td>Ledger, Wallet, Campaign</td><td>Benefits applied to sale → update balances, counters, ledger</td></tr>
+        <tr><td><code>benefit.reversed</code></td><td>Benefit Engine</td><td>Ledger, Wallet, Campaign</td><td>Refund triggered → reverse all benefit effects</td></tr>
+        <tr><td><code>coins.earned</code></td><td>Wallet</td><td>Ledger, Customer Identity</td><td>Coins credited → ledger entry, update lifetime totals</td></tr>
+        <tr><td><code>coins.redeemed</code></td><td>Wallet</td><td>Ledger</td><td>Coins debited → ledger entry</td></tr>
+        <tr><td><code>coins.expired</code></td><td>Wallet</td><td>Ledger</td><td>Coins expired → ledger entry</td></tr>
+        <tr><td><code>cashback.credited</code></td><td>Wallet</td><td>Ledger, MessageHub</td><td>Cashback available → ledger entry, send notification</td></tr>
+        <tr><td><code>wallet.topup</code></td><td>Wallet</td><td>Ledger, elbooks</td><td>Cash loaded → ledger entry, sync to elbooks</td></tr>
+        <tr><td><code>coupon.redeemed</code></td><td>Rule Engine</td><td>Ledger, Campaign</td><td>Coupon used → update usage count, campaign budget</td></tr>
+        <tr><td><code>campaign.budget.exhausted</code></td><td>Campaign</td><td>Rule Engine</td><td>Campaign budget fully consumed → deactivate associated rules</td></tr>
+        <tr><td><code>campaign.completed</code></td><td>Campaign</td><td>Rule Engine, Analytics</td><td>Campaign end date reached → deactivate, generate report</td></tr>
+        <tr><td><code>sync.offline.received</code></td><td>Sync</td><td>Benefit Engine, Wallet</td><td>Offline events received → reconcile and apply</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Coupons</div>
+  <h2 class="section-title">Coupon: A Composite, Not a Bounded Context</h2>
+  <p>A coupon is not a separate bounded context — it's a composition:</p>
+  <ul>
+    <li><strong>Rule Engine</strong> owns the coupon's conditions and discount logic (the BenefitRule with type "coupon")</li>
+    <li><strong>Campaign Engine</strong> optionally wraps the coupon with time bounds and budget limits</li>
+    <li><strong>Ledger</strong> records coupon redemptions</li>
+    <li><strong>Wallet</strong> is unaffected (coupons don't touch wallet balances)</li>
+  </ul>
+
+  <div class="code"><code><span style="color:#c084fc">type</span> Coupon <span style="color:#c084fc">struct</span> {
+    ID              <span style="color:#93c5fd">string</span>
+    OrganizationID  <span style="color:#93c5fd">string</span>
+    WorkspaceID     <span style="color:#93c5fd">string</span>
+    Code            <span style="color:#93c5fd">string</span>    <span style="color:#64748b">// unique within org+workspace</span>
+    RuleID          <span style="color:#93c5fd">string</span>    <span style="color:#64748b">// the benefit rule defining the discount</span>
+    CampaignID      *<span style="color:#93c5fd">string</span>   <span style="color:#64748b">// optional campaign wrapper</span>
+    MaxUsesTotal    <span style="color:#93c5fd">int</span>       <span style="color:#64748b">// 0 = unlimited</span>
+    MaxUsesCustomer <span style="color:#93c5fd">int</span>       <span style="color:#64748b">// per customer limit</span>
+    UsedCount       <span style="color:#93c5fd">int</span>
+    AssignedTo      []<span style="color:#93c5fd">string</span>  <span style="color:#64748b">// empty = global, non-empty = specific customers</span>
+    ValidFrom       time.Time
+    ValidUntil      time.Time
+    Status          CouponStatus <span style="color:#64748b">// active, exhausted, expired, disabled</span>
+    CreatedAt       time.Time
+}</code></div>
+</div>
+
+</div><!-- /container -->
+
+<footer class="footer">
+  <p>elLoyalty Domain Design — <a href="index.html" style="color:#c4b5fd">Back to Index</a></p>
+</footer>
+</body>
+</html>

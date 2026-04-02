@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>elLoyalty — Scalability</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#f8fafc;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b;--light:#94a3b8;--primary:#7c3aed;--primary-light:#ede9fe;--primary-dark:#5b21b6;--radius:10px;--shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);--shadow-md:0 4px 6px rgba(0,0,0,.07)}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6}
+a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
+.nav{position:sticky;top:0;z-index:100;background:#0f172a;padding:0 24px;display:flex;align-items:center;height:48px;gap:24px;box-shadow:0 2px 12px rgba(0,0,0,.25)}
+.nav .brand{color:#fff;font-weight:800;font-size:15px;display:flex;align-items:center;gap:8px}
+.nav .brand span{background:var(--primary);padding:2px 8px;border-radius:5px;font-size:11px;font-weight:700}
+.nav-links{display:flex;gap:4px;margin-left:auto;overflow-x:auto}
+.nav-links a{color:#94a3b8;font-size:12px;font-weight:500;text-decoration:none;padding:6px 10px;border-radius:6px;transition:all .15s;white-space:nowrap}
+.nav-links a:hover,.nav-links a.active{color:#fff;background:rgba(255,255,255,.08)}
+.header{background:linear-gradient(135deg,#1e1b4b 0%,#312e81 40%,#4c1d95 100%);color:#fff;padding:36px 24px 28px;text-align:center}
+.header h1{font-size:26px;font-weight:800;letter-spacing:-.3px}.header p{font-size:13px;color:#c4b5fd;margin-top:4px}
+.container{max-width:1100px;margin:0 auto;padding:0 24px 48px}
+.section{padding:40px 0}.section+.section{border-top:1px solid var(--border)}
+.section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--primary);margin-bottom:6px}
+.section-title{font-size:22px;font-weight:800;color:var(--text);margin-bottom:4px}
+.section-sub{font-size:14px;color:var(--muted);margin-bottom:24px;max-width:700px}
+h3{font-size:17px;font-weight:700;color:var(--text);margin:28px 0 10px}
+p{margin-bottom:12px}
+.diagram{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:16px 0;overflow-x:auto;box-shadow:var(--shadow)}
+.diagram pre{font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.5;color:var(--text);white-space:pre}
+.code{background:#1e293b;border-radius:var(--radius);padding:20px;margin:16px 0;overflow-x:auto}
+.code code{font-family:'JetBrains Mono',monospace;font-size:12px;color:#e2e8f0;line-height:1.6;white-space:pre;display:block}
+.tbl-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);margin:16px 0;box-shadow:var(--shadow)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{background:#f1f5f9;padding:10px 14px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border)}
+tbody td{padding:10px 14px;border-bottom:1px solid var(--border)}
+tbody tr:hover td{background:#f8fafc}
+td code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#f1f5f9;padding:1px 6px;border-radius:4px}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;margin:16px 0}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+.card h4{font-size:15px;font-weight:700;margin-bottom:6px}.card p{font-size:13px;color:var(--muted);margin-bottom:0}
+ol,ul{margin:8px 0 16px 24px}li{margin-bottom:4px;font-size:13px}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;text-align:center;box-shadow:var(--shadow)}
+.stat .num{font-size:24px;font-weight:800;color:var(--primary)}.stat .lbl{font-size:11px;color:var(--muted);margin-top:2px}
+.footer{background:#0f172a;color:#94a3b8;padding:24px;text-align:center;font-size:12px;margin-top:48px}
+@media(max-width:768px){.card-grid{grid-template-columns:1fr}.stat-grid{grid-template-columns:repeat(2,1fr)}.nav-links{display:none}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="brand">elSapiens <span>elLoyalty</span></div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="architecture.html">Architecture</a>
+    <a href="benefit-engine.html">Benefit Engine</a>
+    <a href="checkout-flow.html">Checkout Flow</a>
+    <a href="domain-design.html">Domains</a>
+    <a href="database-schema.html">Schema</a>
+    <a href="rule-engine.html">Rules</a>
+    <a href="conflict-resolution.html">Conflicts</a>
+    <a href="ledger-design.html">Ledger</a>
+    <a href="offline-first.html">Offline</a>
+    <a href="ecosystem-integration.html">Ecosystem</a>
+    <a href="frontend-design.html">Frontend</a>
+    <a href="security.html">Security</a>
+    <a href="scalability.html" class="active">Scale</a>
+    <a href="edge-cases.html">Edge Cases</a>
+  </div>
+</nav>
+
+<header class="header">
+  <h1>13 — Scalability</h1>
+  <p>Redis caching, connection pooling, event-driven architecture, CQRS, horizontal scaling, and performance targets</p>
+</header>
+
+<div class="container">
+
+<div class="section">
+  <div class="section-label">Targets</div>
+  <h2 class="section-title">Performance Targets</h2>
+
+  <div class="stat-grid">
+    <div class="stat"><div class="num">&lt;50ms</div><div class="lbl">Cart Evaluation (p95)</div></div>
+    <div class="stat"><div class="num">&lt;100ms</div><div class="lbl">Benefit Apply (p95)</div></div>
+    <div class="stat"><div class="num">1,000</div><div class="lbl">Concurrent Terminals</div></div>
+    <div class="stat"><div class="num">10M+</div><div class="lbl">Ledger Entries/Month</div></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Cache</div>
+  <h2 class="section-title">Redis Caching Strategy</h2>
+
+  <div class="diagram"><pre>
+┌──────────────────────────────────────────────────────────┐
+│                   CACHING LAYERS                          │
+│                                                          │
+│  ┌─────────────────┐    ┌─────────────────┐             │
+│  │ L1: In-Process   │    │ L2: Redis        │             │
+│  │ (sync.Map)       │    │ (shared)         │             │
+│  │                  │    │                  │             │
+│  │ • Active rules   │    │ • Wallet balance │             │
+│  │   (TTL: 60s)    │    │   (TTL: 5 min)  │             │
+│  │ • Org config     │    │ • Rule set       │   ┌──────┐ │
+│  │   (TTL: 5 min)  │    │   (TTL: 10 min) │   │ Pg   │ │
+│  │ • Coin rate      │    │ • Customer tier  │   │ SQL  │ │
+│  │   (TTL: 5 min)  │    │   (TTL: 10 min) │   │      │ │
+│  │                  │    │ • Campaign data  │   │Source│ │
+│  └────────┬─────────┘    │   (TTL: 5 min)  │   │  of  │ │
+│           │ miss         └────────┬─────────┘   │Truth │ │
+│           └─────────────────────▶│ miss         └──┬───┘ │
+│                                  └────────────────▶│     │
+│                                                          │
+└──────────────────────────────────────────────────────────┘</pre></div>
+
+  <h3>Cache Key Schema</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Key Pattern</th><th>Value</th><th>TTL</th><th>Invalidation</th></tr></thead>
+      <tbody>
+        <tr><td><code>loyalty:rules:{org_id}</code></td><td>JSON array of active rules</td><td>10 min</td><td>On rule CRUD</td></tr>
+        <tr><td><code>loyalty:wallet:{customer_id}</code></td><td>Wallet balance snapshot</td><td>5 min</td><td>On any wallet mutation</td></tr>
+        <tr><td><code>loyalty:tier:{customer_id}</code></td><td>Tier name string</td><td>10 min</td><td>On tier change</td></tr>
+        <tr><td><code>loyalty:campaigns:{org_id}</code></td><td>Active campaigns JSON</td><td>5 min</td><td>On campaign CRUD</td></tr>
+        <tr><td><code>loyalty:config:{org_id}</code></td><td>Org loyalty settings</td><td>15 min</td><td>On settings change</td></tr>
+        <tr><td><code>loyalty:coupon:{code}:{org_id}</code></td><td>Coupon details + usage count</td><td>5 min</td><td>On redemption</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="code"><code><span style="color:#64748b">// Cache-aside pattern for rule loading</span>
+<span style="color:#c084fc">func</span> (s *RuleService) GetActiveRules(ctx context.Context, tc TenantContext) ([]BenefitRule, error) {
+    cacheKey := fmt.Sprintf(<span style="color:#86efac">"loyalty:rules:%s"</span>, tc.OrganizationID)
+
+    <span style="color:#64748b">// L1: process-local cache</span>
+    <span style="color:#c084fc">if</span> cached, ok := s.localCache.Load(cacheKey); ok {
+        entry := cached.(*cacheEntry)
+        <span style="color:#c084fc">if</span> time.Since(entry.loadedAt) < 60*time.Second {
+            <span style="color:#c084fc">return</span> entry.rules, nil
+        }
+    }
+
+    <span style="color:#64748b">// L2: Redis</span>
+    data, err := s.redis.Get(ctx, cacheKey).Bytes()
+    <span style="color:#c084fc">if</span> err == nil {
+        <span style="color:#c084fc">var</span> rules []BenefitRule
+        json.Unmarshal(data, &rules)
+        s.localCache.Store(cacheKey, &cacheEntry{rules: rules, loadedAt: time.Now()})
+        <span style="color:#c084fc">return</span> rules, nil
+    }
+
+    <span style="color:#64748b">// L3: PostgreSQL (source of truth)</span>
+    rules, err := s.repo.ListActive(ctx, tc)
+    <span style="color:#c084fc">if</span> err != nil {
+        <span style="color:#c084fc">return</span> nil, err
+    }
+
+    <span style="color:#64748b">// Populate caches</span>
+    data, _ = json.Marshal(rules)
+    s.redis.Set(ctx, cacheKey, data, 10*time.Minute)
+    s.localCache.Store(cacheKey, &cacheEntry{rules: rules, loadedAt: time.Now()})
+
+    <span style="color:#c084fc">return</span> rules, nil
+}</code></div>
+</div>
+
+<div class="section">
+  <div class="section-label">Pool</div>
+  <h2 class="section-title">Connection Pooling</h2>
+
+  <div class="code"><code><span style="color:#64748b">// pgxpool configuration for high-throughput POS workloads</span>
+<span style="color:#c084fc">func</span> NewPool(databaseURL string) (*pgxpool.Pool, error) {
+    config, _ := pgxpool.ParseConfig(databaseURL)
+
+    config.MaxConns = 25                       <span style="color:#64748b">// per instance</span>
+    config.MinConns = 5                        <span style="color:#64748b">// keep warm</span>
+    config.MaxConnLifetime = 30 * time.Minute  <span style="color:#64748b">// recycle connections</span>
+    config.MaxConnIdleTime = 5 * time.Minute   <span style="color:#64748b">// release idle</span>
+    config.HealthCheckPeriod = 30 * time.Second
+
+    <span style="color:#c084fc">return</span> pgxpool.NewWithConfig(context.Background(), config)
+}
+
+<span style="color:#64748b">// Redis pool (go-redis handles pooling internally)</span>
+<span style="color:#c084fc">func</span> NewRedisClient(addr string) *redis.Client {
+    <span style="color:#c084fc">return</span> redis.NewClient(&redis.Options{
+        Addr:         addr,
+        PoolSize:     50,
+        MinIdleConns: 10,
+        ReadTimeout:  2 * time.Second,
+        WriteTimeout: 2 * time.Second,
+    })
+}</code></div>
+</div>
+
+<div class="section">
+  <div class="section-label">Events</div>
+  <h2 class="section-title">Event-Driven Architecture</h2>
+
+  <div class="diagram"><pre>
+┌──────────────────────────────────────────────────────────┐
+│                  EVENT FLOW                               │
+│                                                          │
+│  Synchronous (gRPC):                                     │
+│  ┌────────────────────────────────────────────┐          │
+│  │ EvaluateCart → ApplyBenefits → CreditEarn  │          │
+│  │ Checkout hot path — must be fast            │          │
+│  └────────────────────────────────────────────┘          │
+│                                                          │
+│  Asynchronous (Redis pub/sub):                           │
+│  ┌────────────────────────────────────────────┐          │
+│  │ benefit.applied → campaign.progress.update │          │
+│  │ benefit.earned  → tier.recalculate         │          │
+│  │ coins.expired   → notification.send        │          │
+│  │ sale.refunded   → benefit.reverse          │          │
+│  │ sync.reconciled → journal.post             │          │
+│  └────────────────────────────────────────────┘          │
+│                                                          │
+│  Background Workers:                                     │
+│  ┌────────────────────────────────────────────┐          │
+│  │ ExpiryWorker     — runs every hour         │          │
+│  │ CashbackWorker   — processes pending queue │          │
+│  │ TierWorker       — recalculates tiers      │          │
+│  │ JournalWorker    — retries failed journals │          │
+│  │ ReconcileWorker  — offline sync validation │          │
+│  └────────────────────────────────────────────┘          │
+└──────────────────────────────────────────────────────────┘</pre></div>
+
+  <h3>Worker Design</h3>
+  <div class="code"><code><span style="color:#64748b">// Background worker with graceful shutdown</span>
+<span style="color:#c084fc">type</span> ExpiryWorker <span style="color:#c084fc">struct</span> {
+    repo   WalletRepository
+    ledger LedgerRepository
+    redis  *redis.Client
+    logger *slog.Logger
+}
+
+<span style="color:#c084fc">func</span> (w *ExpiryWorker) Run(ctx context.Context) {
+    ticker := time.NewTicker(1 * time.Hour)
+    <span style="color:#c084fc">defer</span> ticker.Stop()
+
+    <span style="color:#c084fc">for</span> {
+        <span style="color:#c084fc">select</span> {
+        <span style="color:#c084fc">case</span> <-ctx.Done():
+            w.logger.Info(<span style="color:#86efac">"expiry worker shutting down"</span>)
+            <span style="color:#c084fc">return</span>
+        <span style="color:#c084fc">case</span> <-ticker.C:
+            expired, err := w.repo.ExpireCoins(ctx)
+            <span style="color:#c084fc">if</span> err != nil {
+                w.logger.Error(<span style="color:#86efac">"expiry run failed"</span>, <span style="color:#86efac">"err"</span>, err)
+                <span style="color:#c084fc">continue</span>
+            }
+            w.logger.Info(<span style="color:#86efac">"coins expired"</span>, <span style="color:#86efac">"count"</span>, len(expired))
+
+            <span style="color:#64748b">// Invalidate Redis cache for affected customers</span>
+            <span style="color:#c084fc">for</span> _, e := <span style="color:#c084fc">range</span> expired {
+                w.redis.Del(ctx, fmt.Sprintf(<span style="color:#86efac">"loyalty:wallet:%s"</span>, e.CustomerID))
+            }
+        }
+    }
+}</code></div>
+</div>
+
+<div class="section">
+  <div class="section-label">Scale</div>
+  <h2 class="section-title">Horizontal Scaling</h2>
+
+  <div class="card-grid">
+    <div class="card">
+      <h4>Stateless Instances</h4>
+      <p>elLoyalty instances are stateless. All shared state lives in PostgreSQL and Redis. Deploy multiple replicas behind a load balancer.</p>
+    </div>
+    <div class="card">
+      <h4>L1 Cache Invalidation</h4>
+      <p>When a rule is updated, the service publishes to Redis pub/sub channel <code>loyalty:cache:invalidate</code>. All instances listen and clear their local cache.</p>
+    </div>
+    <div class="card">
+      <h4>Worker Leader Election</h4>
+      <p>Background workers (expiry, tier recalc) use Redis-based leader election. Only one instance runs the worker at a time. If the leader fails, another takes over.</p>
+    </div>
+    <div class="card">
+      <h4>Read Replicas</h4>
+      <p>Analytics and reporting queries route to PostgreSQL read replicas. Write operations go to the primary. Achieved via separate pgxpool connections.</p>
+    </div>
+  </div>
+
+  <h3>Deployment Topology</h3>
+  <div class="diagram"><pre>
+                    ┌─────────────┐
+                    │ Load Balancer│
+                    └──────┬──────┘
+              ┌────────────┼────────────┐
+              │            │            │
+        ┌─────▼─────┐ ┌───▼───┐ ┌─────▼─────┐
+        │ elLoyalty  │ │  ...  │ │ elLoyalty  │
+        │ Instance 1 │ │       │ │ Instance N │
+        │ HTTP+gRPC  │ │       │ │ HTTP+gRPC  │
+        │ Worker: ON │ │       │ │ Worker: OFF│
+        └─────┬──────┘ └───┬───┘ └─────┬──────┘
+              │            │            │
+        ┌─────▼────────────▼────────────▼─────┐
+        │           Redis Cluster              │
+        │  Cache + Pub/Sub + Rate Limits       │
+        └─────────────────┬────────────────────┘
+                          │
+        ┌─────────────────▼────────────────────┐
+        │        PostgreSQL                     │
+        │  Primary (writes) + Replica (reads)  │
+        └──────────────────────────────────────┘</pre></div>
+</div>
+
+<div class="section">
+  <div class="section-label">Ledger</div>
+  <h2 class="section-title">Ledger Scaling</h2>
+  <p class="section-sub">The ledger_entries table grows continuously. Partitioning and archival keep queries fast.</p>
+
+  <div class="code"><code><span style="color:#64748b">-- Range partition ledger_entries by month</span>
+CREATE TABLE ledger_entries (
+    id UUID NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    workspace_id UUID NOT NULL,
+    <span style="color:#64748b">-- ... other columns</span>
+) PARTITION BY RANGE (created_at);
+
+<span style="color:#64748b">-- Create monthly partitions</span>
+CREATE TABLE ledger_entries_2026_04 PARTITION OF ledger_entries
+    FOR VALUES FROM ('2026-04-01') TO ('2026-05-01');
+
+CREATE TABLE ledger_entries_2026_05 PARTITION OF ledger_entries
+    FOR VALUES FROM ('2026-05-01') TO ('2026-06-01');
+
+<span style="color:#64748b">-- Archive partitions older than 12 months to cold storage</span>
+<span style="color:#64748b">-- Query planner automatically prunes partitions based on created_at filter</span></code></div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Strategy</th><th>Trigger</th><th>Effect</th></tr></thead>
+      <tbody>
+        <tr><td>Monthly partitioning</td><td>Automatic (range on created_at)</td><td>Queries only scan relevant partitions</td></tr>
+        <tr><td>Materialized balance view</td><td>Refreshed on wallet mutation</td><td>Balance lookups avoid scanning full ledger</td></tr>
+        <tr><td>Cold archival</td><td>Entries older than 12 months</td><td>Moved to archive table, removed from hot partition</td></tr>
+        <tr><td>Index optimization</td><td>Per-partition indexes</td><td>Smaller index trees, faster scans</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<footer class="footer">
+  <p>elLoyalty Scalability — <a href="index.html" style="color:#c4b5fd">Back to Index</a></p>
+</footer>
+</body>
+</html>

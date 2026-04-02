@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>elLoyalty — Conflict Resolution</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#f8fafc;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b;--light:#94a3b8;--primary:#7c3aed;--primary-light:#ede9fe;--primary-dark:#5b21b6;--radius:10px;--shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);--shadow-md:0 4px 6px rgba(0,0,0,.07)}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6}
+a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
+.nav{position:sticky;top:0;z-index:100;background:#0f172a;padding:0 24px;display:flex;align-items:center;height:48px;gap:24px;box-shadow:0 2px 12px rgba(0,0,0,.25)}
+.nav .brand{color:#fff;font-weight:800;font-size:15px;display:flex;align-items:center;gap:8px}
+.nav .brand span{background:var(--primary);padding:2px 8px;border-radius:5px;font-size:11px;font-weight:700}
+.nav-links{display:flex;gap:4px;margin-left:auto;overflow-x:auto}
+.nav-links a{color:#94a3b8;font-size:12px;font-weight:500;text-decoration:none;padding:6px 10px;border-radius:6px;transition:all .15s;white-space:nowrap}
+.nav-links a:hover,.nav-links a.active{color:#fff;background:rgba(255,255,255,.08)}
+.header{background:linear-gradient(135deg,#1e1b4b 0%,#312e81 40%,#4c1d95 100%);color:#fff;padding:36px 24px 28px;text-align:center}
+.header h1{font-size:26px;font-weight:800;letter-spacing:-.3px}.header p{font-size:13px;color:#c4b5fd;margin-top:4px}
+.container{max-width:1100px;margin:0 auto;padding:0 24px 48px}
+.section{padding:40px 0}.section+.section{border-top:1px solid var(--border)}
+.section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--primary);margin-bottom:6px}
+.section-title{font-size:22px;font-weight:800;color:var(--text);margin-bottom:4px}
+.section-sub{font-size:14px;color:var(--muted);margin-bottom:24px;max-width:700px}
+h3{font-size:17px;font-weight:700;color:var(--text);margin:28px 0 10px}
+p{margin-bottom:12px}
+.diagram{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:16px 0;overflow-x:auto;box-shadow:var(--shadow)}
+.diagram pre{font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.5;color:var(--text);white-space:pre}
+.code{background:#1e293b;border-radius:var(--radius);padding:20px;margin:16px 0;overflow-x:auto}
+.code code{font-family:'JetBrains Mono',monospace;font-size:12px;color:#e2e8f0;line-height:1.6;white-space:pre;display:block}
+.tbl-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);margin:16px 0;box-shadow:var(--shadow)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{background:#f1f5f9;padding:10px 14px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border)}
+tbody td{padding:10px 14px;border-bottom:1px solid var(--border)}
+tbody tr:hover td{background:#f8fafc}
+td code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#f1f5f9;padding:1px 6px;border-radius:4px}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;margin:16px 0}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+.card h4{font-size:15px;font-weight:700;margin-bottom:6px}.card p{font-size:13px;color:var(--muted);margin-bottom:0}
+ol,ul{margin:8px 0 16px 24px}li{margin-bottom:4px;font-size:13px}
+.scenario{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin:16px 0;box-shadow:var(--shadow)}
+.scenario h4{font-size:15px;font-weight:700;margin-bottom:8px;color:var(--primary)}
+.scenario .result{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:10px 14px;margin-top:10px;font-size:13px;color:#166534}
+.footer{background:#0f172a;color:#94a3b8;padding:24px;text-align:center;font-size:12px;margin-top:48px}
+@media(max-width:768px){.card-grid{grid-template-columns:1fr}.nav-links{display:none}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="brand">elSapiens <span>elLoyalty</span></div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="architecture.html">Architecture</a>
+    <a href="benefit-engine.html">Benefit Engine</a>
+    <a href="checkout-flow.html">Checkout Flow</a>
+    <a href="domain-design.html">Domains</a>
+    <a href="database-schema.html">Schema</a>
+    <a href="rule-engine.html">Rules</a>
+    <a href="conflict-resolution.html" class="active">Conflicts</a>
+    <a href="ledger-design.html">Ledger</a>
+    <a href="offline-first.html">Offline</a>
+    <a href="ecosystem-integration.html">Ecosystem</a>
+    <a href="frontend-design.html">Frontend</a>
+    <a href="security.html">Security</a>
+    <a href="scalability.html">Scale</a>
+    <a href="edge-cases.html">Edge Cases</a>
+  </div>
+</nav>
+
+<header class="header">
+  <h1>07 — Conflict Resolution</h1>
+  <p>Priority matrix, stackable vs exclusive benefits, decision trees, and worked scenarios</p>
+</header>
+
+<div class="container">
+
+<div class="section">
+  <div class="section-label">Problem</div>
+  <h2 class="section-title">Why Conflict Resolution?</h2>
+  <p class="section-sub">When a customer's cart matches multiple benefit rules simultaneously, we must determine which benefits can coexist and which are mutually exclusive. Without conflict resolution, a customer could stack a 20% coupon + 15% cashback + coin redemption and pay nothing.</p>
+
+  <div class="card-grid">
+    <div class="card">
+      <h4>Stacking Chaos</h4>
+      <p>Without limits, benefits compound: 20% coupon + 10% cashback + loyalty cash = 30%+ off every transaction. Unsustainable for any business.</p>
+    </div>
+    <div class="card">
+      <h4>Customer Confusion</h4>
+      <p>If the POS shows 8 applicable benefits but only 2 can be used together, the UI must clearly communicate why certain combinations are blocked.</p>
+    </div>
+    <div class="card">
+      <h4>Deterministic Outcomes</h4>
+      <p>The same cart + customer + time must always produce the same available benefit set. No randomness, no race conditions between concurrent evaluations.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Model</div>
+  <h2 class="section-title">Conflict Resolution Model</h2>
+
+  <h3>Benefit Categories</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Category</th><th>Stackable</th><th>Default Behavior</th><th>Examples</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Coin Earning</strong></td><td>Always</td><td>Coins earned are always additive. Earning is post-sale and doesn't reduce price.</td><td>Standard earning, bonus campaigns</td></tr>
+        <tr><td><strong>Coin Redemption</strong></td><td>With limits</td><td>Stackable with other types, but capped at max_redeem_pct of cart total.</td><td>Use 200 coins (₹20 off)</td></tr>
+        <tr><td><strong>Cashback</strong></td><td>With limits</td><td>Stackable with non-discount benefits. Only highest cashback if multiple match.</td><td>5% cashback, 10% weekend cashback</td></tr>
+        <tr><td><strong>Coupon Discount</strong></td><td>Exclusive</td><td>Only one coupon per transaction. Exclusive with other coupons. Stackable with coins.</td><td>SAVE50, WELCOME20</td></tr>
+        <tr><td><strong>Campaign Reward</strong></td><td>Configurable</td><td>Depends on campaign settings. Can be exclusive or stackable within its stack_group.</td><td>BOGO, Festive 2x coins</td></tr>
+        <tr><td><strong>Loyalty Cash</strong></td><td>As payment</td><td>Treated as a payment method, not a discount. Stacks with everything.</td><td>Pay ₹200 from wallet</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Priority Matrix</h3>
+  <div class="diagram"><pre>
+┌────────────────────────────────────────────────────────────────────────┐
+│                    BENEFIT PRIORITY MATRIX                              │
+│                                                                        │
+│  Priority is resolved in this order:                                   │
+│                                                                        │
+│  1. EXCLUSIVE benefits are evaluated first                             │
+│     → Only the highest-scoring exclusive benefit survives              │
+│     → All lower-priority exclusive benefits in the same exclusion      │
+│       group are removed                                                │
+│                                                                        │
+│  2. STACKABLE benefits are evaluated next                              │
+│     → Stack within the same stack_group                                │
+│     → Cross-group stacking allowed unless explicitly excluded           │
+│                                                                        │
+│  3. PAYMENT-TYPE benefits (coins, wallet) evaluated last               │
+│     → These are always additive (they're payment, not discount)        │
+│     → Subject to max_redeem_pct cap on cart total                      │
+│                                                                        │
+│  Within each tier, Priority field (lower number = higher priority)     │
+│  breaks ties. If priorities are equal, higher discount amount wins.    │
+│                                                                        │
+│  ┌──────────────────────────────────────────────────────────────┐      │
+│  │ Tier 1: Exclusive Discounts (coupons, exclusive campaigns)   │      │
+│  │   → Pick ONE with highest score                              │      │
+│  ├──────────────────────────────────────────────────────────────┤      │
+│  │ Tier 2: Stackable Discounts (cashback, stackable campaigns)  │      │
+│  │   → Keep all that don't conflict with Tier 1 selection       │      │
+│  ├──────────────────────────────────────────────────────────────┤      │
+│  │ Tier 3: Payment Benefits (coin redeem, wallet pay)           │      │
+│  │   → Keep all, subject to cart total cap                      │      │
+│  ├──────────────────────────────────────────────────────────────┤      │
+│  │ Tier 4: Earning Benefits (coin earn, cashback earn)          │      │
+│  │   → Keep all (post-sale, no conflict possible)               │      │
+│  └──────────────────────────────────────────────────────────────┘      │
+└────────────────────────────────────────────────────────────────────────┘</pre></div>
+</div>
+
+<div class="section">
+  <div class="section-label">Algorithm</div>
+  <h2 class="section-title">Resolution Algorithm</h2>
+
+  <div class="code"><code><span style="color:#c084fc">func</span> (cr *ConflictResolver) Resolve(candidates []CandidateBenefit) []CandidateBenefit {
+    <span style="color:#64748b">// Sort by score (descending)</span>
+    sort.Slice(candidates, func(i, j int) bool {
+        <span style="color:#c084fc">return</span> candidates[i].Score > candidates[j].Score
+    })
+
+    <span style="color:#c084fc">var</span> result []CandidateBenefit
+    excluded := make(map[string]bool) <span style="color:#64748b">// benefit IDs excluded by conflict</span>
+    usedGroups := make(map[string]bool) <span style="color:#64748b">// exclusive groups claimed</span>
+
+    <span style="color:#c084fc">for</span> _, c := <span style="color:#c084fc">range</span> candidates {
+        <span style="color:#64748b">// Skip if this benefit was excluded by a higher-priority benefit</span>
+        <span style="color:#c084fc">if</span> excluded[c.ID] {
+            <span style="color:#c084fc">continue</span>
+        }
+
+        <span style="color:#64748b">// For exclusive benefits, check if their group is already claimed</span>
+        <span style="color:#c084fc">if</span> !c.IsStackable {
+            group := c.exclusionGroup()
+            <span style="color:#c084fc">if</span> usedGroups[group] {
+                <span style="color:#c084fc">continue</span> <span style="color:#64748b">// a higher-scoring exclusive in same group already selected</span>
+            }
+            usedGroups[group] = true
+        }
+
+        <span style="color:#64748b">// Add to result</span>
+        result = <span style="color:#c084fc">append</span>(result, c)
+
+        <span style="color:#64748b">// Mark all benefits this one excludes</span>
+        <span style="color:#c084fc">for</span> _, exID := <span style="color:#c084fc">range</span> c.ExcludesWith {
+            excluded[exID] = true
+        }
+    }
+
+    <span style="color:#c084fc">return</span> result
+}
+
+<span style="color:#64748b">// exclusionGroup returns the conflict group for a benefit.</span>
+<span style="color:#64748b">// Exclusive benefits in the same group compete; only the best wins.</span>
+<span style="color:#c084fc">func</span> (c CandidateBenefit) exclusionGroup() <span style="color:#93c5fd">string</span> {
+    <span style="color:#c084fc">if</span> c.StackGroup != <span style="color:#86efac">""</span> {
+        <span style="color:#c084fc">return</span> c.StackGroup
+    }
+    <span style="color:#64748b">// Default: each benefit type is its own group</span>
+    <span style="color:#c084fc">return</span> <span style="color:#93c5fd">string</span>(c.Type)
+}</code></div>
+</div>
+
+<div class="section">
+  <div class="section-label">Scenarios</div>
+  <h2 class="section-title">Worked Scenarios</h2>
+
+  <div class="scenario">
+    <h4>Scenario 1: Coupon + Coins + Cashback</h4>
+    <p>Cart: ₹1,000. Customer has 500 coins (worth ₹50) and code "SAVE15" (15% off, max ₹150).</p>
+    <p>Matching benefits: Coupon SAVE15 (exclusive, ₹150 off), Coin Redemption (stackable-payment, ₹50 off), 5% Cashback (stackable, ₹50 earned post-sale).</p>
+    <div class="result">
+      <strong>Result:</strong> All three are available. Coupon is exclusive within coupon-group (no other coupon), but stacks with coin redemption (payment-type) and cashback (post-sale earning). Customer pays: ₹1,000 - ₹150 (coupon) - ₹50 (coins) = ₹800. Earns ₹40 cashback (5% of ₹800).
+    </div>
+  </div>
+
+  <div class="scenario">
+    <h4>Scenario 2: Two Competing Coupons</h4>
+    <p>Cart: ₹2,000. Customer enters "FLAT200" (₹200 off) and also qualifies for auto-coupon "PREMIUM10" (10% off, max ₹300 = ₹200 off).</p>
+    <div class="result">
+      <strong>Result:</strong> Both are exclusive in the "coupon" group. PREMIUM10 scores higher (same discount but higher priority = 50 vs 100). Only PREMIUM10 is available. FLAT200 is shown as "unavailable — another coupon already applied" in the UI.
+    </div>
+  </div>
+
+  <div class="scenario">
+    <h4>Scenario 3: Campaign + Stackable Cashback</h4>
+    <p>Cart: ₹5,000. Active campaign "Festive Sale" gives 20% off electronics (exclusive). Stackable cashback rule gives 5% cashback on all sales.</p>
+    <p>Cart items: ₹3,000 electronics + ₹2,000 groceries.</p>
+    <div class="result">
+      <strong>Result:</strong> Festive Sale gives ₹600 off (20% of ₹3,000, applies only to electronics items). 5% cashback is stackable and applies to the whole cart post-discount: 5% of ₹4,400 = ₹220 cashback (credited T+1). Customer pays ₹4,400.
+    </div>
+  </div>
+
+  <div class="scenario">
+    <h4>Scenario 4: Coin Redemption Exceeds Cap</h4>
+    <p>Cart: ₹500. Customer has 2,000 coins (worth ₹200). Max redemption: 50% of cart.</p>
+    <div class="result">
+      <strong>Result:</strong> Max coin discount = 50% of ₹500 = ₹250. Customer can redeem up to ₹200 (their full balance, which is under the cap). If they had ₹300 worth of coins, the cap would limit to ₹250.
+    </div>
+  </div>
+
+  <div class="scenario">
+    <h4>Scenario 5: Offline Conflict Resolution</h4>
+    <p>POS offline. Customer wants to use coupon "WEEKEND20" + 100 coins. Cached rules say WEEKEND20 is exclusive and expired yesterday.</p>
+    <div class="result">
+      <strong>Result:</strong> Offline cannot validate coupon expiry in real-time (clock may differ). Coupon is tentatively accepted. On sync, elLoyalty re-validates: coupon is expired → rejection event → POS shows "coupon reversed" on next sync. The sale amount is adjusted (or store absorbs the cost per offline policy).
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Admin</div>
+  <h2 class="section-title">Admin-Controlled Conflict Settings</h2>
+
+  <p>Organization admins can customize conflict behavior per workspace:</p>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Setting</th><th>Default</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>max_benefits_per_sale</code></td><td>5</td><td>Maximum number of benefits applied to a single sale</td></tr>
+        <tr><td><code>max_discount_pct</code></td><td>5000 (50%)</td><td>Maximum total discount as percentage of cart (basis points)</td></tr>
+        <tr><td><code>allow_coupon_coin_stack</code></td><td>true</td><td>Whether coins can be used alongside coupons</td></tr>
+        <tr><td><code>allow_coupon_cashback_stack</code></td><td>true</td><td>Whether cashback accrues on coupon-discounted sales</td></tr>
+        <tr><td><code>coin_redemption_max_pct</code></td><td>5000 (50%)</td><td>Max cart percentage payable with coins (basis points)</td></tr>
+        <tr><td><code>cashback_on_discounted</code></td><td>true</td><td>Calculate cashback on post-discount total (true) or original (false)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<footer class="footer">
+  <p>elLoyalty Conflict Resolution — <a href="index.html" style="color:#c4b5fd">Back to Index</a></p>
+</footer>
+</body>
+</html>

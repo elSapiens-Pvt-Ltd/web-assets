@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>elSapiens — elLoyalty: Unified Loyalty & Benefits Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f8fafc;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b;--light:#94a3b8;
+  --primary:#7c3aed;--primary-light:#ede9fe;--primary-dark:#5b21b6;
+  --coins:#f59e0b;--coins-light:#fef3c7;
+  --cashback:#059669;--cashback-light:#d1fae5;
+  --wallet:#3b82f6;--wallet-light:#dbeafe;
+  --coupon:#ec4899;--coupon-light:#fce7f3;
+  --campaign:#f97316;--campaign-light:#ffedd5;
+  --engine:#6366f1;--engine-light:#e0e7ff;
+  --danger:#ef4444;--success:#22c55e;--warning:#f59e0b;
+  --radius:10px;
+  --shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);
+  --shadow-md:0 4px 6px rgba(0,0,0,.07),0 2px 4px rgba(0,0,0,.04);
+  --shadow-lg:0 10px 15px rgba(0,0,0,.08),0 4px 6px rgba(0,0,0,.04);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6}
+a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
+
+/* Nav */
+.nav{position:sticky;top:0;z-index:100;background:#0f172a;padding:0 24px;display:flex;align-items:center;height:48px;gap:24px;box-shadow:0 2px 12px rgba(0,0,0,.25)}
+.nav .brand{color:#fff;font-weight:800;font-size:15px;letter-spacing:.5px;display:flex;align-items:center;gap:8px}
+.nav .brand span{background:var(--primary);padding:2px 8px;border-radius:5px;font-size:11px;font-weight:700;letter-spacing:0}
+.nav-links{display:flex;gap:4px;margin-left:auto;overflow-x:auto}
+.nav-links a{color:#94a3b8;font-size:12px;font-weight:500;text-decoration:none;padding:6px 10px;border-radius:6px;transition:all .15s;white-space:nowrap}
+.nav-links a:hover{color:#fff;background:rgba(255,255,255,.08)}
+
+/* Hero */
+.hero{background:linear-gradient(135deg,#1e1b4b 0%,#312e81 40%,#4c1d95 100%);color:#fff;padding:56px 24px 48px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 30% 70%,rgba(124,58,237,.3),transparent 50%);pointer-events:none}
+.hero h1{font-size:36px;font-weight:800;letter-spacing:-.5px;margin-bottom:8px;position:relative}
+.hero .sub{font-size:16px;color:#c4b5fd;max-width:640px;margin:0 auto 24px;position:relative}
+.hero-badges{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;position:relative}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.15);padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;backdrop-filter:blur(8px)}
+.hero-badge .dot{width:8px;height:8px;border-radius:50%}
+
+/* Container */
+.container{max-width:1200px;margin:0 auto;padding:0 24px}
+
+/* Section */
+.section{padding:56px 0}.section+.section{border-top:1px solid var(--border)}
+.section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--primary);margin-bottom:6px}
+.section-title{font-size:26px;font-weight:800;color:var(--text);margin-bottom:4px;letter-spacing:-.3px}
+.section-sub{font-size:14px;color:var(--muted);margin-bottom:32px;max-width:680px}
+h3{font-size:18px;font-weight:700;color:var(--text);margin:32px 0 12px}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:32px}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 12px;text-align:center;box-shadow:var(--shadow)}
+.stat-n{font-size:24px;font-weight:800;color:var(--primary)}
+.stat-l{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;font-weight:600;margin-top:2px}
+
+/* Cards */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px;margin-bottom:24px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);transition:all .2s}
+.card:hover{box-shadow:var(--shadow-lg);border-color:#c4b5fd;transform:translateY(-2px)}
+.card-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:12px}
+.card h4{font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px}
+.card p{font-size:13px;color:var(--muted);line-height:1.5}
+.card-link{display:inline-flex;align-items:center;gap:4px;margin-top:12px;font-size:13px;font-weight:600;color:var(--primary)}
+.card-link:hover{text-decoration:none;gap:8px}
+
+/* Architecture diagram */
+.arch-diagram{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:32px;margin:24px 0;overflow-x:auto;box-shadow:var(--shadow)}
+.arch-diagram pre{font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.5;color:var(--text);white-space:pre;overflow-x:auto}
+
+/* Benefit types */
+.benefit-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin:20px 0}
+.benefit-card{border-radius:var(--radius);padding:20px;border:1px solid;transition:all .2s}
+.benefit-card:hover{transform:translateY(-2px)}
+.benefit-card h5{font-size:14px;font-weight:700;margin-bottom:6px}
+.benefit-card p{font-size:12px;line-height:1.5}
+.benefit-card ul{font-size:12px;margin-top:8px;padding-left:16px;line-height:1.8}
+
+/* Code */
+.code-block{background:#1e293b;border-radius:var(--radius);padding:20px;margin:16px 0;overflow-x:auto}
+.code-block code{font-family:'JetBrains Mono',monospace;font-size:12px;color:#e2e8f0;line-height:1.6;white-space:pre}
+.code-block .comment{color:#64748b}.code-block .keyword{color:#c084fc}.code-block .string{color:#86efac}.code-block .type{color:#93c5fd}.code-block .fn{color:#fbbf24}
+
+/* Page index table */
+.page-index{width:100%;border-collapse:collapse;margin:20px 0}
+.page-index th{background:#f1f5f9;padding:10px 14px;text-align:left;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border)}
+.page-index td{padding:10px 14px;border-bottom:1px solid var(--border);font-size:13px}
+.page-index tr:hover td{background:#f8fafc}
+.page-index .num{font-weight:800;color:var(--primary);font-size:14px;width:40px}
+.page-index .page-link{font-weight:600;color:var(--primary)}
+.page-index .desc{color:var(--muted)}
+
+/* Ecosystem map */
+.eco-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin:20px 0}
+.eco-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}
+.eco-card h5{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px}
+.eco-card .role{font-size:11px;color:var(--primary);font-weight:600;margin-bottom:6px}
+.eco-card p{font-size:12px;color:var(--muted);line-height:1.4}
+
+/* Footer */
+.footer{background:#0f172a;color:#94a3b8;padding:24px;text-align:center;font-size:12px;margin-top:48px}
+
+@media(max-width:768px){
+  .hero h1{font-size:24px}.hero .sub{font-size:14px}
+  .card-grid{grid-template-columns:1fr}
+  .benefit-grid{grid-template-columns:1fr 1fr}
+  .stats{grid-template-columns:repeat(3,1fr)}
+  .nav-links{display:none}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="brand">elSapiens <span>elLoyalty</span></div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="architecture.html">Architecture</a>
+    <a href="benefit-engine.html">Benefit Engine</a>
+    <a href="checkout-flow.html">Checkout Flow</a>
+    <a href="domain-design.html">Domains</a>
+    <a href="database-schema.html">Schema</a>
+    <a href="rule-engine.html">Rules</a>
+    <a href="conflict-resolution.html">Conflicts</a>
+    <a href="ledger-design.html">Ledger</a>
+    <a href="offline-first.html">Offline</a>
+    <a href="ecosystem-integration.html">Ecosystem</a>
+    <a href="frontend-design.html">Frontend</a>
+    <a href="security.html">Security</a>
+    <a href="scalability.html">Scale</a>
+    <a href="edge-cases.html">Edge Cases</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <h1>Unified Loyalty &amp; Benefits Platform</h1>
+  <p class="sub">A production-grade microservice for evaluating, applying, and managing multi-type loyalty benefits across POS, eCommerce, and mobile — with offline-first architecture and full ecosystem integration.</p>
+  <div class="hero-badges">
+    <div class="hero-badge"><div class="dot" style="background:var(--coins)"></div>Loyalty Coins</div>
+    <div class="hero-badge"><div class="dot" style="background:var(--cashback)"></div>Cashback</div>
+    <div class="hero-badge"><div class="dot" style="background:var(--wallet)"></div>Loyalty Cash</div>
+    <div class="hero-badge"><div class="dot" style="background:var(--coupon)"></div>Coupons</div>
+    <div class="hero-badge"><div class="dot" style="background:var(--campaign)"></div>Campaigns</div>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- Key metrics -->
+<div class="section">
+  <div class="stats">
+    <div class="stat"><div class="stat-n">5</div><div class="stat-l">Benefit Types</div></div>
+    <div class="stat"><div class="stat-n">6</div><div class="stat-l">Core Domains</div></div>
+    <div class="stat"><div class="stat-n">16</div><div class="stat-l">DB Tables</div></div>
+    <div class="stat"><div class="stat-n">Go</div><div class="stat-l">Backend</div></div>
+    <div class="stat"><div class="stat-n">React</div><div class="stat-l">Frontend</div></div>
+    <div class="stat"><div class="stat-n">gRPC</div><div class="stat-l">Protocol</div></div>
+    <div class="stat"><div class="stat-n">Offline</div><div class="stat-l">First</div></div>
+    <div class="stat"><div class="stat-n">Multi</div><div class="stat-l">Tenant</div></div>
+  </div>
+</div>
+
+<!-- Why Unified -->
+<div class="section">
+  <div class="section-label">Rationale</div>
+  <h2 class="section-title">Why a Unified Benefits Platform?</h2>
+  <p class="section-sub">Separate systems for coupons, points, cashback, and wallets create conflicting discounts, double-spend vulnerabilities, inconsistent balances, and engineering burden. A unified engine eliminates all of these.</p>
+
+  <div class="card-grid">
+    <div class="card">
+      <h4>The Problem with Separate Systems</h4>
+      <p>When coupons live in marketing, points live in CRM, and cashback lives in finance — no single system can answer: "What is the best deal for this customer on this cart?" Conflicts go undetected. Stacking rules are unenforceable. Fraud vectors multiply.</p>
+    </div>
+    <div class="card">
+      <h4>Unified Engine Advantage</h4>
+      <p>One service evaluates <strong>all</strong> benefit types atomically. It knows every rule, every wallet balance, every coupon constraint, and every campaign condition. It resolves conflicts, prevents double-spend, and returns the optimal combination — in a single API call.</p>
+    </div>
+    <div class="card">
+      <h4>Ecosystem Citizen</h4>
+      <p>elLoyalty follows the elsapiens pattern: gRPC for inter-service calls, JWT from elAuth, financial sync to elbooks, shared multi-tenancy model (Reseller → Workspace → Organization → Customer). It is a first-class microservice, not a bolt-on.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Five Benefit Types -->
+<div class="section">
+  <div class="section-label">Benefit Types</div>
+  <h2 class="section-title">Five Distinct Reward Mechanisms</h2>
+  <p class="section-sub">Each type has different earning rules, redemption constraints, expiry behavior, and financial impact. The Benefit Engine evaluates all of them together.</p>
+
+  <div class="benefit-grid">
+    <div class="benefit-card" style="background:var(--coins-light);border-color:#fbbf24">
+      <h5 style="color:#92400e">🪙 Loyalty Coins</h5>
+      <p style="color:#78350f">Points earned on purchases. No direct monetary value until redeemed.</p>
+      <ul style="color:#78350f">
+        <li>Configurable earn rate per org</li>
+        <li>Point-to-currency conversion</li>
+        <li>Expiry after N days of inactivity</li>
+        <li>Tier multipliers (Silver 1.5×, Gold 2×)</li>
+      </ul>
+    </div>
+    <div class="benefit-card" style="background:var(--cashback-light);border-color:#059669">
+      <h5 style="color:#065f46">💵 Cashback</h5>
+      <p style="color:#064e3b">Post-purchase reward credited after a holding period. Usable on future purchases.</p>
+      <ul style="color:#064e3b">
+        <li>Percentage or flat amount</li>
+        <li>Holding period (24h–30d)</li>
+        <li>Category-specific rates</li>
+        <li>Cap per transaction</li>
+      </ul>
+    </div>
+    <div class="benefit-card" style="background:var(--wallet-light);border-color:#3b82f6">
+      <h5 style="color:#1e40af">👛 Loyalty Cash</h5>
+      <p style="color:#1e3a5f">Pre-loaded wallet money. Direct monetary value. Acts as a payment method.</p>
+      <ul style="color:#1e3a5f">
+        <li>Top-up by customer or org</li>
+        <li>1:1 currency value</li>
+        <li>Expiry configurable</li>
+        <li>Refund to wallet option</li>
+      </ul>
+    </div>
+    <div class="benefit-card" style="background:var(--coupon-light);border-color:#ec4899">
+      <h5 style="color:#9d174d">🎟️ Coupons</h5>
+      <p style="color:#831843">Rule-based discounts — percentage or flat. Single-use or multi-use, targeted or public.</p>
+      <ul style="color:#831843">
+        <li>Min purchase requirement</li>
+        <li>Product/category restrictions</li>
+        <li>User segment targeting</li>
+        <li>Usage limits (per user, global)</li>
+      </ul>
+    </div>
+    <div class="benefit-card" style="background:var(--campaign-light);border-color:#f97316">
+      <h5 style="color:#9a3412">🎯 Campaigns</h5>
+      <p style="color:#7c2d12">Event-driven rewards triggered by actions: signup, birthday, referral, spend milestones.</p>
+      <ul style="color:#7c2d12">
+        <li>Time-bound activation</li>
+        <li>Trigger conditions</li>
+        <li>Reward any benefit type</li>
+        <li>Budget caps</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Architecture Preview -->
+<div class="section">
+  <div class="section-label">Architecture Preview</div>
+  <h2 class="section-title">System Architecture at a Glance</h2>
+  <p class="section-sub">Go backend with Clean Architecture, PostgreSQL + Redis, gRPC for ecosystem calls, REST for external clients, Redis pub/sub for events.</p>
+
+  <div class="arch-diagram">
+    <pre>
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                            elsapiens Ecosystem                                  │
+│                                                                                 │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────────────┐ │
+│  │  elAuth   │  │  elPOS   │  │ elbooks  │  │ elCatalog│  │ elmessagehub     │ │
+│  │  (SSO)    │  │  (POS)   │  │ (Acctg)  │  │ (Goods)  │  │ (Notifications)  │ │
+│  └────┬──────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘  └──────┬───────────┘ │
+│    gRPC│          gRPC│          gRPC│          gRPC│           gRPC│            │
+│       └───────────┬───┴────────────┴──────────────┴───────────────┘             │
+│                   │                                                              │
+│  ┌────────────────┴─────────────────────────────────────────────────────────┐   │
+│  │                        elLoyalty Service                                  │   │
+│  │                                                                          │   │
+│  │  ┌───────────────┐  ┌───────────────┐  ┌───────────────┐                │   │
+│  │  │ REST API      │  │ gRPC Server   │  │ Event Bus     │                │   │
+│  │  │ (external)    │  │ (ecosystem)   │  │ (Redis P/S)   │                │   │
+│  │  └───────┬───────┘  └───────┬───────┘  └───────┬───────┘                │   │
+│  │          │                  │                   │                        │   │
+│  │  ┌───────┴──────────────────┴───────────────────┴───────┐               │   │
+│  │  │                  Service Layer                        │               │   │
+│  │  │                                                      │               │   │
+│  │  │  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌─────────┐ │               │   │
+│  │  │  │ Benefit  │ │  Rule    │ │ Campaign │ │ Wallet  │ │               │   │
+│  │  │  │ Engine   │ │  Engine  │ │ Engine   │ │ Service │ │               │   │
+│  │  │  └──────────┘ └──────────┘ └──────────┘ └─────────┘ │               │   │
+│  │  │  ┌──────────┐ ┌──────────┐ ┌──────────┐             │               │   │
+│  │  │  │ Coupon   │ │ Ledger   │ │ Sync     │             │               │   │
+│  │  │  │ Service  │ │ Service  │ │ Service  │             │               │   │
+│  │  │  └──────────┘ └──────────┘ └──────────┘             │               │   │
+│  │  └──────────────────────────────────────────────────────┘               │   │
+│  │          │                                                              │   │
+│  │  ┌───────┴──────────────────────────────────────────────┐               │   │
+│  │  │              Repository Layer (PostgreSQL)            │               │   │
+│  │  └──────────────────────────────────────────────────────┘               │   │
+│  │          │                    │                                          │   │
+│  │  ┌───────┴──────┐    ┌───────┴──────┐                                   │   │
+│  │  │  PostgreSQL  │    │    Redis     │                                   │   │
+│  │  │  (Primary)   │    │  (Cache+PS)  │                                   │   │
+│  │  └──────────────┘    └──────────────┘                                   │   │
+│  └──────────────────────────────────────────────────────────────────────────┘   │
+│                                                                                 │
+│  ┌──────────────── Client Applications ─────────────────────────────────────┐   │
+│  │  POS Terminal  │  eCommerce Web  │  Mobile App  │  Admin Dashboard       │   │
+│  └──────────────────────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────────────────────┘</pre>
+  </div>
+</div>
+
+<!-- Documentation Pages -->
+<div class="section">
+  <div class="section-label">Documentation</div>
+  <h2 class="section-title">Complete Documentation Index</h2>
+  <p class="section-sub">15 detailed pages covering every aspect of the platform — from architecture to edge cases.</p>
+
+  <table class="page-index">
+    <thead>
+      <tr><th>#</th><th>Page</th><th>Description</th><th>Key Topics</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="num">01</td><td><a class="page-link" href="architecture.html">Core Architecture</a></td><td class="desc">System overview, tech stack, Clean Architecture layers, multi-tenancy model</td><td>Go, PostgreSQL, Redis, gRPC, Chi v5, JWT</td></tr>
+      <tr><td class="num">02</td><td><a class="page-link" href="benefit-engine.html">Benefit Engine</a></td><td class="desc">Central evaluation engine — how all 5 benefit types are assessed in a single call</td><td>Evaluation pipeline, scoring, constraint checking</td></tr>
+      <tr><td class="num">03</td><td><a class="page-link" href="checkout-flow.html">Checkout Flow</a></td><td class="desc">End-to-end flow from cart evaluation to atomic redemption with sequence diagrams</td><td>Evaluate → Display → Select → Finalize</td></tr>
+      <tr><td class="num">04</td><td><a class="page-link" href="domain-design.html">Domain Design</a></td><td class="desc">Bounded contexts: Customer Identity, Wallets, Benefits, Rules, Campaigns, Ledger</td><td>DDD boundaries, aggregate roots, domain events</td></tr>
+      <tr><td class="num">05</td><td><a class="page-link" href="database-schema.html">Database Schema</a></td><td class="desc">Full PostgreSQL schema — 16 tables, ER diagram, indexes, constraints, migrations</td><td>UUID PKs, BIGINT money, CHECK constraints, GIN indexes</td></tr>
+      <tr><td class="num">06</td><td><a class="page-link" href="rule-engine.html">Rule Engine</a></td><td class="desc">JSON-based rules, conditions, constraints, priority handling, evaluation algorithm</td><td>Condition trees, stacking rules, exclusions</td></tr>
+      <tr><td class="num">07</td><td><a class="page-link" href="conflict-resolution.html">Conflict Resolution</a></td><td class="desc">How the engine decides when Coins + Coupons + Cashback compete</td><td>Priority matrix, stackable vs exclusive, decision trees</td></tr>
+      <tr><td class="num">08</td><td><a class="page-link" href="ledger-design.html">Transaction Ledger</a></td><td class="desc">Immutable ledger, balance computation, audit trail, reconciliation</td><td>earn/redeem/expire/adjust, no stored balances</td></tr>
+      <tr><td class="num">09</td><td><a class="page-link" href="offline-first.html">Offline-First Design</a></td><td class="desc">POS offline caching, redemption limits, sync queue, double-spend prevention</td><td>Pre-allocated budgets, idempotent APIs, conflict sync</td></tr>
+      <tr><td class="num">10</td><td><a class="page-link" href="ecosystem-integration.html">Ecosystem Integration</a></td><td class="desc">Integration with elPOS, elAuth, elbooks, elmessagehub, elCatalog</td><td>gRPC clients, event flows, financial sync</td></tr>
+      <tr><td class="num">11</td><td><a class="page-link" href="frontend-design.html">Frontend Design</a></td><td class="desc">React admin dashboard, POS integration UI, customer wallet view</td><td>Zustand, elsapiens SDK, component hierarchy</td></tr>
+      <tr><td class="num">12</td><td><a class="page-link" href="security.html">Security</a></td><td class="desc">JWT validation, workspace isolation, fraud prevention, rate limiting</td><td>OWASP, idempotency keys, anomaly detection</td></tr>
+      <tr><td class="num">13</td><td><a class="page-link" href="scalability.html">Scalability</a></td><td class="desc">Handling millions of transactions, caching, event-driven updates, read replicas</td><td>Redis cache, CQRS patterns, connection pooling</td></tr>
+      <tr><td class="num">14</td><td><a class="page-link" href="edge-cases.html">Edge Cases</a></td><td class="desc">Network failures, duplicate transactions, partial sync, negative balance prevention</td><td>Idempotency, saga patterns, compensation</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Ecosystem Integration Preview -->
+<div class="section">
+  <div class="section-label">Ecosystem</div>
+  <h2 class="section-title">elsapiens Integration Map</h2>
+  <p class="section-sub">elLoyalty connects to 5 ecosystem services via gRPC, following the same patterns as elPOS.</p>
+
+  <div class="eco-grid">
+    <div class="eco-card">
+      <h5>elAuth</h5>
+      <div class="role">Identity &amp; Multi-Tenancy</div>
+      <p>JWT validation, user/org identity, workspace membership. elLoyalty validates JWTs using the shared HS256 secret. Tenant context (reseller_id, workspace_id, organization_id) extracted from claims.</p>
+    </div>
+    <div class="eco-card">
+      <h5>elPOS</h5>
+      <div class="role">Primary Consumer</div>
+      <p>POS calls elLoyalty during checkout to evaluate benefits, then calls again to finalize redemption. Offline POS uses pre-cached budgets. Sale events trigger earn flows.</p>
+    </div>
+    <div class="eco-card">
+      <h5>elbooks</h5>
+      <div class="role">Financial Sync</div>
+      <p>Loyalty redemptions are recorded as deductions in elbooks invoices. Cashback credits are journal entries. Monthly reconciliation between loyalty ledger and accounting ledger.</p>
+    </div>
+    <div class="eco-card">
+      <h5>elCatalog</h5>
+      <div class="role">Product Context</div>
+      <p>Category and product data for rule evaluation. "Buy product X, get 2× coins" needs product lookup. Category-based coupon restrictions validated against catalog.</p>
+    </div>
+    <div class="eco-card">
+      <h5>elmessagehub</h5>
+      <div class="role">Notifications</div>
+      <p>WhatsApp/SMS for: points earned, cashback credited, coupon expiry reminders, tier upgrades, campaign alerts. Triggered by domain events.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Multi-tenancy -->
+<div class="section">
+  <div class="section-label">Isolation</div>
+  <h2 class="section-title">Multi-Tenancy Model</h2>
+  <p class="section-sub">Identical to the ecosystem standard — 4-tier hierarchy with row-level isolation via composite keys.</p>
+
+  <div class="arch-diagram">
+    <pre>
+Reseller (white-label partner)
+  └── Workspace (isolated business unit)
+       └── Organization (entity/company)
+            └── Customer (individual)
+                 ├── Wallet (coins, cashback, loyalty cash)
+                 ├── Coupon Assignments
+                 ├── Campaign Enrollments
+                 └── Transaction Ledger
+
+Every query is scoped:
+  WHERE organization_id = $1 AND workspace_id = $2
+
+JWT Claims:
+  {
+    "entityId":     "org-uuid",       → organization_id
+    "resellerId":   "reseller-uuid",  → reseller_id
+    "workspaceIds": ["ws-uuid-1"],    → workspace_id (selected)
+    "personId":     "user-uuid"       → operator identity
+  }</pre>
+  </div>
+</div>
+
+<!-- Tech Stack -->
+<div class="section">
+  <div class="section-label">Technology</div>
+  <h2 class="section-title">Technology Stack</h2>
+
+  <div class="card-grid">
+    <div class="card">
+      <h4>Backend</h4>
+      <p><strong>Go 1.24+</strong> with Clean Architecture (Handler → Service → Repository). Chi v5 router, pgx v5 PostgreSQL driver, go-redis v9, gRPC with circuit breakers (sony/gobreaker), shopspring/decimal for money, zap structured logging.</p>
+    </div>
+    <div class="card">
+      <h4>Database</h4>
+      <p><strong>PostgreSQL 16+</strong> primary store. UUID PKs, BIGINT for money (paisa), TIMESTAMPTZ, soft deletes, JSONB for rules. Redis 7+ for caching (wallet balances, rule evaluation cache, rate limits) and pub/sub events.</p>
+    </div>
+    <div class="card">
+      <h4>Communication</h4>
+      <p><strong>gRPC</strong> for all ecosystem calls (elAuth, elPOS, elbooks, elCatalog, elmessagehub). <strong>REST</strong> for external clients (admin dashboard, mobile apps). <strong>Redis pub/sub</strong> for async events (earn, redeem, expire).</p>
+    </div>
+    <div class="card">
+      <h4>Frontend</h4>
+      <p><strong>React 18+</strong> with elsapiens SDK, Zustand state management, Tailwind CSS + el-* classes. Admin dashboard for rules/campaigns. POS integration widget for checkout flow. Customer-facing wallet view.</p>
+    </div>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<footer class="footer">
+  <p>elSapiens — elLoyalty: Unified Loyalty &amp; Benefits Platform — Architecture Documentation</p>
+  <p style="margin-top:4px;color:#64748b">Last updated: April 2026 · Multi-tenant · Offline-first · Production-grade</p>
+</footer>
+
+</body>
+</html>

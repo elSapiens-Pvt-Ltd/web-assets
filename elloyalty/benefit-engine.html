@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>elLoyalty — Benefit Engine</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#f8fafc;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b;--light:#94a3b8;--primary:#7c3aed;--primary-light:#ede9fe;--primary-dark:#5b21b6;--radius:10px;--shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);--shadow-md:0 4px 6px rgba(0,0,0,.07)}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6}
+a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
+.nav{position:sticky;top:0;z-index:100;background:#0f172a;padding:0 24px;display:flex;align-items:center;height:48px;gap:24px;box-shadow:0 2px 12px rgba(0,0,0,.25)}
+.nav .brand{color:#fff;font-weight:800;font-size:15px;display:flex;align-items:center;gap:8px}
+.nav .brand span{background:var(--primary);padding:2px 8px;border-radius:5px;font-size:11px;font-weight:700}
+.nav-links{display:flex;gap:4px;margin-left:auto;overflow-x:auto}
+.nav-links a{color:#94a3b8;font-size:12px;font-weight:500;text-decoration:none;padding:6px 10px;border-radius:6px;transition:all .15s;white-space:nowrap}
+.nav-links a:hover,.nav-links a.active{color:#fff;background:rgba(255,255,255,.08)}
+.header{background:linear-gradient(135deg,#1e1b4b 0%,#312e81 40%,#4c1d95 100%);color:#fff;padding:36px 24px 28px;text-align:center}
+.header h1{font-size:26px;font-weight:800;letter-spacing:-.3px}.header p{font-size:13px;color:#c4b5fd;margin-top:4px}
+.container{max-width:1100px;margin:0 auto;padding:0 24px 48px}
+.section{padding:40px 0}.section+.section{border-top:1px solid var(--border)}
+.section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--primary);margin-bottom:6px}
+.section-title{font-size:22px;font-weight:800;color:var(--text);margin-bottom:4px}
+.section-sub{font-size:14px;color:var(--muted);margin-bottom:24px;max-width:700px}
+h3{font-size:17px;font-weight:700;color:var(--text);margin:28px 0 10px}
+p{margin-bottom:12px}
+.diagram{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:16px 0;overflow-x:auto;box-shadow:var(--shadow)}
+.diagram pre{font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.5;color:var(--text);white-space:pre}
+.code{background:#1e293b;border-radius:var(--radius);padding:20px;margin:16px 0;overflow-x:auto}
+.code code{font-family:'JetBrains Mono',monospace;font-size:12px;color:#e2e8f0;line-height:1.6;white-space:pre;display:block}
+.tbl-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);margin:16px 0;box-shadow:var(--shadow)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{background:#f1f5f9;padding:10px 14px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border)}
+tbody td{padding:10px 14px;border-bottom:1px solid var(--border)}
+tbody tr:hover td{background:#f8fafc}
+td code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#f1f5f9;padding:1px 6px;border-radius:4px}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;margin:16px 0}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+.card h4{font-size:15px;font-weight:700;margin-bottom:6px;color:var(--text)}
+.card p{font-size:13px;color:var(--muted);margin-bottom:0}
+.badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:600}
+.badge-coin{background:#fef3c7;color:#92400e}.badge-cashback{background:#d1fae5;color:#065f46}
+.badge-wallet{background:#dbeafe;color:#1e40af}.badge-coupon{background:#fce7f3;color:#9d174d}
+.badge-campaign{background:#ede9fe;color:#5b21b6}
+.footer{background:#0f172a;color:#94a3b8;padding:24px;text-align:center;font-size:12px;margin-top:48px}
+ol,ul{margin:8px 0 16px 24px}li{margin-bottom:4px;font-size:13px}
+@media(max-width:768px){.card-grid{grid-template-columns:1fr}.nav-links{display:none}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="brand">elSapiens <span>elLoyalty</span></div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="architecture.html">Architecture</a>
+    <a href="benefit-engine.html" class="active">Benefit Engine</a>
+    <a href="checkout-flow.html">Checkout Flow</a>
+    <a href="domain-design.html">Domains</a>
+    <a href="database-schema.html">Schema</a>
+    <a href="rule-engine.html">Rules</a>
+    <a href="conflict-resolution.html">Conflicts</a>
+    <a href="ledger-design.html">Ledger</a>
+    <a href="offline-first.html">Offline</a>
+    <a href="ecosystem-integration.html">Ecosystem</a>
+    <a href="frontend-design.html">Frontend</a>
+    <a href="security.html">Security</a>
+    <a href="scalability.html">Scale</a>
+    <a href="edge-cases.html">Edge Cases</a>
+  </div>
+</nav>
+
+<header class="header">
+  <h1>02 — Benefit Engine</h1>
+  <p>Central evaluation pipeline for all five benefit types: Coins, Cashback, Loyalty Cash, Coupons, and Campaigns</p>
+</header>
+
+<div class="container">
+
+<div class="section">
+  <div class="section-label">Philosophy</div>
+  <h2 class="section-title">Why a Unified Engine?</h2>
+  <p class="section-sub">Without a central engine, each benefit type becomes a silo with its own validation, conflict resolution, and application logic — leading to inconsistent customer experiences and bugs where discounts stack incorrectly.</p>
+
+  <div class="card-grid">
+    <div class="card">
+      <h4>Single Entry Point</h4>
+      <p>Every benefit evaluation starts here. POS sends a cart → engine returns all applicable benefits, ranked and conflict-resolved. No client-side calculation.</p>
+    </div>
+    <div class="card">
+      <h4>Composable Pipeline</h4>
+      <p>Each benefit type is evaluated by its own provider, but the engine orchestrates the pipeline: evaluate → score → resolve conflicts → present → apply.</p>
+    </div>
+    <div class="card">
+      <h4>Atomic Application</h4>
+      <p>When a customer selects benefits, the engine applies them in a single database transaction. No partial application — either all selected benefits apply or none do.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Pipeline</div>
+  <h2 class="section-title">Evaluation Pipeline</h2>
+
+  <div class="diagram"><pre>
+┌──────────────────────────────────────────────────────────────────────┐
+│                    Benefit Evaluation Pipeline                        │
+│                                                                      │
+│  ┌──────────┐   ┌──────────────┐   ┌──────────────┐                │
+│  │ 1. PARSE │──▶│ 2. GATHER    │──▶│ 3. EVALUATE  │                │
+│  │ Cart +   │   │ Customer     │   │ Each benefit │                │
+│  │ Customer │   │ profile,     │   │ type against │                │
+│  │ context  │   │ wallet,      │   │ rules        │                │
+│  │          │   │ active rules │   │              │                │
+│  └──────────┘   └──────────────┘   └──────┬───────┘                │
+│                                           │                         │
+│  ┌──────────────────────────────────────────────────────────────┐   │
+│  │                                                              │   │
+│  │  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐    │   │
+│  │  │  Coins   │  │ Cashback │  │  Wallet  │  │ Coupons  │    │   │
+│  │  │ Provider │  │ Provider │  │ Provider │  │ Provider │    │   │
+│  │  └────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘    │   │
+│  │       │              │              │              │          │   │
+│  │  ┌────┴──────────────┴──────────────┴──────────────┴─────┐   │   │
+│  │  │  Campaign Provider (wraps any of the above as rewards) │   │   │
+│  │  └───────────────────────────┬────────────────────────────┘   │   │
+│  │                              │                                │   │
+│  └──────────────────────────────┘                                │   │
+│                                 │                                │   │
+│  ┌──────────┐   ┌──────────────┴┐   ┌──────────────┐            │   │
+│  │ 4. SCORE │──▶│ 5. RESOLVE   │──▶│ 6. PRESENT   │            │   │
+│  │ Rank by  │   │ Conflicts    │   │ Return to    │            │   │
+│  │ priority │   │ (stackable   │   │ POS client   │            │   │
+│  │ + value  │   │  vs exclusive)│   │ for display  │            │   │
+│  └──────────┘   └──────────────┘   └──────────────┘            │   │
+│                                                                  │   │
+│  ┌──────────┐   ┌──────────────┐   ┌──────────────┐            │   │
+│  │ 7. USER  │──▶│ 8. VALIDATE  │──▶│ 9. APPLY     │            │   │
+│  │ SELECTS  │   │ Re-check     │   │ Single Txn   │            │   │
+│  │ benefits │   │ (anti-race)  │   │ (ledger +    │            │   │
+│  │          │   │              │   │  wallet +    │            │   │
+│  │          │   │              │   │  coupon)     │            │   │
+│  └──────────┘   └──────────────┘   └──────────────┘            │   │
+└──────────────────────────────────────────────────────────────────────┘</pre></div>
+</div>
+
+<div class="section">
+  <div class="section-label">Providers</div>
+  <h2 class="section-title">Benefit Providers</h2>
+  <p class="section-sub">Each benefit type implements the same <code>BenefitProvider</code> interface, making the engine extensible without modifying core logic.</p>
+
+  <h3>Provider Interface</h3>
+  <div class="code"><code><span style="color:#64748b">// services/benefit_engine.go</span>
+
+<span style="color:#c084fc">type</span> BenefitProvider <span style="color:#c084fc">interface</span> {
+    <span style="color:#64748b">// Type returns the benefit type this provider handles</span>
+    Type() BenefitType
+
+    <span style="color:#64748b">// Evaluate returns all possible benefits for the given context</span>
+    Evaluate(ctx context.Context, req EvaluationContext) ([]CandidateBenefit, error)
+
+    <span style="color:#64748b">// Apply atomically applies a selected benefit within a transaction</span>
+    Apply(ctx context.Context, tx pgx.Tx, benefit SelectedBenefit) error
+
+    <span style="color:#64748b">// Reverse undoes a previously applied benefit (for refunds)</span>
+    Reverse(ctx context.Context, tx pgx.Tx, applicationID string) error
+}
+
+<span style="color:#c084fc">type</span> BenefitType <span style="color:#c084fc">string</span>
+
+<span style="color:#c084fc">const</span> (
+    BenefitCoins    BenefitType = <span style="color:#86efac">"loyalty_coins"</span>
+    BenefitCashback BenefitType = <span style="color:#86efac">"cashback"</span>
+    BenefitWallet   BenefitType = <span style="color:#86efac">"loyalty_cash"</span>
+    BenefitCoupon   BenefitType = <span style="color:#86efac">"coupon"</span>
+    BenefitCampaign BenefitType = <span style="color:#86efac">"campaign"</span>
+)</code></div>
+
+  <h3>Five Core Providers</h3>
+  <div class="card-grid">
+    <div class="card">
+      <h4><span class="badge badge-coin">Coins</span> Loyalty Coins Provider</h4>
+      <p><strong>Earn:</strong> X coins per ₹Y spent (configurable per category, product, or flat).<br>
+      <strong>Redeem:</strong> N coins = ₹M discount. Floor-based: customer chooses how many coins to spend. Minimum redemption threshold enforced.</p>
+    </div>
+    <div class="card">
+      <h4><span class="badge badge-cashback">Cashback</span> Cashback Provider</h4>
+      <p><strong>Earn:</strong> Percentage of transaction → credited to wallet after settlement.<br>
+      <strong>Apply:</strong> Automatic. Cashback accrues post-sale. Not redeemable mid-checkout but visible in wallet. Delay configurable (instant, T+1, T+7).</p>
+    </div>
+    <div class="card">
+      <h4><span class="badge badge-wallet">Wallet</span> Loyalty Cash Provider</h4>
+      <p><strong>Top-up:</strong> Customer adds money to digital wallet (prepaid).<br>
+      <strong>Redeem:</strong> Used as a payment method at checkout. Partial or full balance can be applied. Tracks earn vs topup sources separately for accounting.</p>
+    </div>
+    <div class="card">
+      <h4><span class="badge badge-coupon">Coupon</span> Coupon Provider</h4>
+      <p><strong>Validate:</strong> Check code → verify expiry, usage limits, min cart, eligible products.<br>
+      <strong>Apply:</strong> Flat discount or percentage. Single-use or multi-use. Customer-specific or global. Tracks redemption count per customer.</p>
+    </div>
+    <div class="card">
+      <h4><span class="badge badge-campaign">Campaign</span> Campaign Provider</h4>
+      <p><strong>Meta-provider:</strong> Campaign wraps any other benefit type with time-bound, trigger-based, budget-limited constraints. "Buy 3 get 20% off" is a campaign that uses the coupon provider internally.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Core Types</div>
+  <h2 class="section-title">Evaluation Request & Response</h2>
+
+  <h3>EvaluationContext (Input)</h3>
+  <div class="code"><code><span style="color:#c084fc">type</span> EvaluationContext <span style="color:#c084fc">struct</span> {
+    <span style="color:#64748b">// Tenant isolation</span>
+    OrganizationID <span style="color:#93c5fd">string</span>
+    WorkspaceID    <span style="color:#93c5fd">string</span>
+
+    <span style="color:#64748b">// Customer identity</span>
+    CustomerID     <span style="color:#93c5fd">string</span>
+    CustomerTier   <span style="color:#93c5fd">string</span>   <span style="color:#64748b">// bronze, silver, gold, platinum</span>
+    CustomerTags   []<span style="color:#93c5fd">string</span> <span style="color:#64748b">// vip, staff, wholesale</span>
+
+    <span style="color:#64748b">// Cart data</span>
+    CartItems      []CartItem
+    CartTotal      <span style="color:#93c5fd">int64</span>    <span style="color:#64748b">// paisa (₹123.45 = 12345)</span>
+    PaymentMethod  <span style="color:#93c5fd">string</span>   <span style="color:#64748b">// cash, card, upi, wallet</span>
+
+    <span style="color:#64748b">// Optional: customer-entered coupon code</span>
+    CouponCode     <span style="color:#93c5fd">string</span>
+
+    <span style="color:#64748b">// Context</span>
+    StoreID        <span style="color:#93c5fd">string</span>
+    TerminalID     <span style="color:#93c5fd">string</span>
+    OperatorID     <span style="color:#93c5fd">string</span>
+    Timestamp      time.Time
+    IsOffline      <span style="color:#93c5fd">bool</span>
+}
+
+<span style="color:#c084fc">type</span> CartItem <span style="color:#c084fc">struct</span> {
+    ProductID    <span style="color:#93c5fd">string</span>
+    SKU          <span style="color:#93c5fd">string</span>
+    CategoryID   <span style="color:#93c5fd">string</span>
+    Quantity     <span style="color:#93c5fd">int</span>
+    UnitPrice    <span style="color:#93c5fd">int64</span>  <span style="color:#64748b">// paisa</span>
+    LineTotal    <span style="color:#93c5fd">int64</span>  <span style="color:#64748b">// qty × unit, paisa</span>
+    TaxAmount    <span style="color:#93c5fd">int64</span>  <span style="color:#64748b">// GST, paisa</span>
+    HSNCode      <span style="color:#93c5fd">string</span> <span style="color:#64748b">// for GST compliance</span>
+}</code></div>
+
+  <h3>EvaluationResult (Output)</h3>
+  <div class="code"><code><span style="color:#c084fc">type</span> EvaluationResult <span style="color:#c084fc">struct</span> {
+    <span style="color:#64748b">// All applicable benefits, ranked by score</span>
+    AvailableBenefits []CandidateBenefit
+
+    <span style="color:#64748b">// Pre-selected "best deal" suggestion</span>
+    Recommended       []<span style="color:#93c5fd">string</span> <span style="color:#64748b">// benefit IDs</span>
+
+    <span style="color:#64748b">// Maximum possible savings</span>
+    MaxSavings        <span style="color:#93c5fd">int64</span>   <span style="color:#64748b">// paisa</span>
+
+    <span style="color:#64748b">// Earn preview (what customer will earn from this sale)</span>
+    EarnPreview       EarnPreview
+
+    <span style="color:#64748b">// Wallet balances for display</span>
+    WalletSummary     WalletSummary
+}
+
+<span style="color:#c084fc">type</span> CandidateBenefit <span style="color:#c084fc">struct</span> {
+    ID             <span style="color:#93c5fd">string</span>
+    Type           BenefitType
+    Name           <span style="color:#93c5fd">string</span>       <span style="color:#64748b">// "10% cashback on electronics"</span>
+    Description    <span style="color:#93c5fd">string</span>
+    DiscountAmount <span style="color:#93c5fd">int64</span>       <span style="color:#64748b">// paisa — savings if applied</span>
+    Priority       <span style="color:#93c5fd">int</span>         <span style="color:#64748b">// lower = higher priority</span>
+    Score          <span style="color:#93c5fd">float64</span>     <span style="color:#64748b">// normalized 0-1 score</span>
+    IsStackable    <span style="color:#93c5fd">bool</span>        <span style="color:#64748b">// can combine with other benefits</span>
+    StackGroup     <span style="color:#93c5fd">string</span>      <span style="color:#64748b">// stackable within same group only</span>
+    ExcludesWith   []<span style="color:#93c5fd">string</span>   <span style="color:#64748b">// mutually exclusive benefit IDs</span>
+    RuleID         <span style="color:#93c5fd">string</span>      <span style="color:#64748b">// which rule triggered this benefit</span>
+    CampaignID     <span style="color:#93c5fd">string</span>      <span style="color:#64748b">// if from a campaign, empty otherwise</span>
+    RequiresInput  <span style="color:#93c5fd">bool</span>        <span style="color:#64748b">// e.g. coupon needs code entry</span>
+    CouponCode     <span style="color:#93c5fd">string</span>      <span style="color:#64748b">// if coupon type</span>
+}
+
+<span style="color:#c084fc">type</span> EarnPreview <span style="color:#c084fc">struct</span> {
+    CoinsEarned   <span style="color:#93c5fd">int</span>   <span style="color:#64748b">// loyalty coins from this sale</span>
+    CashbackAmt   <span style="color:#93c5fd">int64</span> <span style="color:#64748b">// cashback in paisa (credited later)</span>
+    BonusCoins    <span style="color:#93c5fd">int</span>   <span style="color:#64748b">// campaign bonus coins</span>
+}
+
+<span style="color:#c084fc">type</span> WalletSummary <span style="color:#c084fc">struct</span> {
+    CoinBalance    <span style="color:#93c5fd">int</span>
+    CoinValue      <span style="color:#93c5fd">int64</span> <span style="color:#64748b">// paisa equivalent</span>
+    CashbackPending <span style="color:#93c5fd">int64</span>
+    CashbackReady  <span style="color:#93c5fd">int64</span>
+    WalletBalance  <span style="color:#93c5fd">int64</span>
+}</code></div>
+</div>
+
+<div class="section">
+  <div class="section-label">Engine</div>
+  <h2 class="section-title">BenefitEngine Implementation</h2>
+
+  <div class="code"><code><span style="color:#c084fc">type</span> BenefitEngine <span style="color:#c084fc">struct</span> {
+    providers        []BenefitProvider
+    ruleEngine       *RuleEngine
+    conflictResolver *ConflictResolver
+    walletSvc        *WalletService
+    ledgerSvc        *LedgerService
+    bus              *eventbus.Bus
+    logger           *zap.Logger
+}
+
+<span style="color:#64748b">// Evaluate is the single entry point for all benefit evaluation</span>
+<span style="color:#c084fc">func</span> (e *BenefitEngine) Evaluate(ctx context.Context, req EvaluationContext) (*EvaluationResult, error) {
+    <span style="color:#64748b">// 1. Gather customer data</span>
+    wallet, err := e.walletSvc.GetSummary(ctx, req.CustomerID)
+    <span style="color:#c084fc">if</span> err != nil {
+        <span style="color:#c084fc">return</span> nil, fmt.Errorf(<span style="color:#86efac">"gather wallet: %w"</span>, err)
+    }
+
+    <span style="color:#64748b">// 2. Evaluate each provider</span>
+    <span style="color:#c084fc">var</span> allCandidates []CandidateBenefit
+    <span style="color:#c084fc">for</span> _, p := <span style="color:#c084fc">range</span> e.providers {
+        candidates, err := p.Evaluate(ctx, req)
+        <span style="color:#c084fc">if</span> err != nil {
+            e.logger.Warn(<span style="color:#86efac">"provider evaluation failed"</span>,
+                zap.String(<span style="color:#86efac">"type"</span>, <span style="color:#93c5fd">string</span>(p.Type())),
+                zap.Error(err),
+            )
+            <span style="color:#c084fc">continue</span> <span style="color:#64748b">// gracefully degrade; don't block checkout</span>
+        }
+        allCandidates = <span style="color:#c084fc">append</span>(allCandidates, candidates...)
+    }
+
+    <span style="color:#64748b">// 3. Score all candidates</span>
+    scored := e.score(allCandidates, req)
+
+    <span style="color:#64748b">// 4. Resolve conflicts</span>
+    resolved := e.conflictResolver.Resolve(scored)
+
+    <span style="color:#64748b">// 5. Build earn preview</span>
+    earn := e.calculateEarnPreview(req)
+
+    <span style="color:#c084fc">return</span> &EvaluationResult{
+        AvailableBenefits: resolved,
+        Recommended:       e.pickRecommended(resolved),
+        MaxSavings:        e.sumSavings(resolved),
+        EarnPreview:       earn,
+        WalletSummary:     *wallet,
+    }, nil
+}
+
+<span style="color:#64748b">// Apply atomically applies selected benefits within a DB transaction</span>
+<span style="color:#c084fc">func</span> (e *BenefitEngine) Apply(ctx context.Context, req ApplyRequest) (*ApplyResult, error) {
+    <span style="color:#64748b">// Re-validate: ensure selected benefits are still valid (anti-race)</span>
+    current, err := e.Evaluate(ctx, req.EvaluationContext)
+    <span style="color:#c084fc">if</span> err != nil {
+        <span style="color:#c084fc">return</span> nil, err
+    }
+    validSet := e.validateSelections(req.SelectedBenefitIDs, current.AvailableBenefits)
+
+    <span style="color:#64748b">// Begin atomic transaction</span>
+    tx, err := e.pool.Begin(ctx)
+    <span style="color:#c084fc">if</span> err != nil {
+        <span style="color:#c084fc">return</span> nil, err
+    }
+    <span style="color:#c084fc">defer</span> tx.Rollback(ctx)
+
+    <span style="color:#c084fc">var</span> applied []AppliedBenefit
+    <span style="color:#c084fc">for</span> _, sel := <span style="color:#c084fc">range</span> validSet {
+        provider := e.providerFor(sel.Type)
+        <span style="color:#c084fc">if</span> err := provider.Apply(ctx, tx, sel); err != nil {
+            <span style="color:#c084fc">return</span> nil, fmt.Errorf(<span style="color:#86efac">"apply %s: %w"</span>, sel.ID, err)
+        }
+        <span style="color:#64748b">// Record in immutable ledger</span>
+        e.ledgerSvc.RecordApplication(ctx, tx, sel)
+        applied = <span style="color:#c084fc">append</span>(applied, toApplied(sel))
+    }
+
+    <span style="color:#c084fc">if</span> err := tx.Commit(ctx); err != nil {
+        <span style="color:#c084fc">return</span> nil, err
+    }
+
+    <span style="color:#64748b">// Publish event for async processing</span>
+    e.bus.Publish(ctx, <span style="color:#86efac">"benefit.applied"</span>, BenefitAppliedEvent{...})
+
+    <span style="color:#c084fc">return</span> &ApplyResult{Applied: applied}, nil
+}</code></div>
+</div>
+
+<div class="section">
+  <div class="section-label">Scoring</div>
+  <h2 class="section-title">Benefit Scoring Algorithm</h2>
+  <p>Each candidate benefit receives a normalized score (0.0 – 1.0) based on multiple factors:</p>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Factor</th><th>Weight</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>Discount Value</td><td>0.40</td><td>Higher absolute savings = higher score</td></tr>
+        <tr><td>Rule Priority</td><td>0.25</td><td>Admin-assigned priority (1 = highest)</td></tr>
+        <tr><td>Campaign Boost</td><td>0.15</td><td>Active campaigns get a boost</td></tr>
+        <tr><td>Customer Relevance</td><td>0.10</td><td>Tier-specific benefits score higher for matching tier</td></tr>
+        <tr><td>Recency</td><td>0.10</td><td>Newer rules slightly favored to promote fresh offers</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="code"><code><span style="color:#c084fc">func</span> (e *BenefitEngine) score(candidates []CandidateBenefit, ctx EvaluationContext) []CandidateBenefit {
+    maxDiscount := e.findMaxDiscount(candidates)
+
+    <span style="color:#c084fc">for</span> i := <span style="color:#c084fc">range</span> candidates {
+        c := &candidates[i]
+        s := 0.0
+
+        <span style="color:#64748b">// Discount value (normalized)</span>
+        <span style="color:#c084fc">if</span> maxDiscount > 0 {
+            s += 0.40 * (float64(c.DiscountAmount) / float64(maxDiscount))
+        }
+
+        <span style="color:#64748b">// Priority (inverted: priority 1 → score 1.0)</span>
+        s += 0.25 * (1.0 / float64(max(c.Priority, 1)))
+
+        <span style="color:#64748b">// Campaign boost</span>
+        <span style="color:#c084fc">if</span> c.CampaignID != <span style="color:#86efac">""</span> {
+            s += 0.15
+        }
+
+        <span style="color:#64748b">// Tier relevance</span>
+        <span style="color:#c084fc">if</span> c.matchesTier(ctx.CustomerTier) {
+            s += 0.10
+        }
+
+        c.Score = s
+    }
+
+    <span style="color:#64748b">// Sort descending by score</span>
+    sort.Slice(candidates, func(i, j int) bool {
+        <span style="color:#c084fc">return</span> candidates[i].Score > candidates[j].Score
+    })
+
+    <span style="color:#c084fc">return</span> candidates
+}</code></div>
+</div>
+
+<div class="section">
+  <div class="section-label">Graceful</div>
+  <h2 class="section-title">Graceful Degradation</h2>
+  <p>The benefit engine is designed to <strong>never block a sale</strong>. If evaluation fails, the sale proceeds without benefits.</p>
+
+  <div class="card-grid">
+    <div class="card">
+      <h4>Provider Failure Isolation</h4>
+      <p>If one provider (e.g., campaign) fails, other providers still return results. The engine logs the error and continues with partial results.</p>
+    </div>
+    <div class="card">
+      <h4>Timeout Protection</h4>
+      <p>Evaluation has a 2-second timeout. If exceeded, the engine returns whatever results it has collected so far, with a <code>partial: true</code> flag.</p>
+    </div>
+    <div class="card">
+      <h4>Offline Fallback</h4>
+      <p>When offline, the POS uses cached rules and pre-allocated budgets to approximate benefits locally. Full reconciliation happens on sync.</p>
+    </div>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<footer class="footer">
+  <p>elLoyalty Benefit Engine — <a href="index.html" style="color:#c4b5fd">Back to Index</a></p>
+</footer>
+</body>
+</html>

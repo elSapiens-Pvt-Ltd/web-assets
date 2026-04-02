@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>elLoyalty — Frontend Design</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#f8fafc;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b;--light:#94a3b8;--primary:#7c3aed;--primary-light:#ede9fe;--primary-dark:#5b21b6;--radius:10px;--shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);--shadow-md:0 4px 6px rgba(0,0,0,.07)}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6}
+a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
+.nav{position:sticky;top:0;z-index:100;background:#0f172a;padding:0 24px;display:flex;align-items:center;height:48px;gap:24px;box-shadow:0 2px 12px rgba(0,0,0,.25)}
+.nav .brand{color:#fff;font-weight:800;font-size:15px;display:flex;align-items:center;gap:8px}
+.nav .brand span{background:var(--primary);padding:2px 8px;border-radius:5px;font-size:11px;font-weight:700}
+.nav-links{display:flex;gap:4px;margin-left:auto;overflow-x:auto}
+.nav-links a{color:#94a3b8;font-size:12px;font-weight:500;text-decoration:none;padding:6px 10px;border-radius:6px;transition:all .15s;white-space:nowrap}
+.nav-links a:hover,.nav-links a.active{color:#fff;background:rgba(255,255,255,.08)}
+.header{background:linear-gradient(135deg,#1e1b4b 0%,#312e81 40%,#4c1d95 100%);color:#fff;padding:36px 24px 28px;text-align:center}
+.header h1{font-size:26px;font-weight:800;letter-spacing:-.3px}.header p{font-size:13px;color:#c4b5fd;margin-top:4px}
+.container{max-width:1100px;margin:0 auto;padding:0 24px 48px}
+.section{padding:40px 0}.section+.section{border-top:1px solid var(--border)}
+.section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--primary);margin-bottom:6px}
+.section-title{font-size:22px;font-weight:800;color:var(--text);margin-bottom:4px}
+.section-sub{font-size:14px;color:var(--muted);margin-bottom:24px;max-width:700px}
+h3{font-size:17px;font-weight:700;color:var(--text);margin:28px 0 10px}
+p{margin-bottom:12px}
+.diagram{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:16px 0;overflow-x:auto;box-shadow:var(--shadow)}
+.diagram pre{font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.5;color:var(--text);white-space:pre}
+.code{background:#1e293b;border-radius:var(--radius);padding:20px;margin:16px 0;overflow-x:auto}
+.code code{font-family:'JetBrains Mono',monospace;font-size:12px;color:#e2e8f0;line-height:1.6;white-space:pre;display:block}
+.tbl-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);margin:16px 0;box-shadow:var(--shadow)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{background:#f1f5f9;padding:10px 14px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border)}
+tbody td{padding:10px 14px;border-bottom:1px solid var(--border)}
+tbody tr:hover td{background:#f8fafc}
+td code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#f1f5f9;padding:1px 6px;border-radius:4px}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;margin:16px 0}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+.card h4{font-size:15px;font-weight:700;margin-bottom:6px}.card p{font-size:13px;color:var(--muted);margin-bottom:0}
+ol,ul{margin:8px 0 16px 24px}li{margin-bottom:4px;font-size:13px}
+.mock{background:var(--card);border:2px dashed var(--border);border-radius:var(--radius);padding:24px;margin:16px 0;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.5;color:var(--text);white-space:pre;overflow-x:auto}
+.footer{background:#0f172a;color:#94a3b8;padding:24px;text-align:center;font-size:12px;margin-top:48px}
+@media(max-width:768px){.card-grid{grid-template-columns:1fr}.nav-links{display:none}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="brand">elSapiens <span>elLoyalty</span></div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="architecture.html">Architecture</a>
+    <a href="benefit-engine.html">Benefit Engine</a>
+    <a href="checkout-flow.html">Checkout Flow</a>
+    <a href="domain-design.html">Domains</a>
+    <a href="database-schema.html">Schema</a>
+    <a href="rule-engine.html">Rules</a>
+    <a href="conflict-resolution.html">Conflicts</a>
+    <a href="ledger-design.html">Ledger</a>
+    <a href="offline-first.html">Offline</a>
+    <a href="ecosystem-integration.html">Ecosystem</a>
+    <a href="frontend-design.html" class="active">Frontend</a>
+    <a href="security.html">Security</a>
+    <a href="scalability.html">Scale</a>
+    <a href="edge-cases.html">Edge Cases</a>
+  </div>
+</nav>
+
+<header class="header">
+  <h1>11 — Frontend Design</h1>
+  <p>POS checkout widget, admin dashboard, Zustand stores, component architecture, and offline-aware UI</p>
+</header>
+
+<div class="container">
+
+<div class="section">
+  <div class="section-label">Overview</div>
+  <h2 class="section-title">Two Frontend Surfaces</h2>
+  <p class="section-sub">elLoyalty has two distinct frontends: a checkout widget embedded in the elPOS terminal app, and an admin dashboard for configuring rules, campaigns, and viewing analytics.</p>
+
+  <div class="card-grid">
+    <div class="card">
+      <h4>POS Checkout Widget</h4>
+      <p>Embedded in elPOS React app. Shows customer wallet, available benefits, toggle selection, earn preview. Must work offline. Tailwind + elSDK components.</p>
+    </div>
+    <div class="card">
+      <h4>Admin Dashboard</h4>
+      <p>Standalone React app or tab within elPOS admin. Rule CRUD, campaign management, customer search, tier management, analytics. Online-only.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">POS Widget</div>
+  <h2 class="section-title">Checkout Loyalty Widget</h2>
+
+  <div class="mock">
+┌─────────────────────────────────────────────┐
+│  🪙 Loyalty Benefits          [Alice · Gold] │
+│─────────────────────────────────────────────│
+│                                             │
+│  Wallet Balance                             │
+│  ┌──────────┬──────────┬───────────┐       │
+│  │ 🪙 500    │ 💵 ₹2,000 │ 🎫 2 codes │       │
+│  │ coins    │ wallet   │ coupons   │       │
+│  └──────────┴──────────┴───────────┘       │
+│                                             │
+│  Available Benefits (cart: ₹1,500)          │
+│  ┌─────────────────────────────────────┐   │
+│  │ [✓] Use 150 coins → ₹150 off       │   │
+│  │ [✓] 5% cashback → ~₹67 earned      │   │
+│  │ [ ] Coupon SAVE200 → ₹200 off      │   │
+│  │     ⚠ Cannot stack with coins       │   │
+│  └─────────────────────────────────────┘   │
+│                                             │
+│  You Save: ₹150                             │
+│  You Earn: ~95 coins + ~₹67 cashback       │
+│                                             │
+│  [  Apply Benefits  ]                       │
+│                                             │
+│  ░░ offline · cached 3 min ago              │
+└─────────────────────────────────────────────┘</div>
+
+  <h3>Component Tree</h3>
+  <div class="diagram"><pre>
+&lt;LoyaltyCheckoutWidget&gt;
+  ├── &lt;CustomerWalletBar /&gt;           // coins, cash, coupons summary
+  ├── &lt;BenefitList&gt;                    // scrollable list of available benefits
+  │     ├── &lt;BenefitItem type="coins" /&gt;
+  │     ├── &lt;BenefitItem type="cashback" /&gt;
+  │     ├── &lt;BenefitItem type="coupon" /&gt;
+  │     └── &lt;ConflictWarning /&gt;        // shown when exclusive rules prevent stacking
+  ├── &lt;EarnPreview /&gt;                  // estimated coins + cashback to be earned
+  ├── &lt;ApplyButton /&gt;                  // triggers ApplyBenefits API or offline queue
+  └── &lt;OfflineIndicator /&gt;             // connectivity status + cache age</pre></div>
+</div>
+
+<div class="section">
+  <div class="section-label">State</div>
+  <h2 class="section-title">Zustand Store Design</h2>
+
+  <div class="code"><code><span style="color:#64748b">// stores/loyaltyStore.ts</span>
+<span style="color:#c084fc">import</span> { create } <span style="color:#c084fc">from</span> <span style="color:#86efac">'zustand'</span>
+
+<span style="color:#c084fc">interface</span> LoyaltyState {
+  <span style="color:#64748b">// Customer context</span>
+  customer: LoyaltyCustomer | <span style="color:#c084fc">null</span>
+  wallet: WalletSummary | <span style="color:#c084fc">null</span>
+
+  <span style="color:#64748b">// Evaluation results</span>
+  availableBenefits: CandidateBenefit[]
+  selectedBenefitIds: <span style="color:#c084fc">string</span>[]
+  conflicts: ConflictInfo[]
+  earnPreview: EarnPreview | <span style="color:#c084fc">null</span>
+
+  <span style="color:#64748b">// Applied state</span>
+  appliedBenefits: AppliedBenefit[] | <span style="color:#c084fc">null</span>
+  totalDiscount: <span style="color:#c084fc">number</span>  <span style="color:#64748b">// paisa</span>
+
+  <span style="color:#64748b">// Offline state</span>
+  isOffline: <span style="color:#c084fc">boolean</span>
+  cacheAge: Date | <span style="color:#c084fc">null</span>
+  offlineBudget: OfflineBudget | <span style="color:#c084fc">null</span>
+
+  <span style="color:#64748b">// Actions</span>
+  setCustomer: (id: <span style="color:#c084fc">string</span>) => Promise&lt;<span style="color:#c084fc">void</span>&gt;
+  evaluateCart: (cart: CartItem[]) => Promise&lt;<span style="color:#c084fc">void</span>&gt;
+  toggleBenefit: (benefitId: <span style="color:#c084fc">string</span>) => <span style="color:#c084fc">void</span>
+  applyBenefits: () => Promise&lt;ApplyResult&gt;
+  creditEarnings: (saleId: <span style="color:#c084fc">string</span>, total: <span style="color:#c084fc">number</span>) => Promise&lt;<span style="color:#c084fc">void</span>&gt;
+  reset: () => <span style="color:#c084fc">void</span>
+}
+
+<span style="color:#c084fc">export const</span> useLoyaltyStore = create&lt;LoyaltyState&gt;((set, get) => ({
+  customer: <span style="color:#c084fc">null</span>,
+  wallet: <span style="color:#c084fc">null</span>,
+  availableBenefits: [],
+  selectedBenefitIds: [],
+  conflicts: [],
+  earnPreview: <span style="color:#c084fc">null</span>,
+  appliedBenefits: <span style="color:#c084fc">null</span>,
+  totalDiscount: 0,
+  isOffline: !navigator.onLine,
+  cacheAge: <span style="color:#c084fc">null</span>,
+  offlineBudget: <span style="color:#c084fc">null</span>,
+
+  evaluateCart: <span style="color:#c084fc">async</span> (cart) => {
+    <span style="color:#c084fc">const</span> { customer, isOffline, offlineBudget } = get()
+    <span style="color:#c084fc">if</span> (!customer) <span style="color:#c084fc">return</span>
+
+    <span style="color:#c084fc">if</span> (isOffline) {
+      <span style="color:#64748b">// Use cached rules + offline budget for local evaluation</span>
+      <span style="color:#c084fc">const</span> result = <span style="color:#c084fc">await</span> offlineEvaluate(customer, cart, offlineBudget)
+      set({ availableBenefits: result.benefits, earnPreview: result.earn })
+    } <span style="color:#c084fc">else</span> {
+      <span style="color:#64748b">// Call server API</span>
+      <span style="color:#c084fc">const</span> result = <span style="color:#c084fc">await</span> loyaltyApi.evaluateCart(customer.id, cart)
+      set({ availableBenefits: result.benefits, earnPreview: result.earn,
+            conflicts: result.conflicts })
+    }
+  },
+
+  toggleBenefit: (benefitId) => {
+    <span style="color:#c084fc">const</span> { selectedBenefitIds, availableBenefits, conflicts } = get()
+    <span style="color:#64748b">// Check conflicts: if toggling ON an exclusive benefit, deselect conflicting ones</span>
+    <span style="color:#c084fc">const</span> benefit = availableBenefits.find(b => b.id === benefitId)
+    <span style="color:#c084fc">if</span> (!benefit) <span style="color:#c084fc">return</span>
+
+    <span style="color:#c084fc">let</span> next = [...selectedBenefitIds]
+    <span style="color:#c084fc">if</span> (next.includes(benefitId)) {
+      next = next.filter(id => id !== benefitId)
+    } <span style="color:#c084fc">else</span> {
+      <span style="color:#64748b">// Remove conflicting exclusive benefits</span>
+      <span style="color:#c084fc">const</span> conflicting = conflicts
+        .filter(c => c.benefitId === benefitId)
+        .map(c => c.conflictsWith)
+      next = next.filter(id => !conflicting.includes(id))
+      next.push(benefitId)
+    }
+    set({ selectedBenefitIds: next })
+  },
+  <span style="color:#64748b">// ... other actions</span>
+}))</code></div>
+</div>
+
+<div class="section">
+  <div class="section-label">Admin</div>
+  <h2 class="section-title">Admin Dashboard</h2>
+
+  <h3>Page Structure</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Route</th><th>Page</th><th>Features</th></tr></thead>
+      <tbody>
+        <tr><td><code>/loyalty/rules</code></td><td>Benefit Rules</td><td>List + CRUD, JSON condition builder, priority ordering, enable/disable toggle</td></tr>
+        <tr><td><code>/loyalty/campaigns</code></td><td>Campaigns</td><td>Campaign list, create wizard, date range picker, budget tracker, enrollment stats</td></tr>
+        <tr><td><code>/loyalty/coupons</code></td><td>Coupon Manager</td><td>Batch create, usage tracking, expire/disable, CSV export</td></tr>
+        <tr><td><code>/loyalty/customers</code></td><td>Customer Loyalty</td><td>Search, wallet balance, transaction history, tier override, manual credit/debit</td></tr>
+        <tr><td><code>/loyalty/tiers</code></td><td>Tier Config</td><td>Tier thresholds, multiplier settings, benefits per tier</td></tr>
+        <tr><td><code>/loyalty/analytics</code></td><td>Analytics</td><td>Coins issued/redeemed, cashback volume, campaign ROI, top customers, redemption rate</td></tr>
+        <tr><td><code>/loyalty/settings</code></td><td>Settings</td><td>Coin rate, expiry policy, offline budgets, conflict defaults, notification templates</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Rule Builder Component</h3>
+  <div class="mock">
+┌─────────────────────────────────────────────────────┐
+│  Create Benefit Rule                    [Save] [X]  │
+│─────────────────────────────────────────────────────│
+│                                                     │
+│  Name: [Weekend Double Coins           ]            │
+│  Priority: [500    ]   Type: [● Active ○ Draft]     │
+│                                                     │
+│  ── CONDITIONS ──────────────────────────────────── │
+│  Match: [ALL ▼] of the following:                   │
+│  ┌─────────────────────────────────────────────┐   │
+│  │ [day_of_week ▼] [in         ▼] [Sat, Sun]  │   │
+│  │ [cart_total   ▼] [>          ▼] [₹500     ] │   │
+│  │ [customer_tier▼] [in         ▼] [Gold,Plat] │   │
+│  │                          [+ Add Condition]   │   │
+│  └─────────────────────────────────────────────┘   │
+│                                                     │
+│  ── REWARD ─────────────────────────────────────── │
+│  Type: [earn_coins ▼]                               │
+│  Rate: [2   ] coins per ₹[100  ] spent             │
+│  Max coins: [500   ] per transaction                │
+│                                                     │
+│  ── STACKING ───────────────────────────────────── │
+│  [● Stackable] [○ Exclusive]                       │
+│  Exclusion group: [________________]                │
+│                                                     │
+│  ── SCHEDULE ───────────────────────────────────── │
+│  Valid from: [2026-04-01] to [2026-12-31]          │
+│  Active hours: [All day ▼]                          │
+└─────────────────────────────────────────────────────┘</div>
+</div>
+
+<div class="section">
+  <div class="section-label">Offline UI</div>
+  <h2 class="section-title">Offline-Aware UI Patterns</h2>
+
+  <div class="card-grid">
+    <div class="card">
+      <h4>Connectivity Indicator</h4>
+      <p>Bottom bar shows "Online" (green) or "Offline · cached 5 min ago" (amber). Cache age shown so cashier knows data freshness.</p>
+    </div>
+    <div class="card">
+      <h4>Approximate Values</h4>
+      <p>When offline, all earn previews show "~" prefix: "~95 coins". Tooltip explains "Exact amount calculated when online."</p>
+    </div>
+    <div class="card">
+      <h4>Budget Limits</h4>
+      <p>If coin redemption is limited by offline budget, show: "150 of 500 coins available offline". Full balance shown but greyed.</p>
+    </div>
+    <div class="card">
+      <h4>Coupon Warnings</h4>
+      <p>Offline coupon entry shows: "Code accepted — will be verified on sync." Yellow warning badge instead of green confirmed.</p>
+    </div>
+  </div>
+
+  <h3>IndexedDB Schema (Dexie.js)</h3>
+  <div class="code"><code><span style="color:#64748b">// lib/loyaltyDB.ts — offline loyalty cache</span>
+<span style="color:#c084fc">import</span> Dexie <span style="color:#c084fc">from</span> <span style="color:#86efac">'dexie'</span>
+
+<span style="color:#c084fc">class</span> LoyaltyDB <span style="color:#c084fc">extends</span> Dexie {
+  customerWallets!: Dexie.Table&lt;CachedWallet, <span style="color:#c084fc">string</span>&gt;
+  benefitRules!: Dexie.Table&lt;CachedRule, <span style="color:#c084fc">string</span>&gt;
+  campaigns!: Dexie.Table&lt;CachedCampaign, <span style="color:#c084fc">string</span>&gt;
+  offlineBudgets!: Dexie.Table&lt;OfflineBudget, <span style="color:#c084fc">string</span>&gt;
+  syncQueue!: Dexie.Table&lt;SyncQueueEntry, <span style="color:#c084fc">string</span>&gt;
+  meta!: Dexie.Table&lt;CacheMeta, <span style="color:#c084fc">string</span>&gt;
+
+  <span style="color:#c084fc">constructor</span>() {
+    <span style="color:#c084fc">super</span>(<span style="color:#86efac">'elLoyaltyCache'</span>)
+    <span style="color:#c084fc">this</span>.version(1).stores({
+      customerWallets: <span style="color:#86efac">'customerId'</span>,
+      benefitRules:    <span style="color:#86efac">'id, type, priority'</span>,
+      campaigns:       <span style="color:#86efac">'id, status'</span>,
+      offlineBudgets:  <span style="color:#86efac">'customerId'</span>,
+      syncQueue:       <span style="color:#86efac">'offlineId, type, timestamp'</span>,
+      meta:            <span style="color:#86efac">'key'</span>,
+    })
+  }
+}
+
+<span style="color:#c084fc">export const</span> loyaltyDB = <span style="color:#c084fc">new</span> LoyaltyDB()</code></div>
+</div>
+
+<div class="section">
+  <div class="section-label">Types</div>
+  <h2 class="section-title">Shared TypeScript Types</h2>
+
+  <div class="code"><code><span style="color:#64748b">// types/loyalty.ts — mirrors backend models exactly</span>
+
+<span style="color:#c084fc">interface</span> CandidateBenefit {
+  id: <span style="color:#c084fc">string</span>
+  type: <span style="color:#86efac">'loyalty_coins'</span> | <span style="color:#86efac">'cashback'</span> | <span style="color:#86efac">'loyalty_cash'</span> | <span style="color:#86efac">'coupon'</span> | <span style="color:#86efac">'campaign'</span>
+  label: <span style="color:#c084fc">string</span>               <span style="color:#64748b">// "Use 150 coins → ₹150 off"</span>
+  discountPaisa: <span style="color:#c084fc">number</span>       <span style="color:#64748b">// immediate discount in paisa</span>
+  coinsToDebit: <span style="color:#c084fc">number</span>        <span style="color:#64748b">// coins consumed (0 for cashback)</span>
+  cashToDebit: <span style="color:#c084fc">number</span>         <span style="color:#64748b">// wallet cash consumed in paisa</span>
+  stackable: <span style="color:#c084fc">boolean</span>
+  exclusionGroup: <span style="color:#c084fc">string</span> | <span style="color:#c084fc">null</span>
+  ruleId: <span style="color:#c084fc">string</span>
+  score: <span style="color:#c084fc">number</span>              <span style="color:#64748b">// higher = better deal for customer</span>
+}
+
+<span style="color:#c084fc">interface</span> EarnPreview {
+  coinsToEarn: <span style="color:#c084fc">number</span>
+  cashbackPaisa: <span style="color:#c084fc">number</span>
+  isApproximate: <span style="color:#c084fc">boolean</span>     <span style="color:#64748b">// true when offline</span>
+}
+
+<span style="color:#c084fc">interface</span> WalletSummary {
+  coinBalance: <span style="color:#c084fc">number</span>
+  cashBalancePaisa: <span style="color:#c084fc">number</span>
+  activeCoupons: <span style="color:#c084fc">number</span>
+  tier: <span style="color:#86efac">'bronze'</span> | <span style="color:#86efac">'silver'</span> | <span style="color:#86efac">'gold'</span> | <span style="color:#86efac">'platinum'</span>
+}
+
+<span style="color:#c084fc">interface</span> ConflictInfo {
+  benefitId: <span style="color:#c084fc">string</span>
+  conflictsWith: <span style="color:#c084fc">string</span>
+  reason: <span style="color:#c084fc">string</span>             <span style="color:#64748b">// "Exclusive: cannot stack with coins"</span>
+}
+
+<span style="color:#c084fc">interface</span> OfflineBudget {
+  customerId: <span style="color:#c084fc">string</span>
+  coinBudget: <span style="color:#c084fc">number</span>
+  cashBudgetPaisa: <span style="color:#c084fc">number</span>
+  syncedAt: <span style="color:#c084fc">string</span>           <span style="color:#64748b">// ISO timestamp</span>
+}</code></div>
+</div>
+
+</div><!-- /container -->
+
+<footer class="footer">
+  <p>elLoyalty Frontend Design — <a href="index.html" style="color:#c4b5fd">Back to Index</a></p>
+</footer>
+</body>
+</html>

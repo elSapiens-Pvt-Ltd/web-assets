@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>elLoyalty — Ledger Design</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#f8fafc;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b;--light:#94a3b8;--primary:#7c3aed;--primary-light:#ede9fe;--primary-dark:#5b21b6;--radius:10px;--shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);--shadow-md:0 4px 6px rgba(0,0,0,.07)}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6}
+a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
+.nav{position:sticky;top:0;z-index:100;background:#0f172a;padding:0 24px;display:flex;align-items:center;height:48px;gap:24px;box-shadow:0 2px 12px rgba(0,0,0,.25)}
+.nav .brand{color:#fff;font-weight:800;font-size:15px;display:flex;align-items:center;gap:8px}
+.nav .brand span{background:var(--primary);padding:2px 8px;border-radius:5px;font-size:11px;font-weight:700}
+.nav-links{display:flex;gap:4px;margin-left:auto;overflow-x:auto}
+.nav-links a{color:#94a3b8;font-size:12px;font-weight:500;text-decoration:none;padding:6px 10px;border-radius:6px;transition:all .15s;white-space:nowrap}
+.nav-links a:hover,.nav-links a.active{color:#fff;background:rgba(255,255,255,.08)}
+.header{background:linear-gradient(135deg,#1e1b4b 0%,#312e81 40%,#4c1d95 100%);color:#fff;padding:36px 24px 28px;text-align:center}
+.header h1{font-size:26px;font-weight:800;letter-spacing:-.3px}.header p{font-size:13px;color:#c4b5fd;margin-top:4px}
+.container{max-width:1100px;margin:0 auto;padding:0 24px 48px}
+.section{padding:40px 0}.section+.section{border-top:1px solid var(--border)}
+.section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--primary);margin-bottom:6px}
+.section-title{font-size:22px;font-weight:800;color:var(--text);margin-bottom:4px}
+.section-sub{font-size:14px;color:var(--muted);margin-bottom:24px;max-width:700px}
+h3{font-size:17px;font-weight:700;color:var(--text);margin:28px 0 10px}
+p{margin-bottom:12px}
+.diagram{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:16px 0;overflow-x:auto;box-shadow:var(--shadow)}
+.diagram pre{font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.5;color:var(--text);white-space:pre}
+.code{background:#1e293b;border-radius:var(--radius);padding:20px;margin:16px 0;overflow-x:auto}
+.code code{font-family:'JetBrains Mono',monospace;font-size:12px;color:#e2e8f0;line-height:1.6;white-space:pre;display:block}
+.tbl-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);margin:16px 0;box-shadow:var(--shadow)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{background:#f1f5f9;padding:10px 14px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border)}
+tbody td{padding:10px 14px;border-bottom:1px solid var(--border)}
+tbody tr:hover td{background:#f8fafc}
+td code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#f1f5f9;padding:1px 6px;border-radius:4px}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;margin:16px 0}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+.card h4{font-size:15px;font-weight:700;margin-bottom:6px}.card p{font-size:13px;color:var(--muted);margin-bottom:0}
+ol,ul{margin:8px 0 16px 24px}li{margin-bottom:4px;font-size:13px}
+.footer{background:#0f172a;color:#94a3b8;padding:24px;text-align:center;font-size:12px;margin-top:48px}
+@media(max-width:768px){.card-grid{grid-template-columns:1fr}.nav-links{display:none}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="brand">elSapiens <span>elLoyalty</span></div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="architecture.html">Architecture</a>
+    <a href="benefit-engine.html">Benefit Engine</a>
+    <a href="checkout-flow.html">Checkout Flow</a>
+    <a href="domain-design.html">Domains</a>
+    <a href="database-schema.html">Schema</a>
+    <a href="rule-engine.html">Rules</a>
+    <a href="conflict-resolution.html">Conflicts</a>
+    <a href="ledger-design.html" class="active">Ledger</a>
+    <a href="offline-first.html">Offline</a>
+    <a href="ecosystem-integration.html">Ecosystem</a>
+    <a href="frontend-design.html">Frontend</a>
+    <a href="security.html">Security</a>
+    <a href="scalability.html">Scale</a>
+    <a href="edge-cases.html">Edge Cases</a>
+  </div>
+</nav>
+
+<header class="header">
+  <h1>08 — Ledger Design</h1>
+  <p>Immutable append-only ledger, balance computation, reconciliation, and expiry processing</p>
+</header>
+
+<div class="container">
+
+<div class="section">
+  <div class="section-label">Principle</div>
+  <h2 class="section-title">Immutable Ledger Principle</h2>
+  <p class="section-sub">Every financial event in elLoyalty is recorded as an immutable ledger entry. Balances are never stored directly — they are <strong>computed from the ledger</strong>. This provides a complete audit trail and makes reconciliation trivial.</p>
+
+  <div class="card-grid">
+    <div class="card">
+      <h4>No Updates, No Deletes</h4>
+      <p>The <code>ledger_entries</code> and <code>wallet_transactions</code> tables have no UPDATE or DELETE operations. Corrections are made by appending new entries of type <code>adjust</code> or <code>reverse</code>.</p>
+    </div>
+    <div class="card">
+      <h4>Balance = SUM(entries)</h4>
+      <p>A customer's coin balance = SUM of all coin entries. A materialized view pre-computes this for read performance. Refreshed on every write.</p>
+    </div>
+    <div class="card">
+      <h4>Complete Audit Trail</h4>
+      <p>Every entry links back to its cause: sale_id, refund_id, topup_id, or admin adjustment. Full traceability from any balance to its origin.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Entry Types</div>
+  <h2 class="section-title">Ledger Entry Types</h2>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Type</th><th>Direction</th><th>Sub-Account</th><th>Trigger</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>earn</code></td><td>Credit (+)</td><td>coins</td><td>Post-sale earning</td><td>Customer earns X coins from a sale</td></tr>
+        <tr><td><code>earn</code></td><td>Credit (+)</td><td>cashback</td><td>Post-sale earning</td><td>Cashback credited (after delay)</td></tr>
+        <tr><td><code>redeem</code></td><td>Debit (−)</td><td>coins</td><td>Benefit applied</td><td>Customer spends coins at checkout</td></tr>
+        <tr><td><code>redeem</code></td><td>Debit (−)</td><td>cash</td><td>Benefit applied</td><td>Customer pays with loyalty cash</td></tr>
+        <tr><td><code>topup</code></td><td>Credit (+)</td><td>cash</td><td>Manual top-up</td><td>Customer adds money to loyalty wallet</td></tr>
+        <tr><td><code>expire</code></td><td>Debit (−)</td><td>coins/cashback</td><td>Expiry worker</td><td>Unused coins/cashback expired</td></tr>
+        <tr><td><code>adjust</code></td><td>+/−</td><td>any</td><td>Admin action</td><td>Manual adjustment with reason</td></tr>
+        <tr><td><code>reverse</code></td><td>Opposite</td><td>any</td><td>Sale refund</td><td>Undo a previous earn or redeem</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Balance</div>
+  <h2 class="section-title">Balance Computation</h2>
+
+  <h3>Materialized View</h3>
+  <div class="code"><code><span style="color:#86efac">-- Materialized view for fast balance reads</span>
+
+CREATE MATERIALIZED VIEW wallet_balances AS
+SELECT
+    w.id AS wallet_id,
+    w.customer_id,
+    w.organization_id,
+    w.workspace_id,
+    COALESCE(SUM(wt.amount) FILTER (
+        WHERE wt.sub_account = 'coins'
+    ), 0) AS coin_balance,
+    COALESCE(SUM(wt.amount) FILTER (
+        WHERE wt.sub_account = 'cashback'
+        AND wt.type = 'earn'
+        AND wt.created_at > now() - interval '24 hours' <span style="color:#64748b">-- pending window</span>
+    ), 0) AS cashback_pending,
+    COALESCE(SUM(wt.amount) FILTER (
+        WHERE wt.sub_account = 'cashback'
+        AND (wt.type != 'earn' OR wt.created_at <= now() - interval '24 hours')
+    ), 0) AS cashback_ready,
+    COALESCE(SUM(wt.amount) FILTER (
+        WHERE wt.sub_account = 'cash'
+    ), 0) AS cash_balance
+FROM wallets w
+LEFT JOIN wallet_transactions wt ON wt.wallet_id = w.id
+GROUP BY w.id, w.customer_id, w.organization_id, w.workspace_id;
+
+CREATE UNIQUE INDEX idx_wb_wallet ON wallet_balances (wallet_id);
+
+<span style="color:#86efac">-- Refresh on every transaction (or via trigger)</span>
+REFRESH MATERIALIZED VIEW CONCURRENTLY wallet_balances;</code></div>
+
+  <h3>Dual-Write: Cached + Computed</h3>
+  <p>For read performance, elLoyalty uses a dual strategy:</p>
+  <ol>
+    <li><strong>Hot path (Redis):</strong> Balance cached in Redis with key <code>wallet:{id}:balance</code>. Updated atomically on every transaction using Redis INCRBY/DECRBY.</li>
+    <li><strong>Cold path (PostgreSQL):</strong> Materialized view refreshed periodically (every 5 minutes) or on-demand via <code>REFRESH MATERIALIZED VIEW CONCURRENTLY</code>.</li>
+    <li><strong>Reconciliation:</strong> Background worker compares Redis balances with materialized view every 15 minutes. Discrepancies trigger alerts and auto-correction from the ledger (source of truth).</li>
+  </ol>
+</div>
+
+<div class="section">
+  <div class="section-label">Example</div>
+  <h2 class="section-title">Ledger Example: Full Sale Lifecycle</h2>
+
+  <div class="diagram"><pre>
+Customer: Alice (wallet_id: w_001, starting balance: 500 coins, ₹0 cashback, ₹200 cash)
+
+═══════ SALE: ₹1,000 (uses 200 coins + loyalty cash ₹100, earns 80 coins + ₹40 cashback) ═══════
+
+Entry #1: REDEEM coins
+  wallet_id: w_001, type: redeem, sub_account: coins
+  amount: -200, reference_type: sale, reference_id: sale_001
+  balance_after: 300 coins
+
+Entry #2: REDEEM cash (loyalty wallet payment)
+  wallet_id: w_001, type: redeem, sub_account: cash
+  amount: -10000 (₹100), reference_type: sale, reference_id: sale_001
+  balance_after: ₹100
+
+Entry #3: EARN coins
+  wallet_id: w_001, type: earn, sub_account: coins
+  amount: +80, reference_type: sale, reference_id: sale_001
+  balance_after: 380 coins
+
+Entry #4: EARN cashback (pending)
+  wallet_id: w_001, type: earn, sub_account: cashback
+  amount: +4000 (₹40), reference_type: sale, reference_id: sale_001
+  balance_after: ₹40 pending
+
+═══════ T+1: Cashback settles ═══════
+  (No new entry — the pending window expires and the materialized view
+   reclassifies it from pending to ready on next refresh)
+
+═══════ REFUND: Full refund of sale_001 ═══════
+
+Entry #5: REVERSE coin redemption
+  type: reverse, sub_account: coins
+  amount: +200, reference_type: refund, reference_id: refund_001
+  balance_after: 580 coins
+
+Entry #6: REVERSE cash payment
+  type: reverse, sub_account: cash
+  amount: +10000, reference_type: refund, reference_id: refund_001
+  balance_after: ₹200
+
+Entry #7: REVERSE coin earning
+  type: reverse, sub_account: coins
+  amount: -80, reference_type: refund, reference_id: refund_001
+  balance_after: 500 coins  ← back to original!
+
+Entry #8: REVERSE cashback
+  type: reverse, sub_account: cashback
+  amount: -4000, reference_type: refund, reference_id: refund_001
+  balance_after: ₹0  ← back to original!</pre></div>
+</div>
+
+<div class="section">
+  <div class="section-label">Expiry</div>
+  <h2 class="section-title">Expiry Processing</h2>
+
+  <p>Coins and cashback can have configurable expiry periods. A background worker processes expirations:</p>
+
+  <div class="code"><code><span style="color:#64748b">// services/expiry_svc.go — runs every hour via cron</span>
+
+<span style="color:#c084fc">func</span> (s *ExpiryService) ProcessExpiredEntries(ctx context.Context) error {
+    <span style="color:#64748b">// Find all unprocessed expiry events where expires_at <= now()</span>
+    events, err := s.repo.FindPendingExpiries(ctx, time.Now())
+    <span style="color:#c084fc">if</span> err != nil {
+        <span style="color:#c084fc">return</span> err
+    }
+
+    <span style="color:#c084fc">for</span> _, evt := <span style="color:#c084fc">range</span> events {
+        tx, _ := s.pool.Begin(ctx)
+
+        <span style="color:#64748b">// Check current balance — don't expire more than available</span>
+        balance := s.walletSvc.GetSubAccountBalance(ctx, evt.WalletID, evt.SubAccount)
+        expireAmt := min(evt.Amount, balance)
+
+        <span style="color:#c084fc">if</span> expireAmt > 0 {
+            <span style="color:#64748b">// Create debit entry</span>
+            s.ledgerSvc.Record(ctx, tx, LedgerEntry{
+                WalletID:    evt.WalletID,
+                CustomerID:  evt.CustomerID,
+                Type:        TxExpire,
+                SubAccount:  evt.SubAccount,
+                Amount:      -expireAmt,
+                RefType:     <span style="color:#86efac">"expiry"</span>,
+                RefID:       evt.ID,
+                Description: fmt.Sprintf(<span style="color:#86efac">"Expired %d %s"</span>, expireAmt, evt.SubAccount),
+            })
+        }
+
+        <span style="color:#64748b">// Mark event as processed</span>
+        s.repo.MarkProcessed(ctx, tx, evt.ID)
+
+        tx.Commit(ctx)
+
+        <span style="color:#64748b">// Notify customer</span>
+        s.bus.Publish(ctx, <span style="color:#86efac">"coins.expired"</span>, CoinsExpiredEvent{...})
+    }
+
+    <span style="color:#c084fc">return</span> nil
+}</code></div>
+
+  <h3>Expiry Configuration</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Setting</th><th>Default</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>coin_expiry_days</code></td><td>365</td><td>Coins expire after N days of inactivity</td></tr>
+        <tr><td><code>cashback_expiry_days</code></td><td>90</td><td>Cashback expires N days after crediting</td></tr>
+        <tr><td><code>expiry_warning_days</code></td><td>7</td><td>Notify customer N days before expiry</td></tr>
+        <tr><td><code>expiry_batch_size</code></td><td>500</td><td>Process N expiry events per worker cycle</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Reconciliation</div>
+  <h2 class="section-title">Reconciliation with elbooks</h2>
+  <p>Wallet top-ups and redemptions that affect real money must be synced to elbooks for accounting:</p>
+
+  <ul>
+    <li><strong>Top-up:</strong> When customer adds ₹500 to wallet → elLoyalty creates an <code>earn</code> entry → publishes <code>wallet.topup</code> event → elbooks creates a "Loyalty Liability" journal entry</li>
+    <li><strong>Redemption:</strong> Customer pays ₹200 from wallet → elLoyalty creates a <code>redeem</code> entry → elbooks reduces the liability and records it as a discount on the invoice</li>
+    <li><strong>Expiry:</strong> ₹50 in cashback expires → elLoyalty creates an <code>expire</code> entry → elbooks reverses the liability (income recognition)</li>
+    <li><strong>Reconciliation report:</strong> Daily automated report comparing elLoyalty ledger totals with elbooks GL balances. Discrepancies flagged for manual review.</li>
+  </ul>
+</div>
+
+</div><!-- /container -->
+
+<footer class="footer">
+  <p>elLoyalty Ledger Design — <a href="index.html" style="color:#c4b5fd">Back to Index</a></p>
+</footer>
+</body>
+</html>

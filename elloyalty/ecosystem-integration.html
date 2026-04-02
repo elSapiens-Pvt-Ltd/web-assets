@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>elLoyalty — Ecosystem Integration</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#f8fafc;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b;--light:#94a3b8;--primary:#7c3aed;--primary-light:#ede9fe;--primary-dark:#5b21b6;--radius:10px;--shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);--shadow-md:0 4px 6px rgba(0,0,0,.07)}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6}
+a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
+.nav{position:sticky;top:0;z-index:100;background:#0f172a;padding:0 24px;display:flex;align-items:center;height:48px;gap:24px;box-shadow:0 2px 12px rgba(0,0,0,.25)}
+.nav .brand{color:#fff;font-weight:800;font-size:15px;display:flex;align-items:center;gap:8px}
+.nav .brand span{background:var(--primary);padding:2px 8px;border-radius:5px;font-size:11px;font-weight:700}
+.nav-links{display:flex;gap:4px;margin-left:auto;overflow-x:auto}
+.nav-links a{color:#94a3b8;font-size:12px;font-weight:500;text-decoration:none;padding:6px 10px;border-radius:6px;transition:all .15s;white-space:nowrap}
+.nav-links a:hover,.nav-links a.active{color:#fff;background:rgba(255,255,255,.08)}
+.header{background:linear-gradient(135deg,#1e1b4b 0%,#312e81 40%,#4c1d95 100%);color:#fff;padding:36px 24px 28px;text-align:center}
+.header h1{font-size:26px;font-weight:800;letter-spacing:-.3px}.header p{font-size:13px;color:#c4b5fd;margin-top:4px}
+.container{max-width:1100px;margin:0 auto;padding:0 24px 48px}
+.section{padding:40px 0}.section+.section{border-top:1px solid var(--border)}
+.section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--primary);margin-bottom:6px}
+.section-title{font-size:22px;font-weight:800;color:var(--text);margin-bottom:4px}
+.section-sub{font-size:14px;color:var(--muted);margin-bottom:24px;max-width:700px}
+h3{font-size:17px;font-weight:700;color:var(--text);margin:28px 0 10px}
+p{margin-bottom:12px}
+.diagram{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:16px 0;overflow-x:auto;box-shadow:var(--shadow)}
+.diagram pre{font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.5;color:var(--text);white-space:pre}
+.code{background:#1e293b;border-radius:var(--radius);padding:20px;margin:16px 0;overflow-x:auto}
+.code code{font-family:'JetBrains Mono',monospace;font-size:12px;color:#e2e8f0;line-height:1.6;white-space:pre;display:block}
+.tbl-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);margin:16px 0;box-shadow:var(--shadow)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{background:#f1f5f9;padding:10px 14px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border)}
+tbody td{padding:10px 14px;border-bottom:1px solid var(--border)}
+tbody tr:hover td{background:#f8fafc}
+td code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#f1f5f9;padding:1px 6px;border-radius:4px}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;margin:16px 0}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+.card h4{font-size:15px;font-weight:700;margin-bottom:6px}.card p{font-size:13px;color:var(--muted);margin-bottom:0}
+ol,ul{margin:8px 0 16px 24px}li{margin-bottom:4px;font-size:13px}
+.svc{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:16px 0;box-shadow:var(--shadow)}
+.svc h4{font-size:16px;font-weight:700;margin-bottom:4px;color:var(--primary-dark)}
+.svc .proto{font-size:12px;color:var(--muted);font-family:'JetBrains Mono',monospace;margin-bottom:12px}
+.footer{background:#0f172a;color:#94a3b8;padding:24px;text-align:center;font-size:12px;margin-top:48px}
+@media(max-width:768px){.card-grid{grid-template-columns:1fr}.nav-links{display:none}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="brand">elSapiens <span>elLoyalty</span></div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="architecture.html">Architecture</a>
+    <a href="benefit-engine.html">Benefit Engine</a>
+    <a href="checkout-flow.html">Checkout Flow</a>
+    <a href="domain-design.html">Domains</a>
+    <a href="database-schema.html">Schema</a>
+    <a href="rule-engine.html">Rules</a>
+    <a href="conflict-resolution.html">Conflicts</a>
+    <a href="ledger-design.html">Ledger</a>
+    <a href="offline-first.html">Offline</a>
+    <a href="ecosystem-integration.html" class="active">Ecosystem</a>
+    <a href="frontend-design.html">Frontend</a>
+    <a href="security.html">Security</a>
+    <a href="scalability.html">Scale</a>
+    <a href="edge-cases.html">Edge Cases</a>
+  </div>
+</nav>
+
+<header class="header">
+  <h1>10 — Ecosystem Integration</h1>
+  <p>How elLoyalty connects with elAuth, elPOS, elbooks, elCatalog, elinventory, and elmessagehub</p>
+</header>
+
+<div class="container">
+
+<div class="section">
+  <div class="section-label">Overview</div>
+  <h2 class="section-title">Integration Map</h2>
+  <p class="section-sub">elLoyalty operates as a standalone microservice within the elsapiens ecosystem. It communicates via gRPC for synchronous calls and Redis pub/sub for asynchronous events.</p>
+
+  <div class="diagram"><pre>
+┌──────────────────────────────────────────────────────────────────────┐
+│                     elsapiens Ecosystem                              │
+│                                                                      │
+│   ┌──────────┐    JWT     ┌──────────────┐    gRPC    ┌──────────┐  │
+│   │  elAuth   │──────────▶│  elLoyalty    │◀──────────│  elPOS    │  │
+│   │  :8080    │  validate  │  :8090       │  evaluate  │  :8080   │  │
+│   │  :6000    │           │  gRPC: 6010  │  apply     │  :6000   │  │
+│   └──────────┘           │              │  earn      └──────────┘  │
+│                          │              │                          │
+│   ┌──────────┐   gRPC    │              │   gRPC   ┌────────────┐  │
+│   │ elbooks   │◀─────────│              │─────────▶│ elCatalog   │  │
+│   │ :8070     │  journal  │              │  product  │ :5050      │  │
+│   │ gRPC:6030│  entry    │              │  lookup   │            │  │
+│   └──────────┘           │              │          └────────────┘  │
+│                          │              │                          │
+│   ┌──────────┐   gRPC    │              │   Redis   ┌────────────┐ │
+│   │elinventory│◀─────────│              │──────────▶│elmessagehub│ │
+│   │ :8060     │  stock    │              │  events   │            │ │
+│   │ gRPC:6020│  check    └──────────────┘           └────────────┘ │
+│   └──────────┘                                                     │
+│                          ┌──────────────┐                          │
+│                          │    Redis      │                          │
+│                          │  Pub/Sub +    │                          │
+│                          │  Cache        │                          │
+│                          └──────────────┘                          │
+└──────────────────────────────────────────────────────────────────────┘</pre></div>
+</div>
+
+<div class="section">
+  <div class="section-label">elAuth</div>
+  <h2 class="section-title">elAuth Integration</h2>
+  <p class="section-sub">Authentication, authorization, and multi-tenancy context.</p>
+
+  <div class="svc">
+    <h4>JWT Validation Middleware</h4>
+    <div class="proto">pkg/middleware/auth.go</div>
+    <p>Every HTTP and gRPC request to elLoyalty carries a JWT issued by elAuth. The middleware extracts tenant context (workspace_id, organization_id) and user identity from JWT claims.</p>
+  </div>
+
+  <div class="code"><code><span style="color:#64748b">// JWT claims extracted by elAuth middleware</span>
+<span style="color:#c084fc">type</span> TenantContext <span style="color:#c084fc">struct</span> {
+    WorkspaceID    uuid.UUID  <span style="color:#86efac">`json:"workspace_id"`</span>
+    OrganizationID uuid.UUID  <span style="color:#86efac">`json:"organization_id"`</span>
+    PersonID       string     <span style="color:#86efac">`json:"person_id"`</span>     <span style="color:#64748b">// MongoDB ObjectID from elAccounts</span>
+    StoreID        *uuid.UUID <span style="color:#86efac">`json:"store_id"`</span>      <span style="color:#64748b">// nil for admin, set for terminal</span>
+}
+
+<span style="color:#64748b">// gRPC: Fetch tenant config for loyalty behavior</span>
+<span style="color:#c084fc">func</span> (c *AuthClient) GetTenantConfig(ctx context.Context, domain string) (*TenantConfig, error) {
+    resp, err := c.configClient.GetConfig(ctx, &configpb.GetConfigRequest{
+        Domain: domain,
+    })
+    <span style="color:#c084fc">if</span> err != nil {
+        <span style="color:#c084fc">return</span> nil, fmt.Errorf(<span style="color:#86efac">"elAuth config: %w"</span>, err)
+    }
+    <span style="color:#c084fc">return</span> mapTenantConfig(resp), nil
+}</code></div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Integration Point</th><th>Protocol</th><th>Direction</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td>JWT validation</td><td>HTTP header</td><td>elAuth → elLoyalty</td><td>Every request authenticated</td></tr>
+        <tr><td>ConfigService.GetConfig</td><td>gRPC :6000</td><td>elLoyalty → elAuth</td><td>Fetch tenant-specific settings</td></tr>
+        <tr><td>RBAC claims</td><td>JWT payload</td><td>elAuth → elLoyalty</td><td>Admin vs terminal permissions</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">elPOS</div>
+  <h2 class="section-title">elPOS Integration</h2>
+  <p class="section-sub">The primary consumer of loyalty benefits. elPOS calls elLoyalty during checkout and publishes sale events.</p>
+
+  <div class="svc">
+    <h4>gRPC: LoyaltyService (elLoyalty exposes)</h4>
+    <div class="proto">proto/loyalty/loyalty.proto — port 6010</div>
+  </div>
+
+  <div class="code"><code><span style="color:#64748b">// Proto service called by elPOS</span>
+service LoyaltyService {
+  <span style="color:#64748b">// Phase 1: Evaluate available benefits for a cart</span>
+  rpc EvaluateCart (EvaluateCartRequest) returns (EvaluateCartResponse);
+
+  <span style="color:#64748b">// Phase 2: Apply selected benefits to finalize sale</span>
+  rpc ApplyBenefits (ApplyBenefitsRequest) returns (ApplyBenefitsResponse);
+
+  <span style="color:#64748b">// Phase 3: Credit earned benefits after sale</span>
+  rpc CreditEarnings (CreditEarningsRequest) returns (CreditEarningsResponse);
+
+  <span style="color:#64748b">// Customer lookup for POS display</span>
+  rpc GetCustomerWallet (GetCustomerWalletRequest) returns (CustomerWalletResponse);
+
+  <span style="color:#64748b">// Offline sync endpoints</span>
+  rpc SyncPush (SyncPushRequest) returns (SyncPushResponse);
+  rpc SyncPull (SyncPullRequest) returns (SyncPullResponse);
+}</code></div>
+
+  <h3>Event Flow: Sale Lifecycle</h3>
+  <div class="diagram"><pre>
+elPOS                               elLoyalty
+  │                                    │
+  │  ── gRPC: EvaluateCart ──────────▶ │  Evaluate rules, check wallets
+  │  ◀─ Available benefits ──────────  │
+  │                                    │
+  │  [Customer selects benefits]       │
+  │                                    │
+  │  ── gRPC: ApplyBenefits ─────────▶ │  Debit wallet, redeem coupon, create ledger
+  │  ◀─ Applied confirmation ────────  │
+  │                                    │
+  │  [Sale finalized, payment done]    │
+  │                                    │
+  │  ── gRPC: CreditEarnings ────────▶ │  Credit coins, queue cashback
+  │  ◀─ Earn summary ───────────────  │
+  │                                    │
+  │  ── Redis: sale.completed ───────▶ │  Async: campaign progress, tier recalc
+  │                                    │</pre></div>
+
+  <h3>Redis Events from elPOS</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Channel</th><th>Event</th><th>elLoyalty Action</th></tr></thead>
+      <tbody>
+        <tr><td><code>elpos.sale.completed</code></td><td>Sale finalized</td><td>Campaign progress tracking, analytics update</td></tr>
+        <tr><td><code>elpos.sale.refunded</code></td><td>Full/partial refund</td><td>Reverse benefits, reclaim coins, void cashback</td></tr>
+        <tr><td><code>elpos.sale.voided</code></td><td>Sale voided</td><td>Full reversal of all benefits</td></tr>
+        <tr><td><code>elpos.customer.created</code></td><td>New customer at POS</td><td>Create loyalty profile with default tier</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">elbooks</div>
+  <h2 class="section-title">elbooks Integration</h2>
+  <p class="section-sub">Financial reconciliation: loyalty liabilities, wallet balances, and cashback accruals are journal entries in elbooks.</p>
+
+  <div class="svc">
+    <h4>gRPC: JournalService (elbooks exposes)</h4>
+    <div class="proto">elbooks port 6030 — called by elLoyalty</div>
+  </div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Loyalty Event</th><th>Journal Entry (Debit)</th><th>Journal Entry (Credit)</th><th>Amount</th></tr></thead>
+      <tbody>
+        <tr><td>Coins earned</td><td>Loyalty Expense</td><td>Loyalty Liability (Coins)</td><td>coins × redemption_rate</td></tr>
+        <tr><td>Coins redeemed</td><td>Loyalty Liability (Coins)</td><td>Discount Given</td><td>coins × redemption_rate</td></tr>
+        <tr><td>Cashback credited</td><td>Cashback Expense</td><td>Wallet Liability (Cash)</td><td>cashback amount</td></tr>
+        <tr><td>Wallet used</td><td>Wallet Liability (Cash)</td><td>Sales Revenue</td><td>wallet amount</td></tr>
+        <tr><td>Coins expired</td><td>Loyalty Liability (Coins)</td><td>Other Income</td><td>expired coins × rate</td></tr>
+        <tr><td>Coupon discount</td><td>Discount Expense</td><td>Discount Given</td><td>coupon amount</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="code"><code><span style="color:#64748b">// Post journal entry to elbooks after loyalty event</span>
+<span style="color:#c084fc">func</span> (c *BooksClient) PostLoyaltyJournal(ctx context.Context, entry LoyaltyJournalEntry) error {
+    _, err := c.journalClient.CreateEntry(ctx, &journalpb.CreateEntryRequest{
+        WorkspaceId:    entry.WorkspaceID.String(),
+        OrganizationId: entry.OrganizationID.String(),
+        Date:           timestamppb.New(entry.Date),
+        Reference:      fmt.Sprintf(<span style="color:#86efac">"LOYALTY-%s"</span>, entry.TransactionID),
+        Lines: []*journalpb.JournalLine{
+            {AccountCode: entry.DebitAccount, DebitAmount: entry.AmountPaisa},
+            {AccountCode: entry.CreditAccount, CreditAmount: entry.AmountPaisa},
+        },
+        Narration: entry.Description,
+    })
+    <span style="color:#c084fc">return</span> err
+}</code></div>
+</div>
+
+<div class="section">
+  <div class="section-label">elCatalog</div>
+  <h2 class="section-title">elCatalog / Goods & Services Integration</h2>
+  <p class="section-sub">Product and category data used for rule evaluation — category-specific earn rates, brand-specific campaigns, excluded SKUs.</p>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Lookup</th><th>Purpose in elLoyalty</th><th>Frequency</th></tr></thead>
+      <tbody>
+        <tr><td>Product category</td><td>Category-based earn rules ("2x coins on Electronics")</td><td>Every cart evaluation</td></tr>
+        <tr><td>Brand / manufacturer</td><td>Brand-specific campaigns</td><td>Campaign evaluation</td></tr>
+        <tr><td>SKU exclusion list</td><td>Exclude tobacco, alcohol from loyalty</td><td>Cached, refreshed on sync</td></tr>
+        <tr><td>Product price tier</td><td>Tiered earn rates (premium items earn more)</td><td>Every cart evaluation</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="code"><code><span style="color:#64748b">// gRPC call to resolve product metadata for rule conditions</span>
+<span style="color:#c084fc">func</span> (c *CatalogClient) EnrichCartItems(ctx context.Context, items []CartItem) ([]EnrichedItem, error) {
+    productIDs := extractProductIDs(items)
+
+    resp, err := c.productClient.GetProducts(ctx, &catalogpb.GetProductsRequest{
+        Ids: productIDs,
+    })
+    <span style="color:#c084fc">if</span> err != nil {
+        <span style="color:#64748b">// Circuit breaker: if catalog is down, proceed without category rules</span>
+        c.logger.Warn(<span style="color:#86efac">"catalog unavailable, skipping category rules"</span>, <span style="color:#86efac">"err"</span>, err)
+        <span style="color:#c084fc">return</span> fallbackEnrich(items), nil
+    }
+
+    <span style="color:#c084fc">return</span> mergeProductData(items, resp.Products), nil
+}</code></div>
+</div>
+
+<div class="section">
+  <div class="section-label">Notifications</div>
+  <h2 class="section-title">elmessagehub Integration</h2>
+  <p class="section-sub">Push notifications, SMS, and WhatsApp messages for loyalty events.</p>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Trigger Event</th><th>Channel</th><th>Message</th></tr></thead>
+      <tbody>
+        <tr><td>Coins earned</td><td>SMS / WhatsApp</td><td>"You earned 95 coins on your purchase at StoreName!"</td></tr>
+        <tr><td>Tier upgrade</td><td>SMS + Push</td><td>"Congratulations! You've been promoted to Gold tier."</td></tr>
+        <tr><td>Cashback credited</td><td>SMS</td><td>"₹50 cashback has been credited to your wallet."</td></tr>
+        <tr><td>Coins expiring (7d)</td><td>SMS / Push</td><td>"200 coins expiring in 7 days. Visit us to use them!"</td></tr>
+        <tr><td>Coins expired</td><td>SMS</td><td>"150 coins have expired from your account."</td></tr>
+        <tr><td>Campaign enrolled</td><td>WhatsApp</td><td>"You're part of Summer Sale! Earn 3x coins this week."</td></tr>
+        <tr><td>Coupon received</td><td>SMS</td><td>"You've received a ₹200 coupon: WELCOME200"</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="code"><code><span style="color:#64748b">// Publish notification event to elmessagehub via Redis</span>
+<span style="color:#c084fc">func</span> (p *NotificationPublisher) NotifyCoinsEarned(ctx context.Context, event CoinsEarnedEvent) {
+    msg := NotificationMessage{
+        Type:       <span style="color:#86efac">"loyalty.coins.earned"</span>,
+        CustomerID: event.CustomerID.String(),
+        Template:   <span style="color:#86efac">"coins_earned"</span>,
+        Params: map[string]string{
+            <span style="color:#86efac">"coins"</span>:      fmt.Sprintf(<span style="color:#86efac">"%d"</span>, event.CoinsEarned),
+            <span style="color:#86efac">"store_name"</span>: event.StoreName,
+            <span style="color:#86efac">"total"</span>:      formatPaisa(event.SaleTotal),
+        },
+        Channels: []string{<span style="color:#86efac">"sms"</span>, <span style="color:#86efac">"whatsapp"</span>},
+    }
+
+    data, _ := json.Marshal(msg)
+    p.redis.Publish(ctx, <span style="color:#86efac">"elmessagehub.notifications"</span>, data)
+}</code></div>
+</div>
+
+<div class="section">
+  <div class="section-label">Resilience</div>
+  <h2 class="section-title">Circuit Breaker Pattern</h2>
+  <p class="section-sub">All gRPC clients use sony/gobreaker for graceful degradation when downstream services are unavailable.</p>
+
+  <div class="code"><code><span style="color:#c084fc">import</span> <span style="color:#86efac">"github.com/sony/gobreaker/v2"</span>
+
+<span style="color:#c084fc">func</span> NewCatalogClient(conn *grpc.ClientConn) *CatalogClient {
+    cb := gobreaker.NewCircuitBreaker[*catalogpb.GetProductsResponse](gobreaker.Settings{
+        Name:        <span style="color:#86efac">"elCatalog"</span>,
+        MaxRequests: 3,            <span style="color:#64748b">// half-open: allow 3 test requests</span>
+        Interval:    30 * time.Second,
+        Timeout:     10 * time.Second,
+        ReadyToTrip: <span style="color:#c084fc">func</span>(counts gobreaker.Counts) bool {
+            <span style="color:#c084fc">return</span> counts.ConsecutiveFailures > 5
+        },
+    })
+    <span style="color:#c084fc">return</span> &CatalogClient{client: catalogpb.NewProductServiceClient(conn), cb: cb}
+}</code></div>
+
+  <div class="card-grid">
+    <div class="card">
+      <h4>elCatalog Down</h4>
+      <p>Skip category/brand rules. Evaluate only cart-total and customer-tier rules. Coins still earned at base rate.</p>
+    </div>
+    <div class="card">
+      <h4>elbooks Down</h4>
+      <p>Queue journal entries in Redis. A background worker retries when elbooks is reachable. No customer-facing impact.</p>
+    </div>
+    <div class="card">
+      <h4>elmessagehub Down</h4>
+      <p>Notifications are fire-and-forget via Redis pub/sub. Missed notifications are logged but do not block operations.</p>
+    </div>
+    <div class="card">
+      <h4>elAuth Down</h4>
+      <p>JWT validation is local (shared secret / JWKS cache). Config refresh fails gracefully to last-known config.</p>
+    </div>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<footer class="footer">
+  <p>elLoyalty Ecosystem Integration — <a href="index.html" style="color:#c4b5fd">Back to Index</a></p>
+</footer>
+</body>
+</html>

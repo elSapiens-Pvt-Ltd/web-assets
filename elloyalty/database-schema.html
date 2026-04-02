@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>elLoyalty — Database Schema</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#f8fafc;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b;--light:#94a3b8;--primary:#7c3aed;--primary-light:#ede9fe;--primary-dark:#5b21b6;--radius:10px;--shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);--shadow-md:0 4px 6px rgba(0,0,0,.07)}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6}
+a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
+.nav{position:sticky;top:0;z-index:100;background:#0f172a;padding:0 24px;display:flex;align-items:center;height:48px;gap:24px;box-shadow:0 2px 12px rgba(0,0,0,.25)}
+.nav .brand{color:#fff;font-weight:800;font-size:15px;display:flex;align-items:center;gap:8px}
+.nav .brand span{background:var(--primary);padding:2px 8px;border-radius:5px;font-size:11px;font-weight:700}
+.nav-links{display:flex;gap:4px;margin-left:auto;overflow-x:auto}
+.nav-links a{color:#94a3b8;font-size:12px;font-weight:500;text-decoration:none;padding:6px 10px;border-radius:6px;transition:all .15s;white-space:nowrap}
+.nav-links a:hover,.nav-links a.active{color:#fff;background:rgba(255,255,255,.08)}
+.header{background:linear-gradient(135deg,#1e1b4b 0%,#312e81 40%,#4c1d95 100%);color:#fff;padding:36px 24px 28px;text-align:center}
+.header h1{font-size:26px;font-weight:800;letter-spacing:-.3px}.header p{font-size:13px;color:#c4b5fd;margin-top:4px}
+.container{max-width:1200px;margin:0 auto;padding:0 24px 48px}
+.section{padding:40px 0}.section+.section{border-top:1px solid var(--border)}
+.section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--primary);margin-bottom:6px}
+.section-title{font-size:22px;font-weight:800;color:var(--text);margin-bottom:4px}
+.section-sub{font-size:14px;color:var(--muted);margin-bottom:24px;max-width:700px}
+h3{font-size:17px;font-weight:700;color:var(--text);margin:28px 0 10px}
+p{margin-bottom:12px}
+.diagram{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:16px 0;overflow-x:auto;box-shadow:var(--shadow)}
+.diagram pre{font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.4;color:var(--text);white-space:pre}
+.code{background:#1e293b;border-radius:var(--radius);padding:20px;margin:16px 0;overflow-x:auto}
+.code code{font-family:'JetBrains Mono',monospace;font-size:12px;color:#e2e8f0;line-height:1.6;white-space:pre;display:block}
+.tbl-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);margin:16px 0;box-shadow:var(--shadow)}
+table{width:100%;border-collapse:collapse;font-size:12px}
+thead th{background:#f1f5f9;padding:10px 12px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border)}
+tbody td{padding:8px 12px;border-bottom:1px solid var(--border)}
+tbody tr:hover td{background:#f8fafc}
+td code{font-family:'JetBrains Mono',monospace;font-size:11px;background:#f1f5f9;padding:1px 5px;border-radius:4px}
+.pk{color:#dc2626;font-weight:700}.fk{color:#2563eb}.nn{color:#d97706;font-size:10px}
+ul{margin:8px 0 16px 24px}li{margin-bottom:4px;font-size:13px}
+.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin:16px 0}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;text-align:center;box-shadow:var(--shadow)}
+.stat .num{font-size:24px;font-weight:800;color:var(--primary)}.stat .lbl{font-size:11px;color:var(--muted);margin-top:2px}
+.footer{background:#0f172a;color:#94a3b8;padding:24px;text-align:center;font-size:12px;margin-top:48px}
+@media(max-width:768px){.stats{grid-template-columns:repeat(2,1fr)}.nav-links{display:none}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="brand">elSapiens <span>elLoyalty</span></div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="architecture.html">Architecture</a>
+    <a href="benefit-engine.html">Benefit Engine</a>
+    <a href="checkout-flow.html">Checkout Flow</a>
+    <a href="domain-design.html">Domains</a>
+    <a href="database-schema.html" class="active">Schema</a>
+    <a href="rule-engine.html">Rules</a>
+    <a href="conflict-resolution.html">Conflicts</a>
+    <a href="ledger-design.html">Ledger</a>
+    <a href="offline-first.html">Offline</a>
+    <a href="ecosystem-integration.html">Ecosystem</a>
+    <a href="frontend-design.html">Frontend</a>
+    <a href="security.html">Security</a>
+    <a href="scalability.html">Scale</a>
+    <a href="edge-cases.html">Edge Cases</a>
+  </div>
+</nav>
+
+<header class="header">
+  <h1>05 — Database Schema</h1>
+  <p>Complete PostgreSQL schema — 16 tables, BIGINT paisa, UUID keys, tenant isolation</p>
+</header>
+
+<div class="container">
+
+<div class="section">
+  <div class="section-label">Overview</div>
+  <h2 class="section-title">Schema Overview</h2>
+
+  <div class="stats">
+    <div class="stat"><div class="num">16</div><div class="lbl">Tables</div></div>
+    <div class="stat"><div class="num">6</div><div class="lbl">ENUM Types</div></div>
+    <div class="stat"><div class="num">9</div><div class="lbl">Migrations</div></div>
+    <div class="stat"><div class="num">BIGINT</div><div class="lbl">Money (paisa)</div></div>
+    <div class="stat"><div class="num">UUID</div><div class="lbl">Primary Keys</div></div>
+    <div class="stat"><div class="num">2-col</div><div class="lbl">Tenant Isolation</div></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">ER Diagram</div>
+  <h2 class="section-title">Entity Relationship Diagram</h2>
+
+  <div class="diagram"><pre>
+┌──────────────────────┐       ┌──────────────────────┐
+│  loyalty_customers   │       │      wallets         │
+│──────────────────────│       │──────────────────────│
+│ PK id                │───┐   │ PK id                │
+│    organization_id   │   │   │ FK customer_id ──────┤◀── 1:1
+│    workspace_id      │   │   │    organization_id   │
+│    customer_id (ext) │   │   │    workspace_id      │
+│    person_id (ext)   │   │   │    coin_balance      │
+│    tier              │   │   │    cashback_pending   │
+│    tags              │   │   │    cashback_ready     │
+│    total_spend       │   │   │    cash_balance       │
+│    enrolled_at       │   │   │    offline_coin_bgt   │
+│    last_active_at    │   │   │    offline_cash_bgt   │
+└──────────┬───────────┘   │   └──────────┬───────────┘
+           │               │              │
+           │               │   ┌──────────┴───────────┐
+           │               │   │ wallet_transactions   │
+           │               │   │──────────────────────│
+           │               │   │ PK id                │
+           │               │   │ FK wallet_id         │
+           │               │   │    type (enum)       │
+           │               │   │    sub_account       │
+           │               │   │    amount            │
+           │               │   │    reference_type    │
+           │               │   │    reference_id      │
+           │               │   │    offline_id        │
+           │               │   │    created_at        │
+           │               │   └──────────────────────┘
+           │               │
+           ▼               │   ┌──────────────────────┐
+┌──────────────────────┐   │   │   benefit_rules      │
+│ benefit_applications │   │   │──────────────────────│
+│──────────────────────│   │   │ PK id                │
+│ PK id                │   │   │    organization_id   │
+│ FK customer_id ──────┤───┘   │    workspace_id      │
+│    sale_id           │       │    name              │
+│    organization_id   │       │    benefit_type      │
+│    workspace_id      │       │    conditions (JSONB)│
+│    status            │       │    reward (JSONB)    │
+│    total_discount    │       │    priority          │
+│    applied_benefits  │       │    is_stackable      │
+│    created_at        │       │    stack_group       │
+│    reversed_at       │       │    max_uses_total    │
+└──────────────────────┘       │    max_uses_customer │
+                               │    valid_from        │
+┌──────────────────────┐       │    valid_until       │
+│   ledger_entries     │       │    status            │
+│──────────────────────│       └──────────┬───────────┘
+│ PK id                │                  │
+│ FK customer_id       │       ┌──────────┴───────────┐
+│    organization_id   │       │   rule_conditions    │
+│    workspace_id      │       │──────────────────────│
+│    entry_type        │       │ PK id                │
+│    benefit_type      │       │ FK rule_id           │
+│    amount            │       │    field             │
+│    balance_after     │       │    operator          │
+│    reference_type    │       │    value (JSONB)     │
+│    reference_id      │       │    logic_group       │
+│    application_id    │       │    group_operator    │
+│    description       │       └──────────────────────┘
+│    offline_id        │
+│    created_at        │       ┌──────────────────────┐
+└──────────────────────┘       │     campaigns        │
+                               │──────────────────────│
+┌──────────────────────┐       │ PK id                │
+│      coupons         │       │    organization_id   │
+│──────────────────────│       │    workspace_id      │
+│ PK id                │       │    name              │
+│    organization_id   │       │    status            │
+│    workspace_id      │       │    start_at          │
+│    code (unique)     │       │    end_at            │
+│ FK rule_id           │       │    budget_type       │
+│ FK campaign_id       │       │    budget_total      │
+│    max_uses_total    │       │    budget_used       │
+│    max_uses_customer │       │    enrollment_type   │
+│    used_count        │       │    trigger_event     │
+│    assigned_to       │       │    max_per_customer  │
+│    valid_from        │       │    created_by        │
+│    valid_until       │       └──────────┬───────────┘
+│    status            │                  │
+└──────────────────────┘       ┌──────────┴───────────┐
+                               │campaign_enrollments  │
+┌──────────────────────┐       │──────────────────────│
+│  coupon_redemptions  │       │ PK id                │
+│──────────────────────│       │ FK campaign_id       │
+│ PK id                │       │ FK customer_id       │
+│ FK coupon_id         │       │    status            │
+│ FK customer_id       │       │    uses_remaining    │
+│    sale_id           │       │    enrolled_at       │
+│    discount_amount   │       └──────────────────────┘
+│    redeemed_at       │
+└──────────────────────┘       ┌──────────────────────┐
+                               │campaign_rule_assoc   │
+┌──────────────────────┐       │──────────────────────│
+│    expiry_events     │       │ FK campaign_id       │
+│──────────────────────│       │ FK rule_id           │
+│ PK id                │       └──────────────────────┘
+│ FK customer_id       │
+│    sub_account       │       ┌──────────────────────┐
+│    amount            │       │    sync_events       │
+│    expires_at        │       │──────────────────────│
+│    processed         │       │ PK id                │
+│    processed_at      │       │    organization_id   │
+│    created_at        │       │    workspace_id      │
+└──────────────────────┘       │    terminal_id       │
+                               │    event_type        │
+                               │    payload (JSONB)   │
+                               │    offline_id        │
+                               │    status            │
+                               │    reconciled_at     │
+                               │    created_at        │
+                               └──────────────────────┘</pre></div>
+</div>
+
+<div class="section">
+  <div class="section-label">ENUM Types</div>
+  <h2 class="section-title">Custom PostgreSQL ENUM Types</h2>
+
+  <div class="code"><code><span style="color:#86efac">-- Migration 000001: ENUM types</span>
+
+CREATE TYPE customer_tier AS ENUM ('bronze', 'silver', 'gold', 'platinum');
+
+CREATE TYPE benefit_type AS ENUM ('loyalty_coins', 'cashback', 'loyalty_cash', 'coupon', 'campaign');
+
+CREATE TYPE wallet_tx_type AS ENUM ('earn', 'redeem', 'topup', 'expire', 'adjust', 'reverse');
+
+CREATE TYPE wallet_sub_account AS ENUM ('coins', 'cashback', 'cash');
+
+CREATE TYPE application_status AS ENUM ('pending', 'applied', 'reversed', 'partial_reversed');
+
+CREATE TYPE campaign_status AS ENUM ('draft', 'active', 'paused', 'completed', 'cancelled');
+
+CREATE TYPE coupon_status AS ENUM ('active', 'exhausted', 'expired', 'disabled');
+
+CREATE TYPE enrollment_type AS ENUM ('auto', 'opt_in', 'invited');
+
+CREATE TYPE budget_type AS ENUM ('amount', 'quantity', 'unlimited');
+
+CREATE TYPE sync_status AS ENUM ('pending', 'processing', 'reconciled', 'rejected');</code></div>
+</div>
+
+<div class="section">
+  <div class="section-label">Tables</div>
+  <h2 class="section-title">Table DDL — Full Schema</h2>
+
+  <h3>1. loyalty_customers</h3>
+  <div class="code"><code><span style="color:#86efac">-- Migration 000002: loyalty_customers</span>
+
+CREATE TABLE loyalty_customers (
+    id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    organization_id  UUID NOT NULL,
+    workspace_id     UUID NOT NULL,
+    customer_id      UUID NOT NULL,  <span style="color:#64748b">-- ext ref: elPOS pos_customers</span>
+    person_id        UUID,           <span style="color:#64748b">-- ext ref: elAccounts person</span>
+    tier             customer_tier NOT NULL DEFAULT 'bronze',
+    tags             TEXT[] DEFAULT '{}',
+    total_spend      BIGINT NOT NULL DEFAULT 0,    <span style="color:#64748b">-- paisa</span>
+    total_earned     INT NOT NULL DEFAULT 0,       <span style="color:#64748b">-- coins</span>
+    total_redeemed   INT NOT NULL DEFAULT 0,       <span style="color:#64748b">-- coins</span>
+    preferences      JSONB NOT NULL DEFAULT '{}',
+    enrolled_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+    last_active_at   TIMESTAMPTZ NOT NULL DEFAULT now(),
+    created_at       TIMESTAMPTZ NOT NULL DEFAULT now(),
+    updated_at       TIMESTAMPTZ NOT NULL DEFAULT now(),
+    deleted_at       TIMESTAMPTZ,
+
+    UNIQUE (organization_id, workspace_id, customer_id)
+);
+
+CREATE INDEX idx_lc_org_ws ON loyalty_customers (organization_id, workspace_id) WHERE deleted_at IS NULL;
+CREATE INDEX idx_lc_customer ON loyalty_customers (customer_id) WHERE deleted_at IS NULL;
+CREATE INDEX idx_lc_tier ON loyalty_customers (organization_id, workspace_id, tier) WHERE deleted_at IS NULL;</code></div>
+
+  <h3>2. wallets</h3>
+  <div class="code"><code><span style="color:#86efac">-- Migration 000003: wallets</span>
+
+CREATE TABLE wallets (
+    id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    customer_id      UUID NOT NULL REFERENCES loyalty_customers(id),
+    organization_id  UUID NOT NULL,
+    workspace_id     UUID NOT NULL,
+    coin_balance     INT NOT NULL DEFAULT 0,
+    cashback_pending BIGINT NOT NULL DEFAULT 0,    <span style="color:#64748b">-- paisa</span>
+    cashback_ready   BIGINT NOT NULL DEFAULT 0,    <span style="color:#64748b">-- paisa</span>
+    cash_balance     BIGINT NOT NULL DEFAULT 0,    <span style="color:#64748b">-- paisa</span>
+    offline_coin_budget  INT NOT NULL DEFAULT 0,
+    offline_cash_budget  BIGINT NOT NULL DEFAULT 0,
+    created_at       TIMESTAMPTZ NOT NULL DEFAULT now(),
+    updated_at       TIMESTAMPTZ NOT NULL DEFAULT now(),
+
+    UNIQUE (customer_id)
+);
+
+CREATE INDEX idx_wallets_org_ws ON wallets (organization_id, workspace_id);</code></div>
+
+  <h3>3. wallet_transactions</h3>
+  <div class="code"><code><span style="color:#86efac">-- Migration 000003: wallet_transactions</span>
+
+CREATE TABLE wallet_transactions (
+    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    wallet_id       UUID NOT NULL REFERENCES wallets(id),
+    type            wallet_tx_type NOT NULL,
+    sub_account     wallet_sub_account NOT NULL,
+    amount          BIGINT NOT NULL,  <span style="color:#64748b">-- positive = credit, negative = debit</span>
+    reference_type  TEXT NOT NULL,     <span style="color:#64748b">-- 'sale', 'refund', 'topup', 'expiry', 'admin'</span>
+    reference_id    UUID,
+    description     TEXT,
+    offline_id      UUID,             <span style="color:#64748b">-- for idempotent offline sync</span>
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+
+    <span style="color:#64748b">-- Prevent duplicate offline transactions</span>
+    UNIQUE NULLS NOT DISTINCT (offline_id)
+);
+
+CREATE INDEX idx_wtx_wallet ON wallet_transactions (wallet_id, created_at DESC);
+CREATE INDEX idx_wtx_ref ON wallet_transactions (reference_type, reference_id);
+CREATE INDEX idx_wtx_offline ON wallet_transactions (offline_id) WHERE offline_id IS NOT NULL;</code></div>
+
+  <h3>4. benefit_rules</h3>
+  <div class="code"><code><span style="color:#86efac">-- Migration 000004: benefit_rules</span>
+
+CREATE TABLE benefit_rules (
+    id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    organization_id   UUID NOT NULL,
+    workspace_id      UUID NOT NULL,
+    name              TEXT NOT NULL,
+    description       TEXT,
+    benefit_type      benefit_type NOT NULL,
+    conditions        JSONB NOT NULL DEFAULT '[]',  <span style="color:#64748b">-- structured condition tree</span>
+    reward            JSONB NOT NULL,               <span style="color:#64748b">-- type-specific reward config</span>
+    priority          INT NOT NULL DEFAULT 100,     <span style="color:#64748b">-- lower = higher priority</span>
+    is_stackable      BOOLEAN NOT NULL DEFAULT false,
+    stack_group       TEXT,
+    max_uses_total    INT DEFAULT 0,     <span style="color:#64748b">-- 0 = unlimited</span>
+    max_uses_customer INT DEFAULT 0,
+    used_count        INT NOT NULL DEFAULT 0,
+    valid_from        TIMESTAMPTZ NOT NULL DEFAULT now(),
+    valid_until       TIMESTAMPTZ,       <span style="color:#64748b">-- NULL = no expiry</span>
+    status            TEXT NOT NULL DEFAULT 'active',  <span style="color:#64748b">-- active, disabled</span>
+    created_by        UUID,
+    created_at        TIMESTAMPTZ NOT NULL DEFAULT now(),
+    updated_at        TIMESTAMPTZ NOT NULL DEFAULT now(),
+    deleted_at        TIMESTAMPTZ
+);
+
+CREATE INDEX idx_rules_active ON benefit_rules
+    (organization_id, workspace_id, benefit_type, priority)
+    WHERE deleted_at IS NULL AND status = 'active';</code></div>
+
+  <h3>5. rule_conditions</h3>
+  <div class="code"><code><span style="color:#86efac">-- Migration 000004: rule_conditions (normalized for complex queries)</span>
+
+CREATE TABLE rule_conditions (
+    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    rule_id         UUID NOT NULL REFERENCES benefit_rules(id) ON DELETE CASCADE,
+    field           TEXT NOT NULL,      <span style="color:#64748b">-- 'cart.total', 'item.category_id', 'customer.tier'</span>
+    operator        TEXT NOT NULL,      <span style="color:#64748b">-- 'gte', 'eq', 'in', 'between', 'contains'</span>
+    value           JSONB NOT NULL,     <span style="color:#64748b">-- operator-specific value</span>
+    logic_group     INT NOT NULL DEFAULT 0,  <span style="color:#64748b">-- conditions in same group are AND'd</span>
+    group_operator  TEXT NOT NULL DEFAULT 'AND'  <span style="color:#64748b">-- groups are OR'd or AND'd</span>
+);
+
+CREATE INDEX idx_rc_rule ON rule_conditions (rule_id);</code></div>
+
+  <h3>6-8. campaigns, campaign_enrollments, campaign_rule_assoc</h3>
+  <div class="code"><code><span style="color:#86efac">-- Migration 000005: campaigns</span>
+
+CREATE TABLE campaigns (
+    id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    organization_id  UUID NOT NULL,
+    workspace_id     UUID NOT NULL,
+    name             TEXT NOT NULL,
+    description      TEXT,
+    status           campaign_status NOT NULL DEFAULT 'draft',
+    start_at         TIMESTAMPTZ NOT NULL,
+    end_at           TIMESTAMPTZ NOT NULL,
+    budget_type      budget_type NOT NULL DEFAULT 'unlimited',
+    budget_total     BIGINT NOT NULL DEFAULT 0,
+    budget_used      BIGINT NOT NULL DEFAULT 0,
+    enrollment_type  enrollment_type NOT NULL DEFAULT 'auto',
+    trigger_event    TEXT,
+    max_per_customer INT DEFAULT 0,
+    created_by       UUID,
+    created_at       TIMESTAMPTZ NOT NULL DEFAULT now(),
+    updated_at       TIMESTAMPTZ NOT NULL DEFAULT now(),
+    deleted_at       TIMESTAMPTZ
+);
+
+CREATE TABLE campaign_enrollments (
+    id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    campaign_id   UUID NOT NULL REFERENCES campaigns(id),
+    customer_id   UUID NOT NULL REFERENCES loyalty_customers(id),
+    status        TEXT NOT NULL DEFAULT 'active',
+    uses_remaining INT NOT NULL DEFAULT 1,
+    enrolled_at   TIMESTAMPTZ NOT NULL DEFAULT now(),
+
+    UNIQUE (campaign_id, customer_id)
+);
+
+CREATE TABLE campaign_rule_assoc (
+    campaign_id UUID NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,
+    rule_id     UUID NOT NULL REFERENCES benefit_rules(id) ON DELETE CASCADE,
+    PRIMARY KEY (campaign_id, rule_id)
+);</code></div>
+
+  <h3>9-10. coupons, coupon_redemptions</h3>
+  <div class="code"><code><span style="color:#86efac">-- Migration 000006: coupons</span>
+
+CREATE TABLE coupons (
+    id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    organization_id   UUID NOT NULL,
+    workspace_id      UUID NOT NULL,
+    code              TEXT NOT NULL,
+    rule_id           UUID NOT NULL REFERENCES benefit_rules(id),
+    campaign_id       UUID REFERENCES campaigns(id),
+    max_uses_total    INT DEFAULT 0,
+    max_uses_customer INT DEFAULT 1,
+    used_count        INT NOT NULL DEFAULT 0,
+    assigned_to       UUID[],          <span style="color:#64748b">-- empty = global</span>
+    valid_from        TIMESTAMPTZ NOT NULL DEFAULT now(),
+    valid_until       TIMESTAMPTZ,
+    status            coupon_status NOT NULL DEFAULT 'active',
+    created_at        TIMESTAMPTZ NOT NULL DEFAULT now(),
+
+    UNIQUE (organization_id, workspace_id, code)
+);
+
+CREATE TABLE coupon_redemptions (
+    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    coupon_id       UUID NOT NULL REFERENCES coupons(id),
+    customer_id     UUID NOT NULL REFERENCES loyalty_customers(id),
+    sale_id         UUID NOT NULL,
+    application_id  UUID,
+    discount_amount BIGINT NOT NULL,  <span style="color:#64748b">-- paisa</span>
+    redeemed_at     TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX idx_cr_coupon ON coupon_redemptions (coupon_id);
+CREATE INDEX idx_cr_customer ON coupon_redemptions (coupon_id, customer_id);</code></div>
+
+  <h3>11-12. benefit_applications, ledger_entries</h3>
+  <div class="code"><code><span style="color:#86efac">-- Migration 000007: benefit_applications + ledger</span>
+
+CREATE TABLE benefit_applications (
+    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    customer_id     UUID NOT NULL REFERENCES loyalty_customers(id),
+    sale_id         UUID NOT NULL,
+    organization_id UUID NOT NULL,
+    workspace_id    UUID NOT NULL,
+    status          application_status NOT NULL DEFAULT 'applied',
+    total_discount  BIGINT NOT NULL,     <span style="color:#64748b">-- paisa</span>
+    applied_benefits JSONB NOT NULL,     <span style="color:#64748b">-- array of applied benefit details</span>
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+    reversed_at     TIMESTAMPTZ,
+    offline_id      UUID,
+
+    UNIQUE NULLS NOT DISTINCT (offline_id)
+);
+
+CREATE INDEX idx_ba_sale ON benefit_applications (sale_id);
+CREATE INDEX idx_ba_customer ON benefit_applications (customer_id, created_at DESC);
+
+CREATE TABLE ledger_entries (
+    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    customer_id     UUID NOT NULL REFERENCES loyalty_customers(id),
+    organization_id UUID NOT NULL,
+    workspace_id    UUID NOT NULL,
+    entry_type      wallet_tx_type NOT NULL,
+    benefit_type    benefit_type,
+    amount          BIGINT NOT NULL,
+    balance_after   BIGINT NOT NULL,
+    reference_type  TEXT NOT NULL,
+    reference_id    UUID,
+    application_id  UUID REFERENCES benefit_applications(id),
+    description     TEXT,
+    offline_id      UUID,
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+
+    UNIQUE NULLS NOT DISTINCT (offline_id)
+);
+
+CREATE INDEX idx_le_customer ON ledger_entries (customer_id, created_at DESC);
+CREATE INDEX idx_le_org_ws ON ledger_entries (organization_id, workspace_id, created_at DESC);</code></div>
+
+  <h3>13-14. expiry_events, sync_events</h3>
+  <div class="code"><code><span style="color:#86efac">-- Migration 000008: expiry_events</span>
+
+CREATE TABLE expiry_events (
+    id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    customer_id   UUID NOT NULL REFERENCES loyalty_customers(id),
+    wallet_id     UUID NOT NULL REFERENCES wallets(id),
+    sub_account   wallet_sub_account NOT NULL,
+    amount        BIGINT NOT NULL,       <span style="color:#64748b">-- amount to expire</span>
+    expires_at    TIMESTAMPTZ NOT NULL,
+    processed     BOOLEAN NOT NULL DEFAULT false,
+    processed_at  TIMESTAMPTZ,
+    created_at    TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX idx_expiry_pending ON expiry_events (expires_at)
+    WHERE processed = false;
+
+<span style="color:#86efac">-- Migration 000009: sync_events</span>
+
+CREATE TABLE sync_events (
+    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    organization_id UUID NOT NULL,
+    workspace_id    UUID NOT NULL,
+    terminal_id     UUID NOT NULL,
+    event_type      TEXT NOT NULL,
+    payload         JSONB NOT NULL,
+    offline_id      UUID NOT NULL,
+    status          sync_status NOT NULL DEFAULT 'pending',
+    error_message   TEXT,
+    reconciled_at   TIMESTAMPTZ,
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+
+    UNIQUE (offline_id)
+);
+
+CREATE INDEX idx_sync_pending ON sync_events (status, created_at)
+    WHERE status = 'pending';</code></div>
+</div>
+
+<div class="section">
+  <div class="section-label">Conventions</div>
+  <h2 class="section-title">Schema Conventions</h2>
+  <ul>
+    <li><strong>UUID primary keys</strong> — <code>gen_random_uuid()</code> for all IDs, client-generated for offline-created records</li>
+    <li><strong>BIGINT paisa</strong> — all monetary values in paisa (₹1 = 100). Zero floating-point usage</li>
+    <li><strong>Tenant isolation</strong> — <code>(organization_id, workspace_id)</code> on every row. Always included in WHERE clauses</li>
+    <li><strong>Soft delete</strong> — <code>deleted_at TIMESTAMPTZ</code> on master data tables. Partial indexes exclude deleted rows</li>
+    <li><strong>Offline idempotency</strong> — <code>offline_id UUID UNIQUE NULLS NOT DISTINCT</code> prevents duplicate processing</li>
+    <li><strong>Immutable ledger</strong> — <code>ledger_entries</code> and <code>wallet_transactions</code> are append-only. No UPDATE or DELETE</li>
+    <li><strong>JSONB for flexibility</strong> — Rule conditions and reward configs use JSONB for schema evolution without migrations</li>
+    <li><strong>Partial indexes</strong> — Active records indexed with <code>WHERE deleted_at IS NULL</code> or <code>WHERE status = 'active'</code></li>
+  </ul>
+</div>
+
+</div><!-- /container -->
+
+<footer class="footer">
+  <p>elLoyalty Database Schema — <a href="index.html" style="color:#c4b5fd">Back to Index</a></p>
+</footer>
+</body>
+</html>

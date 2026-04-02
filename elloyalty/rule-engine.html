@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>elLoyalty — Rule Engine</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#f8fafc;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b;--light:#94a3b8;--primary:#7c3aed;--primary-light:#ede9fe;--primary-dark:#5b21b6;--radius:10px;--shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);--shadow-md:0 4px 6px rgba(0,0,0,.07)}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6}
+a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
+.nav{position:sticky;top:0;z-index:100;background:#0f172a;padding:0 24px;display:flex;align-items:center;height:48px;gap:24px;box-shadow:0 2px 12px rgba(0,0,0,.25)}
+.nav .brand{color:#fff;font-weight:800;font-size:15px;display:flex;align-items:center;gap:8px}
+.nav .brand span{background:var(--primary);padding:2px 8px;border-radius:5px;font-size:11px;font-weight:700}
+.nav-links{display:flex;gap:4px;margin-left:auto;overflow-x:auto}
+.nav-links a{color:#94a3b8;font-size:12px;font-weight:500;text-decoration:none;padding:6px 10px;border-radius:6px;transition:all .15s;white-space:nowrap}
+.nav-links a:hover,.nav-links a.active{color:#fff;background:rgba(255,255,255,.08)}
+.header{background:linear-gradient(135deg,#1e1b4b 0%,#312e81 40%,#4c1d95 100%);color:#fff;padding:36px 24px 28px;text-align:center}
+.header h1{font-size:26px;font-weight:800;letter-spacing:-.3px}.header p{font-size:13px;color:#c4b5fd;margin-top:4px}
+.container{max-width:1100px;margin:0 auto;padding:0 24px 48px}
+.section{padding:40px 0}.section+.section{border-top:1px solid var(--border)}
+.section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--primary);margin-bottom:6px}
+.section-title{font-size:22px;font-weight:800;color:var(--text);margin-bottom:4px}
+.section-sub{font-size:14px;color:var(--muted);margin-bottom:24px;max-width:700px}
+h3{font-size:17px;font-weight:700;color:var(--text);margin:28px 0 10px}
+p{margin-bottom:12px}
+.diagram{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:16px 0;overflow-x:auto;box-shadow:var(--shadow)}
+.diagram pre{font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.5;color:var(--text);white-space:pre}
+.code{background:#1e293b;border-radius:var(--radius);padding:20px;margin:16px 0;overflow-x:auto}
+.code code{font-family:'JetBrains Mono',monospace;font-size:12px;color:#e2e8f0;line-height:1.6;white-space:pre;display:block}
+.tbl-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);margin:16px 0;box-shadow:var(--shadow)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{background:#f1f5f9;padding:10px 14px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border)}
+tbody td{padding:10px 14px;border-bottom:1px solid var(--border)}
+tbody tr:hover td{background:#f8fafc}
+td code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#f1f5f9;padding:1px 6px;border-radius:4px}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;margin:16px 0}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+.card h4{font-size:15px;font-weight:700;margin-bottom:6px}.card p{font-size:13px;color:var(--muted);margin-bottom:0}
+ol,ul{margin:8px 0 16px 24px}li{margin-bottom:4px;font-size:13px}
+.footer{background:#0f172a;color:#94a3b8;padding:24px;text-align:center;font-size:12px;margin-top:48px}
+@media(max-width:768px){.card-grid{grid-template-columns:1fr}.nav-links{display:none}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="brand">elSapiens <span>elLoyalty</span></div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="architecture.html">Architecture</a>
+    <a href="benefit-engine.html">Benefit Engine</a>
+    <a href="checkout-flow.html">Checkout Flow</a>
+    <a href="domain-design.html">Domains</a>
+    <a href="database-schema.html">Schema</a>
+    <a href="rule-engine.html" class="active">Rules</a>
+    <a href="conflict-resolution.html">Conflicts</a>
+    <a href="ledger-design.html">Ledger</a>
+    <a href="offline-first.html">Offline</a>
+    <a href="ecosystem-integration.html">Ecosystem</a>
+    <a href="frontend-design.html">Frontend</a>
+    <a href="security.html">Security</a>
+    <a href="scalability.html">Scale</a>
+    <a href="edge-cases.html">Edge Cases</a>
+  </div>
+</nav>
+
+<header class="header">
+  <h1>06 — Rule Engine</h1>
+  <p>JSON-based condition trees, operator semantics, reward configuration, and evaluation algorithm</p>
+</header>
+
+<div class="container">
+
+<div class="section">
+  <div class="section-label">Overview</div>
+  <h2 class="section-title">Rule Engine Architecture</h2>
+  <p class="section-sub">The rule engine evaluates benefit rules against cart and customer context. Rules are stored as structured JSON, cached in Redis, and evaluated in-memory.</p>
+
+  <div class="diagram"><pre>
+┌──────────────────────────────────────────────────────────────────┐
+│                      RULE EVALUATION FLOW                        │
+│                                                                  │
+│  ┌────────────┐   ┌──────────────┐   ┌──────────────────┐       │
+│  │ CartContext │──▶│ Load Active  │──▶│ Evaluate Each    │       │
+│  │ + Customer │   │ Rules        │   │ Rule's Condition │       │
+│  │            │   │ (Redis cache │   │ Tree Against     │       │
+│  │            │   │  or DB)      │   │ Context          │       │
+│  └────────────┘   └──────────────┘   └────────┬─────────┘       │
+│                                               │                  │
+│                         ┌────────────────────┬┴──────────────┐   │
+│                         │ Matching           │ Non-matching  │   │
+│                         │ Rules              │ (discarded)   │   │
+│                         │                    │               │   │
+│                   ┌─────┴──────┐       ┌─────┴──────┐        │   │
+│                   │ Compute    │       │            │        │   │
+│                   │ Reward     │       │  skipped   │        │   │
+│                   │ Amount     │       │            │        │   │
+│                   └─────┬──────┘       └────────────┘        │   │
+│                         │                                    │   │
+│                   ┌─────┴──────┐                             │   │
+│                   │ Build      │                             │   │
+│                   │ Candidate  │                             │   │
+│                   │ Benefit    │                             │   │
+│                   └────────────┘                             │   │
+└──────────────────────────────────────────────────────────────────┘</pre></div>
+</div>
+
+<div class="section">
+  <div class="section-label">Condition Format</div>
+  <h2 class="section-title">Condition Tree Structure</h2>
+  <p class="section-sub">Conditions are stored as JSONB in the <code>benefit_rules.conditions</code> column. They form a tree with AND/OR groups.</p>
+
+  <h3>JSON Schema</h3>
+  <div class="code"><code>{
+  <span style="color:#86efac">"operator"</span>: <span style="color:#86efac">"AND"</span>,           <span style="color:#64748b">// top-level group operator</span>
+  <span style="color:#86efac">"conditions"</span>: [
+    {
+      <span style="color:#86efac">"field"</span>: <span style="color:#86efac">"cart.total"</span>,
+      <span style="color:#86efac">"op"</span>: <span style="color:#86efac">"gte"</span>,
+      <span style="color:#86efac">"value"</span>: 100000          <span style="color:#64748b">// ₹1000 in paisa</span>
+    },
+    {
+      <span style="color:#86efac">"operator"</span>: <span style="color:#86efac">"OR"</span>,          <span style="color:#64748b">// nested group</span>
+      <span style="color:#86efac">"conditions"</span>: [
+        {
+          <span style="color:#86efac">"field"</span>: <span style="color:#86efac">"customer.tier"</span>,
+          <span style="color:#86efac">"op"</span>: <span style="color:#86efac">"in"</span>,
+          <span style="color:#86efac">"value"</span>: [<span style="color:#86efac">"gold"</span>, <span style="color:#86efac">"platinum"</span>]
+        },
+        {
+          <span style="color:#86efac">"field"</span>: <span style="color:#86efac">"customer.tags"</span>,
+          <span style="color:#86efac">"op"</span>: <span style="color:#86efac">"contains"</span>,
+          <span style="color:#86efac">"value"</span>: <span style="color:#86efac">"vip"</span>
+        }
+      ]
+    }
+  ]
+}
+
+<span style="color:#64748b">// Reads as: cart.total >= ₹1000 AND (customer.tier IN [gold, platinum] OR customer.tags CONTAINS "vip")</span></code></div>
+</div>
+
+<div class="section">
+  <div class="section-label">Fields</div>
+  <h2 class="section-title">Available Condition Fields</h2>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Field</th><th>Type</th><th>Description</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td><code>cart.total</code></td><td>int64</td><td>Cart total in paisa (pre-tax)</td><td><code>{"field":"cart.total","op":"gte","value":50000}</code></td></tr>
+        <tr><td><code>cart.item_count</code></td><td>int</td><td>Total number of items in cart</td><td><code>{"field":"cart.item_count","op":"gte","value":3}</code></td></tr>
+        <tr><td><code>cart.unique_items</code></td><td>int</td><td>Number of distinct products</td><td><code>{"field":"cart.unique_items","op":"gte","value":2}</code></td></tr>
+        <tr><td><code>cart.payment_method</code></td><td>string</td><td>Payment method</td><td><code>{"field":"cart.payment_method","op":"eq","value":"upi"}</code></td></tr>
+        <tr><td><code>item.category_id</code></td><td>string</td><td>Product category (per-item)</td><td><code>{"field":"item.category_id","op":"in","value":["cat1","cat2"]}</code></td></tr>
+        <tr><td><code>item.product_id</code></td><td>string</td><td>Specific product (per-item)</td><td><code>{"field":"item.product_id","op":"eq","value":"prod_uuid"}</code></td></tr>
+        <tr><td><code>item.sku</code></td><td>string</td><td>Product SKU</td><td><code>{"field":"item.sku","op":"eq","value":"SKU-001"}</code></td></tr>
+        <tr><td><code>item.quantity</code></td><td>int</td><td>Quantity of specific item</td><td><code>{"field":"item.quantity","op":"gte","value":2}</code></td></tr>
+        <tr><td><code>item.line_total</code></td><td>int64</td><td>Line total in paisa</td><td><code>{"field":"item.line_total","op":"gte","value":20000}</code></td></tr>
+        <tr><td><code>customer.tier</code></td><td>string</td><td>Customer loyalty tier</td><td><code>{"field":"customer.tier","op":"eq","value":"gold"}</code></td></tr>
+        <tr><td><code>customer.tags</code></td><td>[]string</td><td>Customer tags</td><td><code>{"field":"customer.tags","op":"contains","value":"vip"}</code></td></tr>
+        <tr><td><code>customer.total_spend</code></td><td>int64</td><td>Lifetime spend in paisa</td><td><code>{"field":"customer.total_spend","op":"gte","value":10000000}</code></td></tr>
+        <tr><td><code>customer.enrolled_days</code></td><td>int</td><td>Days since enrollment</td><td><code>{"field":"customer.enrolled_days","op":"lte","value":30}</code></td></tr>
+        <tr><td><code>time.day_of_week</code></td><td>int</td><td>0=Sun, 6=Sat</td><td><code>{"field":"time.day_of_week","op":"in","value":[0,6]}</code></td></tr>
+        <tr><td><code>time.hour</code></td><td>int</td><td>Hour of day (0-23)</td><td><code>{"field":"time.hour","op":"between","value":[11,14]}</code></td></tr>
+        <tr><td><code>store.id</code></td><td>string</td><td>Specific store</td><td><code>{"field":"store.id","op":"in","value":["store1","store2"]}</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Operators</div>
+  <h2 class="section-title">Condition Operators</h2>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Operator</th><th>Description</th><th>Value Type</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td><code>eq</code></td><td>Equals</td><td>any</td><td><code>"op":"eq","value":"gold"</code></td></tr>
+        <tr><td><code>neq</code></td><td>Not equals</td><td>any</td><td><code>"op":"neq","value":"bronze"</code></td></tr>
+        <tr><td><code>gt</code></td><td>Greater than</td><td>number</td><td><code>"op":"gt","value":50000</code></td></tr>
+        <tr><td><code>gte</code></td><td>Greater than or equal</td><td>number</td><td><code>"op":"gte","value":100000</code></td></tr>
+        <tr><td><code>lt</code></td><td>Less than</td><td>number</td><td><code>"op":"lt","value":10</code></td></tr>
+        <tr><td><code>lte</code></td><td>Less than or equal</td><td>number</td><td><code>"op":"lte","value":30</code></td></tr>
+        <tr><td><code>in</code></td><td>Value in list</td><td>[]any</td><td><code>"op":"in","value":["gold","platinum"]</code></td></tr>
+        <tr><td><code>not_in</code></td><td>Value not in list</td><td>[]any</td><td><code>"op":"not_in","value":["bronze"]</code></td></tr>
+        <tr><td><code>between</code></td><td>Value in range (inclusive)</td><td>[min,max]</td><td><code>"op":"between","value":[11,14]</code></td></tr>
+        <tr><td><code>contains</code></td><td>Array contains value</td><td>any</td><td><code>"op":"contains","value":"vip"</code></td></tr>
+        <tr><td><code>not_contains</code></td><td>Array does not contain</td><td>any</td><td><code>"op":"not_contains","value":"blacklisted"</code></td></tr>
+        <tr><td><code>exists</code></td><td>Field is non-null/non-empty</td><td>bool</td><td><code>"op":"exists","value":true</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Rewards</div>
+  <h2 class="section-title">Reward Configuration</h2>
+  <p class="section-sub">The <code>reward</code> JSONB field in <code>benefit_rules</code> defines what the customer receives. Format varies by benefit type.</p>
+
+  <h3>Loyalty Coins Reward</h3>
+  <div class="code"><code>{
+  <span style="color:#86efac">"type"</span>: <span style="color:#86efac">"earn_coins"</span>,
+  <span style="color:#86efac">"mode"</span>: <span style="color:#86efac">"per_amount"</span>,    <span style="color:#64748b">// "per_amount", "per_item", "flat"</span>
+  <span style="color:#86efac">"coins_per"</span>: 1,           <span style="color:#64748b">// 1 coin per ₹X spent</span>
+  <span style="color:#86efac">"per_amount"</span>: 10000,      <span style="color:#64748b">// per ₹100 (paisa)</span>
+  <span style="color:#86efac">"max_coins"</span>: 500,         <span style="color:#64748b">// cap per transaction</span>
+  <span style="color:#86efac">"multiplier"</span>: 2.0         <span style="color:#64748b">// 2x coins during campaign</span>
+}</code></div>
+
+  <h3>Cashback Reward</h3>
+  <div class="code"><code>{
+  <span style="color:#86efac">"type"</span>: <span style="color:#86efac">"cashback"</span>,
+  <span style="color:#86efac">"mode"</span>: <span style="color:#86efac">"percentage"</span>,    <span style="color:#64748b">// "percentage", "flat"</span>
+  <span style="color:#86efac">"percentage"</span>: 1000,       <span style="color:#64748b">// 10.00% (basis points for precision)</span>
+  <span style="color:#86efac">"max_cashback"</span>: 50000,    <span style="color:#64748b">// ₹500 cap in paisa</span>
+  <span style="color:#86efac">"delay"</span>: <span style="color:#86efac">"T+1"</span>             <span style="color:#64748b">// "instant", "T+1", "T+7"</span>
+}</code></div>
+
+  <h3>Discount (Coupon) Reward</h3>
+  <div class="code"><code>{
+  <span style="color:#86efac">"type"</span>: <span style="color:#86efac">"discount"</span>,
+  <span style="color:#86efac">"mode"</span>: <span style="color:#86efac">"percentage"</span>,    <span style="color:#64748b">// "percentage", "flat"</span>
+  <span style="color:#86efac">"percentage"</span>: 1500,       <span style="color:#64748b">// 15.00% (basis points)</span>
+  <span style="color:#86efac">"max_discount"</span>: 30000,    <span style="color:#64748b">// ₹300 cap in paisa</span>
+  <span style="color:#86efac">"applies_to"</span>: <span style="color:#86efac">"cart"</span>       <span style="color:#64748b">// "cart", "item", "category"</span>
+}</code></div>
+
+  <h3>Coin Redemption Rate</h3>
+  <div class="code"><code>{
+  <span style="color:#86efac">"type"</span>: <span style="color:#86efac">"coin_redemption"</span>,
+  <span style="color:#86efac">"coins_per_rupee"</span>: 10,    <span style="color:#64748b">// 10 coins = ₹1</span>
+  <span style="color:#86efac">"min_redeem"</span>: 100,         <span style="color:#64748b">// minimum 100 coins per redemption</span>
+  <span style="color:#86efac">"max_redeem_pct"</span>: 5000     <span style="color:#64748b">// max 50% of cart payable with coins (basis points)</span>
+}</code></div>
+</div>
+
+<div class="section">
+  <div class="section-label">Evaluation</div>
+  <h2 class="section-title">Evaluation Algorithm</h2>
+
+  <div class="code"><code><span style="color:#c084fc">func</span> (e *RuleEngine) EvaluateRules(
+    ctx context.Context,
+    evalCtx EvaluationContext,
+    benefitType BenefitType,
+) ([]CandidateBenefit, error) {
+
+    <span style="color:#64748b">// 1. Load active rules (Redis cached, 5-min TTL)</span>
+    rules, err := e.loadActiveRules(ctx, evalCtx.OrganizationID, evalCtx.WorkspaceID, benefitType)
+    <span style="color:#c084fc">if</span> err != nil {
+        <span style="color:#c084fc">return</span> nil, err
+    }
+
+    <span style="color:#c084fc">var</span> candidates []CandidateBenefit
+
+    <span style="color:#c084fc">for</span> _, rule := <span style="color:#c084fc">range</span> rules {
+        <span style="color:#64748b">// 2. Check temporal validity</span>
+        <span style="color:#c084fc">if</span> !rule.IsActiveAt(evalCtx.Timestamp) {
+            <span style="color:#c084fc">continue</span>
+        }
+
+        <span style="color:#64748b">// 3. Check usage limits</span>
+        <span style="color:#c084fc">if</span> rule.MaxUsesTotal > 0 && rule.UsedCount >= rule.MaxUsesTotal {
+            <span style="color:#c084fc">continue</span>
+        }
+
+        <span style="color:#64748b">// 4. Evaluate condition tree</span>
+        match, err := e.evaluateConditionTree(rule.Conditions, evalCtx)
+        <span style="color:#c084fc">if</span> err != nil {
+            e.logger.Warn(<span style="color:#86efac">"condition eval error"</span>, zap.Error(err))
+            <span style="color:#c084fc">continue</span>
+        }
+        <span style="color:#c084fc">if</span> !match {
+            <span style="color:#c084fc">continue</span>
+        }
+
+        <span style="color:#64748b">// 5. Compute reward amount</span>
+        discount := e.computeReward(rule.Reward, evalCtx)
+        <span style="color:#c084fc">if</span> discount <= 0 {
+            <span style="color:#c084fc">continue</span>
+        }
+
+        <span style="color:#64748b">// 6. Build candidate</span>
+        candidates = <span style="color:#c084fc">append</span>(candidates, CandidateBenefit{
+            ID:             rule.ID,
+            Type:           rule.BenefitType,
+            Name:           rule.Name,
+            DiscountAmount: discount,
+            Priority:       rule.Priority,
+            IsStackable:    rule.IsStackable,
+            StackGroup:     rule.StackGroup,
+            RuleID:         rule.ID,
+        })
+    }
+
+    <span style="color:#c084fc">return</span> candidates, nil
+}
+
+<span style="color:#64748b">// evaluateConditionTree recursively evaluates AND/OR condition trees</span>
+<span style="color:#c084fc">func</span> (e *RuleEngine) evaluateConditionTree(
+    node ConditionNode, ctx EvaluationContext,
+) (<span style="color:#93c5fd">bool</span>, error) {
+    <span style="color:#c084fc">if</span> node.IsLeaf() {
+        <span style="color:#c084fc">return</span> e.evaluateLeaf(node, ctx)
+    }
+
+    <span style="color:#c084fc">for</span> _, child := <span style="color:#c084fc">range</span> node.Children {
+        result, err := e.evaluateConditionTree(child, ctx)
+        <span style="color:#c084fc">if</span> err != nil {
+            <span style="color:#c084fc">return</span> false, err
+        }
+
+        <span style="color:#c084fc">if</span> node.Operator == <span style="color:#86efac">"AND"</span> && !result {
+            <span style="color:#c084fc">return</span> false, nil  <span style="color:#64748b">// short-circuit AND</span>
+        }
+        <span style="color:#c084fc">if</span> node.Operator == <span style="color:#86efac">"OR"</span> && result {
+            <span style="color:#c084fc">return</span> true, nil   <span style="color:#64748b">// short-circuit OR</span>
+        }
+    }
+
+    <span style="color:#c084fc">return</span> node.Operator == <span style="color:#86efac">"AND"</span>, nil
+}</code></div>
+</div>
+
+<div class="section">
+  <div class="section-label">Caching</div>
+  <h2 class="section-title">Rule Caching Strategy</h2>
+
+  <div class="card-grid">
+    <div class="card">
+      <h4>Redis Cache</h4>
+      <p><strong>Key:</strong> <code>rules:{org_id}:{ws_id}:{benefit_type}</code><br>
+      <strong>TTL:</strong> 5 minutes<br>
+      <strong>Invalidation:</strong> On rule create/update/delete, cache key is evicted via Redis pub/sub. All service instances subscribe to invalidation events.</p>
+    </div>
+    <div class="card">
+      <h4>Offline Cache</h4>
+      <p>During sync, the POS terminal receives all active rules as JSON. Stored in IndexedDB. Used for local evaluation when offline. Includes a <code>cache_version</code> counter for change detection.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Examples</div>
+  <h2 class="section-title">Real-World Rule Examples</h2>
+
+  <h3>Example 1: "Earn 1 coin per ₹100 spent"</h3>
+  <div class="code"><code>{
+  <span style="color:#86efac">"name"</span>: <span style="color:#86efac">"Standard Coin Earning"</span>,
+  <span style="color:#86efac">"benefit_type"</span>: <span style="color:#86efac">"loyalty_coins"</span>,
+  <span style="color:#86efac">"priority"</span>: 100,
+  <span style="color:#86efac">"is_stackable"</span>: true,
+  <span style="color:#86efac">"conditions"</span>: {
+    <span style="color:#86efac">"operator"</span>: <span style="color:#86efac">"AND"</span>,
+    <span style="color:#86efac">"conditions"</span>: [
+      { <span style="color:#86efac">"field"</span>: <span style="color:#86efac">"cart.total"</span>, <span style="color:#86efac">"op"</span>: <span style="color:#86efac">"gte"</span>, <span style="color:#86efac">"value"</span>: 10000 }
+    ]
+  },
+  <span style="color:#86efac">"reward"</span>: {
+    <span style="color:#86efac">"type"</span>: <span style="color:#86efac">"earn_coins"</span>,
+    <span style="color:#86efac">"mode"</span>: <span style="color:#86efac">"per_amount"</span>,
+    <span style="color:#86efac">"coins_per"</span>: 1,
+    <span style="color:#86efac">"per_amount"</span>: 10000,
+    <span style="color:#86efac">"max_coins"</span>: 500,
+    <span style="color:#86efac">"multiplier"</span>: 1.0
+  }
+}</code></div>
+
+  <h3>Example 2: "Gold members get 10% cashback on electronics every weekend"</h3>
+  <div class="code"><code>{
+  <span style="color:#86efac">"name"</span>: <span style="color:#86efac">"Gold Weekend Electronics Cashback"</span>,
+  <span style="color:#86efac">"benefit_type"</span>: <span style="color:#86efac">"cashback"</span>,
+  <span style="color:#86efac">"priority"</span>: 50,
+  <span style="color:#86efac">"is_stackable"</span>: false,
+  <span style="color:#86efac">"conditions"</span>: {
+    <span style="color:#86efac">"operator"</span>: <span style="color:#86efac">"AND"</span>,
+    <span style="color:#86efac">"conditions"</span>: [
+      { <span style="color:#86efac">"field"</span>: <span style="color:#86efac">"customer.tier"</span>, <span style="color:#86efac">"op"</span>: <span style="color:#86efac">"in"</span>, <span style="color:#86efac">"value"</span>: [<span style="color:#86efac">"gold"</span>, <span style="color:#86efac">"platinum"</span>] },
+      { <span style="color:#86efac">"field"</span>: <span style="color:#86efac">"item.category_id"</span>, <span style="color:#86efac">"op"</span>: <span style="color:#86efac">"eq"</span>, <span style="color:#86efac">"value"</span>: <span style="color:#86efac">"electronics"</span> },
+      { <span style="color:#86efac">"field"</span>: <span style="color:#86efac">"time.day_of_week"</span>, <span style="color:#86efac">"op"</span>: <span style="color:#86efac">"in"</span>, <span style="color:#86efac">"value"</span>: [0, 6] }
+    ]
+  },
+  <span style="color:#86efac">"reward"</span>: {
+    <span style="color:#86efac">"type"</span>: <span style="color:#86efac">"cashback"</span>,
+    <span style="color:#86efac">"mode"</span>: <span style="color:#86efac">"percentage"</span>,
+    <span style="color:#86efac">"percentage"</span>: 1000,
+    <span style="color:#86efac">"max_cashback"</span>: 50000,
+    <span style="color:#86efac">"delay"</span>: <span style="color:#86efac">"T+1"</span>
+  }
+}</code></div>
+</div>
+
+</div><!-- /container -->
+
+<footer class="footer">
+  <p>elLoyalty Rule Engine — <a href="index.html" style="color:#c4b5fd">Back to Index</a></p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>elLoyalty — Security</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#f8fafc;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b;--light:#94a3b8;--primary:#7c3aed;--primary-light:#ede9fe;--primary-dark:#5b21b6;--radius:10px;--shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);--shadow-md:0 4px 6px rgba(0,0,0,.07)}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6}
+a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
+.nav{position:sticky;top:0;z-index:100;background:#0f172a;padding:0 24px;display:flex;align-items:center;height:48px;gap:24px;box-shadow:0 2px 12px rgba(0,0,0,.25)}
+.nav .brand{color:#fff;font-weight:800;font-size:15px;display:flex;align-items:center;gap:8px}
+.nav .brand span{background:var(--primary);padding:2px 8px;border-radius:5px;font-size:11px;font-weight:700}
+.nav-links{display:flex;gap:4px;margin-left:auto;overflow-x:auto}
+.nav-links a{color:#94a3b8;font-size:12px;font-weight:500;text-decoration:none;padding:6px 10px;border-radius:6px;transition:all .15s;white-space:nowrap}
+.nav-links a:hover,.nav-links a.active{color:#fff;background:rgba(255,255,255,.08)}
+.header{background:linear-gradient(135deg,#1e1b4b 0%,#312e81 40%,#4c1d95 100%);color:#fff;padding:36px 24px 28px;text-align:center}
+.header h1{font-size:26px;font-weight:800;letter-spacing:-.3px}.header p{font-size:13px;color:#c4b5fd;margin-top:4px}
+.container{max-width:1100px;margin:0 auto;padding:0 24px 48px}
+.section{padding:40px 0}.section+.section{border-top:1px solid var(--border)}
+.section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--primary);margin-bottom:6px}
+.section-title{font-size:22px;font-weight:800;color:var(--text);margin-bottom:4px}
+.section-sub{font-size:14px;color:var(--muted);margin-bottom:24px;max-width:700px}
+h3{font-size:17px;font-weight:700;color:var(--text);margin:28px 0 10px}
+p{margin-bottom:12px}
+.diagram{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:16px 0;overflow-x:auto;box-shadow:var(--shadow)}
+.diagram pre{font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.5;color:var(--text);white-space:pre}
+.code{background:#1e293b;border-radius:var(--radius);padding:20px;margin:16px 0;overflow-x:auto}
+.code code{font-family:'JetBrains Mono',monospace;font-size:12px;color:#e2e8f0;line-height:1.6;white-space:pre;display:block}
+.tbl-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);margin:16px 0;box-shadow:var(--shadow)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{background:#f1f5f9;padding:10px 14px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border)}
+tbody td{padding:10px 14px;border-bottom:1px solid var(--border)}
+tbody tr:hover td{background:#f8fafc}
+td code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#f1f5f9;padding:1px 6px;border-radius:4px}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;margin:16px 0}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+.card h4{font-size:15px;font-weight:700;margin-bottom:6px}.card p{font-size:13px;color:var(--muted);margin-bottom:0}
+.threat{background:#fef2f2;border:1px solid #fecaca;border-radius:var(--radius);padding:16px 20px;margin:12px 0}
+.threat h4{color:#991b1b;font-size:14px;font-weight:700;margin-bottom:4px}
+.threat p{color:#7f1d1d;font-size:13px;margin:0}
+.mitigate{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:var(--radius);padding:16px 20px;margin:12px 0}
+.mitigate h4{color:#166534;font-size:14px;font-weight:700;margin-bottom:4px}
+.mitigate p{color:#15803d;font-size:13px;margin:0}
+ol,ul{margin:8px 0 16px 24px}li{margin-bottom:4px;font-size:13px}
+.footer{background:#0f172a;color:#94a3b8;padding:24px;text-align:center;font-size:12px;margin-top:48px}
+@media(max-width:768px){.card-grid{grid-template-columns:1fr}.nav-links{display:none}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="brand">elSapiens <span>elLoyalty</span></div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="architecture.html">Architecture</a>
+    <a href="benefit-engine.html">Benefit Engine</a>
+    <a href="checkout-flow.html">Checkout Flow</a>
+    <a href="domain-design.html">Domains</a>
+    <a href="database-schema.html">Schema</a>
+    <a href="rule-engine.html">Rules</a>
+    <a href="conflict-resolution.html">Conflicts</a>
+    <a href="ledger-design.html">Ledger</a>
+    <a href="offline-first.html">Offline</a>
+    <a href="ecosystem-integration.html">Ecosystem</a>
+    <a href="frontend-design.html">Frontend</a>
+    <a href="security.html" class="active">Security</a>
+    <a href="scalability.html">Scale</a>
+    <a href="edge-cases.html">Edge Cases</a>
+  </div>
+</nav>
+
+<header class="header">
+  <h1>12 — Security</h1>
+  <p>Authentication, authorization, fraud prevention, input validation, audit logging, and RBAC</p>
+</header>
+
+<div class="container">
+
+<div class="section">
+  <div class="section-label">Auth</div>
+  <h2 class="section-title">Authentication & Authorization</h2>
+  <p class="section-sub">elLoyalty never manages its own user credentials. All authentication flows through elAuth JWTs with workspace-scoped claims.</p>
+
+  <div class="diagram"><pre>
+┌────────────┐     JWT       ┌──────────────────────────────────────────┐
+│  POS / Admin│──────────────▶│  elLoyalty Middleware                    │
+│  Client     │              │                                          │
+└────────────┘              │  1. Validate JWT signature (HS256)       │
+                             │  2. Check expiration (exp claim)         │
+                             │  3. Extract workspace_id, org_id         │
+                             │  4. Verify role claims (admin vs terminal)│
+                             │  5. Inject TenantContext into ctx         │
+                             │  6. All queries scoped to tenant          │
+                             └──────────────────────────────────────────┘</pre></div>
+
+  <h3>RBAC Roles</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Role</th><th>Source</th><th>Capabilities</th></tr></thead>
+      <tbody>
+        <tr><td><code>terminal</code></td><td>POS terminal JWT</td><td>Evaluate benefits, apply benefits, credit earnings, sync push/pull, view customer wallet</td></tr>
+        <tr><td><code>store_admin</code></td><td>Admin JWT</td><td>All terminal + view analytics, manual credit/debit, customer search</td></tr>
+        <tr><td><code>org_admin</code></td><td>Admin JWT</td><td>All store_admin + create/edit rules, campaigns, coupons, tiers, settings</td></tr>
+        <tr><td><code>workspace_admin</code></td><td>Admin JWT</td><td>All org_admin + cross-org analytics, workspace-level settings</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="code"><code><span style="color:#64748b">// Middleware: enforce role-based access</span>
+<span style="color:#c084fc">func</span> RequireRole(roles ...string) func(http.Handler) http.Handler {
+    <span style="color:#c084fc">return</span> <span style="color:#c084fc">func</span>(next http.Handler) http.Handler {
+        <span style="color:#c084fc">return</span> http.HandlerFunc(<span style="color:#c084fc">func</span>(w http.ResponseWriter, r *http.Request) {
+            tc := TenantContextFromCtx(r.Context())
+            <span style="color:#c084fc">for</span> _, required := <span style="color:#c084fc">range</span> roles {
+                <span style="color:#c084fc">if</span> tc.Role == required {
+                    next.ServeHTTP(w, r)
+                    <span style="color:#c084fc">return</span>
+                }
+            }
+            http.Error(w, <span style="color:#86efac">"forbidden"</span>, http.StatusForbidden)
+        })
+    }
+}
+
+<span style="color:#64748b">// Usage:</span>
+r.With(RequireRole(<span style="color:#86efac">"org_admin"</span>, <span style="color:#86efac">"workspace_admin"</span>)).Post(<span style="color:#86efac">"/rules"</span>, h.CreateRule)
+r.With(RequireRole(<span style="color:#86efac">"terminal"</span>, <span style="color:#86efac">"store_admin"</span>)).Post(<span style="color:#86efac">"/evaluate"</span>, h.EvaluateCart)</code></div>
+</div>
+
+<div class="section">
+  <div class="section-label">Tenant</div>
+  <h2 class="section-title">Tenant Isolation</h2>
+  <p class="section-sub">Every database query is scoped to <code>(workspace_id, organization_id)</code> extracted from JWT. No cross-tenant data leakage is possible.</p>
+
+  <div class="code"><code><span style="color:#64748b">// Every repository method enforces tenant scope</span>
+<span style="color:#c084fc">func</span> (r *RuleRepo) ListActive(ctx context.Context, tc TenantContext) ([]BenefitRule, error) {
+    rows, err := r.db.Query(ctx,
+        `SELECT id, name, conditions, reward, priority, stackable, is_active
+         FROM benefit_rules
+         WHERE workspace_id = $1
+           AND organization_id = $2
+           AND is_active = true
+           AND (valid_from IS NULL OR valid_from &lt;= NOW())
+           AND (valid_to IS NULL OR valid_to &gt;= NOW())
+         ORDER BY priority DESC`,
+        tc.WorkspaceID,    <span style="color:#64748b">// $1 — always from JWT, never from request body</span>
+        tc.OrganizationID, <span style="color:#64748b">// $2 — always from JWT, never from request body</span>
+    )
+    <span style="color:#64748b">// ... scan rows</span>
+}</code></div>
+
+  <div class="card-grid">
+    <div class="card">
+      <h4>Never Trust Client IDs</h4>
+      <p>Workspace and organization IDs come exclusively from the JWT. Request bodies may include customer_id and sale_id, but tenant scope is always server-enforced.</p>
+    </div>
+    <div class="card">
+      <h4>Row-Level Isolation</h4>
+      <p>Every table has <code>(workspace_id, organization_id)</code> columns. Composite indexes ensure queries only scan tenant-relevant rows.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Fraud</div>
+  <h2 class="section-title">Fraud Prevention</h2>
+
+  <div class="threat">
+    <h4>Threat: Coin Farming</h4>
+    <p>A bad actor creates fake sales or inflates sale amounts to earn excessive loyalty coins, then redeems them.</p>
+  </div>
+  <div class="mitigate">
+    <h4>Mitigation: Velocity Checks</h4>
+    <p>Track coins earned per customer per day/week. If threshold exceeded, flag for review and stop auto-crediting. Configurable per organization.</p>
+  </div>
+
+  <div class="threat">
+    <h4>Threat: Coupon Abuse</h4>
+    <p>A customer reuses single-use coupons by exploiting offline mode or by sharing codes across terminals before sync.</p>
+  </div>
+  <div class="mitigate">
+    <h4>Mitigation: Post-Sync Validation</h4>
+    <p>Offline coupon usage is provisional. On sync, server validates usage count. If exceeded, the benefit is reversed and flagged. Customer has a debt entry.</p>
+  </div>
+
+  <div class="threat">
+    <h4>Threat: Cashier Manipulation</h4>
+    <p>A cashier manually credits coins to a friend's loyalty account or applies benefits to a sale that shouldn't qualify.</p>
+  </div>
+  <div class="mitigate">
+    <h4>Mitigation: Audit Trail + Manual Credit Limits</h4>
+    <p>Manual credits require store_admin role and are logged with actor_id. Daily manual credit limit is configurable. All benefit applications are tied to a sale_id.</p>
+  </div>
+
+  <h3>Velocity Rules</h3>
+  <div class="code"><code><span style="color:#c084fc">type</span> VelocityConfig <span style="color:#c084fc">struct</span> {
+    MaxCoinsPerDay        int64         <span style="color:#86efac">`json:"max_coins_per_day"`</span>         <span style="color:#64748b">// default: 1000</span>
+    MaxRedemptionsPerDay  int           <span style="color:#86efac">`json:"max_redemptions_per_day"`</span>   <span style="color:#64748b">// default: 10</span>
+    MaxCashbackPerWeek    int64         <span style="color:#86efac">`json:"max_cashback_per_week"`</span>     <span style="color:#64748b">// paisa, default: 500000 (₹5000)</span>
+    MaxManualCreditPerDay int64         <span style="color:#86efac">`json:"max_manual_credit_per_day"`</span> <span style="color:#64748b">// paisa, default: 100000 (₹1000)</span>
+    CooldownAfterFlag     time.Duration <span style="color:#86efac">`json:"cooldown"`</span>                 <span style="color:#64748b">// default: 24h</span>
+}
+
+<span style="color:#c084fc">func</span> (s *FraudService) CheckVelocity(ctx context.Context, customerID uuid.UUID, action string) error {
+    key := fmt.Sprintf(<span style="color:#86efac">"velocity:%s:%s:%s"</span>, customerID, action, today())
+    count, _ := s.redis.Incr(ctx, key).Result()
+    s.redis.Expire(ctx, key, 24*time.Hour)
+
+    limit := s.config.LimitFor(action)
+    <span style="color:#c084fc">if</span> count > int64(limit) {
+        s.flagCustomer(ctx, customerID, action, count)
+        <span style="color:#c084fc">return</span> ErrVelocityExceeded
+    }
+    <span style="color:#c084fc">return</span> nil
+}</code></div>
+</div>
+
+<div class="section">
+  <div class="section-label">Validation</div>
+  <h2 class="section-title">Input Validation</h2>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Field</th><th>Validation</th><th>Reason</th></tr></thead>
+      <tbody>
+        <tr><td><code>customer_id</code></td><td>Valid UUID v4</td><td>Prevent injection, ensure existence</td></tr>
+        <tr><td><code>coins_to_redeem</code></td><td>Positive integer, ≤ balance</td><td>No negative redemptions</td></tr>
+        <tr><td><code>coupon_code</code></td><td>Alphanumeric, max 30 chars, uppercase</td><td>Prevent injection, normalize</td></tr>
+        <tr><td><code>sale_total</code></td><td>Positive BIGINT (paisa)</td><td>No negative amounts</td></tr>
+        <tr><td><code>rule conditions JSON</code></td><td>JSON schema validation, max depth 5</td><td>Prevent deeply nested evaluation DoS</td></tr>
+        <tr><td><code>campaign dates</code></td><td>start_date &lt; end_date, max 1 year</td><td>No infinite campaigns</td></tr>
+        <tr><td><code>priority</code></td><td>1–10000 range</td><td>Prevent integer overflow</td></tr>
+        <tr><td><code>offline_id</code></td><td>Valid UUID v4, server-enforced UNIQUE</td><td>Idempotency guarantee</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="code"><code><span style="color:#64748b">// Request validation using go-playground/validator</span>
+<span style="color:#c084fc">type</span> EvaluateCartRequest <span style="color:#c084fc">struct</span> {
+    CustomerID string     <span style="color:#86efac">`json:"customer_id" validate:"required,uuid4"`</span>
+    Items      []CartItem <span style="color:#86efac">`json:"items"       validate:"required,min=1,dive"`</span>
+}
+
+<span style="color:#c084fc">type</span> CartItem <span style="color:#c084fc">struct</span> {
+    ProductID  string <span style="color:#86efac">`json:"product_id"  validate:"required,uuid4"`</span>
+    Quantity   int    <span style="color:#86efac">`json:"quantity"    validate:"required,min=1,max=9999"`</span>
+    PricePaisa int64  <span style="color:#86efac">`json:"price_paisa" validate:"required,min=1"`</span>
+    CategoryID string <span style="color:#86efac">`json:"category_id" validate:"omitempty,uuid4"`</span>
+}</code></div>
+</div>
+
+<div class="section">
+  <div class="section-label">Audit</div>
+  <h2 class="section-title">Audit Logging</h2>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Event</th><th>Actor</th><th>Details Logged</th></tr></thead>
+      <tbody>
+        <tr><td>Rule created/updated</td><td>org_admin</td><td>Rule ID, before/after JSON, timestamp</td></tr>
+        <tr><td>Campaign created</td><td>org_admin</td><td>Campaign ID, budget, dates</td></tr>
+        <tr><td>Manual credit</td><td>store_admin</td><td>Customer ID, amount, reason (required field)</td></tr>
+        <tr><td>Manual debit</td><td>store_admin</td><td>Customer ID, amount, reason</td></tr>
+        <tr><td>Tier override</td><td>org_admin</td><td>Customer ID, old tier, new tier, reason</td></tr>
+        <tr><td>Benefit applied</td><td>terminal</td><td>Sale ID, customer ID, benefit details, terminal ID</td></tr>
+        <tr><td>Fraud flag</td><td>system</td><td>Customer ID, trigger rule, current counts</td></tr>
+        <tr><td>Settings changed</td><td>org_admin</td><td>Setting key, old value, new value</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="code"><code><span style="color:#64748b">// Structured audit log entry</span>
+<span style="color:#c084fc">type</span> AuditEntry <span style="color:#c084fc">struct</span> {
+    ID             uuid.UUID       <span style="color:#86efac">`json:"id"`</span>
+    Timestamp      time.Time       <span style="color:#86efac">`json:"timestamp"`</span>
+    WorkspaceID    uuid.UUID       <span style="color:#86efac">`json:"workspace_id"`</span>
+    OrganizationID uuid.UUID       <span style="color:#86efac">`json:"organization_id"`</span>
+    ActorID        string          <span style="color:#86efac">`json:"actor_id"`</span>       <span style="color:#64748b">// person_id from JWT</span>
+    ActorRole      string          <span style="color:#86efac">`json:"actor_role"`</span>
+    Action         string          <span style="color:#86efac">`json:"action"`</span>        <span style="color:#64748b">// e.g. "rule.created"</span>
+    ResourceType   string          <span style="color:#86efac">`json:"resource_type"`</span> <span style="color:#64748b">// e.g. "benefit_rule"</span>
+    ResourceID     uuid.UUID       <span style="color:#86efac">`json:"resource_id"`</span>
+    Details        json.RawMessage <span style="color:#86efac">`json:"details"`</span>      <span style="color:#64748b">// before/after payload</span>
+    IP             string          <span style="color:#86efac">`json:"ip"`</span>
+}
+
+<span style="color:#64748b">// Audit log is append-only. No UPDATE or DELETE on audit_log table.</span></code></div>
+</div>
+
+<div class="section">
+  <div class="section-label">Limits</div>
+  <h2 class="section-title">Rate Limiting</h2>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Endpoint Category</th><th>Limit</th><th>Window</th><th>Key</th></tr></thead>
+      <tbody>
+        <tr><td>Cart evaluation</td><td>60 req</td><td>1 minute</td><td>terminal_id</td></tr>
+        <tr><td>Benefit apply</td><td>30 req</td><td>1 minute</td><td>terminal_id</td></tr>
+        <tr><td>Sync push</td><td>10 req</td><td>1 minute</td><td>terminal_id</td></tr>
+        <tr><td>Admin CRUD</td><td>30 req</td><td>1 minute</td><td>person_id</td></tr>
+        <tr><td>Customer search</td><td>60 req</td><td>1 minute</td><td>person_id</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="code"><code><span style="color:#64748b">// Redis-backed sliding window rate limiter</span>
+<span style="color:#c084fc">func</span> RateLimit(redis *redis.Client, limit int, window time.Duration) func(http.Handler) http.Handler {
+    <span style="color:#c084fc">return</span> <span style="color:#c084fc">func</span>(next http.Handler) http.Handler {
+        <span style="color:#c084fc">return</span> http.HandlerFunc(<span style="color:#c084fc">func</span>(w http.ResponseWriter, r *http.Request) {
+            tc := TenantContextFromCtx(r.Context())
+            key := fmt.Sprintf(<span style="color:#86efac">"rl:%s:%s"</span>, r.URL.Path, tc.TerminalID)
+
+            count, _ := redis.Incr(r.Context(), key).Result()
+            <span style="color:#c084fc">if</span> count == 1 {
+                redis.Expire(r.Context(), key, window)
+            }
+
+            w.Header().Set(<span style="color:#86efac">"X-RateLimit-Remaining"</span>, fmt.Sprintf(<span style="color:#86efac">"%d"</span>, max(0, int64(limit)-count)))
+
+            <span style="color:#c084fc">if</span> count > int64(limit) {
+                http.Error(w, <span style="color:#86efac">"rate limit exceeded"</span>, http.StatusTooManyRequests)
+                <span style="color:#c084fc">return</span>
+            }
+            next.ServeHTTP(w, r)
+        })
+    }
+}</code></div>
+</div>
+
+</div><!-- /container -->
+
+<footer class="footer">
+  <p>elLoyalty Security — <a href="index.html" style="color:#c4b5fd">Back to Index</a></p>
+</footer>
+</body>
+</html>

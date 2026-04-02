@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>elLoyalty — Edge Cases</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#f8fafc;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b;--light:#94a3b8;--primary:#7c3aed;--primary-light:#ede9fe;--primary-dark:#5b21b6;--radius:10px;--shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);--shadow-md:0 4px 6px rgba(0,0,0,.07)}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6}
+a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
+.nav{position:sticky;top:0;z-index:100;background:#0f172a;padding:0 24px;display:flex;align-items:center;height:48px;gap:24px;box-shadow:0 2px 12px rgba(0,0,0,.25)}
+.nav .brand{color:#fff;font-weight:800;font-size:15px;display:flex;align-items:center;gap:8px}
+.nav .brand span{background:var(--primary);padding:2px 8px;border-radius:5px;font-size:11px;font-weight:700}
+.nav-links{display:flex;gap:4px;margin-left:auto;overflow-x:auto}
+.nav-links a{color:#94a3b8;font-size:12px;font-weight:500;text-decoration:none;padding:6px 10px;border-radius:6px;transition:all .15s;white-space:nowrap}
+.nav-links a:hover,.nav-links a.active{color:#fff;background:rgba(255,255,255,.08)}
+.header{background:linear-gradient(135deg,#1e1b4b 0%,#312e81 40%,#4c1d95 100%);color:#fff;padding:36px 24px 28px;text-align:center}
+.header h1{font-size:26px;font-weight:800;letter-spacing:-.3px}.header p{font-size:13px;color:#c4b5fd;margin-top:4px}
+.container{max-width:1100px;margin:0 auto;padding:0 24px 48px}
+.section{padding:40px 0}.section+.section{border-top:1px solid var(--border)}
+.section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--primary);margin-bottom:6px}
+.section-title{font-size:22px;font-weight:800;color:var(--text);margin-bottom:4px}
+.section-sub{font-size:14px;color:var(--muted);margin-bottom:24px;max-width:700px}
+h3{font-size:17px;font-weight:700;color:var(--text);margin:28px 0 10px}
+p{margin-bottom:12px}
+.diagram{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:16px 0;overflow-x:auto;box-shadow:var(--shadow)}
+.diagram pre{font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.5;color:var(--text);white-space:pre}
+.code{background:#1e293b;border-radius:var(--radius);padding:20px;margin:16px 0;overflow-x:auto}
+.code code{font-family:'JetBrains Mono',monospace;font-size:12px;color:#e2e8f0;line-height:1.6;white-space:pre;display:block}
+.tbl-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);margin:16px 0;box-shadow:var(--shadow)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{background:#f1f5f9;padding:10px 14px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border)}
+tbody td{padding:10px 14px;border-bottom:1px solid var(--border)}
+tbody tr:hover td{background:#f8fafc}
+td code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#f1f5f9;padding:1px 6px;border-radius:4px}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;margin:16px 0}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+.card h4{font-size:15px;font-weight:700;margin-bottom:6px}.card p{font-size:13px;color:var(--muted);margin-bottom:0}
+ol,ul{margin:8px 0 16px 24px}li{margin-bottom:4px;font-size:13px}
+.edge{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:20px 0;box-shadow:var(--shadow)}
+.edge h4{font-size:16px;font-weight:700;color:var(--primary-dark);margin-bottom:4px}
+.edge .scenario{font-size:13px;color:var(--muted);font-style:italic;margin-bottom:12px}
+.edge .resolution{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px 16px;font-size:13px;color:#166534}
+.edge .resolution strong{color:#15803d}
+.warn{background:#fef3c7;border:1px solid #fcd34d;border-radius:var(--radius);padding:14px 18px;margin:16px 0;font-size:13px;color:#92400e}
+.footer{background:#0f172a;color:#94a3b8;padding:24px;text-align:center;font-size:12px;margin-top:48px}
+@media(max-width:768px){.card-grid{grid-template-columns:1fr}.nav-links{display:none}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="brand">elSapiens <span>elLoyalty</span></div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="architecture.html">Architecture</a>
+    <a href="benefit-engine.html">Benefit Engine</a>
+    <a href="checkout-flow.html">Checkout Flow</a>
+    <a href="domain-design.html">Domains</a>
+    <a href="database-schema.html">Schema</a>
+    <a href="rule-engine.html">Rules</a>
+    <a href="conflict-resolution.html">Conflicts</a>
+    <a href="ledger-design.html">Ledger</a>
+    <a href="offline-first.html">Offline</a>
+    <a href="ecosystem-integration.html">Ecosystem</a>
+    <a href="frontend-design.html">Frontend</a>
+    <a href="security.html">Security</a>
+    <a href="scalability.html">Scale</a>
+    <a href="edge-cases.html" class="active">Edge Cases</a>
+  </div>
+</nav>
+
+<header class="header">
+  <h1>14 — Edge Cases & Failure Modes</h1>
+  <p>Network failures, race conditions, partial sync, clock drift, budget exhaustion, and recovery patterns</p>
+</header>
+
+<div class="container">
+
+<div class="section">
+  <div class="section-label">Network</div>
+  <h2 class="section-title">Network Failure During Redemption</h2>
+
+  <div class="edge">
+    <h4>Edge Case #1: Network drops between Apply and CreditEarnings</h4>
+    <div class="scenario">POS calls ApplyBenefits (coins debited), network fails, CreditEarnings never reaches server. Customer paid with coins but didn't earn new coins.</div>
+    <div class="resolution">
+      <strong>Resolution:</strong> elPOS queues the CreditEarnings call in the sync queue. On next sync push, the server processes the earn event. The <code>offline_id</code> on the sale ensures idempotency — if the Apply was already processed, it won't duplicate. If Apply itself failed (no server-side record), the sync reconciliation detects the orphan and the POS is notified via the pull response's <code>rejections</code> array.
+    </div>
+  </div>
+
+  <div class="edge">
+    <h4>Edge Case #2: Network drops during ApplyBenefits itself</h4>
+    <div class="scenario">POS sends ApplyBenefits, server processes and debits wallet, but the response never reaches the POS terminal.</div>
+    <div class="resolution">
+      <strong>Resolution:</strong> POS retries ApplyBenefits with the same <code>offline_id</code>. Server checks: if <code>offline_id</code> already exists in <code>benefit_applications</code>, it returns the original response without re-debiting. This is the core idempotency pattern — every mutating call is safe to retry.
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Race</div>
+  <h2 class="section-title">Race Conditions</h2>
+
+  <div class="edge">
+    <h4>Edge Case #3: Two terminals apply coins for same customer simultaneously</h4>
+    <div class="scenario">Terminal A and Terminal B both evaluated 200 coins available. Both send ApplyBenefits to debit 150 coins each (total 300, but only 200 exist).</div>
+    <div class="resolution">
+      <strong>Resolution:</strong> The wallet debit uses PostgreSQL's <code>SELECT ... FOR UPDATE</code> row lock. The first transaction succeeds; the second sees updated balance (50 coins) and either applies partial (50 coins) or rejects the benefit. The handler returns updated available benefits in the response so the POS can re-render.
+    </div>
+  </div>
+
+  <div class="code"><code><span style="color:#64748b">// Pessimistic lock on wallet for coin debit</span>
+<span style="color:#c084fc">func</span> (r *WalletRepo) DebitCoins(ctx context.Context, tx pgx.Tx, customerID uuid.UUID, amount int64) error {
+    <span style="color:#c084fc">var</span> balance int64
+    err := tx.QueryRow(ctx,
+        `SELECT coin_balance FROM wallets WHERE customer_id = $1 FOR UPDATE`,
+        customerID,
+    ).Scan(&balance)
+    <span style="color:#c084fc">if</span> err != nil {
+        <span style="color:#c084fc">return</span> fmt.Errorf(<span style="color:#86efac">"lock wallet: %w"</span>, err)
+    }
+
+    <span style="color:#c084fc">if</span> balance < amount {
+        <span style="color:#c084fc">return</span> ErrInsufficientCoins
+    }
+
+    _, err = tx.Exec(ctx,
+        `UPDATE wallets SET coin_balance = coin_balance - $1, updated_at = NOW()
+         WHERE customer_id = $2`,
+        amount, customerID,
+    )
+    <span style="color:#c084fc">return</span> err
+}</code></div>
+
+  <div class="edge">
+    <h4>Edge Case #4: Campaign budget exhausts mid-checkout</h4>
+    <div class="scenario">Campaign has ₹1,000 budget remaining. Terminal A evaluates: "₹500 cashback available." Before Terminal A applies, Terminal B applies ₹800 cashback, exhausting the budget.</div>
+    <div class="resolution">
+      <strong>Resolution:</strong> Campaign budget deduction uses the same <code>FOR UPDATE</code> pattern. Terminal A's apply request sees remaining budget = ₹200. The handler returns a reduced benefit (₹200 instead of ₹500) with a <code>partial: true</code> flag. The POS UI shows "Campaign budget partially available."
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Offline</div>
+  <h2 class="section-title">Offline Edge Cases</h2>
+
+  <div class="edge">
+    <h4>Edge Case #5: Customer uses expired coupon offline</h4>
+    <div class="scenario">Coupon WEEKEND20 expires at midnight Saturday. Terminal is offline. Customer uses it at 12:15 AM Sunday (offline time). Cached coupon data says valid.</div>
+    <div class="resolution">
+      <strong>Resolution:</strong> On sync, the server validates the coupon against the sale timestamp. If expired, the sync response includes a rejection. The benefit discount is reversed, creating a debt entry. The POS displays the rejection on next sync. If the amount is small, org can configure auto-forgive thresholds.
+    </div>
+  </div>
+
+  <div class="edge">
+    <h4>Edge Case #6: Clock drift on offline terminal</h4>
+    <div class="scenario">Terminal's system clock is 30 minutes ahead. Offline sale timestamps are in the future relative to the server. Rules valid "until 6 PM" might be used at 5:45 PM server time but 6:15 PM terminal time.</div>
+    <div class="resolution">
+      <strong>Resolution:</strong> On every sync pull, the server returns <code>server_time</code>. The POS calculates clock offset: <code>offset = server_time - local_time</code>. Offline operations use <code>local_time + offset</code> as the effective timestamp. If offset exceeds 5 minutes, POS shows a warning to the cashier.
+    </div>
+  </div>
+
+  <div class="edge">
+    <h4>Edge Case #7: Terminal offline for days, budget exhausted, no sync</h4>
+    <div class="scenario">Terminal is offline for 3 days. Offline budget (200 coins) was fully used on day 1. Days 2-3, customers can't use coins at all.</div>
+    <div class="resolution">
+      <strong>Resolution:</strong> This is by design — the offline budget is intentionally conservative. The cashier sees "Coins unavailable offline — budget depleted." For high-traffic stores, the org admin can increase the offline budget. In extreme cases, the POS allows a manual override with store_admin PIN, creating a "trust debit" that's validated on sync.
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Refunds</div>
+  <h2 class="section-title">Refund & Reversal Edge Cases</h2>
+
+  <div class="edge">
+    <h4>Edge Case #8: Partial refund with mixed benefits</h4>
+    <div class="scenario">Sale: ₹2,000. Applied: 100 coins (₹100 off) + cashback (₹60 earned) + coupon FLAT200 (₹200 off). Customer returns one item worth ₹800. How to reverse?</div>
+    <div class="resolution">
+      <strong>Resolution:</strong> Proportional reversal. Refund ratio = ₹800 / ₹2,000 = 40%.
+      Coins reclaimed: 40 coins (40% of 100). Cashback clawed back: ₹24 (40% of ₹60). Coupon: no reversal (single-use coupons are not proportionally refundable — the coupon stays consumed). The ledger creates reversal entries for each reversed amount.
+    </div>
+  </div>
+
+  <div class="edge">
+    <h4>Edge Case #9: Refund after coins already spent</h4>
+    <div class="scenario">Customer earned 200 coins from Sale A. Customer spends 200 coins on Sale B. Sale A is fully refunded. Coins should be reclaimed but balance is now 0.</div>
+    <div class="resolution">
+      <strong>Resolution:</strong> The refund creates a "debt" ledger entry: coin_balance goes to -200. Next time the customer earns coins, they offset the debt first. The customer's wallet shows: "0 available (200 coins pending recovery)." The system never blocks future transactions — it just reduces future earnings until the debt is cleared.
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Data</div>
+  <h2 class="section-title">Data Integrity Edge Cases</h2>
+
+  <div class="edge">
+    <h4>Edge Case #10: Duplicate sync push (network timeout + retry)</h4>
+    <div class="scenario">Terminal pushes 5 offline events. Server processes all 5, but the HTTP response times out. Terminal retries the same 5 events.</div>
+    <div class="resolution">
+      <strong>Resolution:</strong> Each event has a unique <code>offline_id</code>. The server checks <code>ExistsByOfflineID</code> before processing. All 5 are returned as <code>"already_processed"</code>. No double-crediting, no double-debiting. The UNIQUE constraint on <code>offline_id</code> (with <code>NULLS NOT DISTINCT</code>) is the database-level safety net.
+    </div>
+  </div>
+
+  <div class="edge">
+    <h4>Edge Case #11: Rule change while offline terminals have cached old rules</h4>
+    <div class="scenario">Admin changes "2x coins on electronics" to "1x coins" at 3 PM. Terminal was offline since 1 PM. Customer gets 2x coins offline at 4 PM.</div>
+    <div class="resolution">
+      <strong>Resolution:</strong> On sync reconciliation, the server re-evaluates the earn using current rules and the sale timestamp. If the offline earn (200 coins) differs from the correct earn (100 coins), a correction entry is created: -100 coins. The customer is notified via elmessagehub. This "eventual consistency" is the trade-off for offline capability.
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Summary</div>
+  <h2 class="section-title">Design Principles for Edge Cases</h2>
+
+  <div class="card-grid">
+    <div class="card">
+      <h4>Eventual Consistency</h4>
+      <p>Offline operations are approximate. The server is the source of truth. Every offline action is reconciled and potentially corrected on sync.</p>
+    </div>
+    <div class="card">
+      <h4>Idempotency Everywhere</h4>
+      <p>Every mutating operation accepts an <code>offline_id</code>. Database UNIQUE constraints + application-level checks guarantee at-most-once processing.</p>
+    </div>
+    <div class="card">
+      <h4>Debt Over Rejection</h4>
+      <p>When a reversal can't fully reclaim coins/cash (already spent), create a debt instead of blocking the customer. Future earnings offset the debt automatically.</p>
+    </div>
+    <div class="card">
+      <h4>Proportional Reversal</h4>
+      <p>Partial refunds reverse benefits proportionally. Single-use items (coupons) follow different rules than accrual items (coins, cashback).</p>
+    </div>
+    <div class="card">
+      <h4>Pessimistic Locking for Money</h4>
+      <p>All wallet mutations use <code>SELECT ... FOR UPDATE</code>. Optimistic concurrency is not safe when money is involved — PostgreSQL row locks are the foundation.</p>
+    </div>
+    <div class="card">
+      <h4>Graceful Degradation</h4>
+      <p>If a downstream service fails, loyalty features degrade rather than block checkout. Circuit breakers prevent cascade failures.</p>
+    </div>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<footer class="footer">
+  <p>elLoyalty Edge Cases — <a href="index.html" style="color:#c4b5fd">Back to Index</a></p>
+</footer>
+</body>
+</html>

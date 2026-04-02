@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>elLoyalty — Offline-First</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#f8fafc;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b;--light:#94a3b8;--primary:#7c3aed;--primary-light:#ede9fe;--primary-dark:#5b21b6;--radius:10px;--shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);--shadow-md:0 4px 6px rgba(0,0,0,.07)}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6}
+a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
+.nav{position:sticky;top:0;z-index:100;background:#0f172a;padding:0 24px;display:flex;align-items:center;height:48px;gap:24px;box-shadow:0 2px 12px rgba(0,0,0,.25)}
+.nav .brand{color:#fff;font-weight:800;font-size:15px;display:flex;align-items:center;gap:8px}
+.nav .brand span{background:var(--primary);padding:2px 8px;border-radius:5px;font-size:11px;font-weight:700}
+.nav-links{display:flex;gap:4px;margin-left:auto;overflow-x:auto}
+.nav-links a{color:#94a3b8;font-size:12px;font-weight:500;text-decoration:none;padding:6px 10px;border-radius:6px;transition:all .15s;white-space:nowrap}
+.nav-links a:hover,.nav-links a.active{color:#fff;background:rgba(255,255,255,.08)}
+.header{background:linear-gradient(135deg,#1e1b4b 0%,#312e81 40%,#4c1d95 100%);color:#fff;padding:36px 24px 28px;text-align:center}
+.header h1{font-size:26px;font-weight:800;letter-spacing:-.3px}.header p{font-size:13px;color:#c4b5fd;margin-top:4px}
+.container{max-width:1100px;margin:0 auto;padding:0 24px 48px}
+.section{padding:40px 0}.section+.section{border-top:1px solid var(--border)}
+.section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--primary);margin-bottom:6px}
+.section-title{font-size:22px;font-weight:800;color:var(--text);margin-bottom:4px}
+.section-sub{font-size:14px;color:var(--muted);margin-bottom:24px;max-width:700px}
+h3{font-size:17px;font-weight:700;color:var(--text);margin:28px 0 10px}
+p{margin-bottom:12px}
+.diagram{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:16px 0;overflow-x:auto;box-shadow:var(--shadow)}
+.diagram pre{font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.5;color:var(--text);white-space:pre}
+.code{background:#1e293b;border-radius:var(--radius);padding:20px;margin:16px 0;overflow-x:auto}
+.code code{font-family:'JetBrains Mono',monospace;font-size:12px;color:#e2e8f0;line-height:1.6;white-space:pre;display:block}
+.tbl-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);margin:16px 0;box-shadow:var(--shadow)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{background:#f1f5f9;padding:10px 14px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border)}
+tbody td{padding:10px 14px;border-bottom:1px solid var(--border)}
+tbody tr:hover td{background:#f8fafc}
+td code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#f1f5f9;padding:1px 6px;border-radius:4px}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;margin:16px 0}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+.card h4{font-size:15px;font-weight:700;margin-bottom:6px}.card p{font-size:13px;color:var(--muted);margin-bottom:0}
+ol,ul{margin:8px 0 16px 24px}li{margin-bottom:4px;font-size:13px}
+.warn{background:#fef3c7;border:1px solid #fcd34d;border-radius:var(--radius);padding:14px 18px;margin:16px 0;font-size:13px;color:#92400e}
+.footer{background:#0f172a;color:#94a3b8;padding:24px;text-align:center;font-size:12px;margin-top:48px}
+@media(max-width:768px){.card-grid{grid-template-columns:1fr}.nav-links{display:none}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="brand">elSapiens <span>elLoyalty</span></div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="architecture.html">Architecture</a>
+    <a href="benefit-engine.html">Benefit Engine</a>
+    <a href="checkout-flow.html">Checkout Flow</a>
+    <a href="domain-design.html">Domains</a>
+    <a href="database-schema.html">Schema</a>
+    <a href="rule-engine.html">Rules</a>
+    <a href="conflict-resolution.html">Conflicts</a>
+    <a href="ledger-design.html">Ledger</a>
+    <a href="offline-first.html" class="active">Offline</a>
+    <a href="ecosystem-integration.html">Ecosystem</a>
+    <a href="frontend-design.html">Frontend</a>
+    <a href="security.html">Security</a>
+    <a href="scalability.html">Scale</a>
+    <a href="edge-cases.html">Edge Cases</a>
+  </div>
+</nav>
+
+<header class="header">
+  <h1>09 — Offline-First Design</h1>
+  <p>Pre-allocated budgets, cached rules, sync queues, double-spend prevention, and reconciliation</p>
+</header>
+
+<div class="container">
+
+<div class="section">
+  <div class="section-label">Context</div>
+  <h2 class="section-title">Why Offline Matters</h2>
+  <p class="section-sub">Indian retail POS terminals frequently lose internet connectivity. The elsapiens ecosystem follows an offline-first philosophy where sales must never be blocked by connectivity. elLoyalty extends this principle to benefits.</p>
+
+  <div class="card-grid">
+    <div class="card">
+      <h4>No Sale Blocked</h4>
+      <p>A customer should be able to use their coins, wallet balance, or coupons even when the terminal is offline. The sale must complete locally.</p>
+    </div>
+    <div class="card">
+      <h4>Approximate, Then Reconcile</h4>
+      <p>Offline operations use cached data and pre-allocated budgets. Exact balances and validation happen on sync. Some operations may be rejected post-facto.</p>
+    </div>
+    <div class="card">
+      <h4>Idempotent Sync</h4>
+      <p>Every offline event has a client-generated UUID (<code>offline_id</code>). If the sync push is retried, the server uses UNIQUE constraints to prevent duplicates.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Budget</div>
+  <h2 class="section-title">Pre-Allocated Offline Budgets</h2>
+  <p class="section-sub">The central innovation: during sync, elLoyalty allocates offline spending budgets per terminal. The terminal can debit up to this budget without server confirmation.</p>
+
+  <div class="diagram"><pre>
+┌─────────────────────────────────────────────────────────────────────┐
+│                   PRE-ALLOCATED BUDGET FLOW                         │
+│                                                                     │
+│  ┌─────────────────────┐    ┌──────────────────────────────────┐   │
+│  │   Online Sync       │    │  Terminal Local State            │   │
+│  │   (Pull Phase)      │    │                                  │   │
+│  │                     │    │  ┌────────────────────────────┐  │   │
+│  │  elLoyalty returns:  │───▶│  │ Cached Customer: Alice     │  │   │
+│  │                     │    │  │ coin_balance: 500           │  │   │
+│  │  • Customer wallets │    │  │ cash_balance: ₹2,000       │  │   │
+│  │  • Offline budgets  │    │  │                            │  │   │
+│  │  • Active rules     │    │  │ OFFLINE BUDGET:            │  │   │
+│  │  • Campaign cache   │    │  │ coin_budget: 200           │  │   │
+│  │                     │    │  │ cash_budget: ₹500          │  │   │
+│  └─────────────────────┘    │  │                            │  │   │
+│                             │  │ (Can spend up to 200 coins │  │   │
+│                             │  │  and ₹500 cash offline)    │  │   │
+│                             │  └────────────────────────────┘  │   │
+│                             │                                  │   │
+│  ┌─────────────────────┐    │  ┌────────────────────────────┐  │   │
+│  │   Offline Sale #1   │    │  │ After sale: used 100 coins │  │   │
+│  │   Uses 100 coins    │───▶│  │ coin_budget remaining: 100 │  │   │
+│  └─────────────────────┘    │  │ Queued for sync            │  │   │
+│                             │  └────────────────────────────┘  │   │
+│                             │                                  │   │
+│  ┌─────────────────────┐    │  ┌────────────────────────────┐  │   │
+│  │   Offline Sale #2   │    │  │ After sale: used 150 coins │  │   │
+│  │   Wants 150 coins   │───▶│  │ coin_budget remaining: 0   │  │   │
+│  │   (only 100 left)   │    │  │ Only 100 coins applied     │  │   │
+│  └─────────────────────┘    │  │ (POS shows "budget limit") │  │   │
+│                             │  └────────────────────────────┘  │   │
+│                             └──────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────────┘</pre></div>
+
+  <h3>Budget Calculation</h3>
+  <div class="code"><code><span style="color:#64748b">// Server-side: calculate offline budget for a customer</span>
+
+<span style="color:#c084fc">func</span> (s *SyncService) CalculateOfflineBudget(
+    customer LoyaltyCustomer,
+    wallet Wallet,
+    config OfflineConfig,
+) OfflineBudget {
+    <span style="color:#c084fc">return</span> OfflineBudget{
+        CoinBudget: min(
+            wallet.CoinBalance,
+            config.MaxOfflineCoins,
+        ),
+        CashBudget: min(
+            wallet.CashBalance,
+            config.MaxOfflineCash,
+        ),
+        <span style="color:#64748b">// No offline budget for cashback (it's post-sale, server-only)</span>
+        <span style="color:#64748b">// Coupons: offline can accept codes but cannot validate usage limits</span>
+    }
+}
+
+<span style="color:#64748b">// Default config:</span>
+<span style="color:#64748b">// MaxOfflineCoins: 500   (max coins spendable offline per sync cycle)</span>
+<span style="color:#64748b">// MaxOfflineCash:  50000 (₹500 max wallet spend offline per sync cycle)</span></code></div>
+</div>
+
+<div class="section">
+  <div class="section-label">Cache</div>
+  <h2 class="section-title">Offline Rule & Data Caching</h2>
+
+  <p>During the sync pull phase, the POS terminal receives and caches:</p>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Data</th><th>Storage</th><th>Update Frequency</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td>Active benefit rules</td><td>IndexedDB</td><td>Every sync (5-15 min)</td><td>Local rule evaluation</td></tr>
+        <tr><td>Customer wallets</td><td>IndexedDB</td><td>Every sync</td><td>Balance display + budget</td></tr>
+        <tr><td>Offline budgets</td><td>IndexedDB</td><td>Every sync (reset)</td><td>Spending limits</td></tr>
+        <tr><td>Active campaigns</td><td>IndexedDB</td><td>Every sync</td><td>Campaign display + evaluation</td></tr>
+        <tr><td>Coin redemption rate</td><td>IndexedDB</td><td>Every sync</td><td>Coins-to-rupee conversion</td></tr>
+        <tr><td>Conflict settings</td><td>IndexedDB</td><td>Every sync</td><td>Stack/exclusive rules</td></tr>
+        <tr><td>Cache version</td><td>IndexedDB</td><td>Every sync</td><td>Change detection</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Double-Spend</div>
+  <h2 class="section-title">Double-Spend Prevention</h2>
+
+  <div class="warn">
+    <strong>Critical Problem:</strong> If two terminals both have offline budgets for the same customer (e.g., customer shops at two stores simultaneously), they could both debit coins beyond the actual balance.
+  </div>
+
+  <h3>Prevention Strategies</h3>
+  <div class="card-grid">
+    <div class="card">
+      <h4>1. Budget Per Terminal</h4>
+      <p>Offline budget is allocated <strong>per terminal</strong>, not per customer globally. If a customer has 500 coins, and two terminals might serve them, each gets 250 coins budget. Configurable split ratio.</p>
+    </div>
+    <div class="card">
+      <h4>2. Pessimistic Budgeting</h4>
+      <p>Default budget is 40% of actual balance. This leaves headroom for multi-terminal scenarios. The percentage is configurable per organization.</p>
+    </div>
+    <div class="card">
+      <h4>3. Idempotent Processing</h4>
+      <p>Every offline transaction has a unique <code>offline_id</code>. The server's <code>UNIQUE (offline_id)</code> constraint prevents duplicate processing if sync is retried.</p>
+    </div>
+    <div class="card">
+      <h4>4. Post-Sync Reconciliation</h4>
+      <p>If total offline debits exceed actual balance, the reconciliation worker creates a "debt" record. The next earning or top-up automatically reduces the debt first.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Sync</div>
+  <h2 class="section-title">Sync Protocol</h2>
+
+  <h3>Push Phase (Terminal → Server)</h3>
+  <div class="code"><code>POST /api/v1/sync/push
+{
+  <span style="color:#86efac">"terminal_id"</span>: <span style="color:#86efac">"term_uuid"</span>,
+  <span style="color:#86efac">"events"</span>: [
+    {
+      <span style="color:#86efac">"offline_id"</span>: <span style="color:#86efac">"uuid_1"</span>,
+      <span style="color:#86efac">"type"</span>: <span style="color:#86efac">"benefit.applied.offline"</span>,
+      <span style="color:#86efac">"timestamp"</span>: <span style="color:#86efac">"2026-04-02T10:30:00Z"</span>,
+      <span style="color:#86efac">"payload"</span>: {
+        <span style="color:#86efac">"customer_id"</span>: <span style="color:#86efac">"cust_uuid"</span>,
+        <span style="color:#86efac">"sale_id"</span>: <span style="color:#86efac">"sale_uuid"</span>,
+        <span style="color:#86efac">"benefits"</span>: [
+          { <span style="color:#86efac">"type"</span>: <span style="color:#86efac">"loyalty_coins"</span>, <span style="color:#86efac">"coins_debited"</span>: 100, <span style="color:#86efac">"discount"</span>: 1000 }
+        ],
+        <span style="color:#86efac">"earn"</span>: {
+          <span style="color:#86efac">"coins_estimated"</span>: 70,
+          <span style="color:#86efac">"sale_total"</span>: 70000
+        }
+      }
+    },
+    {
+      <span style="color:#86efac">"offline_id"</span>: <span style="color:#86efac">"uuid_2"</span>,
+      <span style="color:#86efac">"type"</span>: <span style="color:#86efac">"benefit.earned.offline"</span>,
+      <span style="color:#86efac">"timestamp"</span>: <span style="color:#86efac">"2026-04-02T10:35:00Z"</span>,
+      <span style="color:#86efac">"payload"</span>: { ... }
+    }
+  ]
+}</code></div>
+
+  <h3>Server Reconciliation</h3>
+  <div class="code"><code><span style="color:#c084fc">func</span> (s *SyncService) ProcessPush(ctx context.Context, req SyncPushRequest) (*SyncPushResult, error) {
+    <span style="color:#c084fc">var</span> results []SyncEventResult
+
+    <span style="color:#c084fc">for</span> _, event := <span style="color:#c084fc">range</span> req.Events {
+        <span style="color:#64748b">// Idempotency check</span>
+        exists, _ := s.repo.ExistsByOfflineID(ctx, event.OfflineID)
+        <span style="color:#c084fc">if</span> exists {
+            results = <span style="color:#c084fc">append</span>(results, SyncEventResult{
+                OfflineID: event.OfflineID,
+                Status:    <span style="color:#86efac">"already_processed"</span>,
+            })
+            <span style="color:#c084fc">continue</span>
+        }
+
+        <span style="color:#64748b">// Validate: re-check balance, rules, expiry</span>
+        valid, err := s.validateOfflineEvent(ctx, event)
+        <span style="color:#c084fc">if</span> !valid {
+            results = <span style="color:#c084fc">append</span>(results, SyncEventResult{
+                OfflineID: event.OfflineID,
+                Status:    <span style="color:#86efac">"rejected"</span>,
+                Reason:    err.Error(),
+            })
+            <span style="color:#c084fc">continue</span>
+        }
+
+        <span style="color:#64748b">// Apply: create real ledger entries from offline event</span>
+        s.applyOfflineEvent(ctx, event)
+
+        results = <span style="color:#c084fc">append</span>(results, SyncEventResult{
+            OfflineID: event.OfflineID,
+            Status:    <span style="color:#86efac">"reconciled"</span>,
+        })
+    }
+
+    <span style="color:#c084fc">return</span> &SyncPushResult{Results: results}, nil
+}</code></div>
+
+  <h3>Pull Phase (Server → Terminal)</h3>
+  <div class="code"><code>GET /api/v1/sync/pull?since=2026-04-02T10:00:00Z&terminal_id=term_uuid
+
+Response:
+{
+  <span style="color:#86efac">"data"</span>: {
+    <span style="color:#86efac">"rules"</span>: [...],             <span style="color:#64748b">// active rules (full replacement cache)</span>
+    <span style="color:#86efac">"campaigns"</span>: [...],         <span style="color:#64748b">// active campaigns</span>
+    <span style="color:#86efac">"customer_wallets"</span>: [...],  <span style="color:#64748b">// updated wallet balances for known customers</span>
+    <span style="color:#86efac">"offline_budgets"</span>: [...],   <span style="color:#64748b">// new budgets (reset per sync)</span>
+    <span style="color:#86efac">"rejections"</span>: [            <span style="color:#64748b">// offline events that were rejected on reconciliation</span>
+      {
+        <span style="color:#86efac">"offline_id"</span>: <span style="color:#86efac">"uuid_xyz"</span>,
+        <span style="color:#86efac">"reason"</span>: <span style="color:#86efac">"coupon WEEKEND20 expired before sale timestamp"</span>,
+        <span style="color:#86efac">"sale_id"</span>: <span style="color:#86efac">"sale_uuid"</span>
+      }
+    ],
+    <span style="color:#86efac">"cache_version"</span>: 42,
+    <span style="color:#86efac">"server_time"</span>: <span style="color:#86efac">"2026-04-02T10:40:00Z"</span>
+  }
+}</code></div>
+</div>
+
+<div class="section">
+  <div class="section-label">Limits</div>
+  <h2 class="section-title">Offline Limitations</h2>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Feature</th><th>Online</th><th>Offline</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Coin redemption</td><td>Full balance</td><td>Budget only</td><td>Budget = min(balance, max_offline, terminal_share)</td></tr>
+        <tr><td>Wallet payment</td><td>Full balance</td><td>Budget only</td><td>Same budget logic</td></tr>
+        <tr><td>Coupon validation</td><td>Full (expiry, usage)</td><td>Code only</td><td>No usage limit check offline; validated on sync</td></tr>
+        <tr><td>Campaign enrollment</td><td>Real-time</td><td>Cached</td><td>New campaigns not visible until sync</td></tr>
+        <tr><td>Coin earning</td><td>Exact</td><td>Estimated (~)</td><td>Receipt shows "~95 coins earned"</td></tr>
+        <tr><td>Cashback earning</td><td>Exact + queued</td><td>Estimated</td><td>Actual cashback computed on sync</td></tr>
+        <tr><td>New customers</td><td>Full enrollment</td><td>Local only</td><td>Customer enrolled on sync; no wallet until then</td></tr>
+        <tr><td>Tier changes</td><td>Real-time</td><td>Not available</td><td>Tier changes only on server after reconciliation</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<footer class="footer">
+  <p>elLoyalty Offline-First — <a href="index.html" style="color:#c4b5fd">Back to Index</a></p>
+</footer>
+</body>
+</html>
