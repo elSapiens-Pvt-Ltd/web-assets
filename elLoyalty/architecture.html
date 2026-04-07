@@ -63,6 +63,7 @@ td code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#f1f5f9
     <a href="security.html">Security</a>
     <a href="scalability.html">Scale</a>
     <a href="edge-cases.html">Edge Cases</a>
+    <a href="graphql-bff.html">GraphQL</a>
   </div>
 </nav>
 
@@ -104,6 +105,7 @@ td code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#f1f5f9
         <tr><td>Config</td><td><code>envconfig</code></td><td>latest</td><td>Environment-based configuration</td></tr>
         <tr><td>Redis Client</td><td><code>go-redis</code></td><td>v9</td><td>Redis connection, caching, pub/sub</td></tr>
         <tr><td>RPC</td><td><code>gRPC</code></td><td>latest</td><td>Ecosystem inter-service calls</td></tr>
+        <tr><td>GraphQL</td><td><code>gqlgen</code></td><td>latest</td><td>BFF gateway for frontend consumers (port 4000)</td></tr>
         <tr><td>Protobuf</td><td><code>protoc + buf</code></td><td>latest</td><td>gRPC service definitions</td></tr>
         <tr><td>Circuit Breaker</td><td><code>sony/gobreaker</code></td><td>v1</td><td>gRPC client resilience</td></tr>
         <tr><td>Testing</td><td><code>testify</code></td><td>v1.9+</td><td>Assertions and mocking</td></tr>
@@ -225,6 +227,12 @@ td code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#f1f5f9
 │         │                 │                  │                       │
 │         └─────────────────┼──────────────────┘                       │
 │                           │ calls                                    │
+│                           │                                          │
+│  ┌───── GraphQL BFF Gateway (separate service, port 4000) ────────┐  │
+│  │  Go + gqlgen │ DataLoaders │ Persisted Queries │ RBAC Directives│  │
+│  │  Aggregates gRPC services for POS UI, Admin, Mobile consumers  │  │
+│  │  See: graphql-bff.html for full schema + resolver architecture │  │
+│  └────────────────────────┬───────────────────────────────────────┘  │
 │  ┌────────────────────────┴──────────────────────────────────────┐   │
 │  │                    Service Layer (services/)                   │   │
 │  │                                                               │   │
@@ -389,7 +397,7 @@ Every SQL query:
   <div class="section-label">API Design</div>
   <h2 class="section-title">API Conventions</h2>
 
-  <h3>REST Endpoints (for external clients)</h3>
+  <h3>REST Endpoints (for sync, webhooks, health checks)</h3>
   <div class="tbl-wrap">
     <table>
       <thead><tr><th>Method</th><th>Path</th><th>Purpose</th></tr></thead>
@@ -408,6 +416,22 @@ Every SQL query:
         <tr><td><code>POST</code></td><td><code>/api/v1/sync/push</code></td><td>Push offline events</td></tr>
         <tr><td><code>GET</code></td><td><code>/api/v1/sync/pull</code></td><td>Pull updates since sequence</td></tr>
         <tr><td><code>GET</code></td><td><code>/api/v1/health</code></td><td>Readiness/liveness</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>GraphQL BFF (for POS UI, Admin Dashboard, Mobile App)</h3>
+  <p>A separate Go + gqlgen gateway (port 4000) that aggregates gRPC services into a single query endpoint. Frontends send GraphQL queries instead of multiple REST calls. See <a href="graphql-bff.html">GraphQL BFF Architecture</a> for the full schema.</p>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Operation</th><th>Type</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>customer(id)</code></td><td>Query</td><td>Customer profile + wallet + transactions + coupons</td></tr>
+        <tr><td><code>wallet(customerId)</code></td><td>Query</td><td>Direct wallet balance lookup</td></tr>
+        <tr><td><code>benefitPreview(customerId, cartItems)</code></td><td>Query</td><td>Evaluate all benefits for a cart (checkout phase 1)</td></tr>
+        <tr><td><code>redeemBenefits(input)</code></td><td>Mutation</td><td>Apply selected benefits to a sale (checkout phases 2+3)</td></tr>
+        <tr><td><code>createCustomer(input)</code></td><td>Mutation</td><td>Enroll a new loyalty customer</td></tr>
+        <tr><td><code>applyCoupon(input)</code></td><td>Mutation</td><td>Validate and apply a coupon code</td></tr>
       </tbody>
     </table>
   </div>
@@ -451,6 +475,9 @@ Every SQL query:
         <tr><td><code>MESSAGEHUB_GRPC_ADDR</code></td><td><code>localhost:6040</code></td><td>elmessagehub gRPC address</td></tr>
         <tr><td><code>DB_POOL_MAX</code></td><td><code>25</code></td><td>Max DB connections</td></tr>
         <tr><td><code>AUTO_MIGRATE</code></td><td><code>true</code></td><td>Run migrations on start (dev only)</td></tr>
+        <tr><td><code>BFF_PORT</code></td><td><code>4000</code></td><td>GraphQL BFF gateway port</td></tr>
+        <tr><td><code>QUERY_DEPTH_LIMIT</code></td><td><code>7</code></td><td>GraphQL max query nesting depth</td></tr>
+        <tr><td><code>QUERY_COMPLEXITY_LIMIT</code></td><td><code>1000</code></td><td>GraphQL max query cost</td></tr>
       </tbody>
     </table>
   </div>

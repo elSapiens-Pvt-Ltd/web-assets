@@ -66,6 +66,7 @@ ol,ul{margin:8px 0 16px 24px}li{margin-bottom:4px;font-size:13px}
     <a href="security.html">Security</a>
     <a href="scalability.html">Scale</a>
     <a href="edge-cases.html">Edge Cases</a>
+    <a href="graphql-bff.html">GraphQL</a>
   </div>
 </nav>
 
@@ -79,7 +80,7 @@ ol,ul{margin:8px 0 16px 24px}li{margin-bottom:4px;font-size:13px}
 <div class="section">
   <div class="section-label">Overview</div>
   <h2 class="section-title">Integration Map</h2>
-  <p class="section-sub">elLoyalty operates as a standalone microservice within the elsapiens ecosystem. It communicates via gRPC for synchronous calls and Redis pub/sub for asynchronous events.</p>
+  <p class="section-sub">elLoyalty operates as a standalone microservice within the elsapiens ecosystem. It communicates via gRPC for synchronous service-to-service calls, Redis pub/sub for asynchronous events, and exposes a <a href="graphql-bff.html">GraphQL BFF gateway</a> for frontend consumers (POS UI, admin dashboard, mobile app).</p>
 
   <div class="diagram"><pre>
 ┌──────────────────────────────────────────────────────────────────────┐
@@ -155,7 +156,7 @@ ol,ul{margin:8px 0 16px 24px}li{margin-bottom:4px;font-size:13px}
 <div class="section">
   <div class="section-label">elPOS</div>
   <h2 class="section-title">elPOS Integration</h2>
-  <p class="section-sub">The primary consumer of loyalty benefits. elPOS calls elLoyalty during checkout and publishes sale events.</p>
+  <p class="section-sub">The primary consumer of loyalty benefits. elPOS <strong>backend</strong> calls elLoyalty via gRPC during checkout and publishes sale events. elPOS <strong>UI</strong> (React) calls the <a href="graphql-bff.html">GraphQL BFF</a> which aggregates elLoyalty + elAccounts data in a single query.</p>
 
   <div class="svc">
     <h4>gRPC: LoyaltyService (elLoyalty exposes)</h4>
@@ -182,6 +183,7 @@ service LoyaltyService {
 }</code></div>
 
   <h3>Event Flow: Sale Lifecycle</h3>
+  <p>elPOS backend calls elLoyalty gRPC directly for the transactional checkout flow. Frontend consumers (POS UI widget) use the GraphQL BFF for read queries (customer, wallet, benefit preview) and write mutations (redeem, apply coupon).</p>
   <div class="diagram"><pre>
 elPOS                               elLoyalty
   │                                    │

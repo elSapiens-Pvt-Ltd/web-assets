@@ -133,6 +133,7 @@ h3{font-size:18px;font-weight:700;color:var(--text);margin:32px 0 12px}
     <a href="security.html">Security</a>
     <a href="scalability.html">Scale</a>
     <a href="edge-cases.html">Edge Cases</a>
+    <a href="graphql-bff.html">GraphQL</a>
   </div>
 </nav>
 
@@ -158,7 +159,8 @@ h3{font-size:18px;font-weight:700;color:var(--text);margin:32px 0 12px}
     <div class="stat"><div class="stat-n">16</div><div class="stat-l">DB Tables</div></div>
     <div class="stat"><div class="stat-n">Go</div><div class="stat-l">Backend</div></div>
     <div class="stat"><div class="stat-n">React</div><div class="stat-l">Frontend</div></div>
-    <div class="stat"><div class="stat-n">gRPC</div><div class="stat-l">Protocol</div></div>
+    <div class="stat"><div class="stat-n">gRPC</div><div class="stat-l">Internal</div></div>
+    <div class="stat"><div class="stat-n">GraphQL</div><div class="stat-l">Client API</div></div>
     <div class="stat"><div class="stat-n">Offline</div><div class="stat-l">First</div></div>
     <div class="stat"><div class="stat-n">Multi</div><div class="stat-l">Tenant</div></div>
   </div>
@@ -250,7 +252,7 @@ h3{font-size:18px;font-weight:700;color:var(--text);margin:32px 0 12px}
 <div class="section">
   <div class="section-label">Architecture Preview</div>
   <h2 class="section-title">System Architecture at a Glance</h2>
-  <p class="section-sub">Go backend with Clean Architecture, PostgreSQL + Redis, gRPC for ecosystem calls, REST for external clients, Redis pub/sub for events.</p>
+  <p class="section-sub">Go backend with Clean Architecture, PostgreSQL + Redis, gRPC for ecosystem calls, GraphQL BFF for frontends, REST for webhooks/sync, Redis pub/sub for events.</p>
 
   <div class="arch-diagram">
     <pre>
@@ -295,6 +297,10 @@ h3{font-size:18px;font-weight:700;color:var(--text);margin:32px 0 12px}
 │  │  └──────────────┘    └──────────────┘                                   │   │
 │  └──────────────────────────────────────────────────────────────────────────┘   │
 │                                                                                 │
+│  ┌──────────────── GraphQL BFF Gateway (port 4000) ─────────────────────────┐   │
+│  │  Go + gqlgen — aggregates gRPC services for frontend consumers           │   │
+│  └────────────────────────────────┬─────────────────────────────────────────┘   │
+│                                   │                                             │
 │  ┌──────────────── Client Applications ─────────────────────────────────────┐   │
 │  │  POS Terminal  │  eCommerce Web  │  Mobile App  │  Admin Dashboard       │   │
 │  └──────────────────────────────────────────────────────────────────────────┘   │
@@ -306,7 +312,7 @@ h3{font-size:18px;font-weight:700;color:var(--text);margin:32px 0 12px}
 <div class="section">
   <div class="section-label">Documentation</div>
   <h2 class="section-title">Complete Documentation Index</h2>
-  <p class="section-sub">15 detailed pages covering every aspect of the platform — from architecture to edge cases.</p>
+  <p class="section-sub">16 detailed pages covering every aspect of the platform — from architecture to edge cases.</p>
 
   <table class="page-index">
     <thead>
@@ -327,6 +333,7 @@ h3{font-size:18px;font-weight:700;color:var(--text);margin:32px 0 12px}
       <tr><td class="num">12</td><td><a class="page-link" href="security.html">Security</a></td><td class="desc">JWT validation, workspace isolation, fraud prevention, rate limiting</td><td>OWASP, idempotency keys, anomaly detection</td></tr>
       <tr><td class="num">13</td><td><a class="page-link" href="scalability.html">Scalability</a></td><td class="desc">Handling millions of transactions, caching, event-driven updates, read replicas</td><td>Redis cache, CQRS patterns, connection pooling</td></tr>
       <tr><td class="num">14</td><td><a class="page-link" href="edge-cases.html">Edge Cases</a></td><td class="desc">Network failures, duplicate transactions, partial sync, negative balance prevention</td><td>Idempotency, saga patterns, compensation</td></tr>
+      <tr><td class="num">15</td><td><a class="page-link" href="graphql-bff.html">GraphQL BFF</a></td><td class="desc">GraphQL gateway aggregating gRPC services via a single query language for all frontends</td><td>gqlgen, DataLoader, persisted queries, schema design</td></tr>
     </tbody>
   </table>
 </div>
@@ -335,7 +342,7 @@ h3{font-size:18px;font-weight:700;color:var(--text);margin:32px 0 12px}
 <div class="section">
   <div class="section-label">Ecosystem</div>
   <h2 class="section-title">elsapiens Integration Map</h2>
-  <p class="section-sub">elLoyalty connects to 5 ecosystem services via gRPC, following the same patterns as elPOS.</p>
+  <p class="section-sub">elLoyalty connects to 5 ecosystem services via gRPC, following the same patterns as elPOS. A <a href="graphql-bff.html">GraphQL BFF gateway</a> aggregates these services for frontend consumers.</p>
 
   <div class="eco-grid">
     <div class="eco-card">
@@ -412,7 +419,7 @@ JWT Claims:
     </div>
     <div class="card">
       <h4>Communication</h4>
-      <p><strong>gRPC</strong> for all ecosystem calls (elAuth, elPOS, elbooks, elCatalog, elmessagehub). <strong>REST</strong> for external clients (admin dashboard, mobile apps). <strong>Redis pub/sub</strong> for async events (earn, redeem, expire).</p>
+      <p><strong>gRPC</strong> for ecosystem inter-service calls (elAuth, elPOS, elbooks, elCatalog, elmessagehub). <strong>GraphQL BFF</strong> (Go + gqlgen, port 4000) for frontend consumers — POS UI, admin dashboard, mobile app. <strong>REST</strong> for webhooks, sync, and health checks. <strong>Redis pub/sub</strong> for async events (earn, redeem, expire).</p>
     </div>
     <div class="card">
       <h4>Frontend</h4>

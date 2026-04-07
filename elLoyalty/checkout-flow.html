@@ -68,6 +68,7 @@ ol,ul{margin:8px 0 16px 24px}li{margin-bottom:4px;font-size:13px}
     <a href="security.html">Security</a>
     <a href="scalability.html">Scale</a>
     <a href="edge-cases.html">Edge Cases</a>
+    <a href="graphql-bff.html">GraphQL</a>
   </div>
 </nav>
 
@@ -81,7 +82,7 @@ ol,ul{margin:8px 0 16px 24px}li{margin-bottom:4px;font-size:13px}
 <div class="section">
   <div class="section-label">Overview</div>
   <h2 class="section-title">Checkout Sequence Overview</h2>
-  <p class="section-sub">The checkout flow has three phases: <strong>Evaluate</strong> (before payment), <strong>Apply</strong> (with payment), and <strong>Earn</strong> (after payment).</p>
+  <p class="section-sub">The checkout flow has three phases: <strong>Evaluate</strong> (before payment), <strong>Apply</strong> (with payment), and <strong>Earn</strong> (after payment). Frontends (POS UI, mobile) use the <a href="graphql-bff.html">GraphQL BFF</a> for phases 1–2. The earn phase is typically backend-to-backend via gRPC.</p>
 
   <div class="diagram"><pre>
 ┌─────────────────────────────────────────────────────────────────────────┐
@@ -148,8 +149,8 @@ ol,ul{margin:8px 0 16px 24px}li{margin-bottom:4px;font-size:13px}
   <div class="step">
     <div class="step-num">2</div>
     <div class="step-content">
-      <h4>POS calls <code>POST /api/v1/benefits/evaluate</code></h4>
-      <p>Sends cart items (product IDs, quantities, prices, categories), customer ID, store ID, terminal ID, payment method (if known). This is a lightweight read-only call.</p>
+      <h4>POS calls benefit evaluation</h4>
+      <p>Via <strong>GraphQL BFF</strong> (preferred): <code>query { benefitPreview(customerId, cartItems) { ... } }</code> — a single query can also fetch the customer wallet and coupons in the same round-trip. Via <strong>REST</strong>: <code>POST /api/v1/benefits/evaluate</code>. Both accept cart items (product IDs, quantities, prices, categories), customer ID, and store context.</p>
     </div>
   </div>
   <div class="step">
@@ -182,7 +183,7 @@ ol,ul{margin:8px 0 16px 24px}li{margin-bottom:4px;font-size:13px}
   </div>
 
   <h3>Re-evaluation Triggers</h3>
-  <p>The POS must re-call <code>/evaluate</code> whenever the cart changes after initial evaluation:</p>
+  <p>The POS must re-call the evaluation (GraphQL <code>benefitPreview</code> query or REST <code>/evaluate</code>) whenever the cart changes after initial evaluation:</p>
   <ul>
     <li>Item added or removed</li>
     <li>Quantity changed</li>
@@ -207,8 +208,8 @@ ol,ul{margin:8px 0 16px 24px}li{margin-bottom:4px;font-size:13px}
   <div class="step">
     <div class="step-num">2</div>
     <div class="step-content">
-      <h4>POS calls <code>POST /api/v1/benefits/apply</code></h4>
-      <p>Sends the original <code>EvaluationContext</code> plus <code>selected_benefit_ids</code>. This is a write operation.</p>
+      <h4>POS calls benefit apply</h4>
+      <p>Via <strong>GraphQL BFF</strong> (preferred): <code>mutation { redeemBenefits(input: { selectedBenefitIds, cartItems, ... }) { ... } }</code>. Via <strong>REST</strong>: <code>POST /api/v1/benefits/apply</code>. Both send the <code>selected_benefit_ids</code>. This is a write operation.</p>
     </div>
   </div>
   <div class="step">
@@ -266,7 +267,7 @@ ol,ul{margin:8px 0 16px 24px}li{margin-bottom:4px;font-size:13px}
     <div class="step-num">1</div>
     <div class="step-content">
       <h4>elPOS confirms payment</h4>
-      <p>After the sale is finalized, elPOS calls <code>POST /api/v1/benefits/earn</code> with the completed sale data.</p>
+      <p>After the sale is finalized, elPOS backend calls <code>gRPC: CreditEarnings</code> (or REST <code>POST /api/v1/benefits/earn</code>) with the completed sale data. This is a backend-to-backend call — it does not go through the GraphQL BFF.</p>
     </div>
   </div>
   <div class="step">

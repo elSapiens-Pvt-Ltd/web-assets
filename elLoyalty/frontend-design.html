@@ -64,6 +64,7 @@ ol,ul{margin:8px 0 16px 24px}li{margin-bottom:4px;font-size:13px}
     <a href="security.html">Security</a>
     <a href="scalability.html">Scale</a>
     <a href="edge-cases.html">Edge Cases</a>
+    <a href="graphql-bff.html">GraphQL</a>
   </div>
 </nav>
 
@@ -82,11 +83,11 @@ ol,ul{margin:8px 0 16px 24px}li{margin-bottom:4px;font-size:13px}
   <div class="card-grid">
     <div class="card">
       <h4>POS Checkout Widget</h4>
-      <p>Embedded in elPOS React app. Shows customer wallet, available benefits, toggle selection, earn preview. Must work offline. Tailwind + elSDK components.</p>
+      <p>Embedded in elPOS React app. Shows customer wallet, available benefits, toggle selection, earn preview. Must work offline. Uses <a href="graphql-bff.html">GraphQL BFF</a> when online, cached rules when offline.</p>
     </div>
     <div class="card">
       <h4>Admin Dashboard</h4>
-      <p>Standalone React app or tab within elPOS admin. Rule CRUD, campaign management, customer search, tier management, analytics. Online-only.</p>
+      <p>Standalone React app or tab within elPOS admin. Rule CRUD, campaign management, customer search, tier management, analytics. Uses GraphQL for nested data (rules with conditions, campaigns with enrollments). Online-only.</p>
     </div>
   </div>
 </div>
@@ -194,10 +195,14 @@ ol,ul{margin:8px 0 16px 24px}li{margin-bottom:4px;font-size:13px}
       <span style="color:#c084fc">const</span> result = <span style="color:#c084fc">await</span> offlineEvaluate(customer, cart, offlineBudget)
       set({ availableBenefits: result.benefits, earnPreview: result.earn })
     } <span style="color:#c084fc">else</span> {
-      <span style="color:#64748b">// Call server API</span>
-      <span style="color:#c084fc">const</span> result = <span style="color:#c084fc">await</span> loyaltyApi.evaluateCart(customer.id, cart)
-      set({ availableBenefits: result.benefits, earnPreview: result.earn,
-            conflicts: result.conflicts })
+      <span style="color:#64748b">// GraphQL BFF query — single round-trip for wallet + benefits + earn preview</span>
+      <span style="color:#c084fc">const</span> result = <span style="color:#c084fc">await</span> gqlClient.request(BENEFIT_PREVIEW_QUERY, {
+        customerId: customer.id,
+        cartItems: cart.map(toCartItemInput),
+      })
+      set({ availableBenefits: result.benefitPreview.benefits,
+            earnPreview: result.benefitPreview.earnPreview,
+            conflicts: result.benefitPreview.conflicts })
     }
   },
 
@@ -227,6 +232,7 @@ ol,ul{margin:8px 0 16px 24px}li{margin-bottom:4px;font-size:13px}
 <div class="section">
   <div class="section-label">Admin</div>
   <h2 class="section-title">Admin Dashboard</h2>
+  <p>Admin pages use the <a href="graphql-bff.html">GraphQL BFF</a> to query deeply nested data in a single request — rules with conditions, campaigns with enrollments, customers with full transaction history. This avoids the multiple REST round-trips that traditional CRUD would require.</p>
 
   <h3>Page Structure</h3>
   <div class="tbl-wrap">

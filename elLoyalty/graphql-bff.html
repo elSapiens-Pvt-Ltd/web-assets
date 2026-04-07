@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>elLoyalty — GraphQL BFF Architecture</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#f8fafc;--card:#fff;--border:#e2e8f0;--text:#1e293b;--muted:#64748b;--light:#94a3b8;--primary:#7c3aed;--primary-light:#ede9fe;--primary-dark:#5b21b6;--radius:10px;--shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);--shadow-md:0 4px 6px rgba(0,0,0,.07)}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6}
+a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
+.nav{position:sticky;top:0;z-index:100;background:#0f172a;padding:0 24px;display:flex;align-items:center;height:48px;gap:24px;box-shadow:0 2px 12px rgba(0,0,0,.25)}
+.nav .brand{color:#fff;font-weight:800;font-size:15px;display:flex;align-items:center;gap:8px}
+.nav .brand span{background:var(--primary);padding:2px 8px;border-radius:5px;font-size:11px;font-weight:700}
+.nav-links{display:flex;gap:4px;margin-left:auto;overflow-x:auto}
+.nav-links a{color:#94a3b8;font-size:12px;font-weight:500;text-decoration:none;padding:6px 10px;border-radius:6px;transition:all .15s;white-space:nowrap}
+.nav-links a:hover,.nav-links a.active{color:#fff;background:rgba(255,255,255,.08)}
+.header{background:linear-gradient(135deg,#1e1b4b 0%,#312e81 40%,#4c1d95 100%);color:#fff;padding:36px 24px 28px;text-align:center}
+.header h1{font-size:26px;font-weight:800;letter-spacing:-.3px}.header p{font-size:13px;color:#c4b5fd;margin-top:4px}
+.container{max-width:1100px;margin:0 auto;padding:0 24px 48px}
+.section{padding:40px 0}.section+.section{border-top:1px solid var(--border)}
+.section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--primary);margin-bottom:6px}
+.section-title{font-size:22px;font-weight:800;color:var(--text);margin-bottom:4px}
+.section-sub{font-size:14px;color:var(--muted);margin-bottom:24px;max-width:700px}
+h3{font-size:17px;font-weight:700;color:var(--text);margin:28px 0 10px}
+p{margin-bottom:12px}
+.diagram{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:16px 0;overflow-x:auto;box-shadow:var(--shadow)}
+.diagram pre{font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.5;color:var(--text);white-space:pre}
+.code{background:#1e293b;border-radius:var(--radius);padding:20px;margin:16px 0;overflow-x:auto}
+.code code{font-family:'JetBrains Mono',monospace;font-size:12px;color:#e2e8f0;line-height:1.6;white-space:pre;display:block}
+.tbl-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);margin:16px 0;box-shadow:var(--shadow)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{background:#f1f5f9;padding:10px 14px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border)}
+tbody td{padding:10px 14px;border-bottom:1px solid var(--border)}
+tbody tr:hover td{background:#f8fafc}
+td code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#f1f5f9;padding:1px 6px;border-radius:4px}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;margin:16px 0}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+.card h4{font-size:15px;font-weight:700;margin-bottom:6px;color:var(--text)}
+.card p{font-size:13px;color:var(--muted);margin-bottom:0}
+ol,ul{margin:8px 0 16px 24px}li{margin-bottom:4px;font-size:13px}
+.vs{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:16px 0}
+.vs-col{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+.vs-col h4{font-size:15px;font-weight:700;margin-bottom:8px;padding-bottom:8px;border-bottom:2px solid var(--border)}
+.vs-col ul{margin:0;padding-left:18px}
+.vs-col li{font-size:12px;margin-bottom:4px}
+.warn{background:#fef3c7;border:1px solid #fcd34d;border-radius:var(--radius);padding:14px 18px;margin:16px 0;font-size:13px;color:#92400e}
+.footer{background:#0f172a;color:#94a3b8;padding:24px;text-align:center;font-size:12px;margin-top:48px}
+@media(max-width:768px){.card-grid{grid-template-columns:1fr}.vs{grid-template-columns:1fr}.nav-links{display:none}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="brand">elSapiens <span>elLoyalty</span></div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="architecture.html">Architecture</a>
+    <a href="benefit-engine.html">Benefit Engine</a>
+    <a href="checkout-flow.html">Checkout Flow</a>
+    <a href="domain-design.html">Domains</a>
+    <a href="database-schema.html">Schema</a>
+    <a href="rule-engine.html">Rules</a>
+    <a href="conflict-resolution.html">Conflicts</a>
+    <a href="ledger-design.html">Ledger</a>
+    <a href="offline-first.html">Offline</a>
+    <a href="ecosystem-integration.html">Ecosystem</a>
+    <a href="frontend-design.html">Frontend</a>
+    <a href="security.html">Security</a>
+    <a href="scalability.html">Scale</a>
+    <a href="edge-cases.html">Edge Cases</a>
+    <a href="graphql-bff.html" class="active">GraphQL</a>
+  </div>
+</nav>
+
+<header class="header">
+  <h1>15 — GraphQL BFF Architecture</h1>
+  <p>Backend-for-Frontend gateway aggregating gRPC services via a single query language</p>
+</header>
+
+<div class="container">
+
+<!-- ─── WHY A BFF ─────────────────────────────── -->
+<div class="section">
+  <div class="section-label">Context</div>
+  <h2 class="section-title">Why a GraphQL Gateway?</h2>
+  <p class="section-sub">elLoyalty exposes gRPC for service-to-service and REST for simple endpoints. A GraphQL BFF sits in front of both, giving each frontend exactly the shape of data it needs — no more, no less.</p>
+
+  <div class="card-grid">
+    <div class="card">
+      <h4>POS UI Aggregation</h4>
+      <p>A single query fetches customer + wallet + benefits + earn preview. Today this requires 3+ REST calls or custom aggregate endpoints. GraphQL eliminates the waterfall.</p>
+    </div>
+    <div class="card">
+      <h4>Admin Dashboard</h4>
+      <p>Admin pages need deeply nested data — rules with conditions, campaigns with enrollments, customers with transaction history. GraphQL lets the admin UI declare exactly what it needs.</p>
+    </div>
+    <div class="card">
+      <h4>Mobile App APIs</h4>
+      <p>Future mobile wallet app can query a slim subset (balance, recent transactions, tier) without a custom endpoint per screen. Bandwidth-efficient on slow networks.</p>
+    </div>
+  </div>
+
+  <div class="warn">
+    <strong>Not a replacement.</strong> GraphQL does NOT replace gRPC (service-to-service) or REST (webhooks, sync endpoints, health checks). It is an <em>additional</em> consumer-facing layer that delegates to internal services.
+  </div>
+</div>
+
+<!-- ─── ARCHITECTURE ─────────────────────────── -->
+<div class="section">
+  <div class="section-label">Architecture</div>
+  <h2 class="section-title">Gateway Topology</h2>
+
+  <div class="diagram"><pre>
+┌─────────────────────────────────────────────────────────────────────┐
+│                        CLIENT LAYER                                  │
+│                                                                     │
+│   ┌──────────┐    ┌──────────────┐    ┌──────────────┐             │
+│   │  POS UI   │    │ Admin Dashboard│    │  Mobile App  │             │
+│   │ (React)   │    │ (React)       │    │ (Flutter)    │             │
+│   └─────┬─────┘    └──────┬────────┘    └──────┬───────┘             │
+│         │                 │                    │                     │
+│         └─────────────────┼────────────────────┘                     │
+│                           │                                          │
+│                    POST /graphql                                     │
+│                    (persisted queries for POS)                       │
+│                           │                                          │
+├───────────────────────────┼──────────────────────────────────────────┤
+│                           ▼                                          │
+│              ┌────────────────────────┐                              │
+│              │    GraphQL BFF Gateway  │                              │
+│              │    Go + gqlgen          │                              │
+│              │    Port: 4000           │                              │
+│              │                        │                              │
+│              │  ┌──────────────────┐  │                              │
+│              │  │ Auth Middleware   │  │  JWT from elAuth             │
+│              │  │ Rate Limiter     │  │  Redis-backed                │
+│              │  │ Depth Limiter    │  │  max depth: 7                │
+│              │  │ Complexity Calc  │  │  max cost: 1000              │
+│              │  └──────────────────┘  │                              │
+│              │                        │                              │
+│              │  ┌──────────────────┐  │                              │
+│              │  │ DataLoader Cache  │  │  Per-request batching        │
+│              │  │ Redis L2 Cache   │  │  Short-TTL entity cache      │
+│              │  │ Persisted Queries│  │  Hash-to-query map           │
+│              │  └──────────────────┘  │                              │
+│              └───────────┬────────────┘                              │
+│                          │                                           │
+│              ┌───────────┼───────────────┐                           │
+│              │           │               │                           │
+│              ▼           ▼               ▼                           │
+│     ┌────────────┐ ┌──────────┐  ┌────────────┐                     │
+│     │ elLoyalty   │ │  elPOS   │  │ elAccounts │                     │
+│     │ gRPC :6010 │ │ gRPC:6000│  │ gRPC :5000 │                     │
+│     └────────────┘ └──────────┘  └────────────┘                     │
+│                                                                      │
+│     Internal services — never exposed to clients directly            │
+└─────────────────────────────────────────────────────────────────────┘</pre></div>
+
+  <h3>Project Layout</h3>
+  <div class="code"><code><span style="color:#64748b">// Go module: elLoyaltyBFF</span>
+
+cmd/
+  server/
+    main.go              <span style="color:#64748b">// wire everything, start HTTP server</span>
+graph/
+  schema.graphqls        <span style="color:#64748b">// SDL: types, queries, mutations</span>
+  schema.resolvers.go    <span style="color:#64748b">// generated resolver stubs (gqlgen)</span>
+  model/
+    models_gen.go        <span style="color:#64748b">// generated Go types from SDL</span>
+  resolver.go            <span style="color:#64748b">// root resolver with service deps</span>
+  dataloader/
+    loaders.go           <span style="color:#64748b">// batched loaders for N+1 prevention</span>
+    middleware.go         <span style="color:#64748b">// per-request loader injection</span>
+internal/
+  grpcclient/
+    loyalty.go           <span style="color:#64748b">// elLoyalty gRPC client wrapper</span>
+    accounts.go          <span style="color:#64748b">// elAccounts gRPC client wrapper</span>
+    pos.go               <span style="color:#64748b">// elPOS gRPC client wrapper</span>
+  middleware/
+    auth.go              <span style="color:#64748b">// JWT validation + TenantContext</span>
+    ratelimit.go         <span style="color:#64748b">// Redis sliding-window rate limiter</span>
+    depth.go             <span style="color:#64748b">// query depth limiting</span>
+    complexity.go        <span style="color:#64748b">// query cost calculation</span>
+    persisted.go         <span style="color:#64748b">// persisted query lookup</span>
+  cache/
+    redis.go             <span style="color:#64748b">// Redis L2 cache for resolved entities</span>
+config/
+  config.go              <span style="color:#64748b">// env-based configuration</span>
+gqlgen.yml               <span style="color:#64748b">// gqlgen code generation config</span>
+go.mod</code></div>
+</div>
+
+<!-- ─── SCHEMA ───────────────────────────────── -->
+<div class="section">
+  <div class="section-label">Schema</div>
+  <h2 class="section-title">GraphQL Schema (SDL)</h2>
+  <p class="section-sub">The full schema definition. Types mirror domain aggregates but are shaped for frontend consumption — not 1:1 with database tables.</p>
+
+  <div class="code"><code><span style="color:#64748b"># ──── Enums ────</span>
+
+<span style="color:#c084fc">enum</span> <span style="color:#93c5fd">CustomerTier</span> {
+  BRONZE
+  SILVER
+  GOLD
+  PLATINUM
+}
+
+<span style="color:#c084fc">enum</span> <span style="color:#93c5fd">BenefitType</span> {
+  LOYALTY_COINS
+  CASHBACK
+  LOYALTY_CASH
+  COUPON
+  CAMPAIGN
+}
+
+<span style="color:#c084fc">enum</span> <span style="color:#93c5fd">TransactionType</span> {
+  EARN_COINS
+  REDEEM_COINS
+  CASHBACK_CREDIT
+  WALLET_DEBIT
+  WALLET_CREDIT
+  EXPIRY
+  REVERSAL
+  MANUAL_CREDIT
+  MANUAL_DEBIT
+}
+
+<span style="color:#c084fc">enum</span> <span style="color:#93c5fd">CouponStatus</span> {
+  ACTIVE
+  REDEEMED
+  EXPIRED
+  DISABLED
+}
+
+<span style="color:#64748b"># ──── Core Types ────</span>
+
+<span style="color:#c084fc">type</span> <span style="color:#93c5fd">Customer</span> {
+  id: ID!
+  personId: String!                 <span style="color:#64748b"># MongoDB ObjectID in elAccounts</span>
+  name: String!                     <span style="color:#64748b"># resolved from elAccounts</span>
+  phone: String
+  email: String
+  tier: CustomerTier!
+  tierExpiresAt: DateTime
+  lifetimeSpendPaisa: Int!
+  wallet: Wallet!                   <span style="color:#64748b"># resolver: DataLoader → elLoyalty gRPC</span>
+  transactions(
+    first: Int = 20
+    after: String
+    type: TransactionType
+  ): TransactionConnection!         <span style="color:#64748b"># paginated via cursor</span>
+  activeCoupons: [Coupon!]!
+  createdAt: DateTime!
+}
+
+<span style="color:#c084fc">type</span> <span style="color:#93c5fd">Wallet</span> {
+  coinBalance: Int!
+  cashBalancePaisa: Int!
+  coinRedemptionRate: Int!          <span style="color:#64748b"># paisa per coin</span>
+  offlineBudget: OfflineBudget      <span style="color:#64748b"># null if not a terminal request</span>
+}
+
+<span style="color:#c084fc">type</span> <span style="color:#93c5fd">OfflineBudget</span> {
+  coinBudget: Int!
+  cashBudgetPaisa: Int!
+  syncedAt: DateTime!
+}
+
+<span style="color:#c084fc">type</span> <span style="color:#93c5fd">Transaction</span> {
+  id: ID!
+  type: TransactionType!
+  coinsDelta: Int!                  <span style="color:#64748b"># positive = credit, negative = debit</span>
+  cashDeltaPaisa: Int!
+  description: String!
+  saleId: String                    <span style="color:#64748b"># null for manual/expiry</span>
+  createdAt: DateTime!
+}
+
+<span style="color:#c084fc">type</span> <span style="color:#93c5fd">TransactionConnection</span> {
+  edges: [TransactionEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+<span style="color:#c084fc">type</span> <span style="color:#93c5fd">TransactionEdge</span> {
+  node: Transaction!
+  cursor: String!
+}
+
+<span style="color:#c084fc">type</span> <span style="color:#93c5fd">PageInfo</span> {
+  hasNextPage: Boolean!
+  endCursor: String
+}
+
+<span style="color:#c084fc">type</span> <span style="color:#93c5fd">Coupon</span> {
+  id: ID!
+  code: String!
+  discountPaisa: Int
+  discountPercent: Float
+  maxDiscountPaisa: Int
+  minCartPaisa: Int
+  status: CouponStatus!
+  expiresAt: DateTime
+  usageCount: Int!
+  maxUsage: Int
+}
+
+<span style="color:#64748b"># ──── Benefit Preview (Checkout) ────</span>
+
+<span style="color:#c084fc">type</span> <span style="color:#93c5fd">BenefitPreview</span> {
+  benefits: [CandidateBenefit!]!
+  conflicts: [ConflictInfo!]!
+  earnPreview: EarnPreview!
+  evaluatedAt: DateTime!
+}
+
+<span style="color:#c084fc">type</span> <span style="color:#93c5fd">CandidateBenefit</span> {
+  id: ID!
+  type: BenefitType!
+  label: String!                    <span style="color:#64748b"># "Use 150 coins → ₹150 off"</span>
+  discountPaisa: Int!
+  coinsToDebit: Int!
+  cashToDebit: Int!
+  stackable: Boolean!
+  exclusionGroup: String
+  score: Float!                     <span style="color:#64748b"># higher = better deal for customer</span>
+}
+
+<span style="color:#c084fc">type</span> <span style="color:#93c5fd">ConflictInfo</span> {
+  benefitId: ID!
+  conflictsWith: ID!
+  reason: String!
+}
+
+<span style="color:#c084fc">type</span> <span style="color:#93c5fd">EarnPreview</span> {
+  coinsToEarn: Int!
+  cashbackPaisa: Int!
+  isApproximate: Boolean!           <span style="color:#64748b"># true when offline-evaluated</span>
+}
+
+<span style="color:#64748b"># ──── Mutation Results ────</span>
+
+<span style="color:#c084fc">type</span> <span style="color:#93c5fd">RedemptionResult</span> {
+  success: Boolean!
+  appliedBenefits: [AppliedBenefit!]!
+  totalDiscountPaisa: Int!
+  updatedWallet: Wallet!
+  earnSummary: EarnPreview
+}
+
+<span style="color:#c084fc">type</span> <span style="color:#93c5fd">AppliedBenefit</span> {
+  type: BenefitType!
+  label: String!
+  discountPaisa: Int!
+  coinsDebited: Int!
+  cashDebited: Int!
+}
+
+<span style="color:#c084fc">type</span> <span style="color:#93c5fd">CouponResult</span> {
+  success: Boolean!
+  coupon: Coupon
+  error: String
+}
+
+<span style="color:#64748b"># ──── Inputs ────</span>
+
+<span style="color:#c084fc">input</span> <span style="color:#93c5fd">CartItemInput</span> {
+  productId: ID!
+  quantity: Int!
+  pricePaisa: Int!
+  categoryId: ID
+}
+
+<span style="color:#c084fc">input</span> <span style="color:#93c5fd">RedeemBenefitsInput</span> {
+  customerId: ID!
+  saleId: ID!
+  selectedBenefitIds: [ID!]!
+  cartItems: [CartItemInput!]!
+  offlineId: ID                     <span style="color:#64748b"># for idempotency</span>
+}
+
+<span style="color:#c084fc">input</span> <span style="color:#93c5fd">CreateCustomerInput</span> {
+  personId: String!
+  phone: String
+  email: String
+}
+
+<span style="color:#c084fc">input</span> <span style="color:#93c5fd">ApplyCouponInput</span> {
+  customerId: ID!
+  couponCode: String!
+  cartTotalPaisa: Int!
+}
+
+<span style="color:#64748b"># ──── Root Types ────</span>
+
+<span style="color:#c084fc">type</span> <span style="color:#93c5fd">Query</span> {
+  <span style="color:#64748b"># Customer with nested wallet, transactions, coupons</span>
+  customer(id: ID!): Customer
+
+  <span style="color:#64748b"># Direct wallet lookup (lighter than full customer)</span>
+  wallet(customerId: ID!): Wallet
+
+  <span style="color:#64748b"># Evaluate benefits for a cart (checkout phase 1)</span>
+  benefitPreview(
+    customerId: ID!
+    cartItems: [CartItemInput!]!
+    couponCode: String
+  ): BenefitPreview!
+}
+
+<span style="color:#c084fc">type</span> <span style="color:#93c5fd">Mutation</span> {
+  <span style="color:#64748b"># Apply selected benefits to a sale (checkout phase 2+3)</span>
+  redeemBenefits(input: RedeemBenefitsInput!): RedemptionResult!
+
+  <span style="color:#64748b"># Enroll a new loyalty customer</span>
+  createCustomer(input: CreateCustomerInput!): Customer!
+
+  <span style="color:#64748b"># Validate and apply a coupon code</span>
+  applyCoupon(input: ApplyCouponInput!): CouponResult!
+}
+
+<span style="color:#c084fc">scalar</span> <span style="color:#93c5fd">DateTime</span></code></div>
+</div>
+
+<!-- ─── RESOLVERS ─────────────────────────────── -->
+<div class="section">
+  <div class="section-label">Resolvers</div>
+  <h2 class="section-title">Resolver Architecture</h2>
+  <p class="section-sub">Resolvers delegate to gRPC clients — they never touch the database. The root resolver holds all service dependencies injected at startup.</p>
+
+  <h3>Root Resolver</h3>
+  <div class="code"><code><span style="color:#64748b">// graph/resolver.go</span>
+<span style="color:#c084fc">package</span> graph
+
+<span style="color:#c084fc">type</span> Resolver <span style="color:#c084fc">struct</span> {
+    LoyaltyClient  *grpcclient.LoyaltyClient   <span style="color:#64748b">// elLoyalty gRPC :6010</span>
+    AccountsClient *grpcclient.AccountsClient   <span style="color:#64748b">// elAccounts gRPC :5000</span>
+    POSClient      *grpcclient.POSClient        <span style="color:#64748b">// elPOS gRPC :6000</span>
+    Cache          *cache.RedisCache
+}</code></div>
+
+  <h3>Query Resolvers</h3>
+  <div class="code"><code><span style="color:#64748b">// graph/schema.resolvers.go</span>
+
+<span style="color:#c084fc">func</span> (r *queryResolver) Customer(ctx context.Context, id string) (*model.Customer, error) {
+    <span style="color:#64748b">// 1. Authorize: caller must have terminal or admin role</span>
+    tc := middleware.TenantFromCtx(ctx)
+    <span style="color:#c084fc">if</span> !tc.HasRole(<span style="color:#86efac">"terminal"</span>, <span style="color:#86efac">"store_admin"</span>, <span style="color:#86efac">"org_admin"</span>) {
+        <span style="color:#c084fc">return</span> nil, gqlerror.Errorf(<span style="color:#86efac">"forbidden"</span>)
+    }
+
+    <span style="color:#64748b">// 2. Fetch loyalty customer from elLoyalty gRPC</span>
+    custResp, err := r.LoyaltyClient.GetCustomer(ctx, id)
+    <span style="color:#c084fc">if</span> err != nil {
+        <span style="color:#c084fc">return</span> nil, mapGRPCError(err)
+    }
+
+    <span style="color:#64748b">// 3. Enrich with person data from elAccounts (via DataLoader)</span>
+    person, err := dataloader.For(ctx).PersonByID.Load(ctx, custResp.PersonId)()
+    <span style="color:#c084fc">if</span> err != nil {
+        <span style="color:#64748b">// Graceful degradation: return customer without name</span>
+        r.Logger.Warn(<span style="color:#86efac">"accounts unavailable"</span>, <span style="color:#86efac">"err"</span>, err)
+    }
+
+    <span style="color:#c084fc">return</span> mergeCustomer(custResp, person), nil
+}
+
+<span style="color:#c084fc">func</span> (r *queryResolver) BenefitPreview(
+    ctx context.Context,
+    customerID string,
+    cartItems []*model.CartItemInput,
+    couponCode *string,
+) (*model.BenefitPreview, error) {
+    tc := middleware.TenantFromCtx(ctx)
+    <span style="color:#c084fc">if</span> !tc.HasRole(<span style="color:#86efac">"terminal"</span>) {
+        <span style="color:#c084fc">return</span> nil, gqlerror.Errorf(<span style="color:#86efac">"forbidden: terminal role required"</span>)
+    }
+
+    <span style="color:#64748b">// Delegate entirely to elLoyalty gRPC EvaluateCart</span>
+    resp, err := r.LoyaltyClient.EvaluateCart(ctx, &loyaltypb.EvaluateCartRequest{
+        CustomerId: customerID,
+        Items:      toProtoItems(cartItems),
+        CouponCode: derefStr(couponCode),
+    })
+    <span style="color:#c084fc">if</span> err != nil {
+        <span style="color:#c084fc">return</span> nil, mapGRPCError(err)
+    }
+
+    <span style="color:#c084fc">return</span> toGQLBenefitPreview(resp), nil
+}</code></div>
+
+  <h3>Mutation Resolvers</h3>
+  <div class="code"><code><span style="color:#c084fc">func</span> (r *mutationResolver) RedeemBenefits(
+    ctx context.Context,
+    input model.RedeemBenefitsInput,
+) (*model.RedemptionResult, error) {
+    tc := middleware.TenantFromCtx(ctx)
+    <span style="color:#c084fc">if</span> !tc.HasRole(<span style="color:#86efac">"terminal"</span>) {
+        <span style="color:#c084fc">return</span> nil, gqlerror.Errorf(<span style="color:#86efac">"forbidden"</span>)
+    }
+
+    <span style="color:#64748b">// Phase 2: Apply benefits via elLoyalty gRPC</span>
+    applyResp, err := r.LoyaltyClient.ApplyBenefits(ctx, &loyaltypb.ApplyBenefitsRequest{
+        CustomerId:  input.CustomerID,
+        SaleId:      input.SaleID,
+        BenefitIds:  input.SelectedBenefitIds,
+        CartItems:   toProtoItems(input.CartItems),
+        OfflineId:   derefStr(input.OfflineID),
+    })
+    <span style="color:#c084fc">if</span> err != nil {
+        <span style="color:#c084fc">return</span> nil, mapGRPCError(err)
+    }
+
+    <span style="color:#64748b">// Invalidate DataLoader + Redis cache for this customer's wallet</span>
+    dataloader.For(ctx).WalletByCustomerID.Clear(input.CustomerID)
+    r.Cache.Delete(ctx, fmt.Sprintf(<span style="color:#86efac">"gql:wallet:%s"</span>, input.CustomerID))
+
+    <span style="color:#c084fc">return</span> toGQLRedemptionResult(applyResp), nil
+}
+
+<span style="color:#c084fc">func</span> (r *mutationResolver) ApplyCoupon(
+    ctx context.Context,
+    input model.ApplyCouponInput,
+) (*model.CouponResult, error) {
+    tc := middleware.TenantFromCtx(ctx)
+    <span style="color:#c084fc">if</span> !tc.HasRole(<span style="color:#86efac">"terminal"</span>, <span style="color:#86efac">"store_admin"</span>) {
+        <span style="color:#c084fc">return</span> nil, gqlerror.Errorf(<span style="color:#86efac">"forbidden"</span>)
+    }
+
+    resp, err := r.LoyaltyClient.ValidateCoupon(ctx, &loyaltypb.ValidateCouponRequest{
+        CustomerId:    input.CustomerID,
+        CouponCode:   input.CouponCode,
+        CartTotalPaisa: int64(input.CartTotalPaisa),
+    })
+    <span style="color:#c084fc">if</span> err != nil {
+        <span style="color:#c084fc">return</span> &model.CouponResult{Success: false, Error: ptr(err.Error())}, nil
+    }
+
+    <span style="color:#c084fc">return</span> toGQLCouponResult(resp), nil
+}</code></div>
+
+  <h3>Field Resolver (Nested)</h3>
+  <div class="code"><code><span style="color:#64748b">// Customer.wallet is a separate resolver — only called if the client asks for it</span>
+<span style="color:#c084fc">func</span> (r *customerResolver) Wallet(ctx context.Context, obj *model.Customer) (*model.Wallet, error) {
+    <span style="color:#64748b">// Use DataLoader to batch wallet lookups across a single GraphQL request</span>
+    <span style="color:#c084fc">return</span> dataloader.For(ctx).WalletByCustomerID.Load(ctx, obj.ID)()
+}
+
+<span style="color:#64748b">// Customer.transactions uses cursor pagination</span>
+<span style="color:#c084fc">func</span> (r *customerResolver) Transactions(
+    ctx context.Context, obj *model.Customer,
+    first *int, after *string, txType *model.TransactionType,
+) (*model.TransactionConnection, error) {
+    limit := 20
+    <span style="color:#c084fc">if</span> first != nil { limit = *first }
+
+    resp, err := r.LoyaltyClient.ListTransactions(ctx, &loyaltypb.ListTransactionsRequest{
+        CustomerId: obj.ID,
+        Limit:      int32(limit),
+        Cursor:     derefStr(after),
+        Type:       toProtoTxType(txType),
+    })
+    <span style="color:#c084fc">if</span> err != nil {
+        <span style="color:#c084fc">return</span> nil, mapGRPCError(err)
+    }
+
+    <span style="color:#c084fc">return</span> toGQLTransactionConnection(resp), nil
+}</code></div>
+</div>
+
+<!-- ─── DATALOADERS ──────────────────────────── -->
+<div class="section">
+  <div class="section-label">Batching</div>
+  <h2 class="section-title">DataLoader — N+1 Prevention</h2>
+  <p class="section-sub">Without DataLoaders, querying 20 customers would trigger 20 separate wallet gRPC calls. DataLoaders batch and deduplicate within a single request.</p>
+
+  <div class="diagram"><pre>
+WITHOUT DataLoader:                    WITH DataLoader:
+
+  customer(1) → wallet(1)              customer(1) ─┐
+  customer(2) → wallet(2)              customer(2) ─┤
+  customer(3) → wallet(3)              customer(3) ─┼──▶ GetWallets([1,2,3])
+  ...20 gRPC calls                     ...1 batched gRPC call</pre></div>
+
+  <div class="code"><code><span style="color:#64748b">// graph/dataloader/loaders.go</span>
+<span style="color:#c084fc">package</span> dataloader
+
+<span style="color:#c084fc">import</span> (
+    <span style="color:#86efac">"github.com/vikstrous/dataloadgen"</span>
+)
+
+<span style="color:#c084fc">type</span> Loaders <span style="color:#c084fc">struct</span> {
+    WalletByCustomerID *dataloadgen.Loader[string, *model.Wallet]
+    PersonByID         *dataloadgen.Loader[string, *model.Person]
+    CouponsByCustomer  *dataloadgen.Loader[string, []*model.Coupon]
+}
+
+<span style="color:#c084fc">func</span> NewLoaders(
+    loyaltyClient *grpcclient.LoyaltyClient,
+    accountsClient *grpcclient.AccountsClient,
+) *Loaders {
+    <span style="color:#c084fc">return</span> &Loaders{
+        WalletByCustomerID: dataloadgen.NewLoader(
+            <span style="color:#c084fc">func</span>(ctx context.Context, keys []string) ([]*model.Wallet, []error) {
+                <span style="color:#64748b">// Single batched gRPC call for all requested wallets</span>
+                resp, err := loyaltyClient.GetWallets(ctx, keys)
+                <span style="color:#c084fc">if</span> err != nil {
+                    errs := make([]error, len(keys))
+                    <span style="color:#c084fc">for</span> i := <span style="color:#c084fc">range</span> errs { errs[i] = err }
+                    <span style="color:#c084fc">return</span> nil, errs
+                }
+                <span style="color:#c084fc">return</span> mapWallets(keys, resp), nil
+            },
+            dataloadgen.WithWait(2*time.Millisecond),  <span style="color:#64748b">// batch window</span>
+        ),
+
+        PersonByID: dataloadgen.NewLoader(
+            <span style="color:#c084fc">func</span>(ctx context.Context, keys []string) ([]*model.Person, []error) {
+                resp, err := accountsClient.GetPersons(ctx, keys)
+                <span style="color:#c084fc">if</span> err != nil {
+                    errs := make([]error, len(keys))
+                    <span style="color:#c084fc">for</span> i := <span style="color:#c084fc">range</span> errs { errs[i] = err }
+                    <span style="color:#c084fc">return</span> nil, errs
+                }
+                <span style="color:#c084fc">return</span> mapPersons(keys, resp), nil
+            },
+            dataloadgen.WithWait(2*time.Millisecond),
+        ),
+    }
+}
+
+<span style="color:#64748b">// Middleware: inject fresh loaders per request (loaders are NOT reused across requests)</span>
+<span style="color:#c084fc">func</span> Middleware(loyaltyClient *grpcclient.LoyaltyClient, accountsClient *grpcclient.AccountsClient) func(http.Handler) http.Handler {
+    <span style="color:#c084fc">return</span> <span style="color:#c084fc">func</span>(next http.Handler) http.Handler {
+        <span style="color:#c084fc">return</span> http.HandlerFunc(<span style="color:#c084fc">func</span>(w http.ResponseWriter, r *http.Request) {
+            loaders := NewLoaders(loyaltyClient, accountsClient)
+            ctx := context.WithValue(r.Context(), loadersKey, loaders)
+            next.ServeHTTP(w, r.WithContext(ctx))
+        })
+    }
+}</code></div>
+</div>
+
+<!-- ─── SECURITY ─────────────────────────────── -->
+<div class="section">
+  <div class="section-label">Security</div>
+  <h2 class="section-title">Query Security</h2>
+
+  <h3>Depth Limiting</h3>
+  <div class="code"><code><span style="color:#64748b">// internal/middleware/depth.go</span>
+<span style="color:#64748b">// Reject queries deeper than maxDepth (default: 7)</span>
+
+<span style="color:#c084fc">import</span> <span style="color:#86efac">"github.com/99designs/gqlgen/graphql/handler/extension"</span>
+
+srv := handler.NewDefaultServer(graph.NewExecutableSchema(cfg))
+srv.Use(extension.FixedComplexityLimit(1000))  <span style="color:#64748b">// max complexity cost</span>
+
+<span style="color:#64748b">// Custom depth check in AroundOperations middleware</span>
+<span style="color:#c084fc">func</span> DepthLimit(maxDepth int) graphql.OperationMiddleware {
+    <span style="color:#c084fc">return</span> <span style="color:#c084fc">func</span>(ctx context.Context, next graphql.OperationHandler) graphql.ResponseHandler {
+        oc := graphql.GetOperationContext(ctx)
+        depth := calculateDepth(oc.Doc.Operations[0].SelectionSet, 0)
+        <span style="color:#c084fc">if</span> depth > maxDepth {
+            <span style="color:#c084fc">return</span> graphql.OneShot(graphql.ErrorResponse(ctx,
+                <span style="color:#86efac">"query depth %d exceeds maximum %d"</span>, depth, maxDepth))
+        }
+        <span style="color:#c084fc">return</span> next(ctx)
+    }
+}</code></div>
+
+  <h3>Field-Level RBAC</h3>
+  <div class="code"><code><span style="color:#64748b">// Directive-based field authorization</span>
+<span style="color:#64748b">// schema.graphqls:</span>
+<span style="color:#c084fc">directive</span> @hasRole(roles: [String!]!) <span style="color:#c084fc">on</span> FIELD_DEFINITION
+
+<span style="color:#c084fc">type</span> <span style="color:#93c5fd">Customer</span> {
+  id: ID!
+  name: String!
+  wallet: Wallet!
+  transactions(...): TransactionConnection! @hasRole(roles: [<span style="color:#86efac">"terminal"</span>, <span style="color:#86efac">"store_admin"</span>])
+  lifetimeSpendPaisa: Int!                  @hasRole(roles: [<span style="color:#86efac">"store_admin"</span>, <span style="color:#86efac">"org_admin"</span>])
+}
+
+<span style="color:#64748b">// Go directive implementation:</span>
+<span style="color:#c084fc">func</span> HasRoleDirective(ctx context.Context, obj interface{}, next graphql.Resolver, roles []string) (interface{}, error) {
+    tc := middleware.TenantFromCtx(ctx)
+    <span style="color:#c084fc">for</span> _, r := <span style="color:#c084fc">range</span> roles {
+        <span style="color:#c084fc">if</span> tc.Role == r {
+            <span style="color:#c084fc">return</span> next(ctx)
+        }
+    }
+    <span style="color:#c084fc">return</span> nil, gqlerror.Errorf(<span style="color:#86efac">"access denied: requires role %v"</span>, roles)
+}</code></div>
+
+  <h3>Rate Limiting</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Client Type</th><th>Queries/min</th><th>Mutations/min</th><th>Key</th></tr></thead>
+      <tbody>
+        <tr><td>POS terminal</td><td>120</td><td>60</td><td><code>terminal_id</code></td></tr>
+        <tr><td>Admin user</td><td>60</td><td>30</td><td><code>person_id</code></td></tr>
+        <tr><td>Mobile app</td><td>30</td><td>15</td><td><code>device_id</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Complexity Scoring</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Field</th><th>Cost</th><th>Rationale</th></tr></thead>
+      <tbody>
+        <tr><td>Scalar fields</td><td>0</td><td>Already loaded by parent</td></tr>
+        <tr><td><code>customer</code></td><td>5</td><td>1 gRPC call</td></tr>
+        <tr><td><code>wallet</code></td><td>3</td><td>1 gRPC call (batched via DataLoader)</td></tr>
+        <tr><td><code>transactions</code></td><td>first × 2</td><td>Multiplied by page size to penalize large fetches</td></tr>
+        <tr><td><code>activeCoupons</code></td><td>5</td><td>1 gRPC call (batched)</td></tr>
+        <tr><td><code>benefitPreview</code></td><td>15</td><td>Triggers full rule evaluation pipeline</td></tr>
+        <tr><td><code>redeemBenefits</code></td><td>25</td><td>Write operation, wallet mutation</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ─── PERFORMANCE ──────────────────────────── -->
+<div class="section">
+  <div class="section-label">Performance</div>
+  <h2 class="section-title">Caching & Persisted Queries</h2>
+
+  <h3>Redis L2 Cache</h3>
+  <div class="code"><code><span style="color:#64748b">// cache/redis.go — entity-level caching in the BFF layer</span>
+
+<span style="color:#c084fc">type</span> RedisCache <span style="color:#c084fc">struct</span> {
+    client *redis.Client
+}
+
+<span style="color:#64748b">// Cache resolved entities (not full GraphQL responses)</span>
+<span style="color:#64748b">// Short TTL because source of truth is the gRPC services</span>
+
+<span style="color:#c084fc">func</span> (c *RedisCache) GetWallet(ctx context.Context, customerID string) (*model.Wallet, error) {
+    key := fmt.Sprintf(<span style="color:#86efac">"gql:wallet:%s"</span>, customerID)
+    data, err := c.client.Get(ctx, key).Bytes()
+    <span style="color:#c084fc">if</span> err == redis.Nil {
+        <span style="color:#c084fc">return</span> nil, nil <span style="color:#64748b">// cache miss</span>
+    }
+    <span style="color:#c084fc">var</span> w model.Wallet
+    json.Unmarshal(data, &w)
+    <span style="color:#c084fc">return</span> &w, nil
+}
+
+<span style="color:#c084fc">func</span> (c *RedisCache) SetWallet(ctx context.Context, customerID string, w *model.Wallet) {
+    key := fmt.Sprintf(<span style="color:#86efac">"gql:wallet:%s"</span>, customerID)
+    data, _ := json.Marshal(w)
+    c.client.Set(ctx, key, data, 2*time.Minute) <span style="color:#64748b">// 2-min TTL</span>
+}</code></div>
+
+  <h3>Persisted Queries for POS</h3>
+  <p>POS terminals send a query hash instead of the full query string. This saves bandwidth on every checkout and prevents arbitrary query injection from the terminal.</p>
+
+  <div class="code"><code><span style="color:#64748b">// Persisted query flow:</span>
+<span style="color:#64748b">// 1. During build, POS app extracts all GraphQL queries → generates hash map</span>
+<span style="color:#64748b">// 2. POS sends: POST /graphql { "extensions": { "persistedQuery": { "sha256Hash": "abc123" } } }</span>
+<span style="color:#64748b">// 3. BFF resolves hash → full query text from in-memory map</span>
+<span style="color:#64748b">// 4. Unknown hashes are rejected (no arbitrary queries from POS)</span>
+
+<span style="color:#c084fc">var</span> persistedQueries = map[string]string{
+    <span style="color:#86efac">"a1b2c3..."</span>: `query CheckoutPreview($cid: ID!, $items: [CartItemInput!]!) {
+        benefitPreview(customerId: $cid, cartItems: $items) {
+            benefits { id type label discountPaisa stackable score }
+            conflicts { benefitId conflictsWith reason }
+            earnPreview { coinsToEarn cashbackPaisa isApproximate }
+        }
+    }`,
+    <span style="color:#86efac">"d4e5f6..."</span>: `mutation Redeem($input: RedeemBenefitsInput!) {
+        redeemBenefits(input: $input) {
+            success totalDiscountPaisa
+            appliedBenefits { type label discountPaisa }
+            updatedWallet { coinBalance cashBalancePaisa }
+        }
+    }`,
+    <span style="color:#64748b">// ... all POS queries registered at build time</span>
+}
+
+<span style="color:#c084fc">func</span> PersistedQueryMiddleware(next http.Handler) http.Handler {
+    <span style="color:#c084fc">return</span> http.HandlerFunc(<span style="color:#c084fc">func</span>(w http.ResponseWriter, r *http.Request) {
+        <span style="color:#c084fc">var</span> body struct {
+            Query      string `json:<span style="color:#86efac">"query"</span>`
+            Extensions struct {
+                PersistedQuery struct {
+                    SHA256Hash string `json:<span style="color:#86efac">"sha256Hash"</span>`
+                } `json:<span style="color:#86efac">"persistedQuery"</span>`
+            } `json:<span style="color:#86efac">"extensions"</span>`
+        }
+        <span style="color:#64748b">// decode, lookup hash, replace body.Query, re-encode</span>
+        <span style="color:#64748b">// reject if hash not found and client is POS terminal</span>
+    })
+}</code></div>
+
+  <h3>Performance Targets</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Operation</th><th>p50</th><th>p95</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td><code>benefitPreview</code> query</td><td>35ms</td><td>80ms</td><td>Cached rules + batched wallet lookup</td></tr>
+        <tr><td><code>redeemBenefits</code> mutation</td><td>60ms</td><td>150ms</td><td>Write path, wallet mutation</td></tr>
+        <tr><td><code>customer</code> (full with wallet + txns)</td><td>45ms</td><td>120ms</td><td>DataLoader batches nested calls</td></tr>
+        <tr><td><code>wallet</code> (direct)</td><td>8ms</td><td>25ms</td><td>Redis cache hit path</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ─── MAIN WIRING ──────────────────────────── -->
+<div class="section">
+  <div class="section-label">Wiring</div>
+  <h2 class="section-title">Server Initialization</h2>
+
+  <div class="code"><code><span style="color:#64748b">// cmd/server/main.go</span>
+<span style="color:#c084fc">func</span> main() {
+    cfg := config.Load()
+
+    <span style="color:#64748b">// gRPC client connections (with circuit breakers)</span>
+    loyaltyConn := grpcclient.Dial(cfg.LoyaltyGRPCAddr)   <span style="color:#64748b">// :6010</span>
+    accountsConn := grpcclient.Dial(cfg.AccountsGRPCAddr)  <span style="color:#64748b">// :5000</span>
+    posConn := grpcclient.Dial(cfg.POSGRPCAddr)            <span style="color:#64748b">// :6000</span>
+    <span style="color:#c084fc">defer</span> loyaltyConn.Close()
+    <span style="color:#c084fc">defer</span> accountsConn.Close()
+    <span style="color:#c084fc">defer</span> posConn.Close()
+
+    loyaltyClient := grpcclient.NewLoyaltyClient(loyaltyConn)
+    accountsClient := grpcclient.NewAccountsClient(accountsConn)
+    posClient := grpcclient.NewPOSClient(posConn)
+
+    <span style="color:#64748b">// Redis cache</span>
+    redisClient := redis.NewClient(&redis.Options{Addr: cfg.RedisAddr})
+    entityCache := cache.NewRedisCache(redisClient)
+
+    <span style="color:#64748b">// GraphQL server</span>
+    resolver := &graph.Resolver{
+        LoyaltyClient:  loyaltyClient,
+        AccountsClient: accountsClient,
+        POSClient:      posClient,
+        Cache:          entityCache,
+    }
+
+    srv := handler.NewDefaultServer(
+        graph.NewExecutableSchema(graph.Config{
+            Resolvers:  resolver,
+            Directives: graph.DirectiveRoot{HasRole: HasRoleDirective},
+        }),
+    )
+
+    <span style="color:#64748b">// Security extensions</span>
+    srv.Use(extension.FixedComplexityLimit(1000))
+    srv.AroundOperations(DepthLimit(7))
+
+    <span style="color:#64748b">// HTTP router</span>
+    r := chi.NewRouter()
+    r.Use(middleware.Auth(cfg.JWTSecret))
+    r.Use(middleware.RateLimit(redisClient))
+    r.Use(dataloader.Middleware(loyaltyClient, accountsClient))
+
+    r.Handle(<span style="color:#86efac">"/graphql"</span>, middleware.PersistedQuery(srv))
+
+    <span style="color:#c084fc">if</span> cfg.PlaygroundEnabled {
+        r.Handle(<span style="color:#86efac">"/"</span>, playground.Handler(<span style="color:#86efac">"elLoyalty BFF"</span>, <span style="color:#86efac">"/graphql"</span>))
+    }
+
+    log.Printf(<span style="color:#86efac">"GraphQL BFF listening on :%s"</span>, cfg.Port)
+    http.ListenAndServe(<span style="color:#86efac">":"</span>+cfg.Port, r)
+}</code></div>
+</div>
+
+<!-- ─── USE CASES ─────────────────────────────── -->
+<div class="section">
+  <div class="section-label">Use Cases</div>
+  <h2 class="section-title">Query Examples by Consumer</h2>
+
+  <h3>POS: Checkout Evaluation (Single Query)</h3>
+  <div class="code"><code><span style="color:#64748b"># One query replaces 3 REST calls: getWallet + evaluateCart + getCustomer</span>
+
+<span style="color:#c084fc">query</span> CheckoutView($cid: ID!, $items: [CartItemInput!]!) {
+  customer(id: $cid) {
+    name
+    tier
+    wallet {
+      coinBalance
+      cashBalancePaisa
+      coinRedemptionRate
+    }
+    activeCoupons {
+      code
+      discountPaisa
+      discountPercent
+    }
+  }
+  benefitPreview(customerId: $cid, cartItems: $items) {
+    benefits {
+      id type label discountPaisa
+      coinsToDebit cashToDebit
+      stackable score
+    }
+    conflicts { benefitId conflictsWith reason }
+    earnPreview { coinsToEarn cashbackPaisa isApproximate }
+  }
+}</code></div>
+
+  <h3>Admin: Customer Detail</h3>
+  <div class="code"><code><span style="color:#c084fc">query</span> CustomerDetail($id: ID!) {
+  customer(id: $id) {
+    id name phone email
+    tier tierExpiresAt lifetimeSpendPaisa
+    wallet {
+      coinBalance cashBalancePaisa
+    }
+    transactions(first: 50) {
+      edges {
+        node { id type coinsDelta cashDeltaPaisa description createdAt }
+      }
+      pageInfo { hasNextPage endCursor }
+      totalCount
+    }
+    activeCoupons {
+      code status expiresAt usageCount maxUsage
+    }
+  }
+}</code></div>
+
+  <h3>Mobile: Wallet Summary (Minimal)</h3>
+  <div class="code"><code><span style="color:#c084fc">query</span> MyWallet($cid: ID!) {
+  customer(id: $cid) {
+    name tier
+    wallet { coinBalance cashBalancePaisa coinRedemptionRate }
+  }
+}</code></div>
+</div>
+
+<!-- ─── PROTOCOL COMPARISON ──────────────────── -->
+<div class="section">
+  <div class="section-label">Comparison</div>
+  <h2 class="section-title">When to Use GraphQL vs REST vs gRPC</h2>
+  <p class="section-sub">Each protocol serves a distinct purpose in the elLoyalty ecosystem. They coexist — the right tool depends on the consumer and the communication pattern.</p>
+
+  <div class="vs">
+    <div class="vs-col">
+      <h4>GraphQL</h4>
+      <ul>
+        <li><strong>Consumer:</strong> POS UI, Admin Dashboard, Mobile App</li>
+        <li><strong>Pattern:</strong> Frontend → BFF</li>
+        <li><strong>Strength:</strong> Aggregate multiple services in one round-trip</li>
+        <li><strong>Strength:</strong> Client picks exact fields needed</li>
+        <li><strong>Strength:</strong> Schema = contract + self-documentation</li>
+        <li><strong>Weakness:</strong> Extra hop (BFF → gRPC → service)</li>
+        <li><strong>Weakness:</strong> Complex query security (depth, cost)</li>
+        <li><strong>Use when:</strong> UI needs data from 2+ services</li>
+      </ul>
+    </div>
+    <div class="vs-col">
+      <h4>REST</h4>
+      <ul>
+        <li><strong>Consumer:</strong> Webhooks, Health checks, Sync endpoints, Config API</li>
+        <li><strong>Pattern:</strong> External integration</li>
+        <li><strong>Strength:</strong> Universal, cacheable (HTTP cache)</li>
+        <li><strong>Strength:</strong> Simple for CRUD and file uploads</li>
+        <li><strong>Strength:</strong> Easy to debug (curl, browser)</li>
+        <li><strong>Weakness:</strong> Over/under-fetching</li>
+        <li><strong>Weakness:</strong> Multiple round-trips for related data</li>
+        <li><strong>Use when:</strong> Simple single-resource endpoints</li>
+      </ul>
+    </div>
+    <div class="vs-col">
+      <h4>gRPC</h4>
+      <ul>
+        <li><strong>Consumer:</strong> elPOS, elbooks, elLoyalty (inter-service)</li>
+        <li><strong>Pattern:</strong> Service → Service</li>
+        <li><strong>Strength:</strong> Protobuf binary = fast + compact</li>
+        <li><strong>Strength:</strong> Streaming, bi-directional</li>
+        <li><strong>Strength:</strong> Strict contracts via .proto files</li>
+        <li><strong>Weakness:</strong> Not browser-native</li>
+        <li><strong>Weakness:</strong> Harder to debug without tooling</li>
+        <li><strong>Use when:</strong> Service-to-service, low latency, strict types</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Decision Matrix</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Scenario</th><th>Protocol</th><th>Reason</th></tr></thead>
+      <tbody>
+        <tr><td>POS checkout displaying customer + wallet + benefits</td><td><strong>GraphQL</strong></td><td>Aggregates 3 services, client picks fields, single round-trip</td></tr>
+        <tr><td>elPOS calling EvaluateCart on elLoyalty</td><td><strong>gRPC</strong></td><td>Service-to-service, protobuf speed, strict contract</td></tr>
+        <tr><td>Offline sync push/pull</td><td><strong>REST</strong></td><td>Simple JSON, idempotent POST, easy retry logic</td></tr>
+        <tr><td>elbooks posting journal entries</td><td><strong>gRPC</strong></td><td>Service-to-service, transactional, typed</td></tr>
+        <tr><td>Admin dashboard: rule CRUD</td><td><strong>GraphQL</strong></td><td>Nested data (rules with conditions), flexible field selection</td></tr>
+        <tr><td>Webhook from payment provider</td><td><strong>REST</strong></td><td>External system, standard HTTP POST</td></tr>
+        <tr><td>Mobile app: "my loyalty wallet" screen</td><td><strong>GraphQL</strong></td><td>Minimal payload, exact fields, saves bandwidth</td></tr>
+        <tr><td>Health check / readiness probe</td><td><strong>REST</strong></td><td>Simple GET /healthz, Kubernetes standard</td></tr>
+        <tr><td>elmessagehub receiving notification events</td><td><strong>Redis pub/sub</strong></td><td>Fire-and-forget, async, decoupled</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="diagram"><pre>
+┌─────────────────────────────────────────────────────────────┐
+│               PROTOCOL SELECTION FLOW                        │
+│                                                             │
+│   Is the caller a frontend/mobile app?                      │
+│     YES ──▶ Does it need data from 2+ services?             │
+│               YES ──▶ GraphQL (BFF aggregation)             │
+│               NO  ──▶ Is it a simple CRUD?                  │
+│                         YES ──▶ REST                        │
+│                         NO  ──▶ GraphQL (flexibility)       │
+│     NO ──▶ Is it service-to-service?                        │
+│               YES ──▶ gRPC (speed + contracts)              │
+│               NO  ──▶ Is it an external webhook?            │
+│                         YES ──▶ REST                        │
+│                         NO  ──▶ Is it fire-and-forget?      │
+│                                   YES ──▶ Redis pub/sub     │
+│                                   NO  ──▶ gRPC              │
+└─────────────────────────────────────────────────────────────┘</pre></div>
+</div>
+
+<!-- ─── ENV CONFIG ────────────────────────────── -->
+<div class="section">
+  <div class="section-label">Config</div>
+  <h2 class="section-title">Environment Configuration</h2>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Variable</th><th>Default</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>BFF_PORT</code></td><td>4000</td><td>GraphQL server HTTP port</td></tr>
+        <tr><td><code>JWT_SECRET</code></td><td>—</td><td>Shared with elAuth for JWT validation</td></tr>
+        <tr><td><code>LOYALTY_GRPC_ADDR</code></td><td>localhost:6010</td><td>elLoyalty gRPC endpoint</td></tr>
+        <tr><td><code>ACCOUNTS_GRPC_ADDR</code></td><td>localhost:5000</td><td>elAccounts gRPC endpoint</td></tr>
+        <tr><td><code>POS_GRPC_ADDR</code></td><td>localhost:6000</td><td>elPOS gRPC endpoint</td></tr>
+        <tr><td><code>REDIS_ADDR</code></td><td>localhost:6379</td><td>Redis for caching + rate limiting</td></tr>
+        <tr><td><code>QUERY_DEPTH_LIMIT</code></td><td>7</td><td>Max allowed query nesting depth</td></tr>
+        <tr><td><code>QUERY_COMPLEXITY_LIMIT</code></td><td>1000</td><td>Max allowed query cost</td></tr>
+        <tr><td><code>PLAYGROUND_ENABLED</code></td><td>false</td><td>Enable GraphQL Playground (dev only)</td></tr>
+        <tr><td><code>PERSISTED_QUERIES_ONLY</code></td><td>false</td><td>Reject non-persisted queries (production POS)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<footer class="footer">
+  <p>elLoyalty GraphQL BFF Architecture — <a href="index.html" style="color:#c4b5fd">Back to Index</a></p>
+</footer>
+</body>
+</html>
