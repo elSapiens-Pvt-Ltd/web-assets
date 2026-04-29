@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Is Not a Tool — BNI Eduslot · elSapiens</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --c50:  #EEF1F6;
+  --c100: #DDE3EE;
+  --c200: #BBC7DD;
+  --c300: #99ABCC;
+  --c400: #778FBB;
+  --c500: #5573AA;
+  --c600: #445C88;
+  --c700: #334566;
+  --c800: #222E44;
+  --c900: #111722;
+  --c950: #0C1018;
+  --green:  #34d399;
+  --orange: #f59e0b;
+  --red:    #ef4444;
+  --cyan:   #22d3ee;
+  --glass:  rgba(34,46,68,0.45);
+  --glass-border: rgba(91,115,170,0.18);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+html, body {
+  width:100vw; height:100vh; overflow:hidden;
+  background:var(--c950);
+  font-family:'Plus Jakarta Sans', sans-serif;
+  color:var(--c50);
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ── Global background ─────────────────────────────────────────────── */
+.bg-canvas {
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 100%, rgba(85,115,170,0.09) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 85% 10%,  rgba(34,211,153,0.05) 0%, transparent 55%),
+    var(--c950);
+}
+.bg-canvas::after {
+  content:''; position:absolute; inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  opacity:0.45;
+}
+.grid-overlay {
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background-image:
+    linear-gradient(rgba(85,115,170,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(85,115,170,0.04) 1px, transparent 1px);
+  background-size:60px 60px;
+}
+
+/* ── Slides ────────────────────────────────────────────────────────── */
+.slide {
+  position:absolute; inset:0;
+  display:flex; flex-direction:column;
+  justify-content:center; align-items:center;
+  z-index:1; opacity:0; pointer-events:none; overflow:hidden;
+  transition:opacity 0.7s cubic-bezier(0.4,0,0.2,1), transform 0.7s cubic-bezier(0.4,0,0.2,1);
+  transform:scale(0.97) translateY(10px);
+  padding:100px 50px 80px;
+}
+.slide.active    { opacity:1; pointer-events:auto; transform:scale(1) translateY(0); }
+.slide.exit-left { opacity:0; transform:scale(1.02) translateY(-10px); }
+
+/* Full-bleed bg image */
+.slide-bg {
+  position:absolute; inset:0; z-index:0;
+  background:center/cover no-repeat;
+}
+.slide-bg::after {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(135deg,
+    rgba(6,15,26,0.93)  0%,
+    rgba(12,24,60,0.85) 50%,
+    rgba(6,15,26,0.93)  100%);
+}
+/* Watermark must stay position:absolute — only other children need z-index lift */
+.slide > *:not(.slide-bg):not(.watermark) { position:relative; z-index:1; }
+
+/* ── Progress bar ──────────────────────────────────────────────────── */
+.progress-bar {
+  position:fixed; top:0; left:0; height:3px;
+  background:linear-gradient(90deg, var(--c500), var(--cyan));
+  z-index:200; transition:width 0.5s cubic-bezier(0.4,0,0.2,1);
+  box-shadow:0 0 14px rgba(34,211,238,0.45);
+}
+
+/* ── Navigation ────────────────────────────────────────────────────── */
+.nav {
+  position:fixed; bottom:28px; left:50%; transform:translateX(-50%);
+  display:flex; align-items:center; gap:14px;
+  background:rgba(12,16,24,0.7); backdrop-filter:blur(24px) saturate(1.4);
+  border:1px solid var(--glass-border); border-radius:60px;
+  padding:8px 20px; z-index:200;
+  box-shadow:0 8px 32px rgba(0,0,0,0.4);
+}
+.nav-btn {
+  width:34px; height:34px; border-radius:50%;
+  border:1px solid rgba(85,115,170,0.25); background:transparent;
+  color:var(--c200); cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  transition:all 0.25s;
+}
+.nav-btn:hover { background:rgba(85,115,170,0.15); color:#fff; }
+.nav-btn svg   { width:16px; height:16px; }
+.dots          { display:flex; gap:6px; }
+.dot {
+  width:8px; height:8px; border-radius:50%;
+  background:rgba(187,199,221,0.2); cursor:pointer; transition:all 0.35s;
+}
+.dot.active {
+  background:var(--c400); width:28px; border-radius:4px;
+  box-shadow:0 0 8px rgba(85,115,170,0.4);
+}
+.counter {
+  font-size:16px; color:var(--c400); font-weight:500;
+  min-width:40px; text-align:center; font-family:'Space Grotesk',sans-serif;
+}
+
+/* ── Typography ────────────────────────────────────────────────────── */
+.eyebrow  { font-size:16px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; margin-bottom:12px; }
+.heading-xl { font-family:'Space Grotesk',sans-serif; font-size:52px; font-weight:700; line-height:1.1;  letter-spacing:-0.02em; }
+.heading-lg { font-family:'Space Grotesk',sans-serif; font-size:40px; font-weight:700; line-height:1.15; letter-spacing:-0.02em; }
+.heading-md { font-family:'Space Grotesk',sans-serif; font-size:28px; font-weight:600; line-height:1.2; }
+.body-lg    { font-size:19px; line-height:1.7; color:var(--c200); }
+.body-md    { font-size:16px; line-height:1.7; color:var(--c200); }
+.body-sm    { font-size:16px; line-height:1.6; color:var(--c300); }
+.gradient-text {
+  background:linear-gradient(135deg, var(--c200), var(--cyan));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.cyan-text   { color:var(--cyan); }
+.green-text  { color:var(--green); }
+.orange-text { color:var(--orange); }
+.red-text    { color:var(--red); }
+
+/* ── Glass cards ───────────────────────────────────────────────────── */
+.glass        { background:var(--glass); backdrop-filter:blur(20px) saturate(1.3); border:1px solid var(--glass-border); border-radius:16px; }
+.glass-strong { background:rgba(34,46,68,0.65); backdrop-filter:blur(24px) saturate(1.4); border:1px solid rgba(91,115,170,0.22); border-radius:16px; }
+.glass-sm     { background:var(--glass); backdrop-filter:blur(16px); border:1px solid var(--glass-border); border-radius:12px; }
+
+/* ── Glow line ─────────────────────────────────────────────────────── */
+.glow-line      { width:60px;  height:2px; border-radius:1px; background:linear-gradient(90deg,var(--c500),var(--cyan)); box-shadow:0 0 16px rgba(34,211,238,0.4); }
+.glow-line-wide { width:120px; height:3px; border-radius:2px; background:linear-gradient(90deg,var(--c500),var(--cyan)); box-shadow:0 0 20px rgba(34,211,238,0.35); }
+
+/* ── Watermark ─────────────────────────────────────────────────────── */
+.watermark { position:fixed; top:20px; left:28px; height:76px; width:auto; object-fit:contain; opacity:0.9; pointer-events:none; z-index:200; }
+
+/* ── Mobile header bar ─────────────────────────────────────────────── */
+.mobile-header {
+  display:none;
+  position:fixed; top:0; left:0; right:0; z-index:190;
+  height:72px;
+  background:rgba(6,15,26,0.85); backdrop-filter:blur(16px) saturate(1.3);
+  border-bottom:1px solid rgba(85,115,170,0.15);
+}
+@media (max-width:768px) { .mobile-header { display:block; } }
+
+/* ── BNI badge (fixed top-right on all slides) ─────────────────────── */
+.bni-badge {
+  position:fixed; top:20px; right:28px; z-index:200;
+  pointer-events:none;
+}
+.bni-badge-box {
+  background:#e31837;
+  padding:8px 16px; border-radius:8px;
+  box-shadow:0 4px 20px rgba(227,24,55,0.4);
+  display:flex; align-items:center; justify-content:center;
+}
+.bni-badge-box img {
+  height:44px; width:auto; display:block;
+}
+
+/* ── Side swipe / tap arrows ───────────────────────────────────────── */
+.swipe-arrow {
+  position:fixed; top:50%; z-index:150;
+  transform:translateY(-50%);
+  width:52px; height:52px;
+  display:flex; align-items:center; justify-content:center;
+  background:rgba(34,46,68,0.55); backdrop-filter:blur(12px);
+  border:1px solid rgba(85,115,170,0.3); border-radius:50%;
+  color:var(--c300); cursor:pointer;
+  opacity:0; transition:opacity 0.35s, background 0.2s;
+  pointer-events:none;
+}
+.swipe-arrow svg { width:22px; height:22px; }
+.swipe-arrow-left  { left:16px; }
+.swipe-arrow-right { right:16px; }
+.swipe-arrow.show  { opacity:0.7; pointer-events:auto; }
+.swipe-arrow.dim   { opacity:0.25; pointer-events:none; }
+.swipe-arrow:hover { background:rgba(85,115,170,0.4); color:#fff; }
+.swipe-arrow:active { transform:translateY(-50%) scale(0.9); }
+
+@keyframes arrowPulse {
+  0%,100% { opacity:0.2; transform:translateY(-50%) scale(1); }
+  50%      { opacity:0.9; transform:translateY(-50%) scale(1.15); }
+}
+.swipe-arrow.pulse { animation:arrowPulse 0.7s ease-in-out 2; }
+
+/* Tap zones (invisible, left/right quarter of screen) */
+.tap-zone {
+  position:fixed; top:0; height:100%; width:22%; z-index:100;
+  cursor:pointer; -webkit-tap-highlight-color:transparent;
+}
+.tap-zone-left  { left:0; }
+.tap-zone-right { right:0; }
+
+/* ── Fullscreen hint ───────────────────────────────────────────────── */
+.fs-hint {
+  position:fixed; bottom:28px; right:28px; z-index:300;
+  font-size:13px; color:var(--c500);
+  background:rgba(12,16,24,0.6); backdrop-filter:blur(12px);
+  padding:6px 14px; border-radius:8px; border:1px solid var(--glass-border);
+  cursor:pointer; transition:opacity 0.3s;
+}
+.fs-hint:hover { color:var(--c300); }
+
+/* ── Slide 0: TITLE ────────────────────────────────────────────────── */
+.slide-0 { text-align:center; gap:16px; }
+
+/* ── Slide 1: PROBLEM ──────────────────────────────────────────────── */
+.problem-hero {
+  font-family:'Space Grotesk',sans-serif;
+  font-size:86px; font-weight:800; line-height:1.0; letter-spacing:-0.03em; color:var(--c50);
+}
+
+/* ── Slide 2: SILOS ────────────────────────────────────────────────── */
+.silos-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:20px; max-width:1200px; width:100%; margin-top:36px; }
+.silo-card {
+  padding:36px 20px; text-align:center; border-radius:16px;
+  border:1px solid rgba(85,115,170,0.2); background:rgba(34,46,68,0.5);
+  backdrop-filter:blur(16px); transition:all 0.3s;
+}
+.silo-card:hover { border-color:rgba(34,211,238,0.35); background:rgba(34,46,68,0.7); transform:translateY(-5px); }
+.silo-emoji { font-size:52px; margin-bottom:16px; display:block; }
+.silo-label { font-family:'Space Grotesk',sans-serif; font-size:17px; font-weight:700; color:var(--c100); line-height:1.3; }
+.silo-sub   { font-size:16px; color:var(--c300); margin-top:8px; line-height:1.5; }
+
+/* ── Slide 3: COST ─────────────────────────────────────────────────── */
+.cost-cards { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; max-width:1100px; width:100%; margin-top:40px; }
+.cost-card { padding:40px 28px; text-align:center; border-radius:16px; }
+.cost-icon  { font-size:52px; margin-bottom:16px; display:block; }
+.cost-title { font-family:'Space Grotesk',sans-serif; font-size:26px; font-weight:700; margin-bottom:10px; }
+.cost-desc  { font-size:16px; color:var(--c300); line-height:1.6; }
+
+/* ── Slide 4: SHIFT ────────────────────────────────────────────────── */
+.shift-layout { display:grid; grid-template-columns:1fr 1fr; gap:64px; max-width:1200px; width:100%; align-items:center; }
+.chat-stack { display:flex; flex-direction:column; gap:14px; }
+.chat-bubble {
+  display:flex; align-items:center; gap:16px; padding:18px 22px; border-radius:14px;
+  background:rgba(34,46,68,0.6); border:1px solid rgba(85,115,170,0.22);
+  backdrop-filter:blur(12px); transition:all 0.3s;
+}
+.chat-bubble:hover { border-color:rgba(34,211,238,0.3); background:rgba(34,46,68,0.8); }
+.chat-avatar { width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,var(--c600),var(--c400)); display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+.chat-text   { font-size:16px; color:var(--c200); font-style:italic; }
+.chat-answer {
+  padding:16px 22px; border-radius:14px; margin-top:4px;
+  background:rgba(34,211,238,0.07); border:1px solid rgba(34,211,238,0.2);
+  font-size:16px; color:var(--cyan); font-weight:600;
+}
+
+/* ── Slide 5: CAPABILITIES ─────────────────────────────────────────── */
+.cap-list { display:flex; flex-direction:column; gap:16px; max-width:880px; width:100%; margin-top:32px; }
+.cap-item {
+  display:flex; align-items:center; gap:28px; padding:22px 28px; border-radius:14px;
+  background:rgba(34,46,68,0.45); border:1px solid rgba(85,115,170,0.15); transition:all 0.3s;
+}
+.cap-item:hover { border-color:rgba(52,211,153,0.3); background:rgba(34,46,68,0.7); transform:translateX(6px); }
+.cap-num  { font-family:'Space Grotesk',sans-serif; font-size:38px; font-weight:800; color:var(--green); line-height:1; min-width:54px; }
+.cap-text { font-size:19px; color:var(--c100); font-weight:500; line-height:1.3; }
+
+/* ── Slide 6: TRANSFORMATION ───────────────────────────────────────── */
+.transform-wrap { text-align:center; max-width:960px; display:flex; flex-direction:column; align-items:center; gap:12px; }
+
+/* ── Slide 7: IMPACT ───────────────────────────────────────────────── */
+.impact-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; max-width:1100px; width:100%; margin-top:36px; }
+.impact-card {
+  padding:30px 26px; border-radius:16px; display:flex; align-items:flex-start; gap:20px;
+  background:rgba(34,46,68,0.5); border:1px solid rgba(85,115,170,0.15); transition:all 0.3s;
+}
+.impact-card:hover { background:rgba(34,46,68,0.7); transform:translateY(-3px); }
+.impact-icon  { font-size:30px; flex-shrink:0; margin-top:2px; }
+.impact-title { font-family:'Space Grotesk',sans-serif; font-size:17px; font-weight:700; color:var(--c100); margin-bottom:6px; }
+.impact-desc  { font-size:16px; color:var(--c300); line-height:1.5; }
+
+/* ── Slide 9: CLOSE ────────────────────────────────────────────────── */
+.close-layout { display:grid; grid-template-columns:1fr 1fr; width:100%; height:100%; position:absolute; inset:0; }
+.close-left   { display:flex; flex-direction:column; justify-content:center; padding:60px 56px; background:rgba(6,15,26,0.93); z-index:2; }
+.close-right  { position:relative; overflow:hidden; }
+.close-right-img { position:absolute; inset:0; background:center/cover no-repeat; }
+.close-right-img::after { content:''; position:absolute; left:0; top:0; width:50%; height:100%; background:linear-gradient(90deg,rgba(6,15,26,0.96),transparent); }
+.close-contact { display:flex; flex-direction:column; gap:14px; margin-top:32px; }
+.cc-label { font-size:16px; text-transform:uppercase; letter-spacing:0.15em; color:var(--c500); margin-bottom:3px; }
+.cc-value { font-size:17px; font-weight:600; color:var(--c300); }
+.cta-box {
+  margin-top:36px; padding:24px 28px; border-radius:14px;
+  background:linear-gradient(135deg, rgba(34,211,238,0.1), rgba(85,115,170,0.1));
+  border:1px solid rgba(34,211,238,0.25);
+}
+.cta-box p { font-size:17px; font-weight:600; color:var(--c100); line-height:1.6; }
+
+/* ── Animations ────────────────────────────────────────────────────── */
+.slide.active .fade-up { animation:fadeUp 0.7s cubic-bezier(0.22,1,0.36,1) both; }
+.slide.active .fade-up-d1 { animation-delay:0.10s; }
+.slide.active .fade-up-d2 { animation-delay:0.20s; }
+.slide.active .fade-up-d3 { animation-delay:0.30s; }
+.slide.active .fade-up-d4 { animation-delay:0.40s; }
+.slide.active .fade-up-d5 { animation-delay:0.50s; }
+.slide.active .fade-up-d6 { animation-delay:0.60s; }
+
+@keyframes fadeUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+
+/* ── Responsive ────────────────────────────────────────────────────── */
+@media (max-width:1100px) {
+  .slide { padding:100px 40px 80px; }
+  .heading-xl { font-size:38px; }
+  .heading-lg { font-size:30px; }
+  .problem-hero { font-size:60px; }
+  .silos-grid { grid-template-columns:1fr 1fr; }
+  .cost-cards { grid-template-columns:1fr; max-width:480px; }
+  .shift-layout { grid-template-columns:1fr; gap:28px; }
+  .impact-grid { grid-template-columns:1fr; max-width:560px; }
+}
+@media (max-width:768px) {
+  /* ── Slide layout: centered, no scroll, fits in viewport ── */
+  .slide         { padding:80px 16px 68px; justify-content:center; align-items:center;
+                   overflow:hidden; text-align:center; }
+
+  /* ── Fixed header logos ── */
+  .watermark     { height:34px; top:19px; left:14px; }
+  .bni-badge     { top:19px; right:14px; }
+  .bni-badge-box { padding:5px 9px; }
+  .bni-badge-box img { height:26px; }
+
+  /* ── Typography — sized to fit one screen ── */
+  .problem-hero  { font-size:36px; }
+  .heading-xl    { font-size:22px; }
+  .heading-lg    { font-size:19px; }
+  .heading-md    { font-size:17px; }
+  .body-lg       { font-size:14px; line-height:1.5; }
+  .body-md       { font-size:13px; line-height:1.5; }
+  .eyebrow       { font-size:10px; letter-spacing:0.18em; margin-bottom:8px; }
+
+  /* ── Silo cards ── */
+  .silos-grid    { grid-template-columns:1fr 1fr; gap:8px; margin-top:12px; width:100%; }
+  .silo-card     { padding:14px 8px; }
+  .silo-emoji    { font-size:26px; margin-bottom:6px; }
+  .silo-label    { font-size:12px; }
+  .silo-sub      { font-size:11px; margin-top:4px; }
+
+  /* ── Cost cards (horizontal row on mobile) ── */
+  .cost-cards    { grid-template-columns:1fr 1fr 1fr; gap:8px; margin-top:12px; }
+  .cost-card     { padding:14px 10px; }
+  .cost-icon     { font-size:24px; margin-bottom:6px; }
+  .cost-title    { font-size:13px; margin-bottom:4px; }
+  .cost-desc     { font-size:11px; }
+
+  /* ── Ask AI ── */
+  .shift-layout  { gap:14px; }
+  .chat-bubble   { padding:9px 12px; }
+  .chat-text     { font-size:13px; }
+  .chat-answer   { font-size:13px; padding:10px 14px; }
+  .chat-avatar   { width:28px; height:28px; font-size:13px; }
+
+  /* ── Capabilities ── */
+  .cap-list      { gap:8px; margin-top:12px; }
+  .cap-item      { padding:10px 14px; gap:12px; }
+  .cap-num       { font-size:22px; min-width:32px; }
+  .cap-text      { font-size:13px; }
+
+  /* ── Impact cards (2-col to fit in screen) ── */
+  .impact-grid   { grid-template-columns:1fr 1fr; gap:8px; margin-top:12px; }
+  .impact-card   { padding:12px 10px; gap:10px; flex-direction:column; }
+  .impact-icon   { font-size:20px; }
+  .impact-title  { font-size:12px; margin-bottom:2px; }
+  .impact-desc   { font-size:11px; }
+
+  /* ── Close slide ── */
+  .close-layout  { grid-template-columns:1fr; }
+  .close-right   { display:none; }
+  .close-left    { padding:80px 20px 20px; align-items:center; text-align:center; }
+  .cc-label      { font-size:10px; }
+  .cc-value      { font-size:14px; }
+  .cta-box p     { font-size:13px; }
+
+  /* ── Nav bar ── */
+  .nav           { padding:5px 10px; gap:6px; bottom:10px; border-radius:40px; }
+  .dots          { gap:3px; }
+  .dot           { width:5px; height:5px; }
+  .dot.active    { width:14px; }
+  .counter       { font-size:11px; min-width:44px; white-space:nowrap; }
+  .nav-btn       { width:26px; height:26px; }
+  .nav-btn svg   { width:12px; height:12px; }
+
+  /* ── Swipe arrows ── */
+  .swipe-arrow        { width:38px; height:38px; }
+  .swipe-arrow svg    { width:16px; height:16px; }
+  .swipe-arrow-left   { left:6px; }
+  .swipe-arrow-right  { right:6px; }
+  .tap-zone           { width:18%; }
+
+  .fs-hint { display:none; }
+
+  /* Slide 7 (Transformation) — override large inline font sizes */
+  [data-slide="6"] .transform-wrap { gap:8px; }
+  [data-slide="6"] .fade-up-d1 { font-size:15px !important; line-height:1.3 !important; }
+  [data-slide="6"] .fade-up-d2 { font-size:26px !important; line-height:1.1 !important; }
+  [data-slide="6"] .fade-up-d4 { font-size:14px !important; }
+  [data-slide="6"] .fade-up-d5 { font-size:24px !important; line-height:1.15 !important; }
+
+  /* Slide 9 (Future) — override large inline font sizes */
+  [data-slide="8"] .fade-up-d1 { font-size:14px !important; line-height:1.4 !important; }
+  [data-slide="8"] .fade-up-d3 { font-size:22px !important; line-height:1.1 !important; }
+  [data-slide="8"] .fade-up-d4 { font-size:13px !important; }
+  [data-slide="8"] .fade-up-d5 { font-size:17px !important; }
+
+  /* All card grids — one per row */
+  .silos-grid  { grid-template-columns:1fr; gap:6px; margin-top:10px; }
+  .silo-card   { padding:10px 14px; display:flex; flex-direction:column; align-items:center;
+                 text-align:center; gap:4px; border-radius:10px; }
+  .silo-emoji  { font-size:28px; margin-bottom:0; }
+  .silo-label  { font-size:13px; }
+  .silo-sub    { font-size:11px; margin-top:2px; line-height:1.4; }
+
+  .cost-cards  { grid-template-columns:1fr; gap:8px; margin-top:10px; }
+  .cost-card   { padding:12px 16px; display:flex; flex-direction:column; align-items:center;
+                 text-align:center; gap:5px; border-radius:10px; }
+  .cost-icon   { font-size:28px; margin-bottom:0; }
+  .cost-title  { font-size:14px; margin-bottom:2px; }
+  .cost-desc   { font-size:12px; line-height:1.4; }
+
+  .impact-grid { grid-template-columns:1fr; gap:6px; margin-top:10px; }
+  .impact-card { padding:10px 14px; gap:6px; flex-direction:column; align-items:center; text-align:center; }
+  .impact-icon { font-size:28px; margin-top:0; }
+  .impact-title{ font-size:12px; margin-bottom:2px; }
+  .impact-desc { font-size:11px; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-canvas"></div>
+<div class="grid-overlay"></div>
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- Mobile header bar (sits behind logos, prevents text bleeding under them) -->
+<div class="mobile-header" id="mobileHeader"></div>
+
+<!-- Side swipe arrows -->
+<div class="swipe-arrow swipe-arrow-left"  id="arrowLeft"  onclick="go(-1)">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+</div>
+<div class="swipe-arrow swipe-arrow-right" id="arrowRight" onclick="go(1)">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+</div>
+
+<!-- Tap zones -->
+<div class="tap-zone tap-zone-left"  onclick="go(-1)"></div>
+<div class="tap-zone tap-zone-right" onclick="go(1)"></div>
+
+<img src="../logo_dark_clean.png" id="elLogo" class="watermark animate__animated animate__tada animate__slow"
+     alt="elSapiens" style="filter:drop-shadow(0 4px 24px rgba(34,211,238,0.3));">
+
+<div class="bni-badge">
+  <div class="bni-badge-box">
+    <img src="assets/BNI_logo_White_CMYK_Final.png" alt="BNI">
+  </div>
+</div>
+<div class="fs-hint" onclick="goFullscreen()" id="fsHint">Press F for fullscreen</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 0 · TITLE · 0:00–0:20
+═══════════════════════════════════════════════════════ -->
+<div class="slide slide-0 active" data-slide="0">
+  <div class="slide-bg" style="background-image:url('assets/bg-title.jpg')"></div>
+
+  <div class="glow-line fade-up" style="margin-bottom:24px;"></div>
+
+  <div class="fade-up fade-up-d1"
+       style="font-family:'Space Grotesk',sans-serif; font-size:80px; font-weight:800;
+              line-height:1.05; letter-spacing:-0.03em; color:var(--c50); text-align:center; max-width:900px;">
+    AI Is Not a Tool.
+  </div>
+
+  <div class="fade-up fade-up-d2"
+       style="font-family:'Space Grotesk',sans-serif; font-size:40px; font-weight:500;
+              color:var(--cyan); letter-spacing:-0.01em; text-align:center; margin-top:10px;">
+    It's Your Next Team Member.
+  </div>
+
+  <div class="fade-up fade-up-d3"
+       style="margin-top:32px; font-size:16px; color:var(--c300); letter-spacing:0.06em; text-align:center;">
+    BNI EDUSLOT &nbsp;·&nbsp; DAWN DHARMISHTAN &nbsp;·&nbsp; ELSAPIENS
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 1 · KNOWLEDGE IS SCATTERED · 0:20–0:40
+═══════════════════════════════════════════════════════ -->
+<div class="slide" data-slide="1">
+  <div class="slide-bg" style="background-image:url('assets/bg-earth.jpg')"></div>
+
+  <div class="eyebrow red-text fade-up">Every Business Has This Problem</div>
+
+  <div class="problem-hero fade-up fade-up-d1">
+    Knowledge<br>Is Scattered.
+  </div>
+
+  <div class="glow-line-wide fade-up fade-up-d2" style="margin:24px 0;"></div>
+
+  <div class="fade-up fade-up-d3"
+       style="font-size:22px; color:var(--c300); font-style:italic; max-width:680px; text-align:center; line-height:1.6;">
+    Your processes live in places no one can find when they need them.
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 2 · THE 4 SILOS · 0:40–1:00
+═══════════════════════════════════════════════════════ -->
+<div class="slide" data-slide="2" style="text-align:center;">
+  <div class="slide-bg" style="background-image:url('assets/bg-city.jpg')"></div>
+
+  <div class="eyebrow" style="color:var(--c400);" class="fade-up">Where Knowledge Actually Lives</div>
+
+  <div class="heading-lg fade-up fade-up-d1" style="max-width:800px; margin-bottom:4px;">
+    It's split across four places<br>
+    <span style="color:var(--c300); font-weight:400;">no one can access in time.</span>
+  </div>
+
+  <div class="silos-grid fade-up fade-up-d2">
+    <div class="silo-card">
+      <span class="silo-emoji">🧠</span>
+      <div class="silo-label">People's Heads</div>
+      <div class="silo-sub">Only they know it — until they leave</div>
+    </div>
+    <div class="silo-card">
+      <span class="silo-emoji">💬</span>
+      <div class="silo-label">WhatsApp Chats</div>
+      <div class="silo-sub">Buried in threads nobody scrolls back</div>
+    </div>
+    <div class="silo-card">
+      <span class="silo-emoji">📊</span>
+      <div class="silo-label">Excel Files</div>
+      <div class="silo-sub">Version confusion every single time</div>
+    </div>
+    <div class="silo-card">
+      <span class="silo-emoji">📋</span>
+      <div class="silo-label">SOPs Nobody Reads</div>
+      <div class="silo-sub">Written once, forgotten forever</div>
+    </div>
+  </div>
+
+  <div class="fade-up fade-up-d3"
+       style="margin-top:28px; font-size:18px; color:var(--c300); font-style:italic;">
+    So every question, every task, every decision — requires asking someone.
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 3 · THE COST · 1:00–1:20
+═══════════════════════════════════════════════════════ -->
+<div class="slide" data-slide="3" style="text-align:center;">
+  <div class="slide-bg" style="background-image:url('assets/bg-stars.jpg')"></div>
+
+  <div class="eyebrow red-text fade-up">The Hidden Cost</div>
+
+  <div class="heading-xl fade-up fade-up-d1" style="max-width:880px;">
+    Someone always has to<br>
+    <span class="orange-text">ask someone else.</span>
+  </div>
+
+  <div class="cost-cards fade-up fade-up-d2">
+    <div class="glass-sm cost-card" style="border-color:rgba(245,158,11,0.25); background:rgba(245,158,11,0.06);">
+      <span class="cost-icon">⏱</span>
+      <div class="cost-title orange-text">Time Lost</div>
+      <div class="cost-desc">Every interruption costs 20+ minutes of focus — multiplied by every team member, every day</div>
+    </div>
+    <div class="glass-sm cost-card" style="border-color:rgba(119,143,187,0.25); background:rgba(119,143,187,0.05);">
+      <span class="cost-icon">⚡</span>
+      <div class="cost-title" style="color:var(--c200);">Inconsistency</div>
+      <div class="cost-desc">Two people give two different answers to the same customer question</div>
+    </div>
+    <div class="glass-sm cost-card" style="border-color:rgba(239,68,68,0.25); background:rgba(239,68,68,0.06);">
+      <span class="cost-icon">🔗</span>
+      <div class="cost-title red-text">Dependency</div>
+      <div class="cost-desc">Your business cannot run without specific people in the room</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 4 · WHAT AI CHANGES · 1:20–2:00
+═══════════════════════════════════════════════════════ -->
+<div class="slide" data-slide="4">
+  <div class="slide-bg" style="background-image:url('assets/bg-city.jpg'); filter:brightness(0.6)"></div>
+
+  <div class="shift-layout">
+    <!-- Left: narrative -->
+    <div>
+      <div class="eyebrow cyan-text fade-up">What AI Changes</div>
+      <div class="heading-lg fade-up fade-up-d1" style="margin-bottom:16px;">
+        What if your team<br>
+        could simply <span class="gradient-text">ask?</span>
+      </div>
+      <div class="glow-line fade-up fade-up-d2" style="margin-bottom:20px;"></div>
+      <div class="body-lg fade-up fade-up-d3">
+        AI turns your business knowledge into something interactive — available to everyone, instantly, without asking anyone.
+      </div>
+    </div>
+
+    <!-- Right: chat bubbles -->
+    <div class="chat-stack fade-up fade-up-d2">
+      <div class="chat-bubble">
+        <div class="chat-avatar">👤</div>
+        <div class="chat-text">"How do I process this order?"</div>
+      </div>
+      <div class="chat-bubble">
+        <div class="chat-avatar">👤</div>
+        <div class="chat-text">"What's the pricing for this client?"</div>
+      </div>
+      <div class="chat-bubble">
+        <div class="chat-avatar">👤</div>
+        <div class="chat-text">"How do I file this expense?"</div>
+      </div>
+      <div class="chat-bubble">
+        <div class="chat-avatar">👤</div>
+        <div class="chat-text">"What's the next step in this workflow?"</div>
+      </div>
+      <div class="chat-answer">
+        ✦ &nbsp;AI answers instantly — from your own processes &amp; SOPs.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 5 · AI CAPABILITIES · 2:00–2:30
+═══════════════════════════════════════════════════════ -->
+<div class="slide" data-slide="5" style="text-align:center;">
+  <div class="slide-bg" style="background-image:url('assets/bg-tech.jpg')"></div>
+
+  <div class="eyebrow green-text fade-up">And the AI Doesn't Just Answer…</div>
+  <div class="heading-xl fade-up fade-up-d1">It goes much further.</div>
+
+  <div class="cap-list fade-up fade-up-d2" style="text-align:left;">
+    <div class="cap-item">
+      <div class="cap-num">01</div>
+      <div class="cap-text">Guide your team step-by-step inside your system</div>
+    </div>
+    <div class="cap-item">
+      <div class="cap-num">02</div>
+      <div class="cap-text">Pre-fill data automatically based on context</div>
+    </div>
+    <div class="cap-item">
+      <div class="cap-num">03</div>
+      <div class="cap-text">Validate inputs before mistakes happen</div>
+    </div>
+    <div class="cap-item">
+      <div class="cap-num">04</div>
+      <div class="cap-text">Complete parts of the task automatically</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 6 · THE TRANSFORMATION · 2:30–2:50
+═══════════════════════════════════════════════════════ -->
+<div class="slide" data-slide="6">
+  <div class="slide-bg" style="background-image:url('assets/bg-transform.jpg')"></div>
+
+  <div class="transform-wrap">
+    <div class="eyebrow" style="color:var(--c300);" class="fade-up">The Shift</div>
+
+    <div class="fade-up fade-up-d1"
+         style="font-family:'Space Grotesk',sans-serif; font-size:36px; font-weight:400;
+                color:var(--c300); line-height:1.2;">
+      Your systems stop being
+    </div>
+
+    <div class="fade-up fade-up-d2"
+         style="font-family:'Space Grotesk',sans-serif; font-size:54px; font-weight:800;
+                color:var(--c50); line-height:1.05; letter-spacing:-0.02em;">
+      tools people struggle with
+    </div>
+
+    <div class="glow-line-wide fade-up fade-up-d3" style="margin:16px 0;"></div>
+
+    <div class="fade-up fade-up-d4"
+         style="font-family:'Space Grotesk',sans-serif; font-size:32px; font-weight:400;
+                color:var(--c300);">
+      and become
+    </div>
+
+    <div class="fade-up fade-up-d5"
+         style="font-family:'Space Grotesk',sans-serif; font-size:52px; font-weight:800;
+                line-height:1.1; letter-spacing:-0.02em;">
+      <span class="gradient-text">guided environments people work through.</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 7 · REAL BUSINESS IMPACT · 2:50–3:15
+═══════════════════════════════════════════════════════ -->
+<div class="slide" data-slide="7" style="text-align:center;">
+  <div class="slide-bg" style="background-image:url('assets/bg-earth.jpg')"></div>
+
+  <div class="eyebrow" style="color:var(--c300);" class="fade-up">The Real Business Impact</div>
+  <div class="heading-xl fade-up fade-up-d1">What this means in practice.</div>
+
+  <div class="impact-grid fade-up fade-up-d2">
+    <div class="impact-card" style="border-color:rgba(34,211,238,0.2);">
+      <div class="impact-icon" style="color:var(--cyan);">↓</div>
+      <div>
+        <div class="impact-title">Training Time Drops Drastically</div>
+        <div class="impact-desc">New hires get up to speed in days — the system guides them through every step</div>
+      </div>
+    </div>
+    <div class="impact-card" style="border-color:rgba(52,211,153,0.2);">
+      <div class="impact-icon" style="color:var(--green);">✓</div>
+      <div>
+        <div class="impact-title">Errors Reduce in Real Time</div>
+        <div class="impact-desc">AI validates inputs before mistakes reach customers or cost you money</div>
+      </div>
+    </div>
+    <div class="impact-card" style="border-color:rgba(245,158,11,0.2);">
+      <div class="impact-icon" style="color:var(--orange);">★</div>
+      <div>
+        <div class="impact-title">Best Processes Become Standard</div>
+        <div class="impact-desc">Your top performer's approach becomes the default for the entire team</div>
+      </div>
+    </div>
+    <div class="impact-card" style="border-color:rgba(239,68,68,0.2);">
+      <div class="impact-icon" style="color:var(--red);">→</div>
+      <div>
+        <div class="impact-title">Founders Stop Being Go-To</div>
+        <div class="impact-desc">You stop being the answer to every question — your system becomes it</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 8 · THE FUTURE · 3:15–3:45
+═══════════════════════════════════════════════════════ -->
+<div class="slide" data-slide="8" style="text-align:center;">
+  <div class="slide-bg" style="background-image:url('assets/bg-stars.jpg')"></div>
+
+  <div class="eyebrow cyan-text fade-up">Where This Is Going</div>
+
+  <div class="fade-up fade-up-d1"
+       style="font-family:'Space Grotesk',sans-serif; font-size:30px; font-weight:400;
+              color:var(--c300); max-width:820px; line-height:1.3;">
+    The companies that scale fastest<br>won't just have better software.
+  </div>
+
+  <div class="glow-line-wide fade-up fade-up-d2" style="margin:24px 0;"></div>
+
+  <div class="fade-up fade-up-d3"
+       style="font-family:'Space Grotesk',sans-serif; font-size:62px; font-weight:800;
+              line-height:1.05; letter-spacing:-0.02em; color:var(--c50); max-width:920px;">
+    They'll have AI layered<br>on top of their software.
+  </div>
+
+  <div class="fade-up fade-up-d4" style="margin-top:28px; font-size:20px; color:var(--c300);">
+    Not replacing people —
+  </div>
+  <div class="fade-up fade-up-d5"
+       style="font-size:26px; font-weight:700; color:var(--cyan); margin-top:4px;">
+    making every team member perform like your best one.
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 9 · CLOSE · 3:45–4:00
+═══════════════════════════════════════════════════════ -->
+<div class="slide" data-slide="9" style="padding:0;">
+  <div class="close-layout">
+
+    <!-- Left panel -->
+    <div class="close-left">
+      <img src="../logo_dark_clean.png" alt="elSapiens"
+           style="height:76px; width:auto; max-width:240px; object-fit:contain; margin-bottom:28px; filter:drop-shadow(0 2px 16px rgba(34,211,238,0.2));"
+           class="fade-up">
+
+      <div class="fade-up fade-up-d1"
+           style="font-family:'Space Grotesk',sans-serif; font-size:54px; font-weight:800;
+                  line-height:1.05; letter-spacing:-0.02em; color:var(--c50);">
+        I'm Dawn.
+      </div>
+
+      <div class="glow-line fade-up fade-up-d2" style="margin:20px 0;"></div>
+
+      <div class="body-lg fade-up fade-up-d3" style="max-width:440px; color:var(--c400);">
+        We build AI systems that plug into your existing tools and guide your team in real time.
+      </div>
+
+      <div class="close-contact fade-up fade-up-d4">
+        <div class="cc-item">
+          <div class="cc-label">Company</div>
+          <div class="cc-value">elSapiens</div>
+        </div>
+        <div class="cc-item">
+          <div class="cc-label">Email</div>
+          <div class="cc-value">dawndharm@elsapiens.com</div>
+        </div>
+        <div class="cc-item">
+          <div class="cc-label">Experience</div>
+          <div class="cc-value">21+ Years in Technology</div>
+        </div>
+      </div>
+
+      <div class="cta-box fade-up fade-up-d5">
+        <p>If your business depends too much on specific people —<br>
+           <strong style="color:var(--cyan);">we should talk.</strong>
+        </p>
+      </div>
+    </div>
+
+    <!-- Right: photo -->
+    <div class="close-right">
+      <div class="close-right-img"
+           style="background-image:url('assets/dawn.jpg')">
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     NAVIGATION
+═══════════════════════════════════════════════════════ -->
+<div class="nav">
+  <button class="nav-btn" onclick="go(-1)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+  </button>
+  <div class="dots" id="dots"></div>
+  <span class="counter" id="counter">1 / 10</span>
+  <button class="nav-btn" onclick="go(1)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+  </button>
+</div>
+
+<script>
+let cur = 0;
+const slides = document.querySelectorAll('.slide');
+const total  = slides.length;
+const dotsEl = document.getElementById('dots');
+const cntEl  = document.getElementById('counter');
+const pbar   = document.getElementById('progressBar');
+
+// Build dots
+for (let i = 0; i < total; i++) {
+  const d = document.createElement('div');
+  d.className = 'dot' + (i === 0 ? ' active' : '');
+  d.onclick = () => goTo(i);
+  dotsEl.appendChild(d);
+}
+
+function goTo(n) {
+  if (n === cur || n < 0 || n >= total) return;
+  const prev = slides[cur];
+  prev.classList.add('exit-left');
+  prev.classList.remove('active');
+  setTimeout(() => prev.classList.remove('exit-left'), 700);
+  cur = n;
+  slides[cur].classList.add('active');
+  document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === cur));
+  cntEl.textContent = `${cur + 1} / ${total}`;
+  pbar.style.width  = `${((cur + 1) / total) * 100}%`;
+  document.getElementById('elLogo').style.opacity = cur === total - 1 ? '0' : '';
+  updateArrows();
+}
+
+function go(dir) { goTo(cur + dir); }
+
+// ── Arrow hint elements ─────────────────────────────────────────────
+const arrowL = document.getElementById('arrowLeft');
+const arrowR = document.getElementById('arrowRight');
+
+function updateArrows() {
+  arrowL.classList.toggle('show', cur > 0);
+  arrowR.classList.toggle('show', cur < total - 1);
+  arrowL.classList.remove('dim');
+  arrowR.classList.remove('dim');
+}
+updateArrows();
+
+// Pulse arrows on load to hint that navigation is possible
+setTimeout(() => {
+  if (cur === 0) { arrowR.classList.add('show'); }
+  [arrowL, arrowR].forEach(a => {
+    a.classList.remove('pulse');
+    void a.offsetWidth;
+    a.classList.add('pulse');
+  });
+  setTimeout(() => updateArrows(), 1500);
+}, 900);
+
+// ── Keyboard ────────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (['ArrowRight', ' ', 'PageDown'].includes(e.key)) { e.preventDefault(); go(1); }
+  if (['ArrowLeft',  'PageUp'].includes(e.key))        { e.preventDefault(); go(-1); }
+  if (e.key === 'Home') { e.preventDefault(); goTo(0); }
+  if (e.key === 'End')  { e.preventDefault(); goTo(total - 1); }
+  if (e.key === 'f' || e.key === 'F') goFullscreen();
+});
+
+// ── Touch / swipe with live feedback ────────────────────────────────
+let tx = 0, ty = 0, isHoriz = false;
+
+document.addEventListener('touchstart', e => {
+  tx = e.touches[0].clientX;
+  ty = e.touches[0].clientY;
+  isHoriz = false;
+}, { passive: true });
+
+document.addEventListener('touchmove', e => {
+  const dx = e.touches[0].clientX - tx;
+  const dy = e.touches[0].clientY - ty;
+  if (!isHoriz && Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 8) isHoriz = true;
+  if (!isHoriz) return;
+
+  // Live slide translation
+  slides[cur].style.transition = 'none';
+  slides[cur].style.transform  = `scale(1) translateY(0) translateX(${dx * 0.22}px)`;
+
+  // Show relevant arrow while dragging
+  if (dx < -10 && cur < total - 1) { arrowR.classList.add('show'); arrowL.classList.remove('show'); }
+  if (dx >  10 && cur > 0)         { arrowL.classList.add('show'); arrowR.classList.remove('show'); }
+}, { passive: true });
+
+document.addEventListener('touchend', e => {
+  slides[cur].style.transition = '';
+  slides[cur].style.transform  = '';
+  if (!isHoriz) return;
+  isHoriz = false;
+  const dx = tx - e.changedTouches[0].clientX;
+  if (Math.abs(dx) > 45) go(dx > 0 ? 1 : -1);
+  else updateArrows();
+}, { passive: true });
+
+function goFullscreen() {
+  if (!document.fullscreenElement)
+    document.documentElement.requestFullscreen().catch(() => {});
+}
+
+document.addEventListener('fullscreenchange', () => {
+  document.getElementById('fsHint').style.display =
+    document.fullscreenElement ? 'none' : '';
+});
+
+// Init progress bar
+pbar.style.width = `${(1 / total) * 100}%`;
+
+// Re-trigger elSapiens logo swing every 30 seconds
+setInterval(() => {
+  const logo = document.getElementById('elLogo');
+  logo.classList.remove('animate__tada');
+  void logo.offsetWidth; // force reflow to restart animation
+  logo.classList.add('animate__tada');
+}, 5000);
+</script>
+</body>
+</html>
