@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>elSapiens Ecosystem — Local Development Setup</title>
+<style>
+  :root {
+    --bg:#fbfcfd; --fg:#1c2128; --muted:#57606a; --accent:#2563eb;
+    --border:#d8dee4; --code-bg:#f3f4f6; --pre-bg:#1e2530; --pre-fg:#e6edf3;
+    --quote-bg:#eef4ff; --quote-bar:#2563eb; --th-bg:#f0f3f6; --zebra:#f7f9fb;
+  }
+  * { box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body {
+    margin:0; background:var(--bg); color:var(--fg);
+    font:15px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  code,pre { font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; }
+  .layout { display:flex; align-items:flex-start; max-width:1180px; margin:0 auto; }
+  /* sidebar TOC */
+  nav.toc {
+    position:sticky; top:0; align-self:flex-start; width:270px; flex:0 0 270px;
+    height:100vh; overflow-y:auto; padding:24px 14px 40px; border-right:1px solid var(--border);
+    background:#fff;
+  }
+  nav.toc .toc-title { font-size:12px; font-weight:700; text-transform:uppercase;
+    letter-spacing:.06em; color:var(--muted); margin:0 0 10px 8px; }
+  nav.toc a { display:block; text-decoration:none; color:var(--muted);
+    padding:3px 8px; border-radius:6px; font-size:13px; }
+  nav.toc a:hover { background:var(--code-bg); color:var(--fg); }
+  nav.toc a.toc-l3 { padding-left:22px; font-size:12.5px; }
+  /* content */
+  main { flex:1; min-width:0; padding:32px 44px 80px; }
+  .doc-banner { border-bottom:1px solid var(--border); margin-bottom:8px; padding-bottom:4px; }
+  .doc-banner .sub { color:var(--muted); font-size:13px; }
+  h1,h2,h3,h4 { line-height:1.3; scroll-margin-top:18px; }
+  h1 { font-size:26px; margin:.2em 0 .1em; }
+  h2 { font-size:20px; margin:1.8em 0 .6em; padding-bottom:.25em; border-bottom:1px solid var(--border); }
+  h3 { font-size:16px; margin:1.5em 0 .5em; }
+  h4 { font-size:14px; margin:1.3em 0 .4em; color:var(--muted); }
+  a { color:var(--accent); }
+  a.anchor { opacity:0; margin-left:.4em; text-decoration:none; color:var(--muted);
+    font-weight:400; }
+  h1:hover a.anchor,h2:hover a.anchor,h3:hover a.anchor,h4:hover a.anchor { opacity:.55; }
+  p { margin:.6em 0; }
+  ul,ol { margin:.5em 0; padding-left:1.6em; }
+  li { margin:.25em 0; }
+  code { background:var(--code-bg); padding:.12em .38em; border-radius:5px; font-size:.86em; }
+  pre { background:var(--pre-bg); color:var(--pre-fg); padding:14px 16px; border-radius:8px;
+    overflow-x:auto; font-size:12.8px; line-height:1.55; margin:.9em 0; }
+  pre code { background:none; padding:0; font-size:inherit; color:inherit; }
+  pre.lang-bash::before,pre.lang-nginx::before,pre.lang-sql::before,pre.lang-go::before {
+    content:attr(class); content:""; }
+  pre[class^="lang-"] { position:relative; }
+  pre[class^="lang-"]::after {
+    content:attr(class); position:absolute; top:0; right:0;
+    font-size:10px; letter-spacing:.05em; text-transform:uppercase;
+    color:#8b97a6; background:#11161f; padding:2px 8px; border-radius:0 8px 0 8px;
+  }
+  blockquote { margin:.9em 0; padding:2px 16px; background:var(--quote-bg);
+    border-left:4px solid var(--quote-bar); border-radius:0 6px 6px 0; }
+  hr { border:0; border-top:1px solid var(--border); margin:2em 0; }
+  .table-wrap { overflow-x:auto; margin:.9em 0; }
+  table { border-collapse:collapse; width:100%; font-size:13px; }
+  th,td { border:1px solid var(--border); padding:6px 10px; text-align:left; vertical-align:top; }
+  th { background:var(--th-bg); font-weight:600; }
+  tbody tr:nth-child(even) { background:var(--zebra); }
+  @media (max-width:880px) {
+    .layout { flex-direction:column; }
+    nav.toc { position:static; width:100%; height:auto; border-right:0;
+      border-bottom:1px solid var(--border); }
+    main { padding:24px 18px 60px; }
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+  <nav class="toc">
+    <p class="toc-title">Contents</p>
+    <a class="toc-l2" href="#1-overview">1. Overview</a>
+<a class="toc-l3" href="#app-port-database-map">App / port / database map</a>
+<a class="toc-l2" href="#2-prerequisites-tool-installation">2. Prerequisites — tool installation</a>
+<a class="toc-l3" href="#21-postgresql-18">2.1 PostgreSQL 18</a>
+<a class="toc-l3" href="#22-mongodb-70">2.2 MongoDB 7.0</a>
+<a class="toc-l3" href="#23-nginx">2.3 nginx</a>
+<a class="toc-l3" href="#24-nodejs-via-nvm-pnpm">2.4 Node.js (via nvm) + pnpm</a>
+<a class="toc-l3" href="#25-go-golang-migrate-cli">2.5 Go + golang-migrate CLI</a>
+<a class="toc-l3" href="#26-aws-cli-only-for-elmedia-and-elcatalogs">2.6 AWS CLI (only for elmedia and elcatalogs)</a>
+<a class="toc-l2" href="#3-database-setup">3. Database setup</a>
+<a class="toc-l3" href="#31-create-the-currency-postgresql-role">3.1 Create the `currency` PostgreSQL role</a>
+<a class="toc-l3" href="#32-create-the-databases">3.2 Create the databases</a>
+<a class="toc-l3" href="#33-run-migrations-build-the-schemas">3.3 Run migrations (build the schemas)</a>
+<a class="toc-l3" href="#34-mongodb-replica-set">3.4 MongoDB replica set</a>
+<a class="toc-l2" href="#4-environment-configuration">4. Environment configuration</a>
+<a class="toc-l2" href="#5-nginx-reverse-proxy-hosts-file">5. nginx reverse proxy + hosts file</a>
+<a class="toc-l3" href="#51-the-hosts-file">5.1 The hosts file</a>
+<a class="toc-l3" href="#52-the-nginx-config">5.2 The nginx config</a>
+<a class="toc-l2" href="#6-seeding-the-reseller-workspace">6. Seeding the reseller + workspace</a>
+<a class="toc-l3" href="#easiest-path-the-interactive-wizard">Easiest path — the interactive wizard</a>
+<a class="toc-l3" href="#manual-the-scripts-run-in-order">Manual — the scripts run **in order**:</a>
+<a class="toc-l3" href="#step-1-reseller-person-entities-mongodb">Step 1 — reseller person + entities (MongoDB)</a>
+<a class="toc-l3" href="#step-2-workspace-elauth-postgresql">Step 2 — workspace (elauth / PostgreSQL)</a>
+<a class="toc-l3" href="#step-3-link-workspace-to-person-mongodb">Step 3 — link workspace to person (MongoDB)</a>
+<a class="toc-l3" href="#after-seeding">After seeding</a>
+<a class="toc-l2" href="#7-running-the-apps">7. Running the apps</a>
+<a class="toc-l2" href="#8-quick-reference">8. Quick reference</a>
+<a class="toc-l3" href="#tool-versions">Tool versions</a>
+<a class="toc-l3" href="#important-paths">Important paths</a>
+<a class="toc-l3" href="#default-credentials-local-dev-only">Default credentials (local dev only)</a>
+<a class="toc-l2" href="#9-gotchas-known-issues">9. Gotchas &amp; known issues</a>
+<a class="toc-l2" href="#appendix-a-full-nginx-config">Appendix A — Full nginx config</a>
+  </nav>
+  <main>
+    <div class="doc-banner">
+      <p class="sub">Generated from <code>docs/LOCAL_DEV_SETUP.md</code> &middot; 2026-05-14</p>
+    </div>
+    <h1 id="elsapiens-ecosystem-local-development-setup">elSapiens Ecosystem — Local Development Setup<a class="anchor" href="#elsapiens-ecosystem-local-development-setup" aria-hidden="true">#</a></h1>
+<p>A step-by-step guide for a new developer bringing the full elSapiens ecosystem up on a fresh Linux workstation (written against <strong>Ubuntu 26.04</strong>, kernel 7.x).</p>
+<p>Work top to bottom — each section depends on the ones before it.</p>
+<hr>
+<h2 id="1-overview">1. Overview<a class="anchor" href="#1-overview" aria-hidden="true">#</a></h2>
+<p>The ecosystem is a set of independent backend services (Go, plus one NestJS service) and their React frontends. Services talk to each other over gRPC and share two database servers:</p>
+<ul><li><strong>PostgreSQL</strong> — used by every service except <code>accounts-api</code>.</li><li><strong>MongoDB</strong> — used only by <code>accounts-api</code> (person / entity / reseller records).</li></ul>
+<p>A local <strong>nginx</strong> reverse proxy maps friendly <code>*.elsapiens.test</code> hostnames to the Vite dev servers and backend APIs.</p>
+<h3 id="app-port-database-map">App / port / database map<a class="anchor" href="#app-port-database-map" aria-hidden="true">#</a></h3>
+<div class='table-wrap'><table><thead><tr><th>Folder</th><th>Purpose</th><th>HTTP</th><th>gRPC</th><th>Frontend (Vite)</th><th>Database</th><th>Local domain</th></tr></thead><tbody><tr><td><code>elregistry</code></td><td>App registry</td><td>11000</td><td>20000</td><td>—</td><td><code>app_registry</code> (PG)</td><td>—</td></tr><tr><td><code>elauth</code></td><td>Auth / tenancy</td><td>11001</td><td>21002</td><td>31002 / admin 31003</td><td><code>elauth</code> (PG)</td><td><code>elauth.</code>, <code>admin.</code></td></tr><tr><td><code>elaccounts</code></td><td>accounts-api (persons/entities)</td><td>11003</td><td>21004</td><td>— *(frontend deprecated)*</td><td><code>accounts</code> (Mongo)</td><td>—</td></tr><tr><td><code>elbooks</code></td><td>Accounting / billing</td><td>11006</td><td>21003</td><td>31000</td><td><code>elaccounts</code> (PG)</td><td><code>elaccounting.</code></td></tr><tr><td><code>elgeolocations</code></td><td>Geo reference data</td><td>11008</td><td>21005</td><td>—</td><td><code>geolocation</code> (PG)</td><td>—</td></tr><tr><td><code>elcatalogs</code></td><td>Goods &amp; Services</td><td>11011</td><td>21011</td><td>31011</td><td><code>goods_services</code> (PG)</td><td><code>elcatalogs.</code></td></tr><tr><td><code>elpos</code></td><td>Point of Sale</td><td>11014</td><td>21014</td><td>31014</td><td><code>elpos</code> (PG)</td><td><code>elpos.</code></td></tr><tr><td><code>elinventory</code></td><td>Inventory Management</td><td>11016</td><td>21016</td><td>31016</td><td><code>inventory_management</code> (PG)</td><td><code>elinventory.</code></td></tr><tr><td><code>elmedia</code></td><td>Media / S3 uploads</td><td>11019</td><td>21019</td><td>—</td><td><code>media</code> (PG)</td><td>—</td></tr></tbody></table></div>
+<blockquote><p><strong>Note on database names:</strong> the table above uses the names from each service&#x27;s <code>.env.example</code>. Whatever name you create, the service&#x27;s <code>.env</code> <code>DATABASE_URL</code> must point at it.</p></blockquote>
+<hr>
+<h2 id="2-prerequisites-tool-installation">2. Prerequisites — tool installation<a class="anchor" href="#2-prerequisites-tool-installation" aria-hidden="true">#</a></h2>
+<h3 id="21-postgresql-18">2.1 PostgreSQL 18<a class="anchor" href="#21-postgresql-18" aria-hidden="true">#</a></h3>
+<pre class="lang-bash"><code>sudo apt update
+sudo apt install -y postgresql postgresql-contrib postgresql-client postgresql-18-pgvector</code></pre>
+<ul><li>Installs the server on the default port <strong>5432</strong>, localhost-only.</li><li><code>postgresql-18-pgvector</code> is <strong>required</strong> — the <code>goods_services</code> schema uses the <code>vector</code> extension (<code>pg_trgm</code> and <code>pgcrypto</code> ship with <code>postgresql-contrib</code>).</li></ul>
+<h3 id="22-mongodb-70">2.2 MongoDB 7.0<a class="anchor" href="#22-mongodb-70" aria-hidden="true">#</a></h3>
+<blockquote><p><strong>Important:</strong> Do <strong>not</strong> install MongoDB 8.x on a kernel ≥ 6.19. MongoDB 8.x aborts on startup with a known TCMalloc/kernel incompatibility (<code>SERVER-121912</code>). Use the <strong>7.0 LTS</strong> line, which predates that issue.</p></blockquote>
+<p>The 7.0 apt repo publishes up to Ubuntu 22.04 (<code>jammy</code>); that build runs fine on newer Ubuntu because glibc/openssl are backward compatible.</p>
+<pre class="lang-bash"><code>curl -fsSL https://www.mongodb.org/static/pgp/server-7.0.asc | \
+  sudo gpg --dearmor -o /usr/share/keyrings/mongodb-server-7.0.gpg
+echo &quot;deb [ signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg arch=amd64 ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse&quot; | \
+  sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
+sudo apt update &amp;&amp; sudo apt install -y mongodb-org
+sudo systemctl enable --now mongod</code></pre>
+<p>Install the shell separately (the <code>mongosh</code> snap is fine):</p>
+<pre class="lang-bash"><code>sudo snap install mongosh</code></pre>
+<h3 id="23-nginx">2.3 nginx<a class="anchor" href="#23-nginx" aria-hidden="true">#</a></h3>
+<pre class="lang-bash"><code>sudo apt install -y nginx</code></pre>
+<h3 id="24-nodejs-via-nvm-pnpm">2.4 Node.js (via nvm) + pnpm<a class="anchor" href="#24-nodejs-via-nvm-pnpm" aria-hidden="true">#</a></h3>
+<p>Node is managed per-user with <strong>nvm</strong>, and pnpm is provided by <strong>corepack</strong>.</p>
+<pre class="lang-bash"><code># install nvm, then a current Node:
+nvm install --lts          # or a specific version, e.g. nvm install 26
+# corepack ships with Node but on newer Node it must be enabled explicitly:
+npm install -g corepack@latest
+corepack enable
+corepack prepare pnpm@latest --activate
+pnpm --version</code></pre>
+<blockquote><p>If <code>corepack</code> was installed by apt (<code>node-corepack</code>) and crashes with <code>ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING</code>, that apt package is too old for recent Node — remove it and use the npm-installed corepack as above.</p></blockquote>
+<h3 id="25-go-golang-migrate-cli">2.5 Go + golang-migrate CLI<a class="anchor" href="#25-go-golang-migrate-cli" aria-hidden="true">#</a></h3>
+<pre class="lang-bash"><code>sudo apt install -y golang-go        # Go 1.26+
+# put go-installed binaries on PATH:
+grep -q &#x27;go/bin&#x27; ~/.profile || echo &#x27;export PATH=$PATH:$HOME/go/bin&#x27; &gt;&gt; ~/.profile
+source ~/.profile
+
+# golang-migrate CLI — required to run migrations for elpos, elinventory,
+# elcatalogs, elgeolocations:
+go install -tags &#x27;postgres&#x27; github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+migrate -version</code></pre>
+<h3 id="26-aws-cli-only-for-elmedia-and-elcatalogs">2.6 AWS CLI (only for elmedia and elcatalogs)<a class="anchor" href="#26-aws-cli-only-for-elmedia-and-elcatalogs" aria-hidden="true">#</a></h3>
+<p><code>elmedia</code> and <code>elcatalogs</code> upload files to S3 (<code>bucket: elecosystem</code>, <code>region: ap-south-1</code>) using the named AWS profile **<code>dev-s3</code>**.</p>
+<pre class="lang-bash"><code>sudo apt install -y awscli      # or: sudo snap install aws-cli --classic
+aws configure --profile dev-s3  # enter the dev S3 access key / secret / region</code></pre>
+<p>Set region <code>ap-south-1</code>. Get the dev S3 credentials from the team — never commit them. Services read the profile name from their <code>.env</code> (<code>AWS_PROFILE=dev-s3</code>).</p>
+<hr>
+<h2 id="3-database-setup">3. Database setup<a class="anchor" href="#3-database-setup" aria-hidden="true">#</a></h2>
+<h3 id="31-create-the-currency-postgresql-role">3.1 Create the <code>currency</code> PostgreSQL role<a class="anchor" href="#31-create-the-currency-postgresql-role" aria-hidden="true">#</a></h3>
+<p>Every service connects as the role **<code>currency</code>** (password <code>currency</code>). Create it once as the <code>postgres</code> superuser:</p>
+<pre class="lang-bash"><code>sudo -u postgres psql -c &quot;CREATE ROLE currency WITH SUPERUSER LOGIN CREATEDB PASSWORD &#x27;currency&#x27;;&quot;</code></pre>
+<p>Verify you can connect over TCP:</p>
+<pre class="lang-bash"><code>PGPASSWORD=currency psql -h 127.0.0.1 -U currency -d postgres -c &quot;SELECT current_user;&quot;</code></pre>
+<h3 id="32-create-the-databases">3.2 Create the databases<a class="anchor" href="#32-create-the-databases" aria-hidden="true">#</a></h3>
+<pre class="lang-bash"><code>export PGPASSWORD=currency
+for db in app_registry elauth elaccounts geolocation goods_services elpos inventory_management media; do
+  psql -h 127.0.0.1 -U currency -d postgres -c &quot;CREATE DATABASE \&quot;$db\&quot; OWNER currency;&quot;
+done</code></pre>
+<h3 id="33-run-migrations-build-the-schemas">3.3 Run migrations (build the schemas)<a class="anchor" href="#33-run-migrations-build-the-schemas" aria-hidden="true">#</a></h3>
+<p>Each service owns its schema via migrations. Run them per service:</p>
+<div class='table-wrap'><table><thead><tr><th>Service</th><th>Command</th><th>Notes</th></tr></thead><tbody><tr><td><strong>elauth</strong></td><td>*(automatic)*</td><td>Runs on backend startup — <code>AUTO_MIGRATE=true</code> in <code>.env</code>. Also seeds the system reseller + admin login (see §6).</td></tr><tr><td><strong>elmedia</strong></td><td>*(automatic)*</td><td>Runs on backend startup (<code>main.go</code>).</td></tr><tr><td><strong>elgeolocations</strong></td><td><code>cd elgeolocations &amp;&amp; make migrate-up</code></td><td>Includes a migration that seeds country reference data.</td></tr><tr><td><strong>elpos</strong></td><td><code>cd elpos/backend &amp;&amp; make migrate-up</code></td><td></td></tr><tr><td><strong>elinventory</strong></td><td><code>cd elinventory/backend &amp;&amp; make migrate-up</code></td><td></td></tr><tr><td><strong>elcatalogs</strong></td><td><code>cd elcatalogs/backend &amp;&amp; make migrate-up</code></td><td>Largest schema (~146 migrations).</td></tr><tr><td><strong>elbooks</strong></td><td><code>cd elbooks/server &amp;&amp; bash scripts/reset_and_migrate.sh</code></td><td>Numbered SQL applied via <code>psql</code>. Override <code>DB_USER=currency DB_PASSWORD=currency DB_PORT=5432</code> env vars (the script&#x27;s defaults are stale).</td></tr><tr><td><strong>elregistry</strong></td><td>start the backend, then <code>POST /v1/migrate</code></td><td>Migrations run via an HTTP endpoint guarded by <code>MIGRATE_SECRET_KEY</code> from <code>.env</code>.</td></tr></tbody></table></div>
+<p>The <code>make migrate-up</code> targets call the <code>migrate</code> CLI under the hood — make sure §2.5 is done first. If a Makefile&#x27;s default <code>DATABASE_URL</code> is stale, pass the correct one explicitly:</p>
+<pre class="lang-bash"><code>migrate -path ./migrations \
+  -database &quot;postgres://currency:currency@localhost:5432/&lt;dbname&gt;?sslmode=disable&quot; up</code></pre>
+<h3 id="34-mongodb-replica-set">3.4 MongoDB replica set<a class="anchor" href="#34-mongodb-replica-set" aria-hidden="true">#</a></h3>
+<p><code>accounts-api</code> uses MongoDB <strong>transactions</strong>, which require a replica set — even a single-node one. Enable it once:</p>
+<pre class="lang-bash"><code>grep -q &#x27;^replication:&#x27; /etc/mongod.conf || \
+  echo -e &quot;\nreplication:\n  replSetName: \&quot;rs0\&quot;&quot; | sudo tee -a /etc/mongod.conf &gt; /dev/null
+sudo systemctl restart mongod
+sleep 2
+mongosh --eval &quot;rs.initiate()&quot;
+mongosh --eval &quot;rs.status().myState&quot;   # 1 = PRIMARY</code></pre>
+<hr>
+<h2 id="4-environment-configuration">4. Environment configuration<a class="anchor" href="#4-environment-configuration" aria-hidden="true">#</a></h2>
+<p>Every service has a <code>.env</code> (gitignored) and a committed <code>.env.example</code>. For a fresh setup, <code>cp .env.example .env</code> in each service directory and adjust.</p>
+<p>Key things to get right:</p>
+<ul><li>**<code>DATABASE_URL</code>** — <code>postgres://currency:currency@localhost:5432/&lt;dbname&gt;?sslmode=disable</code>. Port is <strong>5432</strong> (native install). The db name must match what you created in §3.2.</li><li>**<code>MONGODB_URI</code>** (elaccounts) — <code>mongodb://localhost:27017/accounts</code>. The key is <code>MONGODB_URI</code> (not <code>MONGO_URI</code>); the app and all seed scripts read that exact name.</li><li><strong>gRPC addresses</strong> — services find each other via <code>*_GRPC_ADDR=localhost:&lt;port&gt;</code> entries. Use the gRPC ports from the table in §1.</li><li>**<code>ALLOWED_ORIGIN</code> / auth URLs** — use the canonical <code>*.elsapiens.test</code> hostnames (<code>elinventory.</code>, <code>elcatalogs.</code>, <code>elauth.</code>, <code>elaccounting.</code>, <code>elpos.</code>). Older <code>.env</code> files may still carry legacy names (<code>inventory.</code>, <code>goodsandservice.</code>, <code>auth.</code>, <code>elbooks.</code>) — update them to the canonical form.</li><li>**<code>AWS_PROFILE=dev-s3</code>** — elmedia and elcatalogs only.</li></ul>
+<hr>
+<h2 id="5-nginx-reverse-proxy-hosts-file">5. nginx reverse proxy + hosts file<a class="anchor" href="#5-nginx-reverse-proxy-hosts-file" aria-hidden="true">#</a></h2>
+<h3 id="51-the-hosts-file">5.1 The hosts file<a class="anchor" href="#51-the-hosts-file" aria-hidden="true">#</a></h3>
+<p>Add the local domains to <code>/etc/hosts</code> so the browser resolves them to localhost:</p>
+<p><strong>Path:</strong> <code>/etc/hosts</code></p>
+<pre><code># elSapiens local dev
+127.0.0.1 elauth.elsapiens.test admin.elsapiens.test elinventory.elsapiens.test elcatalogs.elsapiens.test elpos.elsapiens.test elaccounting.elsapiens.test</code></pre>
+<pre class="lang-bash"><code># append it (backs up /etc/hosts first):
+sudo cp /etc/hosts /etc/hosts.bak.$(date +%F)
+printf &quot;\n# elSapiens local dev\n127.0.0.1 elauth.elsapiens.test admin.elsapiens.test elinventory.elsapiens.test elcatalogs.elsapiens.test elpos.elsapiens.test elaccounting.elsapiens.test\n&quot; | sudo tee -a /etc/hosts &gt; /dev/null</code></pre>
+<h3 id="52-the-nginx-config">5.2 The nginx config<a class="anchor" href="#52-the-nginx-config" aria-hidden="true">#</a></h3>
+<p>The full reverse-proxy config lives in the repo at **<code>scripts/elsapiens.test.conf</code>**. Install it as an enabled nginx site:</p>
+<pre class="lang-bash"><code>sudo cp &quot;scripts/elsapiens.test.conf&quot; /etc/nginx/sites-available/elsapiens.test.conf
+sudo ln -sf /etc/nginx/sites-available/elsapiens.test.conf /etc/nginx/sites-enabled/elsapiens.test.conf
+sudo nginx -t &amp;&amp; sudo systemctl reload nginx</code></pre>
+<p><strong>Installed path:</strong> <code>/etc/nginx/sites-available/elsapiens.test.conf</code> (symlinked into <code>/etc/nginx/sites-enabled/</code>).</p>
+<p><strong>File structure:</strong> <code>scripts/elsapiens.test.conf</code> is one shared <code>map</code> directive (WebSocket upgrade for Vite HMR) followed by **six <code>server</code> blocks — one per <code>*.elsapiens.test</code> host**. Each host proxies <code>/</code> to its Vite dev server and <code>/api</code> (and <code>/graphql</code> where applicable) to its backend. The shape of one server block, for reference:</p>
+<pre class="lang-nginx"><code># from scripts/elsapiens.test.conf — one block per app
+
+map $http_upgrade $connection_upgrade {   # WebSocket upgrade for Vite HMR
+    default upgrade;
+    &#x27;&#x27;      close;
+}
+
+server {
+    listen 80;
+    server_name elinventory.elsapiens.test;
+    client_max_body_size 50m;
+
+    location /api/ {
+        proxy_pass http://127.0.0.1:11016;          # backend HTTP port
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /graphql {
+        proxy_pass http://127.0.0.1:11016;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+
+    location / {
+        proxy_pass http://127.0.0.1:31016;          # Vite dev server port
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_read_timeout 86400;
+    }
+}</code></pre>
+<p>Host → port wiring used by the config:</p>
+<div class='table-wrap'><table><thead><tr><th>Host</th><th>Backend HTTP</th><th>Vite dev</th></tr></thead><tbody><tr><td><code>elauth.elsapiens.test</code></td><td>11001</td><td>31002</td></tr><tr><td><code>admin.elsapiens.test</code></td><td>11001</td><td>31003</td></tr><tr><td><code>elinventory.elsapiens.test</code></td><td>11016</td><td>31016</td></tr><tr><td><code>elcatalogs.elsapiens.test</code></td><td>11011</td><td>31011</td></tr><tr><td><code>elpos.elsapiens.test</code></td><td>11014</td><td>31014</td></tr><tr><td><code>elaccounting.elsapiens.test</code></td><td>11006</td><td>31000</td></tr></tbody></table></div>
+<p>A <code>502</code> from a host just means the upstream (Vite or backend) isn&#x27;t running yet — the proxy routing itself is fine.</p>
+<hr>
+<h2 id="6-seeding-the-reseller-workspace">6. Seeding the reseller + workspace<a class="anchor" href="#6-seeding-the-reseller-workspace" aria-hidden="true">#</a></h2>
+<p>After migrations, the databases have schemas but minimal data. elauth&#x27;s migrations auto-seed the <strong>system reseller</strong> (elSapiens, <code>is_ecosystem_owner=true</code>, with the **fixed UUID <code>2092020e-bf8a-45d5-926c-7c6ec4ced657</code><strong>), the </strong>System Workspace** (<code>00000000-…</code>), and a reseller-admin login — <code>elsapiensadmin</code> / <code>Admin@123</code>.</p>
+<blockquote><p>The System Workspace has <strong>no domain</strong> by design — it&#x27;s the platform&#x27;s internal role container, not something you log into. You still need a real, domain-bound workspace for the elSapiens reseller; that&#x27;s what this 3-script chain creates. Full reference: <code>elaccounts/backend/SEED_GUIDE.md</code>.</p></blockquote>
+<h3 id="easiest-path-the-interactive-wizard">Easiest path — the interactive wizard<a class="anchor" href="#easiest-path-the-interactive-wizard" aria-hidden="true">#</a></h3>
+<p>You usually don&#x27;t need to run the three scripts by hand. The wizard does it all:</p>
+<pre class="lang-bash"><code>bash elauth/backend/scripts/seed-ecosystem.sh</code></pre>
+<p>(Runs from any directory — it resolves its own location.) It runs all three scripts in order, <strong>carries the IDs between steps automatically</strong> (Step 1&#x27;s <code>person_uuid</code>/<code>org_entity_uuid</code> → Step 2; Step 2&#x27;s <code>workspace_id</code> → Step 3), and prompts for every value with help text and a dimmed <code>[default]</code> — Enter accepts, type to override. It needs only the <strong>databases</strong> running (not the backends), and finds the elaccounts repo via <code>ELACCOUNTS_BACKEND_DIR</code> in <code>elauth/backend/.env</code>. If the wizard works for you, <strong>skip the manual steps below</strong> and jump to &quot;After seeding&quot;.</p>
+<p>The manual steps below are what the wizard automates — use them only to run a single step by hand, seed a non-default reseller, or understand the data flow.</p>
+<h3 id="manual-the-scripts-run-in-order">Manual — the scripts run <strong>in order</strong>:<a class="anchor" href="#manual-the-scripts-run-in-order" aria-hidden="true">#</a></h3>
+<pre><code>Script 1  elaccounts/backend  seed-reseller-full.ts             → person_uuid, org_entity_uuid
+Script 2  elauth/backend      scripts/seed_workspace/main.go    → workspace_id
+Script 3  elaccounts/backend  migrate-add-workspace-to-person.ts  (links it in Mongo)</code></pre>
+<h3 id="step-1-reseller-person-entities-mongodb">Step 1 — reseller person + entities (MongoDB)<a class="anchor" href="#step-1-reseller-person-entities-mongodb" aria-hidden="true">#</a></h3>
+<pre class="lang-bash"><code>cd elaccounts/backend
+pnpm install            # first time only
+pnpm seed:reseller:full</code></pre>
+<p>The <code>RESELLER_CONFIG</code> block at the top of <code>scripts/seed-reseller-full.ts</code> already defaults to <code>elSapiens Admin / business@elsapiens.com</code> — which is what elauth&#x27;s migrations expect. **Do not change the fixed <code>RESELLER_PERSON_UUID</code>.<strong> Note the printed </strong><code>person_uuid</code><strong> and </strong><code>org_entity_uuid</code>**. (It also prints a <code>reseller_short_id</code> — that&#x27;s the Mongo-side id, informational only; the next steps do <strong>not</strong> use it.)</p>
+<h3 id="step-2-workspace-elauth-postgresql">Step 2 — workspace (elauth / PostgreSQL)<a class="anchor" href="#step-2-workspace-elauth-postgresql" aria-hidden="true">#</a></h3>
+<p>Edit the <code>seedConfig</code> block in <code>elauth/backend/scripts/seed_workspace/main.go</code>:</p>
+<div class='table-wrap'><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody><tr><td><code>PersonID</code></td><td><code>person_uuid</code> from Step 1</td></tr><tr><td><code>ResellerID</code></td><td>**<code>2092020e-bf8a-45d5-926c-7c6ec4ced657</code>** — the fixed reseller UUID from elauth migration <code>000002</code>. <strong>Not</strong> the Step 1 <code>reseller_short_id</code>. elauth keys <code>reseller_id</code> on the UUID everywhere (migrations <code>000015</code>/<code>000018</code>, the frontend <code>.env</code>).</td></tr><tr><td><code>OrgEntityID</code></td><td><code>org_entity_uuid</code> from Step 1</td></tr><tr><td><code>WorkspaceDomains</code></td><td>**<code>[]string{&quot;elsapiens.test&quot;}</code>** — *required*. elauth resolves a workspace by domain; without this, login and registration cannot resolve the workspace and fail. The root-domain fallback means every <code>*.elsapiens.test</code> subdomain resolves here.</td></tr><tr><td><code>WorkspaceName</code></td><td>anything, e.g. <code>&quot;elSapiens Workspace&quot;</code></td></tr><tr><td><code>Username</code> / <code>Password</code></td><td>leave empty — you log in as the migration-seeded <code>elsapiensadmin</code></td></tr></tbody></table></div>
+<p>Then:</p>
+<pre class="lang-bash"><code>cd elauth/backend
+make seed-workspace</code></pre>
+<p>Note the printed **<code>workspace_id</code>**.</p>
+<h3 id="step-3-link-workspace-to-person-mongodb">Step 3 — link workspace to person (MongoDB)<a class="anchor" href="#step-3-link-workspace-to-person-mongodb" aria-hidden="true">#</a></h3>
+<pre class="lang-bash"><code>cd elaccounts/backend
+HANDLE=business@elsapiens.com \
+WORKSPACE_ID=&lt;workspace_id from step 2&gt; \
+RESELLER_ID=2092020e-bf8a-45d5-926c-7c6ec4ced657 \
+IS_OWNER=true \
+pnpm migrate:add-workspace</code></pre>
+<p><code>RESELLER_ID</code> is the <strong>same fixed reseller UUID</strong> used in Step 2 — keeping <code>reseller_id</code> consistent across both databases. All three scripts are idempotent.</p>
+<h3 id="after-seeding">After seeding<a class="anchor" href="#after-seeding" aria-hidden="true">#</a></h3>
+<ol><li>Start the <strong>elauth</strong> and <strong>accounts-api</strong> backends — both must be running for sign-in to work (elauth calls accounts-api over gRPC; see §9).</li><li>Open <code>http://elauth.elsapiens.test</code> — this only resolves if **§5 (nginx + <code>/etc/hosts</code>) is done**.</li><li>On the sign-in screen choose <strong>More options → Username + Password</strong>.</li><li>Sign in:</li><li>with the migration-seeded reseller-admin **<code>elsapiensadmin</code> / <code>Admin@123</code>**, or</li><li>if you set a custom owner username/password during seeding (the wizard&#x27;s optional Step 2 prompt), use those instead.</li></ol>
+<hr>
+<h2 id="7-running-the-apps">7. Running the apps<a class="anchor" href="#7-running-the-apps" aria-hidden="true">#</a></h2>
+<blockquote><p><strong>Prerequisite — do §5 first.</strong> The apps are reached via <code>*.elsapiens.test</code> hostnames, which only resolve once the <strong>nginx reverse proxy</strong> is installed and the **<code>/etc/hosts</code>** entries are added (§5). Before you start elauth or *any* frontend, confirm:</p>
+<ul><li><code>/etc/hosts</code> has the six <code>*.elsapiens.test</code> entries (§5.1), and</li><li>the nginx site is installed + enabled and <code>sudo nginx -t</code> passes (§5.2).</li></ul>
+<p>A quick check: <code>curl -I -H &#x27;Host: elauth.elsapiens.test&#x27; http://127.0.0.1/</code> — a <code>502</code> is fine (means nginx routes correctly, upstream just isn&#x27;t up yet); a connection refused or the default nginx page means §5 isn&#x27;t done.</p></blockquote>
+<p>For each backend (Go services):</p>
+<pre class="lang-bash"><code>cd &lt;service&gt;/backend     # or &lt;service&gt;/server for elbooks, &lt;service&gt; for elgeolocations/elmedia
+go run .                 # or: make run / make dev</code></pre>
+<p>For each frontend:</p>
+<pre class="lang-bash"><code>cd &lt;service&gt;/frontend    # or /client, /frontend-admin
+pnpm install
+pnpm dev</code></pre>
+<p>Then open the matching <code>http://&lt;app&gt;.elsapiens.test</code> URL. Recommended startup order (because of gRPC dependencies):</p>
+<ol><li><code>elregistry</code>, <code>elgeolocations</code>, <code>elmedia</code>, <code>elaccounts</code> (leaf services)</li><li><code>elauth</code> (depends on registry + accounts)</li><li><code>elcatalogs</code>, <code>elinventory</code>, <code>elbooks</code>, <code>elpos</code> (depend on auth + others)</li><li>Frontends last.</li></ol>
+<hr>
+<h2 id="8-quick-reference">8. Quick reference<a class="anchor" href="#8-quick-reference" aria-hidden="true">#</a></h2>
+<h3 id="tool-versions">Tool versions<a class="anchor" href="#tool-versions" aria-hidden="true">#</a></h3>
+<div class='table-wrap'><table><thead><tr><th>Tool</th><th>Version</th><th>Source</th></tr></thead><tbody><tr><td>PostgreSQL</td><td>18.x</td><td>apt</td></tr><tr><td>MongoDB</td><td>7.0.x</td><td>apt (mongodb-org repo)</td></tr><tr><td>mongosh</td><td>2.x</td><td>snap</td></tr><tr><td>nginx</td><td>1.28+</td><td>apt</td></tr><tr><td>Node</td><td>LTS (nvm-managed)</td><td>nvm</td></tr><tr><td>pnpm</td><td>latest</td><td>corepack</td></tr><tr><td>Go</td><td>1.26+</td><td>apt</td></tr><tr><td>golang-migrate</td><td>v4.x</td><td><code>go install</code></td></tr></tbody></table></div>
+<h3 id="important-paths">Important paths<a class="anchor" href="#important-paths" aria-hidden="true">#</a></h3>
+<div class='table-wrap'><table><thead><tr><th>What</th><th>Path</th></tr></thead><tbody><tr><td>nginx site config (repo copy)</td><td><code>scripts/elsapiens.test.conf</code></td></tr><tr><td>nginx site config (installed)</td><td><code>/etc/nginx/sites-available/elsapiens.test.conf</code></td></tr><tr><td>hosts file</td><td><code>/etc/hosts</code></td></tr><tr><td>Postgres config</td><td><code>/etc/postgresql/18/main/postgresql.conf</code></td></tr><tr><td>MongoDB config</td><td><code>/etc/mongod.conf</code></td></tr><tr><td>Seed guide</td><td><code>elaccounts/backend/SEED_GUIDE.md</code></td></tr><tr><td>go-installed binaries</td><td><code>~/go/bin/</code></td></tr></tbody></table></div>
+<h3 id="default-credentials-local-dev-only">Default credentials (local dev only)<a class="anchor" href="#default-credentials-local-dev-only" aria-hidden="true">#</a></h3>
+<div class='table-wrap'><table><thead><tr><th>What</th><th>Value</th></tr></thead><tbody><tr><td>PostgreSQL role</td><td><code>currency</code> / <code>currency</code></td></tr><tr><td>elauth reseller-admin login</td><td><code>elsapiensadmin</code> / <code>Admin@123</code> (Username + Password)</td></tr><tr><td>Fixed reseller UUID</td><td><code>2092020e-bf8a-45d5-926c-7c6ec4ced657</code> (seeded by elauth migration <code>000002</code>)</td></tr></tbody></table></div>
+<hr>
+<h2 id="9-gotchas-known-issues">9. Gotchas &amp; known issues<a class="anchor" href="#9-gotchas-known-issues" aria-hidden="true">#</a></h2>
+<ul><li><strong>Login needs accounts-api running.</strong> During sign-in, elauth calls <code>ResolveWorkspaceAccess</code> on accounts-api over gRPC. If <code>elaccounts</code> is down, sign-in fails with a misleading <code>&quot;you don&#x27;t have access to this workspace&quot;</code> — that&#x27;s really a gRPC connection failure, not an authorization problem. Always start <code>elaccounts</code> before testing elauth login.</li></ul>
+<ul><li>**The seeded admin login is a *username*.** <code>elsapiensadmin</code> is a <code>username</code>-type identifier — sign in with the <strong>Username + Password</strong> method. For that option to appear, the workspace&#x27;s tenant config must include <code>username_password</code> in <code>registration.user.allowed_login_methods</code>. The <code>seed_workspace</code> script&#x27;s config blob includes it; if you hand-edit a workspace config (e.g. via the admin Domains UI), keep it.</li></ul>
+<ul><li><strong>One domain ↔ one workspace is code-enforced only.</strong> <code>AddDomainToWorkspace</code> blocks adding a domain that&#x27;s already on another workspace, but there is <strong>no DB unique constraint</strong> on <code>workspaces.domains</code>. A duplicate introduced via direct SQL or the seed script makes <code>GetActiveWorkspaceByDomain</code> (a <code>:one</code> query) return an arbitrary row. Never assign the same domain to two workspaces.</li></ul>
+<ul><li>**<code>/admin/*</code> routes have no backend role check (pending).** The admin API routes are JWT-authenticated but not role-gated server-side — the <code>reseller_admin</code> gate currently lives only in the <code>frontend-admin</code> app. Adding server-side enforcement is tracked work.</li></ul>
+<ul><li><strong>Three workspace-creation paths, not identical.</strong> Client registration and the admin-UI &quot;create workspace&quot; both go through <code>WorkspaceService.CreateWorkspace</code> → <code>defaultWorkspaceConfig()</code>. The <code>seed_workspace</code> script is a one-time bootstrap and carries its own config blob — that divergence is expected (seed = initial setup), but be aware the seed-created workspace&#x27;s config will not be byte-identical to a registration-created one.</li></ul>
+<hr>
+<h2 id="appendix-a-full-nginx-config">Appendix A — Full nginx config<a class="anchor" href="#appendix-a-full-nginx-config" aria-hidden="true">#</a></h2>
+<p>The complete <code>scripts/elsapiens.test.conf</code>, embedded here so this page is self-contained. §5.2 above shows one representative server block; this is the whole file.</p>
+<pre class='lang-nginx'><code># elSapiens local development reverse proxy.
+#
+# Each *.elsapiens.test hostname proxies to a Vite dev server (frontend) and
+# the corresponding Go/Node backend HTTP API on localhost. Vite&#x27;s HMR runs
+# over WebSocket, so every server block sets Upgrade/Connection.
+#
+# Install: ln -s /etc/nginx/sites-available/elsapiens.test.conf /etc/nginx/sites-enabled/
+# Reload:  sudo nginx -t &amp;&amp; sudo systemctl reload nginx
+#
+# Port map (kept in sync with each app&#x27;s vite.config.ts and backend/.env):
+#   elauth.elsapiens.test         → frontend 31002, backend 11001 (/api/v1)
+#   admin.elsapiens.test          → frontend 31003, backend 11001 (/api/v1)
+#   elinventory.elsapiens.test    → frontend 31016, backend 11016 (/api, /graphql)
+#   elcatalogs.elsapiens.test     → frontend 31011, backend 11011 (/api, /graphql)
+#   elpos.elsapiens.test          → frontend 31014, backend 11014 (/api, /graphql)
+#   elaccounting.elsapiens.test   → frontend 31000, backend 11006 (/api/v1)
+
+# Shared map for WebSocket Upgrade — set once, used in every server block.
+map $http_upgrade $connection_upgrade {
+    default upgrade;
+    &#x27;&#x27;      close;
+}
+
+# Common proxy headers via a snippet would be cleaner, but keeping everything
+# inline so this single file is self-contained and copy-pasteable.
+
+# ---------- elauth.elsapiens.test ----------
+server {
+    listen 80;
+    server_name elauth.elsapiens.test;
+    client_max_body_size 25m;
+
+    location /api/ {
+        proxy_pass http://127.0.0.1:11001;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location / {
+        proxy_pass http://127.0.0.1:31002;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 86400;
+    }
+}
+
+# ---------- admin.elsapiens.test (elauth/frontend-admin) ----------
+server {
+    listen 80;
+    server_name admin.elsapiens.test;
+    client_max_body_size 25m;
+
+    location /api/ {
+        proxy_pass http://127.0.0.1:11001;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location / {
+        proxy_pass http://127.0.0.1:31003;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 86400;
+    }
+}
+
+# ---------- elinventory.elsapiens.test ----------
+server {
+    listen 80;
+    server_name elinventory.elsapiens.test;
+    client_max_body_size 50m;
+
+    location /api/ {
+        proxy_pass http://127.0.0.1:11016;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /graphql {
+        proxy_pass http://127.0.0.1:11016;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location / {
+        proxy_pass http://127.0.0.1:31016;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 86400;
+    }
+}
+
+# ---------- elcatalogs.elsapiens.test (goods-and-services) ----------
+server {
+    listen 80;
+    server_name elcatalogs.elsapiens.test;
+    client_max_body_size 50m;
+
+    location /api/ {
+        proxy_pass http://127.0.0.1:11011;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /graphql {
+        proxy_pass http://127.0.0.1:11011;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location / {
+        proxy_pass http://127.0.0.1:31011;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 86400;
+    }
+}
+
+# ---------- elpos.elsapiens.test ----------
+server {
+    listen 80;
+    server_name elpos.elsapiens.test;
+    client_max_body_size 25m;
+
+    location /api/ {
+        proxy_pass http://127.0.0.1:11014;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /graphql {
+        proxy_pass http://127.0.0.1:11014;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location / {
+        proxy_pass http://127.0.0.1:31014;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 86400;
+    }
+}
+
+# ---------- elaccounting.elsapiens.test ----------
+server {
+    listen 80;
+    server_name elaccounting.elsapiens.test;
+    client_max_body_size 25m;
+
+    location /api/ {
+        proxy_pass http://127.0.0.1:11006;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location / {
+        proxy_pass http://127.0.0.1:31000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 86400;
+    }
+}
+</code></pre>
+  </main>
+</div>
+</body>
+</html>
