@@ -1,0 +1,2405 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fransko Agro Foods — Process Document</title>
+<style>
+  :root {
+    --sage-50:  hsl(218 31% 95%);
+    --sage-100: hsl(218 31% 90%);
+    --sage-200: hsl(218 32% 80%);
+    --sage-300: hsl(218 34% 70%);
+    --sage-400: hsl(218 34% 60%);
+    --sage-500: hsl(218 33% 50%);
+    --sage-600: hsl(218 33% 40%);
+    --sage-700: hsl(218 33% 30%);
+    --sage-800: hsl(218 33% 20%);
+    --sage-850: hsl(218 33% 15%);
+    --sage-900: hsl(218 33% 10%);
+    --sage-950: hsl(220 33% 7%);
+
+    --neutral-50:  hsl(0 0% 98%);
+    --neutral-100: hsl(0 0% 96%);
+    --neutral-200: hsl(0 0% 92%);
+    --neutral-300: hsl(0 0% 85%);
+    --neutral-400: hsl(0 0% 64%);
+    --neutral-500: hsl(0 0% 45%);
+    --neutral-600: hsl(0 0% 32%);
+    --neutral-700: hsl(0 0% 25%);
+    --neutral-900: hsl(0 0% 9%);
+
+    --font-sans:    system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --font-display: Georgia, 'Times New Roman', serif;
+    --font-mono:    ui-monospace, 'SF Mono', Menlo, monospace;
+
+    --brand:        var(--sage-400);
+    --brand-dark:   var(--sage-600);
+    --brand-darker: var(--sage-800);
+    --brand-light:  var(--sage-300);
+    --brand-xlight: var(--sage-50);
+
+    --red-light:    hsl(0 70% 95%);
+    --red:          hsl(0 72% 45%);
+    --amber-light:  hsl(38 90% 92%);
+    --amber:        hsl(33 80% 38%);
+    --teal:         hsl(163 64% 30%);
+    --teal-light:   hsl(163 45% 92%);
+    --purple:       hsl(255 45% 50%);
+    --purple-light: hsl(255 55% 96%);
+
+    --gray-50:  var(--neutral-50);
+    --gray-100: var(--neutral-100);
+    --gray-200: var(--neutral-200);
+    --gray-300: var(--neutral-300);
+    --gray-400: var(--neutral-400);
+    --gray-500: var(--neutral-500);
+    --gray-600: var(--neutral-600);
+    --gray-700: var(--neutral-700);
+    --gray-900: var(--neutral-900);
+
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow:    0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.08);
+    --shadow-md: 0 4px 12px -2px rgb(15 23 42 / 0.10), 0 2px 4px -2px rgb(15 23 42 / 0.06);
+
+    --radius: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font-sans);
+    background: var(--neutral-100);
+    color: var(--gray-700);
+    line-height: 1.6;
+    font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── COVER ── */
+  .cover {
+    background:
+      radial-gradient(120% 120% at 85% 0%, hsl(218 33% 22%) 0%, transparent 55%),
+      var(--sage-950);
+    color: white;
+    padding: 88px 64px 64px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cover::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(to right, rgba(255,255,255,0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: 56px 56px;
+    -webkit-mask-image: radial-gradient(120% 100% at 80% 10%, black 0%, transparent 70%);
+            mask-image: radial-gradient(120% 100% at 80% 10%, black 0%, transparent 70%);
+  }
+  .cover > * { position: relative; z-index: 1; }
+  .cover-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 9999px;
+    padding: 6px 16px;
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--sage-200);
+    margin-bottom: 28px;
+    white-space: nowrap;
+  }
+  .cover-badge::before {
+    content: ''; width: 7px; height: 7px; border-radius: 50%;
+    background: var(--sage-300);
+    box-shadow: 0 0 0 4px rgba(129,151,192,0.18);
+  }
+  .cover h1 {
+    font-family: var(--font-display);
+    font-size: 60px; font-weight: 600;
+    letter-spacing: -0.02em; line-height: 1.02;
+  }
+  .cover h1 span { color: var(--sage-300); font-style: italic; }
+  .cover p {
+    margin-top: 22px; font-size: 18px;
+    color: rgba(255,255,255,0.72);
+    max-width: 660px; line-height: 1.6;
+  }
+  .cover-meta {
+    margin-top: 44px; display: flex; gap: 0; flex-wrap: wrap;
+    border-top: 1px solid rgba(255,255,255,0.12);
+    padding-top: 24px;
+  }
+  .cover-meta div {
+    padding-right: 44px; margin-right: 44px;
+    border-right: 1px solid rgba(255,255,255,0.12);
+  }
+  .cover-meta div:last-child { border-right: none; margin-right: 0; padding-right: 0; }
+  .cover-meta .lbl {
+    display: block; font-size: 11px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--sage-300); margin-bottom: 6px;
+  }
+  .cover-meta strong { display: block; font-size: 15px; font-weight: 600; color: white; }
+
+  /* ── LAYOUT ── */
+  .container { padding: 0 24px 48px; width: 100%; max-width: 1024px; margin: 0 auto; }
+
+  /* ── SECTION HEADER ── */
+  .hub-header {
+    display: flex; align-items: center; gap: 16px;
+    margin: 8px 0 28px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--gray-200);
+  }
+  .hub-icon {
+    width: 44px; height: 44px; border-radius: 12px;
+    background: var(--sage-800); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; flex-shrink: 0;
+    box-shadow: var(--shadow-sm);
+  }
+  .hub-header h2 {
+    font-family: var(--font-display);
+    font-size: 28px; font-weight: 600; color: var(--gray-900);
+    letter-spacing: -0.015em; line-height: 1.1;
+  }
+  .hub-header p { font-size: 14px; color: var(--gray-500); margin-top: 4px; }
+
+  /* ── PAGE CARD ── */
+  .page-card {
+    background: white;
+    border-radius: var(--radius);
+    border: 1px solid var(--gray-200);
+    margin-bottom: 24px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .page-card-header {
+    padding: 20px 26px;
+    background: white;
+    border-bottom: 1px solid var(--gray-200);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .page-name {
+    font-size: 17px; font-weight: 700; color: var(--gray-900);
+    letter-spacing: -0.01em;
+  }
+  .page-sub  { font-size: 13px; color: var(--gray-500); margin-top: 3px; }
+  .status-badge {
+    margin-left: auto;
+    font-size: 11px; font-weight: 600;
+    padding: 4px 12px; border-radius: 9999px;
+    white-space: nowrap;
+    border: 1px solid transparent;
+  }
+  .status-full    { background: var(--sage-50); color: var(--sage-800); border-color: var(--sage-100); }
+  .status-partial { background: var(--amber-light); color: var(--amber); border-color: hsl(38 70% 82%); }
+  .status-new     { background: var(--teal-light); color: var(--teal); border-color: hsl(163 40% 80%); }
+  .status-change  { background: var(--purple-light); color: var(--purple); border-color: hsl(255 45% 88%); }
+  .status-open    { background: #fff7ed; color: hsl(33 80% 38%); border-color: hsl(38 70% 82%); }
+
+  /* ── GRID ── */
+  .card-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+  .card-grid .col {
+    padding: 28px 30px;
+    border-right: 1px solid var(--gray-200);
+  }
+  .card-grid .col:last-child { border-right: none; }
+  .card-grid .col-full {
+    grid-column: 1 / -1;
+    padding: 28px 30px;
+    border-top: 1px solid var(--gray-200);
+  }
+  @media (max-width: 680px) {
+    .card-grid { grid-template-columns: 1fr; }
+    .card-grid .col { border-right: none; border-bottom: 1px solid var(--gray-200); }
+    .card-grid .col-full { grid-column: 1; }
+  }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--sage-600);
+    margin-bottom: 10px;
+  }
+
+  /* ── FEATURE LIST ── */
+  ul.features { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+  ul.features li {
+    padding: 0 0 0 24px;
+    position: relative;
+    font-size: 13.5px;
+    color: var(--gray-700);
+    line-height: 1.6;
+  }
+  ul.features li::before {
+    content: '✓';
+    position: absolute; left: 0; top: 0;
+    color: var(--sage-600); font-weight: 700;
+    font-size: 12px;
+  }
+
+  /* ── CHANGE LIST ── */
+  ul.changes { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+  ul.changes li {
+    padding: 0 0 0 24px;
+    position: relative;
+    font-size: 13.5px;
+    color: var(--gray-700);
+    line-height: 1.6;
+  }
+  ul.changes li::before {
+    content: '→';
+    position: absolute; left: 0;
+    color: var(--purple); font-weight: 700;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  /* ── GAP LIST ── */
+  ul.gaps { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+  ul.gaps li {
+    padding: 0 0 0 24px;
+    position: relative;
+    font-size: 13.5px;
+    color: var(--gray-700);
+    line-height: 1.6;
+  }
+  ul.gaps li::before {
+    content: '○';
+    position: absolute; left: 0;
+    color: var(--red); font-size: 11px;
+    line-height: 1.7;
+  }
+
+  /* ── STEP LIST ── */
+  ol.steps { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 10px; counter-reset: step-counter; }
+  ol.steps li {
+    padding: 0 0 0 32px;
+    position: relative;
+    font-size: 13.5px;
+    color: var(--gray-700);
+    line-height: 1.6;
+    counter-increment: step-counter;
+  }
+  ol.steps li::before {
+    content: counter(step-counter);
+    position: absolute; left: 0; top: 1px;
+    width: 20px; height: 20px;
+    background: var(--sage-700); color: white;
+    border-radius: 50%;
+    font-size: 10px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    line-height: 1;
+  }
+
+  /* ── CALLOUT ── */
+  .callout {
+    background: var(--brand-xlight);
+    border-left: 3px solid var(--brand-dark);
+    padding: 12px 16px;
+    border-radius: 0 6px 6px 0;
+    font-size: 13px;
+    color: var(--brand-darker);
+    margin-bottom: 16px;
+  }
+
+  /* ── NOTE BOX ── */
+  .note-box {
+    background: #f0fdf4;
+    border-left: 4px solid #16a34a;
+    border-radius: 0 8px 8px 0;
+    padding: 16px 20px;
+    margin-top: 16px;
+  }
+  .note-box .note-label {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: #16a34a; margin-bottom: 6px;
+  }
+  .note-box .note-title {
+    font-size: 13px; font-weight: 600; color: #1a1a2e; margin-bottom: 8px;
+  }
+  .note-box p, .note-box ul, .note-box ol {
+    font-size: 13px; color: #374151; line-height: 1.7;
+  }
+  .note-box ul, .note-box ol { margin: 6px 0 0 16px; }
+
+  /* ── GATE BOX ── */
+  .gate-box {
+    background: #fef2f2;
+    border-left: 3px solid var(--red);
+    border-radius: 0 6px 6px 0;
+    padding: 14px 18px;
+    margin-top: 12px;
+  }
+  .gate-box .gate-title {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--red); margin-bottom: 8px;
+  }
+
+  /* ── STAGE BLOCK ── */
+  .stage-block {
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow);
+    background: white;
+  }
+  .stage-header {
+    display: flex; align-items: center; gap: 14px;
+    padding: 18px 24px;
+    background: var(--sage-800);
+    color: white;
+  }
+  .stage-num {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; opacity: 0.7;
+  }
+  .stage-title {
+    font-size: 16px; font-weight: 700;
+    flex: 1;
+  }
+  .stage-body { padding: 24px 28px; display: flex; flex-direction: column; gap: 18px; }
+  .stage-sub {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--sage-600);
+    margin-bottom: 8px;
+  }
+
+  /* ── FIELD GRID ── */
+  .field-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+  }
+  @media (max-width: 680px) { .field-grid { grid-template-columns: 1fr 1fr; } }
+  .field-pill {
+    background: var(--gray-50); border: 1px solid var(--gray-200);
+    border-radius: 8px; padding: 10px 14px;
+    font-size: 12px; color: var(--gray-700); line-height: 1.5;
+  }
+  .field-pill .field-name { font-weight: 700; color: var(--gray-900); display: block; }
+  .field-pill .field-note { color: var(--gray-500); font-size: 11px; }
+
+  /* ── CRITERIA TABLE ── */
+  .criteria-row {
+    display: flex; gap: 14px; align-items: flex-start;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    font-size: 13px;
+  }
+  .criteria-row.block { background: #fef2f2; border: 1px solid hsl(0 55% 88%); }
+  .criteria-row.allow { background: #f0fdf4; border: 1px solid hsl(142 40% 82%); }
+  .criteria-row.warn  { background: #fff7ed; border: 1px solid hsl(38 70% 82%); }
+  .criteria-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .criteria-text { color: var(--gray-700); line-height: 1.6; }
+  .criteria-text strong { color: var(--gray-900); }
+
+  /* ── OPEN QUESTION LIST ── */
+  .oq-list { display: flex; flex-direction: column; gap: 10px; }
+  .oq-item {
+    display: flex; gap: 14px; align-items: flex-start;
+    padding: 14px 18px;
+    background: var(--gray-50); border: 1px solid var(--gray-200);
+    border-radius: 10px;
+  }
+  .oq-num {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--sage-700); color: white;
+    font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px;
+  }
+  .oq-text { font-size: 13.5px; color: var(--gray-700); line-height: 1.6; flex: 1; }
+  .oq-text strong { color: var(--gray-900); display: block; margin-bottom: 2px; }
+  .oq-text span { color: var(--gray-500); font-size: 12px; }
+
+  /* ── METRIC CARDS ── */
+  .metric-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  @media (max-width: 760px) { .metric-grid { grid-template-columns: 1fr 1fr; } }
+  .metric-card {
+    background: white; border: 1px solid var(--gray-200);
+    border-radius: 10px; padding: 18px 20px;
+    box-shadow: var(--shadow-sm);
+  }
+  .metric-icon { font-size: 22px; margin-bottom: 8px; }
+  .metric-name { font-size: 12px; font-weight: 700; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+  .metric-desc { font-size: 12px; color: var(--gray-600); line-height: 1.5; }
+
+  /* ── FOOTER ── */
+  .footer {
+    text-align: center;
+    padding: 40px 24px;
+    font-size: 12px;
+    color: var(--gray-400);
+    border-top: 1px solid var(--gray-200);
+    margin-top: 60px;
+  }
+
+  /* ── DATE BANNER ── */
+  .date-banner {
+    margin: 40px 0 16px;
+    padding: 10px 16px;
+    background: var(--sage-900);
+    border-radius: 8px;
+    font-size: 12px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: #fff;
+  }
+
+  /* ── TAB NAVIGATION ── */
+  .tab-nav {
+    position: sticky;
+    top: 12px;
+    z-index: 50;
+    background: rgba(255,255,255,0.82);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--gray-200);
+    border-radius: 9999px;
+    padding: 8px 10px 8px 18px;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin: 28px 0 36px;
+    box-shadow: var(--shadow-md);
+  }
+  .tab-nav-label {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--gray-400); margin-right: 6px;
+  }
+  .tab-btn {
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 9999px;
+    padding: 8px 18px;
+    font-size: 13px; font-weight: 600;
+    color: var(--gray-600);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-family: inherit;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .tab-btn:hover { background: var(--gray-100); color: var(--gray-900); }
+  .tab-btn.active {
+    background: var(--sage-800);
+    color: white;
+    border-color: var(--sage-800);
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* Tab visibility */
+  body:not([data-view="process"]) [data-tab="process"] { display: none !important; }
+  body[data-view="process"] .container > *:not([data-tab="process"]):not(.tab-nav) { display: none !important; }
+
+  /* ── LEGEND ── */
+  .legend {
+    display: flex; gap: 20px; flex-wrap: wrap;
+    font-size: 12px; color: var(--gray-600);
+    margin-bottom: 32px;
+  }
+  .legend span { display: flex; align-items: center; gap: 6px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+
+  /* ── GAP BOX ── */
+  .gap-box {
+    background: #fff7ed;
+    border-left: 3px solid var(--amber);
+    padding: 14px 18px;
+    border-radius: 0 6px 6px 0;
+    margin-top: 12px;
+  }
+  .gap-box .gap-title {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--amber); margin-bottom: 8px;
+  }
+
+  .section-divider { height: 1px; background: var(--gray-200); margin: 28px 0; }
+
+  /* ── PROCESS VALUE SECTION ── */
+  .pvs {
+    background: var(--sage-50);
+    border: 1px solid var(--sage-100);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 28px;
+  }
+  .pvs-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--sage-600);
+    padding: 12px 18px 8px;
+  }
+  .pvs-chips { display: flex; flex-direction: column; }
+  .pvs-chip {
+    display: grid; grid-template-columns: 130px 1fr;
+    border-top: 1px solid var(--sage-100);
+    font-size: 12.5px;
+  }
+  .pvs-chip strong {
+    padding: 9px 16px; color: var(--sage-700);
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.06em; background: white;
+    display: flex; align-items: center;
+  }
+  .pvs-chip span {
+    padding: 9px 16px; color: var(--gray-600);
+    line-height: 1.55; border-left: 1px solid var(--sage-100);
+  }
+
+  /* ── CONFIRM FLAG ── */
+  .confirm-flag {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: hsl(38 90% 92%);
+    border: 1px solid hsl(38 70% 78%);
+    color: hsl(33 80% 32%);
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.07em; text-transform: uppercase;
+    padding: 2px 8px; border-radius: 4px;
+    vertical-align: middle; white-space: nowrap;
+    margin-left: 8px;
+  }
+  .confirm-flag::before { content: '⚑'; font-size: 10px; }
+
+  .confirm-block {
+    background: hsl(38 90% 96%);
+    border: 1px solid hsl(38 70% 82%);
+    border-left: 3px solid hsl(33 80% 42%);
+    border-radius: 0 6px 6px 0;
+    padding: 10px 16px;
+    font-size: 12.5px; color: hsl(33 60% 28%);
+    line-height: 1.6; margin-top: 10px;
+  }
+  .confirm-block strong { color: hsl(33 80% 28%); }
+
+  /* ── COPY BUTTON ── */
+  .copy-docs-btn {
+    margin-left: auto;
+    background: var(--sage-700);
+    color: white;
+    border: none;
+    border-radius: 9999px;
+    padding: 8px 20px;
+    font-size: 12px; font-weight: 700;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 7px;
+    font-family: inherit;
+    letter-spacing: 0.02em;
+    transition: background 0.15s, transform 0.1s;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .copy-docs-btn:hover { background: var(--sage-800); }
+  .copy-docs-btn:active { transform: scale(0.97); }
+  .copy-docs-btn.copied { background: #16a34a; }
+  .copy-docs-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed; bottom: 28px; left: 50%;
+    transform: translateX(-50%) translateY(8px);
+    background: var(--sage-900); color: white;
+    padding: 11px 26px; border-radius: 9999px;
+    font-size: 13px; font-weight: 600;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.28);
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.22s, transform 0.22s;
+    z-index: 200; white-space: nowrap;
+    font-family: var(--font-sans);
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+
+<body data-view="brief">
+
+<!-- ══════════ COVER ══════════ -->
+<div class="cover">
+  <div class="cover-badge">Digital Transformation · Process Document</div>
+  <h1>Fransko Agro <span>Foods</span></h1>
+  <p>Modernising route-based sales, order management, and receivables collection for a two-decade agro-food distribution business operating the Nellari Matta Rice brand across domestic and export markets.</p>
+  <div class="cover-meta">
+    <div><span class="lbl">Location</span><strong>Nellari</strong></div>
+    <div><span class="lbl">Prepared by</span><strong>elSapiens Product Team</strong></div>
+    <div><span class="lbl">Document</span><strong>V1 · June 2026</strong></div>
+  </div>
+</div>
+
+<div class="container">
+
+  <nav class="tab-nav">
+    <span class="tab-nav-label">View:</span>
+    <button class="tab-btn active" data-view="brief">Brief</button>
+    <button class="tab-btn" data-view="process">Process Document</button>
+    <button class="copy-docs-btn" id="copyBtn" onclick="copyToGoogleDocs()">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="5" y="2" width="9" height="11" rx="1.5"/>
+        <path d="M2 5v9a1.5 1.5 0 0 0 1.5 1.5H11"/>
+      </svg>
+      Copy for Google Docs
+    </button>
+  </nav>
+  <div class="toast" id="toast"></div>
+
+  <!-- ════════════════════════════════════
+       BRIEF TAB
+  ════════════════════════════════════ -->
+
+  <div class="hub-header">
+    <div class="hub-icon">🌾</div>
+    <div>
+      <h2>Business Overview</h2>
+      <p>Who Fransko Agro Foods are and how the business operates today</p>
+    </div>
+  </div>
+
+  <div class="page-card">
+    <div class="page-card-header">
+      <div>
+        <div class="page-name">About the Business</div>
+        <div class="page-sub">20–30 years of agro-food distribution — Nellari brand Matta Rice</div>
+      </div>
+    </div>
+    <div class="card-grid">
+      <div class="col">
+        <div class="section-label">Business Profile</div>
+        <ul class="features">
+          <li>In operation for <strong>20–30 years</strong></li>
+          <li>Primary product: <strong>Nellari brand Matta Rice</strong></li>
+          <li>Operates both <strong>domestic supply</strong> and <strong>export channels</strong> (2–3 countries)</li>
+          <li>Own fleet of vehicles — established daily delivery routes</li>
+          <li>Expanding into <strong>new product categories</strong>: sugar, salt — leveraging existing shop relationships</li>
+          <li>Serves shops both <strong>with GST</strong> and <strong>without GST</strong></li>
+        </ul>
+      </div>
+      <div class="col">
+        <div class="section-label">Current Sales Model</div>
+        <ul class="features">
+          <li>Field representatives visit shops on a <strong>regular route cycle</strong></li>
+          <li>Rep checks current stock levels and advises the shop on whether to add or reduce stock based on <strong>movement patterns</strong></li>
+          <li>Strong, long-established <strong>personal relationships</strong> with shop owners</li>
+          <li>Two vehicle categories operate the routes: <strong>small vehicle</strong> and <strong>large vehicle</strong></li>
+        </ul>
+        <div style="margin-top: 20px;">
+          <div class="section-label">Collection Challenge</div>
+          <ul class="changes">
+            <li>Payment delays from shops are common</li>
+            <li>Material given to shops on the basis of trust and relationship — without formal credit controls</li>
+            <li>No structured follow-up process currently in place</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hub-header" style="margin-top: 16px;">
+    <div class="hub-icon">🚀</div>
+    <div>
+      <h2>What We Are Building</h2>
+      <p>The system capabilities being introduced in this engagement</p>
+    </div>
+  </div>
+
+  <div class="page-card">
+    <div class="page-card-header">
+      <div>
+        <div class="page-name">Scope of Digitalisation</div>
+        <div class="page-sub">From route management to order approval, dispatch, and collection</div>
+      </div>
+    </div>
+    <div style="padding: 28px 30px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px;">
+      <div style="background: var(--sage-50); border: 1px solid var(--sage-100); border-radius: 10px; padding: 18px 20px;">
+        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--sage-700); margin-bottom: 8px;">Shop Master</div>
+        <div style="font-size: 13px; color: var(--gray-700); line-height: 1.6;">Register all shops with location, GST status, contact details, credit terms, and route assignment.</div>
+      </div>
+      <div style="background: var(--sage-50); border: 1px solid var(--sage-100); border-radius: 10px; padding: 18px 20px;">
+        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--sage-700); margin-bottom: 8px;">Route &amp; Map</div>
+        <div style="font-size: 13px; color: var(--gray-700); line-height: 1.6;">Visualise all shops on a live map. Map each shop to a route. Define optimal delivery sequence via Google Maps.</div>
+      </div>
+      <div style="background: var(--sage-50); border: 1px solid var(--sage-100); border-radius: 10px; padding: 18px 20px;">
+        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--sage-700); margin-bottom: 8px;">Order Taking</div>
+        <div style="font-size: 13px; color: var(--gray-700); line-height: 1.6;">Telecaller views full order history, outstanding balance, and payment discipline before accepting any new order.</div>
+      </div>
+      <div style="background: var(--sage-50); border: 1px solid var(--sage-100); border-radius: 10px; padding: 18px 20px;">
+        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--sage-700); margin-bottom: 8px;">Accounts Approval</div>
+        <div style="font-size: 13px; color: var(--gray-700); line-height: 1.6;">Proforma goes to accounts for credit check, approval, and vehicle number assignment before dispatch.</div>
+      </div>
+      <div style="background: var(--sage-50); border: 1px solid var(--sage-100); border-radius: 10px; padding: 18px 20px;">
+        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--sage-700); margin-bottom: 8px;">Weighbridge</div>
+        <div style="font-size: 13px; color: var(--gray-700); line-height: 1.6;">Record gross, tare, and net weight per vehicle before and after loading. SOP compliance enforced.</div>
+      </div>
+      <div style="background: var(--sage-50); border: 1px solid var(--sage-100); border-radius: 10px; padding: 18px 20px;">
+        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--sage-700); margin-bottom: 8px;">Sales Visibility</div>
+        <div style="font-size: 13px; color: var(--gray-700); line-height: 1.6;">Sales team sees all routes, shop visit times, payment status, order history, and assigned shops in one view.</div>
+      </div>
+      <div style="background: var(--sage-50); border: 1px solid var(--sage-100); border-radius: 10px; padding: 18px 20px;">
+        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--sage-700); margin-bottom: 8px;">Shop Scoring</div>
+        <div style="font-size: 13px; color: var(--gray-700); line-height: 1.6;">Every shop gets a composite score across 6 parameters — Volume, Account Age, Growth, Credit, Frequency, and Discipline. Score drives credit, collection priority, and visit frequency.</div>
+      </div>
+      <div style="background: var(--sage-50); border: 1px solid var(--sage-100); border-radius: 10px; padding: 18px 20px;">
+        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--sage-700); margin-bottom: 8px;">Payment Follow-Up</div>
+        <div style="font-size: 13px; color: var(--gray-700); line-height: 1.6;">Pending payments dashboard with age buckets, call/WhatsApp/log actions, daily follow-up queue, and 7 collection states per shop.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hub-header" style="margin-top: 16px;">
+    <div class="hub-icon">⭐</div>
+    <div>
+      <h2>Shop Scoring</h2>
+      <p>How every shop is rated — 6 parameters, one composite score, four bands</p>
+    </div>
+  </div>
+
+  <div class="page-card">
+    <div class="page-card-header">
+      <div>
+        <div class="page-name">Composite Shop Score — Out of 60</div>
+        <div class="page-sub">Automatically recalculated every month · Relationship score entered manually by sales team</div>
+      </div>
+    </div>
+    <div style="padding: 24px 30px; display: flex; flex-direction: column; gap: 20px;">
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+        <div style="background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 10px; padding: 16px 18px;">
+          <div style="font-size: 20px; margin-bottom: 6px;">📦</div>
+          <div style="font-size: 12px; font-weight: 700; color: var(--sage-700); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px;">Volume <span style="color: var(--gray-400); font-weight: 400;">/10</span></div>
+          <div style="font-size: 12.5px; color: var(--gray-600); line-height: 1.5;">Average order value per visit. Higher purchasing volume = higher score.</div>
+        </div>
+        <div style="background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 10px; padding: 16px 18px;">
+          <div style="font-size: 20px; margin-bottom: 6px;">📅</div>
+          <div style="font-size: 12px; font-weight: 700; color: var(--sage-700); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px;">Account Age <span style="color: var(--gray-400); font-weight: 400;">/10</span></div>
+          <div style="font-size: 12.5px; color: var(--gray-600); line-height: 1.5;">How long the shop has been a customer. Auto-calculated from account creation date.</div>
+        </div>
+        <div style="background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 10px; padding: 16px 18px;">
+          <div style="font-size: 20px; margin-bottom: 6px;">📈</div>
+          <div style="font-size: 12px; font-weight: 700; color: var(--sage-700); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px;">Growth <span style="color: var(--gray-400); font-weight: 400;">/10</span></div>
+          <div style="font-size: 12.5px; color: var(--gray-600); line-height: 1.5;">Order value trend: last 3 months vs prior 3 months. Growing = high score; declining = low score.</div>
+        </div>
+        <div style="background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 10px; padding: 16px 18px;">
+          <div style="font-size: 20px; margin-bottom: 6px;">💳</div>
+          <div style="font-size: 12px; font-weight: 700; color: var(--sage-700); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px;">Credit <span style="color: var(--gray-400); font-weight: 400;">/10</span></div>
+          <div style="font-size: 12.5px; color: var(--gray-600); line-height: 1.5;">Credit limit utilisation. Lower utilisation = lower risk = higher score. At or over limit = lowest score.</div>
+        </div>
+        <div style="background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 10px; padding: 16px 18px;">
+          <div style="font-size: 20px; margin-bottom: 6px;">🔁</div>
+          <div style="font-size: 12px; font-weight: 700; color: var(--sage-700); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px;">Frequency <span style="color: var(--gray-400); font-weight: 400;">/10</span></div>
+          <div style="font-size: 12.5px; color: var(--gray-600); line-height: 1.5;">Orders per month. Frequent ordering signals active business and dependency on Fransko as supplier.</div>
+        </div>
+        <div style="background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 10px; padding: 16px 18px;">
+          <div style="font-size: 20px; margin-bottom: 6px;">⏱️</div>
+          <div style="font-size: 12px; font-weight: 700; color: var(--sage-700); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px;">Discipline <span style="color: var(--gray-400); font-weight: 400;">/10</span></div>
+          <div style="font-size: 12.5px; color: var(--gray-600); line-height: 1.5;">Payment behaviour — consistency of on-time payments and whether promises have ever been broken.</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-label">Score Bands</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px;">
+          <div style="display: flex; gap: 12px; align-items: center; padding: 12px 16px; background: #f0fdf4; border: 1px solid hsl(142 40% 82%); border-left: 4px solid var(--teal); border-radius: 0 8px 8px 0;">
+            <span style="font-size: 22px;">🥇</span>
+            <div>
+              <div style="font-size: 12px; font-weight: 700; color: var(--teal);">Gold — 48 to 60</div>
+              <div style="font-size: 12px; color: var(--gray-600); margin-top: 2px;">Priority accounts. Maximum credit flexibility. Minimal collection effort.</div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 12px; align-items: center; padding: 12px 16px; background: var(--sage-50); border: 1px solid var(--sage-100); border-left: 4px solid var(--sage-500); border-radius: 0 8px 8px 0;">
+            <span style="font-size: 22px;">🥈</span>
+            <div>
+              <div style="font-size: 12px; font-weight: 700; color: var(--sage-700);">Silver — 36 to 47</div>
+              <div style="font-size: 12px; color: var(--gray-600); margin-top: 2px;">Good accounts. Standard credit terms. Routine follow-up cadence.</div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 12px; align-items: center; padding: 12px 16px; background: var(--amber-light); border: 1px solid hsl(38 70% 82%); border-left: 4px solid var(--amber); border-radius: 0 8px 8px 0;">
+            <span style="font-size: 22px;">🥉</span>
+            <div>
+              <div style="font-size: 12px; font-weight: 700; color: var(--amber);">Bronze — 21 to 35</div>
+              <div style="font-size: 12px; color: var(--gray-600); margin-top: 2px;">Developing accounts. Tighter terms. Quarterly score review.</div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 12px; align-items: center; padding: 12px 16px; background: var(--red-light); border: 1px solid hsl(0 55% 88%); border-left: 4px solid var(--red); border-radius: 0 8px 8px 0;">
+            <span style="font-size: 22px;">⚠️</span>
+            <div>
+              <div style="font-size: 12px; font-weight: 700; color: var(--red);">Watch — 0 to 20</div>
+              <div style="font-size: 12px; color: var(--gray-600); margin-top: 2px;">High-risk. Mandatory accounts approval. Owner review required.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout">
+        <strong>Relationship score</strong> — the personal rapport between the salesman and shop owner — is entered manually by the sales team and is separate from this automated composite score. Together they give a complete picture of each shop.
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════
+       PROCESS DOCUMENT TAB
+  ════════════════════════════════════ -->
+  <div data-tab="process" style="padding: 0 0 32px; max-width: 976px; margin: 0 auto;">
+
+    <div class="hub-header" style="margin-top: 8px;">
+      <div class="hub-icon">📋</div>
+      <div>
+        <h2>Process Document</h2>
+        <p>End-to-end operational processes — shop onboarding through delivery and collection</p>
+      </div>
+    </div>
+
+    <!-- ══════ PROCESS 1 ══════ -->
+    <div class="date-banner">Process 1 — Shop Registration &amp; Master Data</div>
+
+    <div class="stage-block">
+      <div class="stage-header">
+        <span class="stage-num">Stage 1.1</span>
+        <span class="stage-title">Shop Master Setup</span>
+      </div>
+      <div class="stage-body">
+
+        <div>
+          <div class="stage-sub">Purpose</div>
+          <p style="font-size: 13.5px; color: var(--gray-700); line-height: 1.7;">Every shop that Fransko Agro Foods supplies must be registered as a master record before any order can be placed. This record is the single source of truth for that shop — its location, contact, GST status, credit terms, and route assignment all live here.</p>
+        </div>
+
+        <div>
+          <div class="stage-sub">Required Fields — Shop Master</div>
+          <div class="field-grid">
+            <div class="field-pill">
+              <span class="field-name">Shop Photos</span>
+              <span class="field-note">Minimum 1 photo of shopfront</span>
+            </div>
+            <div class="field-pill">
+              <span class="field-name">GPS Location</span>
+              <span class="field-note">Latitude &amp; longitude (captured on-site)</span>
+            </div>
+            <div class="field-pill">
+              <span class="field-name">GST Status</span>
+              <span class="field-note">With GST or Without GST</span>
+            </div>
+            <div class="field-pill">
+              <span class="field-name">Shop Type</span>
+              <span class="field-note">Wholesale or Retail</span>
+            </div>
+            <div class="field-pill">
+              <span class="field-name">Contact Person</span>
+              <span class="field-note">Name of primary contact</span>
+            </div>
+            <div class="field-pill">
+              <span class="field-name">Phone Number</span>
+              <span class="field-note">Mandatory — for orders &amp; collection</span>
+            </div>
+            <div class="field-pill">
+              <span class="field-name">Credit Terms</span>
+              <span class="field-note">Credit limit (₹) and payment days</span>
+            </div>
+            <div class="field-pill">
+              <span class="field-name">Address</span>
+              <span class="field-note">Full shop address</span>
+            </div>
+            <div class="field-pill" style="border-color: hsl(38 70% 78%); background: hsl(38 90% 96%);">
+              <span class="field-name">Route Assignment <span class="confirm-flag">Confirm</span></span>
+              <span class="field-note">Currently assumed: Small vehicle or Large vehicle route — classification logic to be confirmed</span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="stage-sub">Route Classification <span class="confirm-flag">Confirm with Business Owner</span></div>
+          <div class="confirm-block" style="margin-bottom: 12px;">
+            <strong>Open Question (OQ 2):</strong> The classification below assumes routes are defined by vehicle type (small vs large). The actual logic — whether it is based on vehicle size, geographic zone, frequency, or a combination — must be confirmed before the route master is built.
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div style="background: var(--sage-50); border: 1px solid var(--sage-100); border-radius: 8px; padding: 14px 18px;">
+              <div style="font-size: 12px; font-weight: 700; color: var(--sage-700); margin-bottom: 6px;">🚐 Small Vehicle Route <span class="confirm-flag">Assumed</span></div>
+              <div style="font-size: 13px; color: var(--gray-600); line-height: 1.6;">Shops served by smaller delivery vehicles. Typically narrower roads, lower order volumes, or locations that cannot accommodate large trucks.</div>
+            </div>
+            <div style="background: var(--sage-50); border: 1px solid var(--sage-100); border-radius: 8px; padding: 14px 18px;">
+              <div style="font-size: 12px; font-weight: 700; color: var(--sage-700); margin-bottom: 6px;">🚚 Large Vehicle Route <span class="confirm-flag">Assumed</span></div>
+              <div style="font-size: 13px; color: var(--gray-600); line-height: 1.6;">Shops served by larger trucks. Higher capacity loads, typically bulk buyers or shops on accessible main roads.</div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="stage-sub">Shop Status</div>
+          <ul class="features">
+            <li><strong>Active</strong> — normal operation; orders can be taken</li>
+            <li><strong>Inactive</strong> — not currently ordering; no new orders permitted</li>
+            <li><strong>Blacklisted</strong> — permanently blocked; system prevents any order being raised</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══════ STAGE 1.2 — SHOP SCORING ══════ -->
+    <div class="stage-block">
+      <div class="stage-header">
+        <span class="stage-num">Stage 1.2</span>
+        <span class="stage-title">Shop Scoring — Performance &amp; Risk Classification</span>
+      </div>
+      <div class="stage-body">
+
+        <div>
+          <div class="stage-sub">Purpose</div>
+          <p style="font-size: 13.5px; color: var(--gray-700); line-height: 1.7;">Every shop gets a composite score across six parameters — auto-calculated monthly. Replaces gut-feel with a consistent, trackable number used for credit decisions, order eligibility, collection priority, and visit frequency.</p>
+        </div>
+
+        <div>
+          <div class="stage-sub">Parameters — 6 Dimensions · 10 pts each · Total 60</div>
+          <table style="width: 100%; border-collapse: collapse; font-size: 12.5px; margin-top: 6px;">
+            <thead>
+              <tr style="background: var(--gray-50); border-bottom: 1px solid var(--gray-200);">
+                <th style="text-align: left; padding: 8px 12px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gray-500); width: 130px;">#  Parameter</th>
+                <th style="text-align: left; padding: 8px 12px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gray-500);">What it measures</th>
+                <th style="text-align: center; padding: 8px 12px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--red); white-space: nowrap;">1–3</th>
+                <th style="text-align: center; padding: 8px 12px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--amber); white-space: nowrap;">4–6</th>
+                <th style="text-align: center; padding: 8px 12px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--teal); white-space: nowrap;">7–10</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid var(--gray-100);">
+                <td style="padding: 10px 12px; font-weight: 700; color: var(--sage-700);">1 · Volume</td>
+                <td style="padding: 10px 12px; color: var(--gray-600);">Avg order value per visit</td>
+                <td style="padding: 10px 12px; text-align: center; color: var(--gray-500); font-size: 11.5px;">Low</td>
+                <td style="padding: 10px 12px; text-align: center; color: var(--gray-500); font-size: 11.5px;">Moderate</td>
+                <td style="padding: 10px 12px; text-align: center; color: var(--gray-500); font-size: 11.5px;">High / Top tier</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--gray-100);">
+                <td style="padding: 10px 12px; font-weight: 700; color: var(--sage-700);">2 · Account Age</td>
+                <td style="padding: 10px 12px; color: var(--gray-600);">Years as active customer (auto-calculated)</td>
+                <td style="padding: 10px 12px; text-align: center; color: var(--gray-500); font-size: 11.5px;">&lt;1 yr</td>
+                <td style="padding: 10px 12px; text-align: center; color: var(--gray-500); font-size: 11.5px;">1–3 yrs</td>
+                <td style="padding: 10px 12px; text-align: center; color: var(--gray-500); font-size: 11.5px;">3+ yrs</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--gray-100);">
+                <td style="padding: 10px 12px; font-weight: 700; color: var(--sage-700);">3 · Growth</td>
+                <td style="padding: 10px 12px; color: var(--gray-600);">Order value trend — last 3 months vs prior 3</td>
+                <td style="padding: 10px 12px; text-align: center; color: var(--gray-500); font-size: 11.5px;">Declining</td>
+                <td style="padding: 10px 12px; text-align: center; color: var(--gray-500); font-size: 11.5px;">Flat</td>
+                <td style="padding: 10px 12px; text-align: center; color: var(--gray-500); font-size: 11.5px;">Growing</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--gray-100);">
+                <td style="padding: 10px 12px; font-weight: 700; color: var(--sage-700);">4 · Credit</td>
+                <td style="padding: 10px 12px; color: var(--gray-600);">Credit limit utilisation (lower = better score)</td>
+                <td style="padding: 10px 12px; text-align: center; color: var(--gray-500); font-size: 11.5px;">At / over limit</td>
+                <td style="padding: 10px 12px; text-align: center; color: var(--gray-500); font-size: 11.5px;">75–99%</td>
+                <td style="padding: 10px 12px; text-align: center; color: var(--gray-500); font-size: 11.5px;">&lt;40% used</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--gray-100);">
+                <td style="padding: 10px 12px; font-weight: 700; color: var(--sage-700);">5 · Frequency</td>
+                <td style="padding: 10px 12px; color: var(--gray-600);">Orders placed per month</td>
+                <td style="padding: 10px 12px; text-align: center; color: var(--gray-500); font-size: 11.5px;">&lt;1/month</td>
+                <td style="padding: 10px 12px; text-align: center; color: var(--gray-500); font-size: 11.5px;">1–2/month</td>
+                <td style="padding: 10px 12px; text-align: center; color: var(--gray-500); font-size: 11.5px;">3+/month</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 12px; font-weight: 700; color: var(--sage-700);">6 · Discipline</td>
+                <td style="padding: 10px 12px; color: var(--gray-600);">Payment consistency; broken promises flagged</td>
+                <td style="padding: 10px 12px; text-align: center; color: var(--gray-500); font-size: 11.5px;">Chronic late</td>
+                <td style="padding: 10px 12px; text-align: center; color: var(--gray-500); font-size: 11.5px;">Sometimes late</td>
+                <td style="padding: 10px 12px; text-align: center; color: var(--gray-500); font-size: 11.5px;">Always on time</td>
+              </tr>
+            </tbody>
+          </table>
+          <div style="font-size: 11.5px; color: var(--gray-500); margin-top: 8px; padding: 0 2px;">Relationship (personal rapport) is a separate <strong>manual score</strong> entered by the sales team — not part of this automated calculation. Weights are equal by default; adjustable before build.</div>
+        </div>
+
+        <div>
+          <div class="stage-sub">Score Bands</div>
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 4px;">
+            <div style="padding: 12px 14px; background: #f0fdf4; border: 1px solid hsl(142 40% 82%); border-top: 3px solid var(--teal); border-radius: 6px;">
+              <div style="font-size: 13px; font-weight: 700; color: var(--teal); margin-bottom: 4px;">Gold · 48–60</div>
+              <div style="font-size: 11.5px; color: var(--gray-600); line-height: 1.5;">Priority. Max credit flexibility. Visits prioritised.</div>
+            </div>
+            <div style="padding: 12px 14px; background: var(--sage-50); border: 1px solid var(--sage-100); border-top: 3px solid var(--sage-500); border-radius: 6px;">
+              <div style="font-size: 13px; font-weight: 700; color: var(--sage-700); margin-bottom: 4px;">Silver · 36–47</div>
+              <div style="font-size: 11.5px; color: var(--gray-600); line-height: 1.5;">Good. Standard terms. Routine follow-up.</div>
+            </div>
+            <div style="padding: 12px 14px; background: var(--amber-light); border: 1px solid hsl(38 70% 82%); border-top: 3px solid var(--amber); border-radius: 6px;">
+              <div style="font-size: 13px; font-weight: 700; color: var(--amber); margin-bottom: 4px;">Bronze · 21–35</div>
+              <div style="font-size: 11.5px; color: var(--gray-600); line-height: 1.5;">Developing. Tighter credit. Quarterly review.</div>
+            </div>
+            <div style="padding: 12px 14px; background: var(--red-light); border: 1px solid hsl(0 55% 88%); border-top: 3px solid var(--red); border-radius: 6px;">
+              <div style="font-size: 13px; font-weight: 700; color: var(--red); margin-bottom: 4px;">Watch · 0–20</div>
+              <div style="font-size: 11.5px; color: var(--gray-600); line-height: 1.5;">High risk. Mandatory approval. Owner review.</div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="stage-sub">How the Score Is Used</div>
+          <ul class="features">
+            <li><strong>Order eligibility</strong> — Bronze and Watch require mandatory accounts sign-off on every order</li>
+            <li><strong>Credit decisions</strong> — Gold eligible for limit increases; Watch flagged for reduction</li>
+            <li><strong>Collection priority</strong> — lower-scoring shops surfaced first in the collection queue</li>
+            <li><strong>Visit frequency</strong> — Gold shops visited more often; Watch shops visited with accounts awareness</li>
+            <li><strong>Telecaller view</strong> — score and band visible on shop profile before any order is accepted</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="pvs">
+      <div class="pvs-label">What Process 1 delivers</div>
+      <div class="pvs-chips">
+        <span class="pvs-chip"><strong>Time</strong><span>shop data entered once; reused in every order, invoice, dispatch, and collection</span></span>
+        <span class="pvs-chip"><strong>Efficiency</strong><span>route, GST, and credit rules set once and enforced automatically at every step</span></span>
+        <span class="pvs-chip"><strong>Visibility</strong><span>every shop on a live map; status, credit, and score visible to all teams</span></span>
+        <span class="pvs-chip"><strong>Revenue</strong><span>credit limits and blacklist prevent bad orders before goods move</span></span>
+        <span class="pvs-chip"><strong>Foundation</strong><span>shop master and score power route clustering, order eligibility, invoicing, and collection</span></span>
+      </div>
+    </div>
+
+    <!-- ══════ PROCESS 2 ══════ -->
+    <div class="date-banner">Process 2 — Route Classification &amp; Geo-Mapping</div>
+
+    <div class="callout" style="margin-bottom: 20px;">
+      <strong>Two-layer approach:</strong> Layer 1 uses shop GPS coordinates to auto-suggest geographic clusters — admin reviews and confirms each cluster as a named route with a vehicle type. Layer 2 uses Google Maps to find the optimal delivery sequence within each confirmed route.
+    </div>
+
+    <!-- LAYER 1 -->
+    <div class="stage-block">
+      <div class="stage-header">
+        <span class="stage-num">Stage 2.1 · Layer 1</span>
+        <span class="stage-title">Admin-Assisted Clustering — Route Formation</span>
+      </div>
+      <div class="stage-body">
+
+        <div>
+          <div class="stage-sub">How It Works</div>
+          <p style="font-size: 13.5px; color: var(--gray-700); line-height: 1.7;">System uses shop lat/lng to auto-suggest geographic clusters. Suggestions appear on map for admin review — not saved until confirmed. Admin's ground knowledge always overrides the algorithm.</p>
+        </div>
+
+        <div>
+          <div class="stage-sub">Admin Workflow</div>
+          <ol class="steps">
+            <li>All shops appear on map as ungrouped pins</li>
+            <li>Admin triggers <strong>"Suggest Routes"</strong> — system draws colour-coded cluster zones</li>
+            <li>Admin reviews: drag pins between clusters, split or merge zones as needed</li>
+            <li>Admin names the route and assigns vehicle type (Small / Large) <span class="confirm-flag">Assumed — Confirm OQ 2</span></li>
+            <li>Route saved. Shops formally assigned</li>
+          </ol>
+        </div>
+
+        <div>
+          <div class="stage-sub">Map View</div>
+          <ul class="features">
+            <li>Colour-coded pins and translucent zone polygons per cluster</li>
+            <li>Unassigned shops highlighted separately</li>
+            <li>Click any pin: name, contact, outstanding balance, last order date</li>
+            <li>Filter by route, vehicle type, shop status</li>
+            <li><strong>New shop added later</strong> — system suggests nearest route; admin confirms or overrides</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- LAYER 2 -->
+    <div class="stage-block">
+      <div class="stage-header">
+        <span class="stage-num">Stage 2.2 · Layer 2</span>
+        <span class="stage-title">In-Route Sequencing — Google Maps Optimisation <span class="confirm-flag" style="font-size:10px;">Sales = Delivery Route? — Confirm OQ 3</span></span>
+      </div>
+      <div class="stage-body">
+
+        <div>
+          <div class="stage-sub">How It Works</div>
+          <p style="font-size: 13.5px; color: var(--gray-700); line-height: 1.7;">Once shops are assigned to a route, system sends all lat/lng coordinates to the Google Maps Directions API with waypoint optimisation. Returns the most time-efficient visit order based on actual road distances — not straight-line. Admin can manually reorder any stop if needed.</p>
+        </div>
+
+        <div>
+          <div class="stage-sub">What the Optimised Route Shows</div>
+          <ul class="features">
+            <li><strong>Route line on map</strong> — connected path through all shops in sequence</li>
+            <li><strong>Stop number</strong>, estimated travel time per leg, and total route duration</li>
+            <li><strong>Order at each stop</strong> — items and quantity from that day's approved proformas</li>
+            <li>Sequence saved as standard delivery order; driver receives it on dispatch day</li>
+            <li><strong>API limit:</strong> max 25 waypoints per request — larger routes auto-split into segments and stitched together</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="page-card" style="margin-bottom: 20px;">
+      <div class="page-card-header">
+        <div>
+          <div class="page-name">Open Questions — Process 2</div>
+          <div class="page-sub">Must be answered before route master can be built</div>
+        </div>
+        <span class="status-badge status-open">Pending</span>
+      </div>
+      <div style="padding: 18px 24px;">
+        <div class="oq-list">
+          <div class="oq-item">
+            <div class="oq-num">2</div>
+            <div class="oq-text">
+              <strong>What is the logic behind route classification?</strong>
+              <span>Is it based on vehicle type (small vs large), geographic zone, visit frequency, or a combination? The document currently assumes vehicle type — this must be confirmed before the route master and clustering logic are built.</span>
+            </div>
+          </div>
+          <div class="oq-item">
+            <div class="oq-num">3</div>
+            <div class="oq-text">
+              <strong>Is the salesman's route the same as the delivery route?</strong>
+              <span>If they differ — e.g. salesman visits shops on a different schedule or sequence than the delivery vehicle — Stage 2.2 needs to produce two separate optimised routes. If they are the same, one sequence covers both roles.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pvs">
+      <div class="pvs-label">What Process 2 delivers</div>
+      <div class="pvs-chips">
+        <span class="pvs-chip"><strong>Efficiency</strong><span>delivery sequence optimised by Google Maps, not planned manually</span></span>
+        <span class="pvs-chip"><strong>Revenue</strong><span>reduced fuel and drive time per run; lower cost per delivery</span></span>
+        <span class="pvs-chip"><strong>Visibility</strong><span>all shops and routes on one map; coverage gaps immediately visible</span></span>
+      </div>
+    </div>
+
+    <!-- ══════ PROCESS 3 ══════ -->
+    <div class="date-banner">Process 3 — Order Taking (Telecaller) <span class="confirm-flag" style="background:rgba(255,255,255,0.15);border-color:rgba(255,255,255,0.3);color:hsl(38 90% 88%);">OQ 6 — Telecaller count &amp; infra to confirm</span></div>
+
+    <div class="stage-block">
+      <div class="stage-header">
+        <span class="stage-num">Stage 3.1</span>
+        <span class="stage-title">Pre-Order Checks — Shop History Visibility</span>
+      </div>
+      <div class="stage-body">
+
+        <div>
+          <div class="stage-sub">Purpose</div>
+          <p style="font-size: 13.5px; color: var(--gray-700); line-height: 1.7;">Before a telecaller accepts any order, the system must surface the full financial and purchase history of that shop. Taking an order from a shop with a pending unpaid bill — or a history of delayed payments — directly creates a loss for the business. The system makes this information unavoidable at the point of order entry.</p>
+        </div>
+
+        <div>
+          <div class="stage-sub">Information Displayed to Telecaller Before Order Entry</div>
+          <ul class="features">
+            <li><strong>Outstanding balance</strong> — total amount currently unpaid by this shop</li>
+            <li><strong>Previous order summary</strong> — date, items, value, and payment status of the last order</li>
+            <li><strong>Item-wise purchase history</strong> — what products the shop has ordered, in what quantities, over time</li>
+            <li><strong>Payment discipline</strong> — how quickly this shop has paid historically: average payment days and any delayed payments flagged by amount and duration</li>
+            <li><strong>Credit limit</strong> — the maximum credit exposure approved for this shop</li>
+            <li><strong>Shop status</strong> — Active, Inactive, or Blacklisted</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="stage-block">
+      <div class="stage-header">
+        <span class="stage-num">Stage 3.2</span>
+        <span class="stage-title">Order Gate — Eligibility Criteria</span>
+      </div>
+      <div class="stage-body">
+
+        <div>
+          <div class="stage-sub">Automatic Blocks — Order Cannot Be Created</div>
+
+          <div class="criteria-row block">
+            <span class="criteria-icon">🚫</span>
+            <div class="criteria-text"><strong>Previous bill still pending</strong> — if the shop has one or more unpaid bills from a prior order, no new order can be raised. The outstanding must be settled first.</div>
+          </div>
+          <div class="criteria-row block">
+            <span class="criteria-icon">🚫</span>
+            <div class="criteria-text"><strong>Order value exceeds credit limit</strong> — if the new order value would take the shop's total exposure above its approved credit limit, the order is blocked.</div>
+          </div>
+          <div class="criteria-row block">
+            <span class="criteria-icon">🚫</span>
+            <div class="criteria-text"><strong>Shop is Inactive</strong> — orders are not accepted from shops marked as inactive.</div>
+          </div>
+          <div class="criteria-row block">
+            <span class="criteria-icon">🚫</span>
+            <div class="criteria-text"><strong>Shop is Blacklisted</strong> — orders are permanently blocked. Cannot be overridden at telecaller level.</div>
+          </div>
+
+          <div class="criteria-row warn" style="margin-top: 14px;">
+            <span class="criteria-icon">⚠️</span>
+            <div class="criteria-text"><strong>Poor payment discipline</strong> — system flags the order for mandatory review if the shop has a pattern of late payments, even if technically within credit limit. Telecaller must acknowledge the flag before proceeding.</div>
+          </div>
+
+          <div class="criteria-row block" style="margin-top: 8px;">
+            <span class="criteria-icon">🚫</span>
+            <div class="criteria-text"><strong>Shop score — Watch band (0–20)</strong> — orders from Watch-band shops are blocked for standard telecaller flow. Every order requires mandatory accounts team approval before a proforma can be saved.</div>
+          </div>
+
+          <div class="criteria-row warn" style="margin-top: 8px;">
+            <span class="criteria-icon">⚠️</span>
+            <div class="criteria-text"><strong>Shop score — Bronze band (21–35)</strong> — order is flagged. Telecaller sees the Bronze score and must acknowledge before proceeding. Proforma goes to accounts with a score-based review flag attached.</div>
+          </div>
+
+          <div class="criteria-row allow" style="margin-top: 14px;">
+            <span class="criteria-icon">✅</span>
+            <div class="criteria-text"><strong>All criteria met</strong> — no pending bills, within credit limit, shop is active, payment discipline acceptable, and score is Silver or Gold. Telecaller can proceed to create a proforma.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="stage-block">
+      <div class="stage-header">
+        <span class="stage-num">Stage 3.3</span>
+        <span class="stage-title">Proforma Creation</span>
+      </div>
+      <div class="stage-body">
+
+        <div>
+          <div class="stage-sub">What the Telecaller Creates</div>
+          <ol class="steps">
+            <li>Telecaller takes the order from the shop — the shop is already mapped to a pre-existing route in the system</li>
+            <li>System confirms the shop has passed all eligibility checks (enforced automatically — telecaller cannot proceed if any check fails)</li>
+            <li>Enter item-wise order quantities — product, pack size, quantity</li>
+            <li>System auto-populates: shop's route, vehicle type required, applicable pricing (GST or non-GST)</li>
+            <li>Save as <strong>Proforma</strong> — this is a proposed order, not yet confirmed</li>
+            <li>Proforma is sent to the <strong>Accounts Team</strong> for approval</li>
+          </ol>
+        </div>
+
+        <div>
+          <div class="stage-sub">Proforma Contains</div>
+          <ul class="features">
+            <li>Shop name, contact, address, and route</li>
+            <li>Item-wise order details: product name, quantity, unit price, line total</li>
+            <li>GST applicability (auto-applied based on shop master)</li>
+            <li>Total order value</li>
+            <li>Outstanding balance of the shop at time of proforma creation</li>
+            <li>Telecaller name and timestamp</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="pvs">
+      <div class="pvs-label">What Process 3 delivers</div>
+      <div class="pvs-chips">
+        <span class="pvs-chip"><strong>Visibility</strong><span>telecaller sees full shop history, balance, and discipline before any order is accepted</span></span>
+        <span class="pvs-chip"><strong>Revenue</strong><span>bad credit blocked at source; risky orders flagged before goods are committed</span></span>
+        <span class="pvs-chip"><strong>Efficiency</strong><span>route-wise filtering; only eligible, mapped shops available to order from</span></span>
+      </div>
+    </div>
+
+    <!-- ══════ PROCESS 4 ══════ -->
+    <div class="date-banner">Process 4 — Accounts Team Approval</div>
+
+    <div class="stage-block">
+      <div class="stage-header">
+        <span class="stage-num">Stage 4.1</span>
+        <span class="stage-title">Credit Review &amp; Approval</span>
+      </div>
+      <div class="stage-body">
+
+        <div>
+          <div class="stage-sub">What Accounts Team Reviews</div>
+          <ul class="features">
+            <li><strong>Outstanding balance</strong> of the shop — current total unpaid</li>
+            <li><strong>Credit limit utilisation</strong> — how much of the approved credit limit is already used</li>
+            <li><strong>Payment discipline record</strong> — historical payment behaviour: how long bills stay outstanding, any broken promises</li>
+            <li><strong>Order value</strong> — size of the current proforma relative to shop profile</li>
+            <li><strong>Route assignment</strong> — confirm or reassign the route on the proforma if needed before approval</li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="stage-sub">Decision</div>
+          <div class="criteria-row allow">
+            <span class="criteria-icon">✅</span>
+            <div class="criteria-text"><strong>Approve</strong> — accounts confirms the order can proceed. Assigns a <strong>vehicle number</strong> to the approved proforma. Order moves to Dispatch.</div>
+          </div>
+          <div class="criteria-row block" style="margin-top: 8px;">
+            <span class="criteria-icon">🚫</span>
+            <div class="criteria-text"><strong>Reject</strong> — order is declined. Telecaller is notified with reason. Shop is informed. No dispatch is initiated.</div>
+          </div>
+        </div>
+
+        <div>
+          <div class="stage-sub">After Approval</div>
+          <ul class="features">
+            <li>Vehicle number is recorded against the proforma</li>
+            <li>Proforma status changes to <strong>Approved — Pending Dispatch</strong></li>
+            <li>Dispatch team is notified</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="pvs">
+      <div class="pvs-label">What Process 4 delivers</div>
+      <div class="pvs-chips">
+        <span class="pvs-chip"><strong>Revenue protection</strong><span>second credit check before goods leave; no dispatch without formal approval</span></span>
+        <span class="pvs-chip"><strong>Control</strong><span>every order has an approval trail, vehicle number, and accountable person</span></span>
+      </div>
+    </div>
+
+    <!-- ══════ PROCESS 5 ══════ -->
+    <div class="date-banner">Process 5 — Dispatch Management</div>
+
+    <div class="stage-block">
+      <div class="stage-header">
+        <span class="stage-num">Stage 5.1</span>
+        <span class="stage-title">Dispatch Preparation</span>
+      </div>
+      <div class="stage-body">
+
+        <div>
+          <div class="stage-sub">Information Available to Dispatch Team</div>
+          <div class="field-grid">
+            <div class="field-pill">
+              <span class="field-name">Route Name</span>
+              <span class="field-note">Which route this vehicle covers</span>
+            </div>
+            <div class="field-pill">
+              <span class="field-name">Shops Under Route</span>
+              <span class="field-note">All shops in sequence for this run</span>
+            </div>
+            <div class="field-pill">
+              <span class="field-name">Order Qty per Shop</span>
+              <span class="field-note">Quantity to be delivered at each stop</span>
+            </div>
+            <div class="field-pill">
+              <span class="field-name">Item-wise Summary</span>
+              <span class="field-note">Total items and quantities for entire vehicle load</span>
+            </div>
+            <div class="field-pill">
+              <span class="field-name">Vehicle Number</span>
+              <span class="field-note">Assigned vehicle for this dispatch</span>
+            </div>
+            <div class="field-pill">
+              <span class="field-name">Proforma Details</span>
+              <span class="field-note">Shop-wise proforma invoice summary</span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="stage-sub">Dispatch Flow</div>
+          <ol class="steps">
+            <li>Dispatch team receives list of all approved proformas for the day's route</li>
+            <li>Verify item-wise load summary against available stock</li>
+            <li>Assign loading team and confirm vehicle is ready</li>
+            <li>Vehicle proceeds to weighbridge before loading (Stage 6)</li>
+            <li>Load goods as per proforma — shop-wise packing</li>
+            <li>Vehicle proceeds to weighbridge after loading (Stage 6)</li>
+            <li>Live invoices printed (Stage 7) and placed with the respective shop's consignment</li>
+            <li>Vehicle dispatched on route</li>
+          </ol>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="pvs">
+      <div class="pvs-label">What Process 5 delivers</div>
+      <div class="pvs-chips">
+        <span class="pvs-chip"><strong>Efficiency</strong><span>dispatch works from one consolidated route view; no chasing information across teams</span></span>
+        <span class="pvs-chip"><strong>Time</strong><span>loading can begin the moment accounts approve; no lag between approval and warehouse</span></span>
+        <span class="pvs-chip"><strong>Visibility</strong><span>route, shops, quantities, and vehicle number all in one place for every run</span></span>
+      </div>
+    </div>
+
+    <!-- ══════ PROCESS 6 ══════ -->
+    <div class="date-banner">Process 6 — Weighbridge <span class="confirm-flag" style="background:rgba(255,255,255,0.15);border-color:rgba(255,255,255,0.3);color:hsl(38 90% 88%);">OQ 7 — Purpose, ownership &amp; location to confirm</span></div>
+
+    <div class="stage-block">
+      <div class="stage-header">
+        <span class="stage-num">Stage 6.1</span>
+        <span class="stage-title">Weighbridge Recording</span>
+      </div>
+      <div class="stage-body">
+
+        <div>
+          <div class="stage-sub">Purpose</div>
+          <div class="confirm-block">
+            <strong>Open Question (OQ 7) — Need to confirm from Business Owner:</strong> Is the weighbridge company-owned or a third-party facility? Is it used only for outgoing dispatch, or also for incoming stock receipt? Who operates it? Answers will determine whether this is an internal system entry screen or an externally managed step.
+          </div>
+          <p style="font-size: 13.5px; color: var(--gray-700); line-height: 1.7; margin-top: 10px;">The weighbridge records the weight of the vehicle before and after loading to establish the net weight of goods dispatched. This figure is used for billing accuracy, load compliance, and reconciliation of delivered goods.</p>
+        </div>
+
+        <div>
+          <div class="stage-sub">Weighbridge Steps</div>
+          <ol class="steps">
+            <li><strong>Before loading</strong> — vehicle enters weighbridge empty. System records <strong>Tare Weight</strong> (weight of empty vehicle)</li>
+            <li>Vehicle moves to loading bay. Goods are loaded as per dispatch list</li>
+            <li><strong>After loading</strong> — vehicle returns to weighbridge fully loaded. System records <strong>Gross Weight</strong> (vehicle + goods)</li>
+            <li>System calculates <strong>Net Weight = Gross Weight − Tare Weight</strong></li>
+            <li>Net weight is recorded against the vehicle number and dispatch record</li>
+            <li>Both weighbridge tickets (before and after) are attached to the dispatch record</li>
+          </ol>
+        </div>
+
+        <div class="gate-box">
+          <div class="gate-title">⚠️ SOP — Strict Compliance Required</div>
+          <ul class="gaps">
+            <li><strong>No persons are permitted to be inside the vehicle</strong> during either weighing event</li>
+            <li>Driver and all loading staff must exit and stand clear before the reading is taken</li>
+            <li>Any weighbridge reading taken with personnel inside the vehicle is invalid and must be repeated</li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="stage-sub">Data Recorded Per Vehicle</div>
+          <ul class="features">
+            <li><strong>Vehicle number</strong></li>
+            <li><strong>Route</strong> — which route this vehicle is dispatched on</li>
+            <li><strong>Date and time</strong> of each weighing event</li>
+            <li><strong>Tare weight</strong> — empty vehicle weight (before loading)</li>
+            <li><strong>Gross weight</strong> — loaded vehicle weight (after loading)</li>
+            <li><strong>Net weight</strong> — goods weight (Gross − Tare, auto-calculated)</li>
+            <li><strong>Loaded quantity</strong> — item-wise quantity actually loaded onto the vehicle</li>
+            <li><strong>Difference</strong> — variance between the approved proforma quantity and the actual loaded quantity, if any; must be noted and signed off</li>
+            <li><strong>Operator name</strong> — person who conducted the weighing</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="pvs">
+      <div class="pvs-label">What Process 6 delivers</div>
+      <div class="pvs-chips">
+        <span class="pvs-chip"><strong>Visibility</strong><span>every kg dispatched logged against vehicle, route, and operator; full record of what left the warehouse</span></span>
+        <span class="pvs-chip"><strong>Revenue</strong><span>invoices reflect actual loaded quantity; no billing discrepancies or untracked shortfalls</span></span>
+      </div>
+    </div>
+
+    <!-- ══════ PROCESS 7 ══════ -->
+    <div class="date-banner">Process 7 — Invoice Printing &amp; Delivery</div>
+
+    <div class="stage-block">
+      <div class="stage-header">
+        <span class="stage-num">Stage 7.1</span>
+        <span class="stage-title">Invoice Printing — Process to Be Confirmed</span>
+      </div>
+      <div class="stage-body">
+
+        <div class="gate-box">
+          <div class="gate-title">⚠️ Open Question — When and Where Is the Invoice Printed?</div>
+          <p style="font-size: 13px; color: var(--gray-700); line-height: 1.7; margin-top: 4px;">The exact invoice printing workflow is not yet confirmed. Two possible approaches exist — the business needs to clarify which matches their actual practice before this stage can be finalised.</p>
+        </div>
+
+        <div>
+          <div class="stage-sub">Option A — Printed at Depot Before Loading</div>
+          <div style="background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 8px; padding: 16px 20px;">
+            <ol class="steps">
+              <li>Accounts team scans the <strong>barcode on the approved proforma</strong> at the depot</li>
+              <li>System converts the proforma to a tax invoice and prints it</li>
+              <li>Printed invoice is physically placed with that shop's packed goods inside the vehicle before departure</li>
+              <li>Driver carries pre-printed invoices — no printing needed at the shop</li>
+            </ol>
+            <div style="margin-top: 12px; font-size: 12px; color: var(--gray-500);">
+              <strong>Hardware needed:</strong> Fixed or portable invoice printer at depot · Barcode scanner
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="stage-sub">Option B — Printed On-Site at Delivery (Likely)</div>
+          <div style="background: var(--sage-50); border: 1px solid var(--sage-100); border-radius: 8px; padding: 16px 20px;">
+            <ol class="steps">
+              <li>Delivery person arrives at the shop with the goods</li>
+              <li>Opens the approved order on the <strong>handheld POS machine</strong></li>
+              <li>Invoice is printed on the spot from the handheld POS machine at the time of delivery</li>
+              <li>Invoice is handed directly to the shop owner</li>
+              <li>Payment is collected immediately after (cash or digital) — same device</li>
+            </ol>
+            <div style="margin-top: 12px; font-size: 12px; color: var(--gray-500);">
+              <strong>Hardware needed:</strong> Handheld POS machine with built-in printer · carried by delivery person on route
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="stage-sub">Invoice Quantity — Proforma vs Final Loaded</div>
+          <p style="font-size: 13.5px; color: var(--gray-700); line-height: 1.7;">The invoice quantity must reflect the <strong>final loaded quantity</strong> recorded at the weighbridge — not the original proforma quantity. If the weighbridge records a difference (e.g. 98 bags loaded vs 100 bags on proforma), the invoice is generated for 98 bags. The difference is logged and the proforma is updated before invoice generation. Route-wise dispatch must be confirmed at weighbridge before any invoice is printed.</p>
+        </div>
+
+        <div>
+          <div class="stage-sub">Invoice Contains — Regardless of Option</div>
+          <ul class="features">
+            <li>Shop name, address, and GST number (if applicable)</li>
+            <li>Item-wise: product name, <strong>final loaded quantity</strong>, rate, line total</li>
+            <li>GST breakdown (where applicable)</li>
+            <li>Total invoice value</li>
+            <li>Vehicle number and route</li>
+            <li>Delivery date</li>
+            <li>Reference to approved proforma number</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="stage-block">
+      <div class="stage-header">
+        <span class="stage-num">Stage 7.2</span>
+        <span class="stage-title">Delivery at Shop</span>
+      </div>
+      <div class="stage-body">
+
+        <div>
+          <div class="stage-sub">At Each Shop on the Route</div>
+          <ol class="steps">
+            <li>Driver arrives at shop, confirms shop name and order</li>
+            <li>Unload the correct goods for that shop</li>
+            <li>Print invoice and hand to shop owner — either from a pre-printed copy (Option A) or printed on the spot from the <strong>handheld POS machine</strong> (Option B — to be confirmed)</li>
+            <li>Collect payment if due (cash or digital) — using the <strong>handheld POS machine</strong> the delivery person carries on the route <span class="confirm-flag">OQ 12 — Cash collection flow to confirm</span></li>
+            <li>Record delivery confirmation in the system — timestamp and GPS location auto-captured</li>
+            <li>Any rejected or returned items are noted on the delivery record</li>
+          </ol>
+        </div>
+
+        <div class="gap-box">
+          <div class="gap-title">📌 Open — Cash Collection Flow</div>
+          <p style="font-size: 13px; color: var(--gray-700); line-height: 1.7;">The detailed process for cash collected on delivery — how it is handed to the company, reconciled, and recorded — is an open question to be defined. See Open Questions section.</p>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="pvs">
+      <div class="pvs-label">What Process 7 delivers</div>
+      <div class="pvs-chips">
+        <span class="pvs-chip"><strong>Time</strong><span>invoice generated and handed over at point of delivery; billing cycle starts immediately</span></span>
+        <span class="pvs-chip"><strong>Revenue</strong><span>correct GST or non-GST invoice on every consignment; zero compliance risk on billing</span></span>
+      </div>
+    </div>
+
+    <!-- ══════ PROCESS 8 ══════ -->
+    <div class="date-banner">Process 8 — Sales Representative Dashboard <span class="confirm-flag" style="background:rgba(255,255,255,0.15);border-color:rgba(255,255,255,0.3);color:hsl(38 90% 88%);">OQ 3, OQ 5 — Route &amp; salesman details to confirm</span></div>
+
+    <div class="stage-block">
+      <div class="stage-header">
+        <span class="stage-num">Stage 8.1</span>
+        <span class="stage-title">Sales Team Visibility</span>
+      </div>
+      <div class="stage-body">
+
+        <div>
+          <div class="stage-sub">What Sales Can See</div>
+          <div class="confirm-block">
+            <strong>Open Questions (OQ 3 + OQ 5) — Need to confirm from Business Owner:</strong> (1) Are the salesman's visit route and the delivery vehicle route the same? If different, the sales view and dispatch view will be separate — the scope below may need to be split. (2) How many salesmen are there, and do their calls need to be recorded in the system?
+          </div>
+          <ul class="features" style="margin-top: 12px;">
+            <li><strong>All routes</strong> and the shops assigned to each, displayed on map</li>
+            <li><strong>Optimised route sequence</strong> — Google Maps-driven delivery order for the day's visits</li>
+            <li><strong>Shop photo</strong> — visible per shop so the salesman can visually identify the location before arriving</li>
+            <li><strong>Shop location pin</strong> — tap to open navigation directly to the shop</li>
+            <li><strong>Customer details</strong> — contact person, phone number, GST status, wholesale/retail type</li>
+            <li><strong>Payment status per shop</strong> — outstanding, partially paid, cleared</li>
+            <li><strong>Order history</strong> — past orders per shop: date, items, value, payment outcome</li>
+            <li><strong>When the salesman reached each shop</strong> — timestamp and GPS confirmation</li>
+            <li><strong>Time spent at each shop</strong> — derived from arrival and departure times</li>
+            <li><strong>Cost per route</strong> — logistics cost tracking per route run</li>
+            <li><strong>Assigned shops per salesman</strong> — who is responsible for which shop</li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="stage-sub">On Arrival at Shop — Verification View</div>
+          <p style="font-size: 13.5px; color: var(--gray-700); line-height: 1.7;">When the salesman's GPS location matches the shop's registered coordinates (within a defined radius), the system automatically surfaces a <strong>shop verification card</strong>. This shows the shop photo, shop name, contact person, and current outstanding balance — so the salesman can visually confirm they are at the correct location before starting any interaction. This prevents misdeliveries and ensures the right person is being engaged.</p>
+          <ul class="features" style="margin-top: 12px;">
+            <li><strong>Shop photo</strong> — for visual confirmation of the correct premises</li>
+            <li><strong>Shop name and address</strong></li>
+            <li><strong>Contact person name and phone</strong></li>
+            <li><strong>Current outstanding balance</strong> — so the salesman knows the payment situation before speaking to the owner</li>
+            <li><strong>Last order date and items</strong> — for quick context before the visit</li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="stage-sub">Route Performance Tracking</div>
+          <ul class="features">
+            <li>Number of shops visited per route per day</li>
+            <li>Total orders placed and total value per route</li>
+            <li>Collections made on-route vs outstanding carried forward</li>
+            <li>Shop returns recorded against route and salesman</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="pvs">
+      <div class="pvs-label">What Process 8 delivers</div>
+      <div class="pvs-chips">
+        <span class="pvs-chip"><strong>Visibility</strong><span>sales team sees all shops, routes, visit times, and payment status in real time</span></span>
+        <span class="pvs-chip"><strong>Revenue</strong><span>high-value shops prioritised; field time spent where it has the most impact</span></span>
+        <span class="pvs-chip"><strong>Efficiency</strong><span>Google Maps routing means no time wasted navigating; salesman arrives prepared</span></span>
+      </div>
+    </div>
+
+    <!-- ══════ PROCESS 9 ══════ -->
+    <div class="date-banner">Process 9 — Pending Payments, Follow-Up &amp; Collection <span class="confirm-flag" style="background:rgba(255,255,255,0.15);border-color:rgba(255,255,255,0.3);color:hsl(38 90% 88%);">OQ 8, OQ 12 — Channel &amp; collection flow to confirm</span></div>
+
+    <div class="stage-block">
+      <div class="stage-header">
+        <span class="stage-num">Stage 9.1</span>
+        <span class="stage-title">Pending Payments — Visibility &amp; Dashboard</span>
+      </div>
+      <div class="stage-body">
+
+        <div>
+          <div class="stage-sub">Purpose</div>
+          <p style="font-size: 13.5px; color: var(--gray-700); line-height: 1.7;">Every person responsible for collection — whether a dedicated collection rep, the delivery person, or the owner — must be able to see at a glance which shops owe money, how much, and how long it has been outstanding. Without this visibility, follow-ups depend on memory and nothing gets actioned systematically.</p>
+        </div>
+
+        <div>
+          <div class="stage-sub">Pending Payments List — What Is Shown</div>
+          <ul class="features">
+            <li><strong>Shop name</strong> and route</li>
+            <li><strong>Outstanding amount</strong> — total unpaid across all bills</li>
+            <li><strong>Age of oldest unpaid bill</strong> — how many days since the bill was raised</li>
+            <li><strong>Last payment date</strong> — when the shop last made any payment</li>
+            <li><strong>Last contact date</strong> — when the shop was last called or followed up</li>
+            <li><strong>Follow-up status</strong> — current state of the collection effort (see Stage 9.3)</li>
+            <li><strong>Next follow-up date</strong> — if a callback or follow-up has been scheduled</li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="stage-sub">Age Buckets — Payment Overdue Classification</div>
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+            <div style="background: var(--sage-50); border: 1px solid var(--sage-100); border-radius: 8px; padding: 12px 14px; text-align: center;">
+              <div style="font-size: 18px; font-weight: 700; color: var(--sage-700);">0–30</div>
+              <div style="font-size: 11px; color: var(--gray-500); margin-top: 2px;">days</div>
+              <div style="font-size: 11px; font-weight: 600; color: var(--sage-600); margin-top: 6px;">Current</div>
+            </div>
+            <div style="background: var(--amber-light); border: 1px solid hsl(38 70% 82%); border-radius: 8px; padding: 12px 14px; text-align: center;">
+              <div style="font-size: 18px; font-weight: 700; color: var(--amber);">31–60</div>
+              <div style="font-size: 11px; color: var(--gray-500); margin-top: 2px;">days</div>
+              <div style="font-size: 11px; font-weight: 600; color: var(--amber); margin-top: 6px;">Overdue</div>
+            </div>
+            <div style="background: #fff0e0; border: 1px solid hsl(20 70% 82%); border-radius: 8px; padding: 12px 14px; text-align: center;">
+              <div style="font-size: 18px; font-weight: 700; color: hsl(20 72% 40%);">61–90</div>
+              <div style="font-size: 11px; color: var(--gray-500); margin-top: 2px;">days</div>
+              <div style="font-size: 11px; font-weight: 600; color: hsl(20 72% 40%); margin-top: 6px;">Urgent</div>
+            </div>
+            <div style="background: var(--red-light); border: 1px solid hsl(0 55% 88%); border-radius: 8px; padding: 12px 14px; text-align: center;">
+              <div style="font-size: 18px; font-weight: 700; color: var(--red);">90+</div>
+              <div style="font-size: 11px; color: var(--gray-500); margin-top: 2px;">days</div>
+              <div style="font-size: 11px; font-weight: 600; color: var(--red); margin-top: 6px;">Critical</div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="stage-sub">Filters &amp; Sorting</div>
+          <ul class="features">
+            <li><strong>Filter by route</strong> — see only the shops on a specific route</li>
+            <li><strong>Filter by age bucket</strong> — show only overdue, urgent, or critical payments</li>
+            <li><strong>Filter by follow-up status</strong> — show only shops with no follow-up scheduled, or only those with promised payment dates approaching</li>
+            <li><strong>Sort by amount</strong> — highest outstanding first</li>
+            <li><strong>Sort by age</strong> — oldest unpaid bill first</li>
+            <li><strong>Search by shop name</strong></li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="stage-block">
+      <div class="stage-header">
+        <span class="stage-num">Stage 9.2</span>
+        <span class="stage-title">Call &amp; Follow-Up Actions</span>
+      </div>
+      <div class="stage-body">
+
+        <div>
+          <div class="stage-sub">From the Pending Payments List — Quick Actions Per Shop</div>
+          <div class="confirm-block">
+            <strong>Open Question (OQ 8) — Need to confirm from Business Owner:</strong> What channel is used for payment follow-up — phone call, WhatsApp, email, or a combination? Who is responsible for follow-up (salesman, dedicated collection rep, owner)? The actions below include all likely channels; the ones to build will be confirmed based on actual practice.
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 12px;">
+
+            <div class="criteria-row allow">
+              <span class="criteria-icon">📞</span>
+              <div class="criteria-text"><strong>Call</strong> <span class="confirm-flag">Confirm channel</span> — tap the shop's number to initiate a call directly from the system. After the call ends, system prompts for outcome: answered, not answered, or left message.</div>
+            </div>
+
+            <div class="criteria-row allow">
+              <span class="criteria-icon">📝</span>
+              <div class="criteria-text"><strong>Log Note</strong> — record what happened during a visit or call: what the shop owner said, any reason given for delay, any partial payment made.</div>
+            </div>
+
+            <div class="criteria-row allow">
+              <span class="criteria-icon">📅</span>
+              <div class="criteria-text"><strong>Schedule Follow-Up</strong> — set a specific date for the next contact. System surfaces this automatically on the due date so it is never missed.</div>
+            </div>
+
+            <div class="criteria-row warn">
+              <span class="criteria-icon">🤝</span>
+              <div class="criteria-text"><strong>Record Promised Payment</strong> — shop owner has committed to paying by a specific date. System monitors and triggers a follow-up automatically if payment has not arrived by that date.</div>
+            </div>
+
+            <div class="criteria-row warn">
+              <span class="criteria-icon">⏸️</span>
+              <div class="criteria-text"><strong>Defer Follow-Up</strong> — owner or senior person has spoken directly with the shop and agreed to give more time. No automated reminder goes out until the deferred date. Reason and new expected date must be recorded.</div>
+            </div>
+
+            <div class="criteria-row block">
+              <span class="criteria-icon">🚩</span>
+              <div class="criteria-text"><strong>Escalate</strong> — repeated attempts with no response or broken payment promises. Flags the shop for senior review. Escalated shops are highlighted separately in the list.</div>
+            </div>
+
+          </div>
+        </div>
+
+        <div>
+          <div class="stage-sub">Call Log — What Is Recorded Per Interaction</div>
+          <ul class="features">
+            <li><strong>Date and time</strong> of the call or visit</li>
+            <li><strong>Person who made contact</strong> — rep name</li>
+            <li><strong>Outcome</strong> — answered / not answered / visited in person / WhatsApp sent</li>
+            <li><strong>Notes</strong> — what was discussed, any reason given for non-payment</li>
+            <li><strong>Next action</strong> — follow-up date, promised payment date, or escalation flag</li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="stage-sub">Today's Follow-Up Queue</div>
+          <p style="font-size: 13.5px; color: var(--gray-700); line-height: 1.7;">Each collection rep sees a <strong>daily queue</strong> — a list of shops that are due for follow-up today. This is auto-generated from scheduled follow-ups, promised payment deadlines that have passed, and shops that have been uncontacted beyond a set threshold. The rep works through the queue: calls, logs the outcome, and sets the next action. Nothing should end the day without a next state.</p>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="stage-block">
+      <div class="stage-header">
+        <span class="stage-num">Stage 9.3</span>
+        <span class="stage-title">Follow-Up States — Every Shop Has a Current Status</span>
+      </div>
+      <div class="stage-body">
+
+        <div>
+          <div class="stage-sub">Collection Status Values</div>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+
+            <div style="display: flex; gap: 14px; align-items: flex-start; padding: 12px 16px; background: var(--sage-50); border: 1px solid var(--sage-100); border-radius: 8px;">
+              <div style="width: 90px; flex-shrink: 0; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--sage-700); padding-top: 2px;">Pending</div>
+              <div style="font-size: 13px; color: var(--gray-700); line-height: 1.6;">Outstanding balance exists but no follow-up has been initiated yet. Starting state for all unpaid bills.</div>
+            </div>
+
+            <div style="display: flex; gap: 14px; align-items: flex-start; padding: 12px 16px; background: var(--sage-50); border: 1px solid var(--sage-100); border-radius: 8px;">
+              <div style="width: 90px; flex-shrink: 0; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--sage-700); padding-top: 2px;">Scheduled</div>
+              <div style="font-size: 13px; color: var(--gray-700); line-height: 1.6;">A follow-up date has been set. System will surface this shop in the queue on that date.</div>
+            </div>
+
+            <div style="display: flex; gap: 14px; align-items: flex-start; padding: 12px 16px; background: var(--amber-light); border: 1px solid hsl(38 70% 82%); border-radius: 8px;">
+              <div style="width: 90px; flex-shrink: 0; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--amber); padding-top: 2px;">Callback</div>
+              <div style="font-size: 13px; color: var(--gray-700); line-height: 1.6;">Shop owner asked to be called on a specific day. System shows this on the requested date and removes it from the queue until then.</div>
+            </div>
+
+            <div style="display: flex; gap: 14px; align-items: flex-start; padding: 12px 16px; background: var(--amber-light); border: 1px solid hsl(38 70% 82%); border-radius: 8px;">
+              <div style="width: 90px; flex-shrink: 0; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--amber); padding-top: 2px;">Promised</div>
+              <div style="font-size: 13px; color: var(--gray-700); line-height: 1.6;">Shop has committed to paying by a specific date. If payment is not received by that date, the system automatically moves this back into the queue as overdue.</div>
+            </div>
+
+            <div style="display: flex; gap: 14px; align-items: flex-start; padding: 12px 16px; background: var(--purple-light); border: 1px solid hsl(255 45% 88%); border-radius: 8px;">
+              <div style="width: 90px; flex-shrink: 0; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--purple); padding-top: 2px;">Deferred</div>
+              <div style="font-size: 13px; color: var(--gray-700); line-height: 1.6;">Senior person or owner has spoken with the shop directly and agreed to pause follow-up. No calls or reminders go out until the deferred date. Rep is notified not to call.</div>
+            </div>
+
+            <div style="display: flex; gap: 14px; align-items: flex-start; padding: 12px 16px; background: var(--red-light); border: 1px solid hsl(0 55% 88%); border-radius: 8px;">
+              <div style="width: 90px; flex-shrink: 0; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--red); padding-top: 2px;">Escalated</div>
+              <div style="font-size: 13px; color: var(--gray-700); line-height: 1.6;">Repeated contact attempts with no response, or payment promises broken multiple times. Flagged for owner or senior management to handle directly.</div>
+            </div>
+
+            <div style="display: flex; gap: 14px; align-items: flex-start; padding: 12px 16px; background: #f0fdf4; border: 1px solid hsl(142 40% 82%); border-radius: 8px;">
+              <div style="width: 90px; flex-shrink: 0; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--teal); padding-top: 2px;">Collected</div>
+              <div style="font-size: 13px; color: var(--gray-700); line-height: 1.6;">Payment received in full. Record is closed and removed from the active follow-up queue.</div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="callout">
+          <strong>Rule:</strong> Every shop with an outstanding balance must always have a current status and a next action. A shop sitting in <em>Pending</em> with no follow-up date is a gap — the system highlights these as unactioned so they are never forgotten.
+        </div>
+
+      </div>
+    </div>
+
+    <div class="pvs">
+      <div class="pvs-label">What Process 9 delivers</div>
+      <div class="pvs-chips">
+        <span class="pvs-chip"><strong>Revenue</strong><span>outstanding recovered systematically; no payment falls through due to missed follow-up</span></span>
+        <span class="pvs-chip"><strong>Visibility</strong><span>full collection status across all shops; every balance has a current state and next action</span></span>
+        <span class="pvs-chip"><strong>Efficiency</strong><span>daily queue auto-generated; collection rep has a clear prioritised list every morning</span></span>
+      </div>
+    </div>
+
+    <!-- ══════ OPEN QUESTIONS ══════ -->
+    <div class="date-banner">Open Questions — To Be Resolved Before Build</div>
+
+    <div class="page-card">
+      <div class="page-card-header">
+        <div>
+          <div class="page-name">12 Open Questions</div>
+          <div class="page-sub">These must be answered to complete the process design</div>
+        </div>
+        <span class="status-badge status-open">Pending</span>
+      </div>
+      <div style="padding: 24px 28px;">
+        <div class="oq-list">
+
+          <div class="oq-item">
+            <div class="oq-num">1</div>
+            <div class="oq-text">
+              <strong>How many routes exist today?</strong>
+              <span>Total count of active routes — needed to set up route master and understand map scope.</span>
+            </div>
+          </div>
+
+          <div class="oq-item">
+            <div class="oq-num">2</div>
+            <div class="oq-text">
+              <strong>What is the full route classification?</strong>
+              <span>Beyond small/large vehicle — are there named route categories, geographic zones, or frequency-based classes (daily, weekly)?</span>
+            </div>
+          </div>
+
+          <div class="oq-item">
+            <div class="oq-num">3</div>
+            <div class="oq-text">
+              <strong>Is the salesman route the same as the delivery route?</strong>
+              <span>Does the salesman who visits shops for relationship/order taking travel on the same route as the delivery vehicle? Or are these separate roles with separate routes?</span>
+            </div>
+          </div>
+
+          <div class="oq-item">
+            <div class="oq-num">4</div>
+            <div class="oq-text">
+              <strong>How many shops are there in total?</strong>
+              <span>Total number of shops across all routes — determines data migration scope and map density.</span>
+            </div>
+          </div>
+
+          <div class="oq-item">
+            <div class="oq-num">5</div>
+            <div class="oq-text">
+              <strong>How many salesmen are there, and are call recordings required?</strong>
+              <span>Number of field sales staff. Are their customer conversations (calls or visits) required to be recorded in the system for auditing?</span>
+            </div>
+          </div>
+
+          <div class="oq-item">
+            <div class="oq-num">6</div>
+            <div class="oq-text">
+              <strong>How many telecallers are there — and what is the infrastructure?</strong>
+              <span>Number of telecallers on the team. Are they calling from office landlines, personal mobiles, or a VoIP/cloud telephony system? The answer determines whether call logging and recording is technically feasible without additional hardware.</span>
+            </div>
+          </div>
+
+          <div class="oq-item">
+            <div class="oq-num">7</div>
+            <div class="oq-text">
+              <strong>What is the weighbridge used for — and who operates it?</strong>
+              <span>Is the weighbridge company-owned or a third-party facility? Is it used solely for outgoing dispatch, or also for incoming procurement? Who is responsible for operating and recording the readings?</span>
+            </div>
+          </div>
+
+          <div class="oq-item">
+            <div class="oq-num">8</div>
+            <div class="oq-text">
+              <strong>Who owns the follow-up — and what channel: call, WhatsApp, or email?</strong>
+              <span>Process 9 defines the follow-up system. Two things to confirm: (1) Who works the collection queue — the salesman, a dedicated collection rep, or the owner for high-value cases? (2) What is the preferred contact channel — phone call, WhatsApp message, email, or a mix? This determines how reminders are triggered and what integrations are needed.</span>
+            </div>
+          </div>
+
+          <div class="oq-item">
+            <div class="oq-num">9</div>
+            <div class="oq-text">
+              <strong>What is the cash collection flow?</strong>
+              <span>When a delivery person collects cash from a shop on-route — how does that money reach the company? Who is responsible for it on the vehicle? How is it counted and reconciled at end of day?</span>
+            </div>
+          </div>
+
+          <div class="oq-item">
+            <div class="oq-num">10</div>
+            <div class="oq-text">
+              <strong>Is inventory management in scope?</strong>
+              <span>Should the system track warehouse stock levels, update inventory on dispatch, and alert when items are low? Or is stock management handled separately outside this system?</span>
+            </div>
+          </div>
+
+          <div class="oq-item">
+            <div class="oq-num">11</div>
+            <div class="oq-text">
+              <strong>Should any part of the system be automated — and what triggers automation?</strong>
+              <span>Examples: auto-send WhatsApp payment reminders on a fixed day each month, auto-block orders when a bill crosses X days overdue, auto-assign route based on shop location. Which of these should run without human action, and which require approval before triggering?</span>
+            </div>
+          </div>
+
+          <div class="oq-item">
+            <div class="oq-num">12</div>
+            <div class="oq-text">
+              <strong>Is vehicle maintenance (CMMS) in scope?</strong>
+              <span>Should the system track vehicle details — registration, service history, repair records, maintenance schedules? Own-fleet vehicles mean maintenance costs directly affect route viability. If in scope, this would include: vehicle master, service log, upcoming maintenance alerts, and repair cost tracking per vehicle.</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════ METRICS ══════ -->
+    <div class="date-banner">Metrics &amp; Reporting — What the System Will Track</div>
+
+    <div class="metric-grid" style="margin-bottom: 24px;">
+      <div class="metric-card">
+        <div class="metric-icon">🏪</div>
+        <div class="metric-name">Shop Visits</div>
+        <div class="metric-desc">Number of shops visited per route, per day, per salesman. Tracks coverage and frequency.</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-icon">🚛</div>
+        <div class="metric-name">Logistics Cost</div>
+        <div class="metric-desc">Cost per route run — fuel, vehicle time, driver — to assess route viability and profitability.</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-icon">↩️</div>
+        <div class="metric-name">Shop Returns</div>
+        <div class="metric-desc">Goods returned by shops on delivery — by item, shop, and route. Flags quality or forecasting issues.</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-icon">📊</div>
+        <div class="metric-name">Route Viability</div>
+        <div class="metric-desc">Revenue generated vs cost incurred per route. Identifies which routes are profitable and which need review.</div>
+      </div>
+    </div>
+
+  </div><!-- /process tab -->
+
+</div><!-- /container -->
+
+<div class="footer">
+  Fransko Agro Foods — Process Document &nbsp;·&nbsp; Prepared by elSapiens Product Team &nbsp;·&nbsp; June 2026<br>
+  This document is intended for internal business stakeholders and implementation team only.
+</div>
+
+<script>
+  /* ── TAB SWITCHING ── */
+  (function() {
+    document.querySelectorAll('.tab-btn[data-view]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        document.body.dataset.view = btn.dataset.view;
+        document.querySelectorAll('.tab-btn[data-view]').forEach(function(b) {
+          b.classList.toggle('active', b === btn);
+        });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    });
+  })();
+
+  /* ── COPY FOR GOOGLE DOCS ── */
+  async function copyToGoogleDocs() {
+    var view = document.body.dataset.view || 'brief';
+    var html = buildDocsHTML(view);
+    var btn = document.getElementById('copyBtn');
+    try {
+      await navigator.clipboard.write([
+        new ClipboardItem({ 'text/html': new Blob([html], { type: 'text/html' }) })
+      ]);
+      showToast('✓ Copied! Paste into Google Docs (Ctrl+V / Cmd+V)');
+      btn.textContent = '✓ Copied!';
+      btn.classList.add('copied');
+      setTimeout(function() { btn.innerHTML = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="9" height="11" rx="1.5"/><path d="M2 5v9a1.5 1.5 0 0 0 1.5 1.5H11"/></svg> Copy for Google Docs'; btn.classList.remove('copied'); }, 2500);
+    } catch(e) {
+      showToast('⚠ Use Ctrl+A then Ctrl+C to copy manually');
+    }
+  }
+
+  function showToast(msg) {
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(function() { t.classList.remove('show'); }, 3200);
+  }
+
+  /* ── HELPERS ── */
+  function txt(el) { return el ? el.textContent.trim() : ''; }
+  function esc(s)  { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  // Inline extractor: preserves bold/italic, renders confirm-flag as [⚑ ...]
+  function inline(el) {
+    var out = '';
+    el.childNodes.forEach(function(n) {
+      if (n.nodeType === 3) {
+        out += n.textContent.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      } else if (n.nodeType === 1) {
+        var t = n.tagName.toLowerCase();
+        if (n.classList && n.classList.contains('confirm-flag')) {
+          out += ' <em>[⚑ ' + esc(n.textContent.trim()) + ']</em>';
+        } else if (t === 'strong' || t === 'b') {
+          out += '<strong>' + inline(n) + '</strong>';
+        } else if (t === 'em' || t === 'i') {
+          out += '<em>' + inline(n) + '</em>';
+        } else if (t === 'br') {
+          out += '<br>';
+        } else {
+          out += inline(n);
+        }
+      }
+    });
+    return out;
+  }
+
+  // Label text: strips confirm-flag from display text, appends [⚑ ...] at end
+  function labelText(el) {
+    if (!el) return '';
+    var clone = el.cloneNode(true);
+    var flags = [];
+    clone.querySelectorAll('.confirm-flag').forEach(function(f) {
+      flags.push(f.textContent.trim());
+      f.remove();
+    });
+    var t = clone.textContent.trim();
+    if (flags.length) t += ' [⚑ ' + flags.join(' | ') + ']';
+    return t;
+  }
+
+  // Banner text: strips confirm-flag entirely (OQ ref goes on stage, not the H2)
+  function bannerText(el) {
+    var clone = el.cloneNode(true);
+    clone.querySelectorAll('.confirm-flag').forEach(function(f) { f.remove(); });
+    return clone.textContent.trim();
+  }
+
+  /* ── LISTS ── */
+  function extractLists(el) {
+    var out = '';
+    var ul = el.querySelector('ul.features') || el.querySelector('ul.changes') || el.querySelector('ul.gaps');
+    if (ul) out += '<ul>' + Array.from(ul.querySelectorAll(':scope > li')).map(function(li){ return '<li>' + inline(li) + '</li>'; }).join('') + '</ul>';
+    var steps = el.querySelector('ol.steps');
+    if (steps) out += '<ol>' + Array.from(steps.querySelectorAll(':scope > li')).map(function(li){ return '<li>' + inline(li) + '</li>'; }).join('') + '</ol>';
+    return out;
+  }
+
+  /* ── BOXES ── */
+  function extractBox(box) {
+    var out = '<blockquote>';
+    var label = box.querySelector('.note-label, .gap-title, .gate-title');
+    var title = box.querySelector('.note-title');
+    if (label) out += '<p><strong>' + esc(txt(label)) + '</strong></p>';
+    if (title) out += '<p><strong>' + esc(txt(title)) + '</strong></p>';
+    box.querySelectorAll('p').forEach(function(p) { out += '<p>' + inline(p) + '</p>'; });
+    var ul = box.querySelector('ul');
+    var ol = box.querySelector('ol');
+    if (ul) out += '<ul>' + Array.from(ul.querySelectorAll('li')).map(function(li){ return '<li>' + inline(li) + '</li>'; }).join('') + '</ul>';
+    if (ol) out += '<ol>' + Array.from(ol.querySelectorAll('li')).map(function(li){ return '<li>' + inline(li) + '</li>'; }).join('') + '</ol>';
+    out += '</blockquote>';
+    return out;
+  }
+
+  function extractConfirmBlock(el) {
+    return '<blockquote><p>' + inline(el) + '</p></blockquote>';
+  }
+
+  /* ── FIELD GRID ── */
+  function extractFieldGrid(fg) {
+    var out = '<ul>';
+    fg.querySelectorAll('.field-pill').forEach(function(pill) {
+      var name = pill.querySelector('.field-name');
+      var note = pill.querySelector('.field-note');
+      out += '<li><strong>' + labelText(name) + '</strong>' + (note ? ' — ' + esc(txt(note)) : '') + '</li>';
+    });
+    return out + '</ul>';
+  }
+
+  /* ── CRITERIA ROWS ── */
+  function extractCriteriaRows(rows) {
+    if (!rows.length) return '';
+    var out = '<ul>';
+    rows.forEach(function(row) {
+      var icon = row.querySelector('.criteria-icon');
+      var text = row.querySelector('.criteria-text');
+      out += '<li>' + esc(txt(icon)) + ' ' + (text ? inline(text) : '') + '</li>';
+    });
+    return out + '</ul>';
+  }
+
+  /* ── 2-COLUMN CARD GRID ── */
+  function extractCardGrid2(grid) {
+    var out = '<ul>';
+    grid.querySelectorAll('[style*="border-radius: 8px"], [style*="border-radius: 10px"]').forEach(function(card) {
+      var lbl  = card.querySelector('[style*="font-size: 12px"], [style*="font-size: 11px"]');
+      var desc = card.querySelector('[style*="font-size: 13px"]');
+      if (lbl) out += '<li><strong>' + labelText(lbl) + '</strong>' + (desc ? ' — ' + esc(txt(desc)) : '') + '</li>';
+    });
+    return out + '</ul>';
+  }
+
+  /* ── AGE BUCKET / MULTI-COLUMN GRID ── */
+  function extractAgeBuckets(grid) {
+    var out = '<ul>';
+    Array.from(grid.children).forEach(function(bucket) {
+      var t = bucket.textContent.trim().replace(/\s+/g, ' ');
+      if (t) out += '<li>' + esc(t) + '</li>';
+    });
+    return out + '</ul>';
+  }
+
+  /* ── TABLE (e.g. Stage 1.2 scoring parameters) ── */
+  function extractTable(tbl) {
+    var out = '<table>';
+    tbl.querySelectorAll('tr').forEach(function(row) {
+      out += '<tr>';
+      row.querySelectorAll('th, td').forEach(function(cell) {
+        var tag = cell.tagName.toLowerCase();
+        out += '<' + tag + '>' + inline(cell) + '</' + tag + '>';
+      });
+      out += '</tr>';
+    });
+    return out + '</table>';
+  }
+
+  /* ── COLLECTION STATUS FLEX ITEMS (Stage 9.3) ── */
+  function extractStatusItems(container) {
+    var out = '<ul>';
+    container.querySelectorAll('[style*="display: flex"][style*="gap: 14px"]').forEach(function(row) {
+      var children = Array.from(row.children);
+      if (children.length >= 2) {
+        var label = children[0].textContent.trim();
+        var desc  = children[1].textContent.trim();
+        if (label && desc) out += '<li><strong>' + esc(label) + '</strong> — ' + esc(desc) + '</li>';
+      }
+    });
+    return out + '</ul>';
+  }
+
+  /* ── HUB HEADER ── */
+  function extractHubHeader(el) {
+    var h = el.querySelector('h2'), p = el.querySelector('p');
+    return '<h2>' + esc(txt(h)) + '</h2>' + (p ? '<p><em>' + esc(txt(p)) + '</em></p>' : '');
+  }
+
+  /* ── STAGE BLOCK ── */
+  function extractStageBlock(el) {
+    var num   = el.querySelector('.stage-num');
+    var title = el.querySelector('.stage-title');
+    var out = '<h3>' + esc(labelText(num)) + (txt(num) ? ' — ' : '') + esc(labelText(title)) + '</h3>';
+
+    var body = el.querySelector('.stage-body');
+    if (!body) return out;
+
+    Array.from(body.children).forEach(function(sec) {
+      var cls = sec.className || '';
+
+      // Top-level confirm-block
+      if (cls.includes('confirm-block')) { out += extractConfirmBlock(sec); return; }
+      // Top-level boxes
+      if (cls.includes('gate-box') || cls.includes('gap-box') || cls.includes('note-box')) { out += extractBox(sec); return; }
+      if (cls.includes('callout')) { out += '<blockquote><p>' + inline(sec) + '</p></blockquote>'; return; }
+      // Top-level criteria row
+      if (cls.includes('criteria-row')) return; // handled in batch
+
+      // Section div with sub-heading
+      var sub = sec.querySelector && sec.querySelector(':scope > .stage-sub');
+      if (sub) out += '<p><strong>' + labelText(sub) + '</strong></p>';
+
+      // Confirm block inside section
+      var cb = sec.querySelector && sec.querySelector(':scope > .confirm-block');
+      if (cb) out += extractConfirmBlock(cb);
+
+      // Paragraphs (incl. small-font notes like the scoring note below the table)
+      if (sec.querySelectorAll) {
+        sec.querySelectorAll(':scope > p, :scope > div[style*="font-size: 13.5px"], :scope > div[style*="font-size: 13px"], :scope > div[style*="font-size: 11.5px"]').forEach(function(p) {
+          if (p.classList && (p.classList.contains('confirm-block') || p.classList.contains('stage-sub'))) return;
+          var t = p.textContent.trim();
+          if (t) out += '<p>' + inline(p) + '</p>';
+        });
+      }
+
+      // Table (e.g. Stage 1.2 scoring parameters)
+      var tbl = sec.querySelector && sec.querySelector('table');
+      if (tbl) out += extractTable(tbl);
+
+      // Feature/change/gap/steps lists
+      out += extractLists(sec);
+
+      // Field grid
+      var fg = sec.querySelector && sec.querySelector('.field-grid');
+      if (fg) out += extractFieldGrid(fg);
+
+      // Criteria rows (direct or in a flex wrapper)
+      if (sec.querySelectorAll) {
+        var crows = Array.from(sec.querySelectorAll('.criteria-row'));
+        if (crows.length) out += extractCriteriaRows(crows);
+      }
+
+      // 2-column card grids (route types, options)
+      if (sec.querySelectorAll) {
+        sec.querySelectorAll(':scope > [style*="grid-template-columns: 1fr 1fr"], :scope > div > [style*="grid-template-columns: 1fr 1fr"]').forEach(function(grid) {
+          out += extractCardGrid2(grid);
+        });
+      }
+
+      // 4-column age bucket grid (Stage 9.1)
+      if (sec.querySelectorAll) {
+        sec.querySelectorAll(':scope > [style*="repeat(4"]').forEach(function(grid) {
+          out += extractAgeBuckets(grid);
+        });
+      }
+
+      // Collection status flex items (Stage 9.3 status values)
+      if (sec.querySelectorAll) {
+        var statusWrap = sec.querySelector(':scope > [style*="flex-direction: column"]');
+        if (statusWrap && !statusWrap.querySelector('.criteria-row')) {
+          var statusRows = statusWrap.querySelectorAll('[style*="display: flex"][style*="gap: 14px"]');
+          if (statusRows.length) out += extractStatusItems(statusWrap);
+        }
+      }
+
+      // Nested boxes inside section
+      if (sec.querySelectorAll) {
+        sec.querySelectorAll(':scope > .gate-box, :scope > .gap-box, :scope > .note-box').forEach(function(box) {
+          out += extractBox(box);
+        });
+        // Technical/gray and sage-50 info boxes (including Option A/B hardware notes at 12px)
+        sec.querySelectorAll(':scope > [style*="background: var(--gray-50)"], :scope > [style*="background: var(--sage-50)"]').forEach(function(box) {
+          var label = box.querySelector('[style*="font-size: 11px"]');
+          var body2 = box.querySelector('[style*="font-size: 13px"]') || box.querySelector('[style*="font-size: 12px"]');
+          if (label) out += '<p><em>' + esc(txt(label)) + '</em></p>';
+          if (body2) out += '<p>' + inline(body2) + '</p>';
+        });
+      }
+    });
+
+    // Batch: top-level criteria rows in stage body
+    var topCrows = Array.from(body.querySelectorAll(':scope > .criteria-row'));
+    if (topCrows.length) out += extractCriteriaRows(topCrows);
+
+    return out;
+  }
+
+  /* ── PAGE CARD ── */
+  function extractPageCard(el) {
+    var name = el.querySelector('.page-name');
+    var sub  = el.querySelector('.page-sub');
+    var out  = (name ? '<h3>' + esc(txt(name)) + '</h3>' : '') + (sub ? '<p><em>' + esc(txt(sub)) + '</em></p>' : '');
+
+    // Card-grid columns
+    el.querySelectorAll('.card-grid .col, .card-grid .col-full').forEach(function(col) {
+      col.querySelectorAll('.section-label').forEach(function(lbl) { out += '<p><strong>' + esc(txt(lbl)) + '</strong></p>'; });
+      out += extractLists(col);
+      col.querySelectorAll('p[style], div[style*="font-size: 13"]').forEach(function(p) {
+        var t = p.textContent.trim(); if (t) out += '<p>' + inline(p) + '</p>';
+      });
+    });
+
+    // Padded body sections (not inside card-grid)
+    el.querySelectorAll('[style*="padding: 28px 30px"]').forEach(function(sec) {
+      if (sec.closest('.card-grid')) return;
+      sec.querySelectorAll('.section-label').forEach(function(lbl) { out += '<p><strong>' + esc(txt(lbl)) + '</strong></p>'; });
+      sec.querySelectorAll(':scope > p, :scope > div[style*="font-size: 13"]').forEach(function(p) {
+        var t = p.textContent.trim(); if (t) out += '<p>' + inline(p) + '</p>';
+      });
+      out += extractLists(sec);
+      // 3-col scope cards (Brief tab)
+      sec.querySelectorAll('[style*="grid-template-columns: 1fr 1fr 1fr"]').forEach(function(grid) {
+        grid.querySelectorAll('[style*="border-radius: 10px"], [style*="border-radius: 8px"]').forEach(function(card) {
+          var lbl  = card.querySelector('[style*="font-size: 11px"]');
+          var body = card.querySelector('[style*="font-size: 13px"]');
+          if (lbl) out += '<p><strong>' + labelText(lbl) + '</strong></p>';
+          if (body) out += '<p>' + inline(body) + '</p>';
+          out += extractLists(card);
+        });
+      });
+      sec.querySelectorAll('.note-box, .gap-box, .gate-box, .callout').forEach(function(b) { out += extractBox(b); });
+    });
+
+    return out;
+  }
+
+  /* ── OPEN QUESTIONS ── */
+  function extractOpenQuestions(el) {
+    // Use page-name if present (inline OQ cards per process), else use generic heading
+    var nameEl = el.querySelector('.page-name');
+    var heading = nameEl ? esc(txt(nameEl)) : 'Open Questions — To Be Resolved Before Build';
+    var out = '<h3>' + heading + '</h3><ol>';
+    el.querySelectorAll('.oq-item').forEach(function(item) {
+      var strong = item.querySelector('strong');
+      var span   = item.querySelector('span');
+      out += '<li><strong>' + esc(txt(strong)) + '</strong> ' + esc(txt(span)) + '</li>';
+    });
+    return out + '</ol>';
+  }
+
+  /* ── PROCESS VALUE SECTION ── */
+  function extractPvs(el) {
+    var label = el.querySelector('.pvs-label');
+    var out = '<h4>' + esc(txt(label)) + '</h4><ul>';
+    el.querySelectorAll('.pvs-chip').forEach(function(chip) {
+      var strong = chip.querySelector('strong');
+      var span   = chip.querySelector('span');
+      out += '<li><strong>' + esc(txt(strong)) + '</strong> — ' + esc(txt(span)) + '</li>';
+    });
+    return out + '</ul>';
+  }
+
+  /* ── METRICS ── */
+  function extractMetrics(el) {
+    var out = '<h3>Metrics &amp; Reporting — What the System Will Track</h3><ul>';
+    el.querySelectorAll('.metric-card').forEach(function(card) {
+      var name = card.querySelector('.metric-name');
+      var desc = card.querySelector('.metric-desc');
+      out += '<li><strong>' + esc(txt(name)) + '</strong> — ' + esc(txt(desc)) + '</li>';
+    });
+    return out + '</ul>';
+  }
+
+  /* ── MAIN BUILDER ── */
+  function buildDocsHTML(view) {
+    var out = [
+      '<!DOCTYPE html><html><body>',
+      '<h1>Fransko Agro Foods — ' + (view === 'process' ? 'Process Document' : 'Brief') + '</h1>',
+      '<p><em>Nellari · Prepared by elSapiens Product Team · June 2026</em></p>',
+      '<p><em>Items marked [⚑] are assumptions that require confirmation from the Business Owner before build.</em></p>'
+    ];
+
+    var root = view === 'process'
+      ? document.querySelector('[data-tab="process"]')
+      : document.querySelector('.container');
+
+    Array.from(root.children).forEach(function(el) {
+      if (el.classList.contains('tab-nav')) return;
+      if (view === 'brief' && el.dataset && el.dataset.tab === 'process') return;
+
+      var cls = el.className || '';
+      if (cls.includes('hub-header'))      { out.push(extractHubHeader(el)); return; }
+      if (cls.includes('date-banner'))     { out.push('<h2>' + esc(bannerText(el)) + '</h2>'); return; }
+      if (cls.includes('callout'))         { out.push('<blockquote><p>' + inline(el) + '</p></blockquote>'); return; }
+      if (cls.includes('stage-block'))     { out.push(extractStageBlock(el)); return; }
+      if (cls.includes('metric-grid'))     { out.push(extractMetrics(el)); return; }
+      if (cls.includes('section-divider')) { out.push('<hr>'); return; }
+      if (cls.includes('pvs'))             { out.push(extractPvs(el)); return; }
+      if (el.querySelector && el.querySelector('.oq-list')) { out.push(extractOpenQuestions(el)); return; }
+      if (cls.includes('page-card'))       { out.push(extractPageCard(el)); return; }
+      if (el.querySelector && el.querySelector('.page-card')) {
+        Array.from(el.querySelectorAll('.page-card')).forEach(function(c) { out.push(extractPageCard(c)); });
+        return;
+      }
+    });
+
+    out.push('</body></html>');
+    return out.join('\n');
+  }
+</script>
+
+</body>
+</html>
