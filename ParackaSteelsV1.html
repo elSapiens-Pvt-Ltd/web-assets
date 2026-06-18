@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paracka Steels — Digital Transformation Brief</title>
+<style>
+  /* vietnamese */
+@font-face {
+  font-family: 'Fraunces';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("72338a49-4ef9-4ebb-ae4d-23d46268f69d") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Fraunces';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("7410f6f2-89c5-45e9-bf72-1fe58215558f") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Fraunces';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("7a9e9576-1119-4040-a489-80444b5f51da") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Fraunces';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("7a9e9576-1119-4040-a489-80444b5f51da") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Fraunces';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("7a9e9576-1119-4040-a489-80444b5f51da") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* latin */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("77cf0772-60c4-4066-8aeb-8ee8afaff131") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("77cf0772-60c4-4066-8aeb-8ee8afaff131") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* latin */
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fd5ffbb0-2055-4ede-b4c9-4cf9adf4093d") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("fd5ffbb0-2055-4ede-b4c9-4cf9adf4093d") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("fd5ffbb0-2055-4ede-b4c9-4cf9adf4093d") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("fd5ffbb0-2055-4ede-b4c9-4cf9adf4093d") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+  :root {
+    --wisteria-50:  hsl(218 31% 95%);
+    --wisteria-100: hsl(218 31% 90%);
+    --wisteria-200: hsl(218 32% 80%);
+    --wisteria-300: hsl(218 34% 70%);
+    --wisteria-400: hsl(218 34% 60%);
+    --wisteria-500: hsl(218 33% 50%);
+    --wisteria-600: hsl(218 33% 40%);
+    --wisteria-700: hsl(218 33% 30%);
+    --wisteria-800: hsl(218 33% 20%);
+    --wisteria-850: hsl(218 33% 15%);
+    --wisteria-900: hsl(218 33% 10%);
+    --wisteria-950: hsl(220 33% 7%);
+
+    --neutral-50:  hsl(0 0% 98%);
+    --neutral-100: hsl(0 0% 96%);
+    --neutral-200: hsl(0 0% 92%);
+    --neutral-300: hsl(0 0% 85%);
+    --neutral-400: hsl(0 0% 64%);
+    --neutral-500: hsl(0 0% 45%);
+    --neutral-600: hsl(0 0% 32%);
+    --neutral-700: hsl(0 0% 25%);
+    --neutral-900: hsl(0 0% 9%);
+
+    --font-sans:    'Manrope', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+    --font-mono:    'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+    --brand:        var(--wisteria-400);
+    --brand-dark:   var(--wisteria-600);
+    --brand-darker: var(--wisteria-800);
+    --brand-light:  var(--wisteria-300);
+    --brand-xlight: var(--wisteria-50);
+
+    --red-light:    hsl(0 70% 95%);
+    --red:          hsl(0 72% 45%);
+    --amber-light:  hsl(38 90% 92%);
+    --amber:        hsl(33 80% 38%);
+    --teal:         hsl(163 64% 30%);
+    --teal-light:   hsl(163 45% 92%);
+    --purple:       hsl(255 45% 50%);
+    --purple-light: hsl(255 55% 96%);
+
+    --gray-50:  var(--neutral-50);
+    --gray-100: var(--neutral-100);
+    --gray-200: var(--neutral-200);
+    --gray-300: var(--neutral-300);
+    --gray-400: var(--neutral-400);
+    --gray-500: var(--neutral-500);
+    --gray-600: var(--neutral-600);
+    --gray-700: var(--neutral-700);
+    --gray-900: var(--neutral-900);
+
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow:    0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.08);
+    --shadow-md: 0 4px 12px -2px rgb(15 23 42 / 0.10), 0 2px 4px -2px rgb(15 23 42 / 0.06);
+    --shadow-lg: 0 12px 28px -6px rgb(15 23 42 / 0.16), 0 4px 8px -4px rgb(15 23 42 / 0.08);
+
+    --radius: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font-sans);
+    background: var(--neutral-100);
+    color: var(--gray-700);
+    line-height: 1.6;
+    font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* ── COVER ── */
+  .cover {
+    background:
+      radial-gradient(120% 120% at 85% 0%, hsl(218 33% 22%) 0%, transparent 55%),
+      var(--wisteria-950);
+    color: white;
+    padding: 88px 64px 64px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cover::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(to right, rgba(255,255,255,0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: 56px 56px;
+    -webkit-mask-image: radial-gradient(120% 100% at 80% 10%, black 0%, transparent 70%);
+            mask-image: radial-gradient(120% 100% at 80% 10%, black 0%, transparent 70%);
+  }
+  .cover > * { position: relative; z-index: 1; }
+  .cover-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 9999px;
+    padding: 6px 16px;
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--wisteria-200);
+    margin-bottom: 28px;
+    white-space: nowrap;
+  }
+  .cover-badge::before {
+    content: ''; width: 7px; height: 7px; border-radius: 50%;
+    background: var(--wisteria-300);
+    box-shadow: 0 0 0 4px rgba(129,151,192,0.18);
+  }
+  .cover h1 {
+    font-family: var(--font-display);
+    font-size: 60px; font-weight: 600;
+    letter-spacing: -0.02em; line-height: 1.02;
+    font-variation-settings: "opsz" 144;
+  }
+  .cover h1 span { color: var(--wisteria-300); font-style: italic; }
+  .cover p {
+    margin-top: 22px; font-size: 18px;
+    color: rgba(255,255,255,0.72);
+    max-width: 660px; line-height: 1.6;
+  }
+  .cover-meta {
+    margin-top: 44px; display: flex; gap: 0; flex-wrap: wrap;
+    border-top: 1px solid rgba(255,255,255,0.12);
+    padding-top: 24px;
+  }
+  .cover-meta div {
+    padding-right: 44px; margin-right: 44px;
+    border-right: 1px solid rgba(255,255,255,0.12);
+  }
+  .cover-meta div:last-child { border-right: none; margin-right: 0; padding-right: 0; }
+  .cover-meta .lbl {
+    display: block; font-size: 11px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--wisteria-300); margin-bottom: 6px;
+  }
+  .cover-meta strong { display: block; font-size: 15px; font-weight: 600; color: white; }
+
+  /* ── LAYOUT ── */
+  .container { padding: 0 24px 48px; width: 100%; max-width: 1024px; margin: 0 auto; }
+
+  /* ── SECTION HEADER ── */
+  .hub-header {
+    display: flex; align-items: center; gap: 16px;
+    margin: 8px 0 28px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--gray-200);
+  }
+  .hub-icon {
+    width: 44px; height: 44px; border-radius: 12px;
+    background: var(--wisteria-800); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; flex-shrink: 0;
+    box-shadow: var(--shadow-sm);
+  }
+  .hub-header h2 {
+    font-family: var(--font-display);
+    font-size: 28px; font-weight: 600; color: var(--gray-900);
+    letter-spacing: -0.015em; line-height: 1.1;
+    font-variation-settings: "opsz" 96;
+  }
+  .hub-header p { font-size: 14px; color: var(--gray-500); margin-top: 4px; }
+
+  /* ── PAGE CARD ── */
+  .page-card {
+    background: white;
+    border-radius: var(--radius);
+    border: 1px solid var(--gray-200);
+    margin-bottom: 24px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .page-card-header {
+    padding: 20px 26px;
+    background: white;
+    border-bottom: 1px solid var(--gray-200);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .page-name {
+    font-size: 17px; font-weight: 700; color: var(--gray-900);
+    letter-spacing: -0.01em;
+  }
+  .page-sub  { font-size: 13px; color: var(--gray-500); margin-top: 3px; }
+  .status-badge {
+    margin-left: auto;
+    font-size: 11px; font-weight: 600;
+    padding: 4px 12px; border-radius: 9999px;
+    white-space: nowrap;
+    border: 1px solid transparent;
+  }
+  .status-full    { background: var(--wisteria-50); color: var(--wisteria-800); border-color: var(--wisteria-100); }
+  .status-partial { background: var(--amber-light);  color: var(--amber); border-color: hsl(38 70% 82%); }
+  .status-new     { background: var(--teal-light);   color: var(--teal); border-color: hsl(163 40% 80%); }
+  .status-change  { background: var(--purple-light);  color: var(--purple); border-color: hsl(255 45% 88%); }
+
+  /* ── GRID ── */
+  .card-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+  .card-grid .col {
+    padding: 28px 30px;
+    border-right: 1px solid var(--gray-200);
+  }
+  .card-grid .col:last-child { border-right: none; }
+  .card-grid .col-full {
+    grid-column: 1 / -1;
+    padding: 28px 30px;
+    border-top: 1px solid var(--gray-200);
+  }
+  @media (max-width: 680px) {
+    .card-grid { grid-template-columns: 1fr; }
+    .card-grid .col { border-right: none; border-bottom: 1px solid var(--gray-200); }
+    .card-grid .col-full { grid-column: 1; }
+  }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--wisteria-600);
+    margin-bottom: 10px;
+  }
+
+  /* ── FEATURE LIST ── */
+  ul.features { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+  ul.features li {
+    padding: 0 0 0 24px;
+    position: relative;
+    font-size: 13.5px;
+    color: var(--gray-700);
+    line-height: 1.6;
+  }
+  ul.features li::before {
+    content: '✓';
+    position: absolute; left: 0; top: 0;
+    color: var(--wisteria-600); font-weight: 700;
+    font-size: 12px;
+  }
+
+  /* ── CHANGE LIST ── */
+  ul.changes { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+  ul.changes li {
+    padding: 0 0 0 24px;
+    position: relative;
+    font-size: 13.5px;
+    color: var(--gray-700);
+    line-height: 1.6;
+  }
+  ul.changes li::before {
+    content: '→';
+    position: absolute; left: 0;
+    color: var(--purple); font-weight: 700;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  /* ── GAP LIST ── */
+  ul.gaps { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+  ul.gaps li {
+    padding: 0 0 0 24px;
+    position: relative;
+    font-size: 13.5px;
+    color: var(--gray-700);
+    line-height: 1.6;
+  }
+  ul.gaps li::before {
+    content: '○';
+    position: absolute; left: 0;
+    color: var(--red); font-size: 11px;
+    line-height: 1.7;
+  }
+
+  /* ── GAP BOX ── */
+  .gap-box {
+    background: #fff7ed;
+    border-left: 3px solid var(--amber);
+    padding: 14px 18px;
+    border-radius: 0 6px 6px 0;
+  }
+  .gap-box .gap-title {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--amber); margin-bottom: 8px;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    text-align: center;
+    padding: 40px 24px;
+    font-size: 12px;
+    color: var(--gray-400);
+    border-top: 1px solid var(--gray-200);
+    margin-top: 60px;
+  }
+
+  /* ── LEGEND ── */
+  .legend {
+    display: flex; gap: 20px; flex-wrap: wrap;
+    font-size: 12px; color: var(--gray-600);
+    margin-bottom: 32px;
+  }
+  .legend span { display: flex; align-items: center; gap: 6px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+
+  /* ── PHASE CARDS ── */
+  .phase-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+  @media (max-width: 860px) { .phase-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 500px) { .phase-grid { grid-template-columns: 1fr; } }
+  .phase-card {
+    background: white;
+    border-radius: var(--radius);
+    border: 1px solid var(--gray-200);
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+  .phase-card.active {
+    border-color: var(--brand);
+    background: var(--brand-xlight);
+  }
+  .phase-num {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--brand-dark);
+    margin-bottom: 6px;
+  }
+  .phase-name { font-size: 18px; font-weight: 700; color: var(--gray-900); margin-bottom: 8px; }
+  .phase-desc { font-size: 12px; color: var(--gray-600); line-height: 1.55; }
+  .phase-intel {
+    margin-top: 12px;
+    padding: 8px 10px;
+    background: rgba(79,102,153,0.1);
+    border-radius: 6px;
+    font-size: 11px; color: var(--brand-darker);
+    font-style: italic;
+  }
+
+  /* ── INLINE TAG PILL ── */
+  .tag-pill {
+    display: inline-block;
+    font-size: 10px; font-weight: 700;
+    padding: 1px 7px; border-radius: 4px;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    margin-left: 6px; vertical-align: 2px;
+    white-space: nowrap;
+  }
+  .tag-pill.product { background: var(--brand-xlight); color: var(--brand-darker); }
+  .tag-pill.custom  { background: var(--purple-light); color: var(--purple); }
+
+  /* ── DIVIDER ── */
+  .section-divider { height: 1px; background: var(--gray-200); margin: 32px 0; }
+  [data-tab="none"] { display: none; }
+
+  /* ── CALLOUT ── */
+  .callout {
+    background: var(--brand-xlight);
+    border-left: 3px solid var(--brand-dark);
+    padding: 12px 16px;
+    border-radius: 0 6px 6px 0;
+    font-size: 13px;
+    color: var(--brand-darker);
+    margin-bottom: 16px;
+  }
+
+  /* ── PHASE DETAIL TABLE ── */
+  .phase-table-wrap { margin-bottom: 32px; }
+  .phase-detail-table { width: 100%; display: block; }
+  .phase-detail-table thead { display: none; }
+  .phase-detail-table tbody { display: flex; flex-direction: column; gap: 24px; }
+  .phase-detail-table tr {
+    display: block;
+    background: white;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .phase-detail-table td {
+    display: block;
+    position: relative;
+    background: white;
+    padding: 22px 32px 22px 244px;
+    color: var(--gray-700);
+    line-height: 1.65;
+    font-size: 13.5px;
+    border-top: 1px solid var(--gray-200);
+  }
+  .phase-detail-table tr td:first-child { border-top: none; }
+  .phase-detail-table td::before {
+    position: absolute;
+    left: 32px; top: 24px;
+    width: 184px;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--wisteria-600);
+  }
+  .phase-detail-table td:nth-child(1)::before { content: "What changes"; }
+  .phase-detail-table td:nth-child(2)::before { content: "Who is affected"; }
+  .phase-detail-table td:nth-child(3)::before { content: "Behavioural change"; }
+  .phase-detail-table td:nth-child(4)::before { content: "Impact of change"; }
+  .phase-detail-table td:nth-child(5)::before { content: "Training required"; }
+  .phase-detail-table td:nth-child(6)::before { content: "Monitoring"; }
+  .phase-detail-table td:nth-child(7)::before { content: "Implementation time"; }
+  .phase-detail-table td:nth-child(8)::before { content: "Type of change"; }
+  .phase-detail-table td:nth-child(1) {
+    background: var(--wisteria-50);
+    padding: 22px 32px 28px;
+    border-bottom: 1px solid var(--wisteria-100);
+  }
+  .phase-detail-table td:nth-child(1)::before {
+    position: static; width: auto; display: block;
+    color: var(--wisteria-700);
+    margin-bottom: 14px;
+  }
+  .phase-detail-table td:nth-child(7) { font-family: var(--font-mono); font-size: 15px; font-weight: 600; color: var(--gray-900); }
+  @media (max-width: 760px) {
+    .phase-detail-table td { padding: 18px 20px 20px; }
+    .phase-detail-table td::before { position: static; width: auto; display: block; margin-bottom: 10px; }
+    .phase-detail-table td:nth-child(1) { padding: 18px 20px 22px; }
+  }
+
+  /* ── TAB NAVIGATION ── */
+  .tab-nav {
+    position: sticky;
+    top: 12px;
+    z-index: 50;
+    background: rgba(255,255,255,0.82);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--gray-200);
+    border-radius: 9999px;
+    padding: 8px 10px 8px 18px;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin: 28px 0 36px;
+    box-shadow: var(--shadow-md);
+  }
+  .tab-nav-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gray-400);
+    margin-right: 6px;
+  }
+  .tab-btn {
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 9999px;
+    padding: 8px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-600);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-family: inherit;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .tab-btn:hover { background: var(--gray-100); color: var(--gray-900); }
+  .tab-btn.active {
+    background: var(--wisteria-800);
+    color: white;
+    border-color: var(--wisteria-800);
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* Tab visibility rules */
+  body:not([data-view="requirements"]) [data-tab="requirements"] { display: none !important; }
+  body[data-view="requirements"] .container > *:not([data-tab="requirements"]):not(.tab-nav) { display: none !important; }
+
+  /* Rollout table */
+  .rollout-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .rollout-table th {
+    text-align: left; padding: 10px 14px;
+    background: var(--gray-50); color: var(--gray-500);
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+    border-bottom: 1px solid var(--gray-200);
+  }
+  .rollout-table td { padding: 12px 14px; border-bottom: 1px solid var(--gray-100); vertical-align: top; }
+  .rollout-table tr:last-child td { border-bottom: none; }
+
+  /* Note box */
+  .note-box {
+    background: #f0fdf4;
+    border-left: 4px solid #16a34a;
+    border-radius: 0 8px 8px 0;
+    padding: 16px 20px;
+    margin-top: 16px;
+  }
+  .note-box .note-label {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: #16a34a; margin-bottom: 6px;
+  }
+  .note-box .note-title {
+    font-size: 13px; font-weight: 600; color: #1a1a2e; margin-bottom: 8px;
+  }
+  .note-box p, .note-box ul, .note-box ol {
+    font-size: 13px; color: #374151; line-height: 1.7;
+  }
+  .note-box ul, .note-box ol { margin: 6px 0 0 16px; }
+
+  .date-banner {
+    margin: 40px 0 16px;
+    padding: 10px 16px;
+    background: #1a1a2e;
+    border-radius: 8px;
+    font-size: 12px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: #fff;
+  }
+  .date-section-label {
+    margin: 24px 0 10px;
+    font-size: 11px; font-weight: 700; color: #9ca3af;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    border-bottom: 1px solid #e5e7eb; padding-bottom: 6px;
+  }
+</style>
+</head>
+
+<body data-view="brief">
+
+<!-- ══════════ COVER ══════════ -->
+<div class="cover">
+  <div class="cover-badge">Digital Transformation Brief</div>
+  <h1>Paracka <span>Traders</span></h1>
+  <p>Streamlining collections, cash flow visibility, and receivables management for a multi-brand steel and hardware trade business with four decades of operations.</p>
+  <div class="cover-meta">
+    <div><span class="lbl">Kickoff Meeting</span><strong>June 15, 2025 · 10 AM · Offline</strong></div>
+    <div><span class="lbl">Prepared by</span><strong>elSapiens Product Team</strong></div>
+    <div><span class="lbl">Audience</span><strong>Business Stakeholders &amp; Department Heads</strong></div>
+  </div>
+</div>
+
+<div class="container">
+
+  <nav class="tab-nav">
+    <span class="tab-nav-label">View:</span>
+    <button class="tab-btn active" data-view="brief">Brief</button>
+    <button class="tab-btn" data-view="requirements">Requirements</button>
+  </nav>
+
+  <div class="legend">
+    <span><span class="dot" style="background:var(--brand-dark)"></span> Implemented / In Release</span>
+    <span><span class="dot" style="background:var(--amber)"></span> Upcoming / Optimise phase</span>
+    <span><span class="dot" style="background:var(--teal)"></span> New — did not exist before</span>
+    <span><span class="dot" style="background:var(--purple)"></span> Breaking change to current workflow</span>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       BUSINESS OVERVIEW
+  ══════════════════════════════════════ -->
+  <div class="hub-header">
+    <div class="hub-icon">🏢</div>
+    <div>
+      <h2>Business Overview</h2>
+      <p>Who Paracka Traders are and how the business operates</p>
+    </div>
+  </div>
+
+  <div class="page-card">
+    <div class="page-card-header">
+      <div>
+        <div class="page-name">About the Business</div>
+        <div class="page-sub">Four decades of multi-brand trade in steel and hardware</div>
+      </div>
+    </div>
+    <div class="card-grid">
+      <div class="col">
+        <div class="section-label">Business Profile</div>
+        <ul class="features">
+          <li>In operation for <strong>over 4 decades</strong></li>
+          <li><strong>Multi-brand dealer</strong> — not tied to a single manufacturer</li>
+          <li>Trade business operating on <strong>low margins</strong></li>
+          <li>Cash flow maintenance is the <strong>critical operational priority</strong></li>
+          <li>Both shops operate on <strong>full GST</strong> compliance</li>
+          <li>Every item carries a <strong>firm code</strong> for identification</li>
+        </ul>
+      </div>
+      <div class="col">
+        <div class="section-label">Two Shops</div>
+        <ul class="features">
+          <li><strong>Steel Shop</strong> — Steel (iron) and Cement</li>
+          <li><strong>Hardware Shop</strong> — Paints, Plumbing supplies, and related hardware</li>
+        </ul>
+        <div style="margin-top: 20px;">
+          <div class="section-label">Pricing Rate Points</div>
+          <ul class="features">
+            <li><strong>Angamali rate</strong> — Lower rate; labour is daily-wage (bai)</li>
+            <li><strong>Aluva rate</strong> — Higher rate; labour is union employees</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       CURRENT SYSTEM CHALLENGES
+  ══════════════════════════════════════ -->
+  <div class="hub-header" style="margin-top: 16px;">
+    <div class="hub-icon">⚙️</div>
+    <div>
+      <h2>Current System &amp; Challenges</h2>
+      <p>How the business is operating today — and where it is breaking down</p>
+    </div>
+  </div>
+
+  <div class="page-card">
+    <div class="page-card-header">
+      <div>
+        <div class="page-name">Two Shops, Two Billing Systems — Not Synced</div>
+        <div class="page-sub">A single business operating as two disconnected entities</div>
+      </div>
+      <span class="status-badge status-change">Core Problem</span>
+    </div>
+    <div style="padding: 28px 30px; display: flex; flex-direction: column; gap: 20px;">
+
+      <div>
+        <div class="section-label">The Situation</div>
+        <div style="font-size: 13.5px; color: var(--gray-700); line-height: 1.7;">
+          The steel shop and the hardware shop each run their own billing system. To the outside world it is one business — Paracka Traders — but internally the two systems do not talk to each other. A customer who buys cement from the steel shop and paint from the hardware shop exists as two separate entities across the two systems.
+        </div>
+      </div>
+
+      <div>
+        <div class="section-label">What They Did to Work Around It</div>
+        <ul class="features">
+          <li>Set up a <strong>VPN</strong> so both shops can access a shared network</li>
+          <li>Customer accounts are maintained in the <strong>hardware shop system</strong> as the single source of truth for account relationships</li>
+          <li>Each customer is created <strong>twice</strong> — once in the steel shop system and once in the hardware shop system, under different account heads</li>
+          <li>The <strong>customer accounts module</strong> holds the relationship between the two entries, manually linking the same person across both shops — transactions from both shops are also recorded here</li>
+          <li>From the customer accounts module, staff can view <strong>year-wise aging</strong> — outstanding balances broken down by age across both shops for a given customer</li>
+        </ul>
+      </div>
+
+      <div style="background: #fef2f2; border-left: 3px solid var(--red); border-radius: 0 6px 6px 0; padding: 14px 18px;">
+        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--red); margin-bottom: 8px;">⚠️ The Consequence — Duplicate Entry, Human Error</div>
+        <ul class="changes">
+          <li>Each shop creates its own customer head independently — the steel shop staff create one, the hardware shop staff create another, for the same person</li>
+          <li>To establish the relationship between these two customer heads, a person in the hardware shop <strong>manually types a customer accounts entry</strong> — there is no data export or import, no automation whatsoever</li>
+          <li>This is entirely dependent on one person doing it correctly every time — any mistake in linking creates a data mismatch that is hard to detect and correct</li>
+          <li>If that person is on leave, <strong>the linking simply does not happen</strong> — customer relationships go unrecorded and the data gap accumulates</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       SOFTWARE CHALLENGES
+  ══════════════════════════════════════ -->
+  <div class="page-card" style="margin-top: 0;">
+    <div class="page-card-header">
+      <div>
+        <div class="page-name">Software Challenges</div>
+        <div class="page-sub">The two core obstacles to any digital implementation</div>
+      </div>
+    </div>
+    <div class="card-grid">
+
+      <div class="col">
+        <div class="section-label">1 · Staff Adaptability</div>
+        <div style="font-size: 13.5px; color: var(--gray-700); line-height: 1.7; margin-bottom: 12px;">
+          The workforce has operated with traditional processes for decades. Introducing new software requires not just training but a genuine shift in daily habits — from paper to screen, from memory to system. Resistance to change, low digital confidence, and the fear of disrupting a workflow that has worked for years are all real factors.
+        </div>
+        <ul class="changes">
+          <li>Field staff are not always desk-based — any tool must work on a mobile phone</li>
+          <li>The learning curve must be minimal; complex interfaces will not be adopted</li>
+          <li>Parallel running of books and software will continue during the transition period</li>
+        </ul>
+      </div>
+
+      <div class="col">
+        <div class="section-label">2 · Data Unorganised</div>
+        <div style="font-size: 13.5px; color: var(--gray-700); line-height: 1.7; margin-bottom: 12px;">
+          The existing data across the two billing systems is not in a clean or structured state. Duplicate customer entries, missing phone numbers, year-wise aging reports instead of actionable buckets, and manual account linking have left the data in a condition where it cannot simply be imported and used — it requires cleaning, reconciliation, and verification before it is reliable.
+        </div>
+        <ul class="changes">
+          <li>Phone numbers missing — not mandatory in current system</li>
+          <li>Aging report format (year-wise) not suited for collection use</li>
+          <li>Account relationships maintained manually — prone to human error</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       TRADITION + INNOVATION
+  ══════════════════════════════════════ -->
+  <div class="hub-header" style="margin-top: 16px;">
+    <div class="hub-icon">📒</div>
+    <div>
+      <h2>Tradition + Innovation</h2>
+      <p>Old-style books still run alongside the digital system</p>
+    </div>
+  </div>
+
+  <div class="page-card">
+    <div class="page-card-header">
+      <div>
+        <div class="page-name">Tradition + Innovation</div>
+        <div class="page-sub">Old-style books still run alongside the digital system</div>
+      </div>
+    </div>
+    <div style="padding: 28px 30px;">
+      <div style="font-size: 13.5px; color: var(--gray-700); line-height: 1.7; margin-bottom: 16px;">
+        This is a business that has earned trust over four decades. That longevity comes with deep-rooted processes — many of which are still paper-based. Traditional account books continue to be maintained even as digital systems are in place. Both systems run in parallel.
+      </div>
+      <div class="callout">
+        <strong>Design implication:</strong> Any digital solution must respect this reality. The transition cannot be abrupt. The system needs to be intuitive enough for people who are used to ledger books, and must earn trust gradually — not replace everything at once.
+      </div>
+      <ul class="features" style="margin-top: 4px;">
+        <li>Staff already use <strong>Invaccs accounting software</strong> alongside physical ledgers — they are not new to digital tools, but any change to an established workflow brings its own resistance and requires careful transition</li>
+        <li>Paper records serve as a <strong>fallback and verification layer</strong> — this should be respected, not forced out</li>
+        <li>Any new system must have a <strong>low learning curve</strong> and must not disrupt the daily rhythm of the shop floor</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       CUSTOMER TYPES
+  ══════════════════════════════════════ -->
+  <div class="hub-header" style="margin-top: 16px;">
+    <div class="hub-icon">👥</div>
+    <div>
+      <h2>Customer Types</h2>
+      <p>The different buyer profiles the business serves — each with distinct needs and payment behaviour</p>
+    </div>
+  </div>
+
+  <div class="page-card">
+    <div class="page-card-header">
+      <div>
+        <div class="page-name">Customer Segments</div>
+        <div class="page-sub">Current acquisition source: Word of mouth only</div>
+      </div>
+    </div>
+    <div style="padding: 28px 30px;">
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
+
+        <div style="background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 10px; padding: 18px 20px;">
+          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--wisteria-600); margin-bottom: 6px;">Retail</div>
+          <div style="font-size: 13px; color: var(--gray-700); line-height: 1.6;">Walk-in and direct buyers purchasing for personal or small-scale use. Typically lower volume, shorter payment cycles.</div>
+        </div>
+
+        <div style="background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 10px; padding: 18px 20px;">
+          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--wisteria-600); margin-bottom: 6px;">Project</div>
+          <div style="font-size: 13px; color: var(--gray-700); line-height: 1.6;">Buyers purchasing for a specific construction or infrastructure project. Higher volume, milestone-based payment patterns.</div>
+        </div>
+
+        <div style="background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 10px; padding: 18px 20px;">
+          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--wisteria-600); margin-bottom: 6px;">Contractors</div>
+          <div style="font-size: 13px; color: var(--gray-700); line-height: 1.6;">A contractor is committed to their customer by the type of work they take on — and they purchase materials here accordingly:
+            <ul style="margin: 8px 0 0 14px; line-height: 1.8;">
+              <li><strong>Brand-committed</strong> — the contractor is bound to a specific brand of material as promised to their client, so they source that brand here</li>
+              <li><strong>Square feet-based</strong> — the contractor charges their client per sq ft, with material cost included in their project budget, and purchases accordingly</li>
+            </ul>
+          </div>
+        </div>
+
+        <div style="background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 10px; padding: 18px 20px;">
+          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--wisteria-600); margin-bottom: 6px;">Brick Unit</div>
+          <div style="font-size: 13px; color: var(--gray-700); line-height: 1.6;">Brick manufacturers who purchase cement in bulk for production. High-volume, repeat buyers with predictable demand cycles. Most brick businesses operate like many small trades — the selling price per unit is well-known, but the actual cost per unit rarely is. Whether the business is truly viable only becomes clear when a fund shortage hits. Until then, many owners run without a clear picture of their real margins.</div>
+        </div>
+
+        <div style="background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 10px; padding: 18px 20px;">
+          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--wisteria-600); margin-bottom: 6px;">Sub-Dealers</div>
+          <div style="font-size: 13px; color: var(--gray-700); line-height: 1.6;">Other traders who buy from Paracka and resell downstream. Trade pricing applies. Payment terms are typically credit-based.</div>
+        </div>
+
+        <div style="background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 10px; padding: 18px 20px;">
+          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--wisteria-600); margin-bottom: 6px;">Recurring vs New</div>
+          <div style="font-size: 13px; color: var(--gray-700); line-height: 1.6;">
+            <ul style="margin: 0 0 0 14px; line-height: 1.8;">
+              <li><strong>Recurring</strong> — established customers with ongoing purchase history</li>
+              <li><strong>New</strong> — first-time buyers; acquisition currently driven entirely by word of mouth</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="gap-box" style="margin-top: 20px;">
+        <div class="gap-title">📌 Note — Customer Acquisition</div>
+        <ul class="gaps">
+          <li>All new customer acquisition currently happens through <strong>word of mouth</strong> — no structured marketing, outreach, or referral tracking is in place</li>
+          <li>Customer type is not formally captured today — the system needs to support this classification so collection strategy, pricing, and credit terms can be managed per segment</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       CASH FLOW STATUS
+  ══════════════════════════════════════ -->
+  <div class="hub-header" style="margin-top: 16px;">
+    <div class="hub-icon">💰</div>
+    <div>
+      <h2>Cash Flow &amp; Receivables</h2>
+      <p>Current outstanding position and the collection challenge</p>
+    </div>
+  </div>
+
+  <div class="page-card">
+    <div class="page-card-header">
+      <div>
+        <div class="page-name">Outstanding Receivables</div>
+        <div class="page-sub">As of June 2025</div>
+      </div>
+      <span class="status-badge status-change">Action Required</span>
+    </div>
+    <div class="card-grid">
+      <div class="col">
+        <div class="section-label">Current Position</div>
+        <ul class="features">
+          <li>Total funds outstanding: <strong>₹3.5 Crore</strong></li>
+          <li>Ideal payment rotation: <strong>1 month</strong></li>
+          <li>Reality: many trades carry <strong>2–3 month delays</strong></li>
+          <li>Some trades running with <strong>more than 1-year payment delays</strong></li>
+        </ul>
+      </div>
+      <div class="col">
+        <div class="section-label">The Problem</div>
+        <ul class="changes">
+          <li>Funds locked outside erode the ability to rotate stock efficiently</li>
+          <li>No structured collection process currently in place</li>
+          <li>Existing data has not been categorised by age or activity status</li>
+          <li>Long-pending dues are mixed with active running trades — no clear visibility</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       RECEIVABLES CATEGORISATION
+  ══════════════════════════════════════ -->
+  <div class="hub-header" style="margin-top: 16px;">
+    <div class="hub-icon">📂</div>
+    <div>
+      <h2>Receivables Categorisation</h2>
+      <p>How existing outstanding data will be classified to drive the collection process</p>
+    </div>
+  </div>
+
+  <div class="page-card">
+    <div class="page-card-header">
+      <div>
+        <div class="page-name">Three-Tier Classification</div>
+        <div class="page-sub">All outstanding trades will be assigned one of three categories based on date and activity</div>
+      </div>
+    </div>
+    <div style="padding: 28px 30px; display: flex; flex-direction: column; gap: 16px;">
+
+      <!-- Category 1 -->
+      <div style="display: flex; gap: 20px; align-items: flex-start; padding: 20px 24px; background: var(--wisteria-50); border: 1px solid var(--wisteria-100); border-radius: var(--radius);">
+        <div style="width: 36px; height: 36px; background: var(--wisteria-800); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 15px; flex-shrink: 0;">1</div>
+        <div style="flex: 1;">
+          <div style="font-size: 14px; font-weight: 700; color: var(--gray-900); margin-bottom: 4px;">Pending</div>
+          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--wisteria-600); margin-bottom: 8px;">Up to March 31, 2026 — Not Active After March 31, 2026</div>
+          <div style="font-size: 13px; color: var(--gray-700); line-height: 1.65;">Trades that were active up to the March 31, 2026 cut-off date but have had no activity since. These are overdue accounts where payment has stalled. Priority collection targets.</div>
+        </div>
+      </div>
+
+      <!-- Category 2 -->
+      <div style="display: flex; gap: 20px; align-items: flex-start; padding: 20px 24px; background: var(--teal-light); border: 1px solid hsl(163 40% 80%); border-radius: var(--radius);">
+        <div style="width: 36px; height: 36px; background: var(--teal); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 15px; flex-shrink: 0;">2</div>
+        <div style="flex: 1;">
+          <div style="font-size: 14px; font-weight: 700; color: var(--gray-900); margin-bottom: 4px;">Running</div>
+          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--teal); margin-bottom: 8px;">After March 31, 2026 — Active</div>
+          <div style="font-size: 13px; color: var(--gray-700); line-height: 1.65;">Current active trades with transactions after March 31, 2026. These are ongoing business relationships with outstanding balances that are part of the normal trade cycle. Monitored for timely collection within the 1-month rotation target.</div>
+        </div>
+      </div>
+
+      <!-- Category 3 -->
+      <div style="display: flex; gap: 20px; align-items: flex-start; padding: 20px 24px; background: var(--red-light); border: 1px solid hsl(0 55% 88%); border-radius: var(--radius);">
+        <div style="width: 36px; height: 36px; background: var(--red); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 15px; flex-shrink: 0;">3</div>
+        <div style="flex: 1;">
+          <div style="font-size: 14px; font-weight: 700; color: var(--gray-900); margin-bottom: 4px;">Long Pending</div>
+          <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--red); margin-bottom: 8px;">Before March 31, 2025 — Still Active</div>
+          <div style="font-size: 13px; color: var(--gray-700); line-height: 1.65;">Trades with outstanding dues dating before March 31, 2025, where the account remains active. These are the oldest receivables — over a year outstanding — and represent the highest-risk portion of the ₹3.5 Cr. Requires immediate escalation and structured follow-up.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       STOCK MANAGEMENT
+  ══════════════════════════════════════ -->
+  <div class="hub-header" style="margin-top: 16px;">
+    <div class="hub-icon">📦</div>
+    <div>
+      <h2>Stock Management</h2>
+      <p>Why conventional stock management cannot be applied here</p>
+    </div>
+  </div>
+
+  <div class="page-card">
+    <div class="page-card-header">
+      <div>
+        <div class="page-name">Scheme-Driven Procurement — Paints</div>
+        <div class="page-sub">Hardware shop · Paint companies</div>
+      </div>
+      <span class="status-badge status-partial">Constraint</span>
+    </div>
+    <div style="padding: 28px 30px; display: flex; flex-direction: column; gap: 20px;">
+
+      <div>
+        <div class="section-label">How It Works</div>
+        <div style="font-size: 13.5px; color: var(--gray-700); line-height: 1.7;">
+          Paint companies periodically offer <strong>schemes</strong> — discounted pricing tied to a minimum purchase quantity. To access the scheme price, the dealer must buy the quantity the company specifies during that scheme window. If the required quantity is not purchased, the scheme price is forfeited and the dealer pays the regular rate.
+        </div>
+      </div>
+
+      <div style="background: #fff7ed; border-left: 3px solid var(--amber); border-radius: 0 6px 6px 0; padding: 14px 18px;">
+        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--amber); margin-bottom: 8px;">⚠️ Why Standard Stock Management Does Not Apply</div>
+        <ul class="changes">
+          <li>Purchase quantity is <strong>dictated by the supplier's scheme</strong>, not by actual sales demand or ideal stock levels</li>
+          <li>Buying less than the scheme quantity means losing the low price — which directly erodes the already thin margin on paints</li>
+          <li>This means stock can be bought in volumes <strong>higher than current demand</strong> simply to lock in the scheme rate</li>
+          <li>Reorder-point logic or demand-based purchasing models <strong>cannot override</strong> this supplier-driven buying pattern</li>
+        </ul>
+      </div>
+
+      <div style="background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 8px; padding: 16px 20px;">
+        <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gray-500); margin-bottom: 10px;">🚫 Not Handled — Out of Current Scope</div>
+        <div style="font-size: 13px; color: var(--gray-600); line-height: 1.7; margin-bottom: 10px;">The following are identified as future needs but are <strong>not being addressed in the current engagement</strong>:</div>
+        <ul class="gaps">
+          <li>Scheme-triggered purchase orders — where the trigger is a supplier scheme, not a low-stock alert</li>
+          <li>Recording scheme details (scheme price, required quantity, validity window) against a purchase</li>
+          <li>Stock reporting that distinguishes intentional scheme-driven stock from genuine overstocking</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       REQUIREMENTS TAB
+  ══════════════════════════════════════ -->
+  <div data-tab="requirements" style="padding:0 0 32px;max-width:976px;margin:0 auto;">
+
+    <div class="hub-header" style="margin-top:8px;">
+      <div class="hub-icon">📋</div>
+      <div><h2>Requirements</h2><p>Functional requirements, process decisions, and operational needs</p></div>
+    </div>
+
+    <!-- ── PHASE 1 PLAN ── -->
+    <div class="date-banner">Phase 1 — Collection System Implementation</div>
+
+    <!-- ══ 1. WHAT IS THE REQUIREMENT ══ -->
+    <div class="date-banner" style="margin-top:32px;">1 · What Is the Requirement</div>
+
+    <div class="note-box">
+      <div class="note-label">📌 Requirement</div>
+      <div class="note-title">Streamline the Collection Process</div>
+      <p>The primary objective of this engagement is to bring structure and visibility to the receivables collection process. With <strong>₹3.5 Crore outstanding</strong> and no systematic follow-up in place, the business needs a clear system to track, prioritise, and act on outstanding dues.</p>
+    </div>
+
+    <!-- ══ 2. HOW IS IT CURRENTLY DONE ══ -->
+    <div class="date-banner" style="margin-top:32px;">2 · How Is It Currently Done</div>
+
+    <div class="note-box">
+      <div class="note-label">📝 Current Process</div>
+      <div class="note-title">Bill-Level Collection Assignment</div>
+      <p>When a bill is created, the system offers two optional fields:</p>
+      <ul>
+        <li><strong>Collection Route</strong> — a carryover from the traditional system where a person physically covered a specific area on a set day (Monday route, Tuesday route, etc.). When the business moved digital, this structure was copied across as-is</li>
+        <li><strong>Collection Rep</strong> — the person responsible for collecting against this bill</li>
+      </ul>
+      <p style="margin-top:8px;">Neither field is mandatory. If left empty, the bill has no owner — it simply exists as an outstanding amount with no one accountable for it.</p>
+    </div>
+
+    <div class="note-box" style="margin-top:12px;">
+      <div class="note-label">📝 Current Outstanding Communication</div>
+      <div class="note-title">How Balances Are Currently Sent to Customers</div>
+      <p>Outstanding balance statements are sent to customers from the customer accounts module. The statement shows:</p>
+      <ul>
+        <li><strong>Total pending</strong> — the combined outstanding balance</li>
+        <li>Split into <strong>Hardware</strong> and <strong>Steel</strong> — so the customer can understand which shop the dues belong to</li>
+      </ul>
+      <p style="margin-top: 8px;">This split view must be preserved in the new system — customers are used to seeing it this way and it aids reconciliation on their end.</p>
+    </div>
+
+    <!-- ══ 3. CHALLENGES IN STREAMLINING IT ══ -->
+    <div class="date-banner" style="margin-top:32px;">3 · Challenges in Streamlining It</div>
+
+    <div class="note-box" style="background:#fef2f2;border-left-color:#dc2626;">
+      <div class="note-label" style="color:#dc2626;">⚠️ Challenge 1 — Data Reliability</div>
+      <div class="note-title">Current Customer Data Is 70–80% Reliable — Not Migration-Ready As-Is</div>
+      <p>The existing customer data is approximately <strong>70–80% reliable</strong>. The same customer exists under different account heads across the steel and hardware billing systems, linked manually through the customer accounts module — and human errors have accumulated throughout. The data cannot simply be imported and used without cleaning and verification.</p>
+      <p style="margin-top: 8px;">Additionally, <strong>phone numbers are not mandatory</strong> in the current system, meaning a significant portion of customer records have no contact information — making collection calls impossible without external lookup.</p>
+    </div>
+
+    <div class="note-box" style="background:#fef2f2;border-left-color:#dc2626;margin-top:12px;">
+      <div class="note-label" style="color:#dc2626;">⚠️ Challenge 2 — Aging Report Format</div>
+      <div class="note-title">Bill Aging Report is Year-Wise — Not Useful for Collection</div>
+      <p>The current billing system generates the aging report broken down <strong>by year</strong>. For collection purposes, this is not actionable — a year-wide bucket gives no granularity on how old a specific bill is within that year, making it impossible to prioritise which customer to call first or identify bills approaching critical delay thresholds.</p>
+    </div>
+
+    <div class="note-box" style="background:#fef2f2;border-left-color:#dc2626;margin-top:12px;">
+      <div class="note-label" style="color:#dc2626;">⚠️ Challenge 3 — No Visibility on Outstanding Dues</div>
+      <div class="note-title">All Receivables Sit in the Same Unclassified Pool</div>
+      <p>Currently, outstanding data is not categorised. All receivables — whether 2 weeks old or 2 years old, from active customers or dormant ones — sit in the same pool. This makes it impossible to prioritise collection efforts, identify risk, or hold anyone accountable for follow-up.</p>
+    </div>
+
+    <div class="note-box" style="background:#fef2f2;border-left-color:#dc2626;margin-top:12px;">
+      <div class="note-label" style="color:#dc2626;">⚠️ Challenge 4 — No Follow-Up Scheduling</div>
+      <div class="note-title">Callbacks Are Not Tracked — They Depend on Memory</div>
+      <p>Traditionally, collection was done by route — one person covering a specific area on Monday, another area on Tuesday, and so on. When the business moved to a digital system, this route structure was carried over as-is. The concept made sense in a physical world where someone was literally travelling a road; in a digital system it adds no value and only creates rigidity.</p>
+      <p style="margin-top: 8px;">The deeper problem is that <strong>with nearly 500 customers to follow up with in a week</strong>, there is no mechanism to schedule a callback for a specific date. When a customer says <em>"call me on Wednesday"</em>, the rep has to remember it themselves — and with that volume, callbacks are regularly missed. There is no system surfacing what needs to happen today.</p>
+    </div>
+
+    <div class="note-box" style="background:#fef2f2;border-left-color:#dc2626;margin-top:12px;">
+      <div class="note-label" style="color:#dc2626;">⚠️ Challenge 5 — Sales Rep vs Collection Rep Conflict</div>
+      <div class="note-title">Rapport Can Work Against Collection</div>
+      <p>The person who handled the sale is often the same person making the collection call. The customer has a personal rapport with the sales rep — they feel comfortable pushing back or asking for more time, and the sales rep is less likely to be firm about deadlines. Result: <strong>payment dates get pushed repeatedly without consequence</strong>.</p>
+    </div>
+
+    <!-- ══ 4. HOW WE SOLVE THE CHALLENGES ══ -->
+    <div class="date-banner" style="margin-top:32px;">4 · How We Solve the Challenges</div>
+
+    <div class="note-box" style="background:#fff7ed;border-left-color:var(--amber);">
+      <div class="note-label" style="color:var(--amber);">⚠️ Immediate Action — Before Migration</div>
+      <div class="note-title">Make Phone Number Mandatory — Now</div>
+      <p>Before any data export or migration happens, <strong>phone number must be made a mandatory field</strong> in the existing billing systems (both hardware and steel). Without phone numbers, the collection system cannot function — there is no way to call or WhatsApp the customer. This change must be made now, in parallel with the system build, so data quality improves before the migration point.</p>
+    </div>
+
+    <div class="note-box" style="margin-top:12px;">
+      <div class="note-label">✅ Solving Challenge 1 — Data Migration Plan</div>
+      <div class="note-title">Export → Import → Link</div>
+      <ul>
+        <li><strong>Step 1</strong> — Export the <strong>aging report</strong> from both the hardware and steel billing systems</li>
+        <li><strong>Step 2</strong> — Export <strong>customer account data</strong> to extract the existing relationship mappings between the customer heads in each shop</li>
+        <li><strong>Step 3</strong> — Import both datasets into the new web-based system</li>
+        <li><strong>Step 4</strong> — The web system will provide an option to <strong>manually link accounts</strong> — so the steel-side and hardware-side records for the same customer can be merged under a single identity</li>
+      </ul>
+      <p style="margin-top: 8px;"><strong>Route and collection representative</strong> assignments from the current system will <strong>not be carried over</strong> — these will be set fresh in the new system.</p>
+    </div>
+
+    <div class="note-box" style="margin-top:12px;">
+      <div class="note-label">✅ Solving Challenges 2 &amp; 3 — Data Categorisation</div>
+      <div class="note-title">Three-Tier Classification + Meaningful Aging Buckets</div>
+      <p>All existing outstanding data will be classified into three categories based on transaction date and account activity. The new system will present aging in <strong>meaningful time buckets</strong> (0–30, 31–60, 61–90, 91–180, 181–365, 365+ days) so the collection team can immediately see what is urgent and what is long overdue.</p>
+      <ul>
+        <li><strong>Pending</strong> — Active up to March 31, 2026; no activity after. Priority collection targets.</li>
+        <li><strong>Running</strong> — Active after March 31, 2026. Current trades within the normal business cycle.</li>
+        <li><strong>Long Pending</strong> — Dues dating before March 31, 2025. Oldest and highest-risk. Requires immediate escalation.</li>
+      </ul>
+    </div>
+
+    <div class="note-box" style="margin-top:12px;">
+      <div class="note-label">✅ Solving Challenges 4 &amp; 5 — Structured Follow-Up &amp; Role Separation</div>
+      <div class="note-title">Every Outstanding Balance Gets a Clear Next State</div>
+      <ul>
+        <li><strong>Scheduled</strong> — a follow-up date is set; call or message goes out on that date automatically</li>
+        <li><strong>Deferred by owner</strong> — customer has spoken directly with owner; follow-up paused until agreed date</li>
+        <li><strong>Promised payment</strong> — customer has committed to a payment date; system monitors and triggers if payment does not arrive</li>
+        <li><strong>Callback requested</strong> — customer asked to be called on a specific day; system surfaces it on that day</li>
+        <li><strong>Unresponsive</strong> — repeated attempts with no response; escalation flag raised</li>
+        <li><strong>Collected</strong> — payment received; record closed</li>
+      </ul>
+      <p style="margin-top:8px;">Collection rep and sales rep will be distinct roles — the person who sold is not the person who collects, removing the rapport dynamic that delays payment.</p>
+    </div>
+
+    <div class="note-box" style="background:#fff7ed;border-left-color:var(--amber);margin-top:12px;">
+      <div class="note-label" style="color:var(--amber);">⚠️ Edge Case — Customer Calls the Owner Directly</div>
+      <div class="note-title">Owner-Level Conversations Must Suppress System Follow-Up</div>
+      <p>Sometimes a customer bypasses the collection rep and calls the <strong>owner directly</strong> to request more time. A system-generated follow-up going out shortly after signals poor internal coordination and damages trust.</p>
+      <p style="margin-top: 8px;">The system must allow the owner to <strong>log this and defer the follow-up</strong>. When deferred: no automated reminder or call goes out, the reason and new expected payment date are recorded, the collection rep is notified, and on the deferred date the follow-up resumes automatically if payment has not been received.</p>
+    </div>
+
+    <!-- ══ 5. THE SOLUTION ══ -->
+    <div class="date-banner" style="margin-top:32px;">5 · The Solution</div>
+
+    <div class="note-box">
+      <div class="note-label">✅ The Collection System — elCRM</div>
+      <div class="note-title">How the New System Will Work</div>
+      <p>The collection system will be built within <strong>elCRM</strong>. Key capabilities:</p>
+      <ul>
+        <li><strong>Calling option</strong> built into the system — reps can log calls, outcomes, and next actions directly</li>
+        <li><strong>Mobile-friendly</strong> — the system must work fully on a phone; field staff are not always desk-based</li>
+        <li><strong>WhatsApp reminders on the 15th and 30th</strong> of each month — sent to customers with outstanding balances
+          <ul style="margin: 6px 0 0 14px; line-height: 1.8;">
+            <li>Auto-scheduled by default</li>
+            <li>Can be triggered manually on demand</li>
+            <li>Can be altered or suppressed before sending</li>
+          </ul>
+        </li>
+        <li><strong>Scheduled callbacks</strong> — if a customer says "call me Wednesday", the rep logs it and it surfaces automatically on that date</li>
+        <li><strong>Collection rep ≠ sales rep</strong> — the system distinguishes between who made the sale and who is responsible for collecting</li>
+        <li><strong>Mandatory rep assignment</strong> — every bill must have a collection rep assigned; without an owner, no follow-up happens</li>
+        <li><strong>Call log / interaction history</strong> — every contact attempt, outcome, and next action is recorded so nothing falls through</li>
+      </ul>
+    </div>
+
+    <div class="note-box" style="margin-top:12px;">
+      <div class="note-label">📝 Key Principle</div>
+      <div class="note-title">Follow-Up Is Everything</div>
+      <p>The entire value of the collection system rests on follow-up. A collection call made once and not tracked is worthless. The system must ensure that every outstanding balance has a next action, every next action has a date, and every date is surfaced automatically so nothing falls through. Without structured follow-up, money stays outside.</p>
+    </div>
+
+    <div class="note-box" style="margin-top:12px;">
+      <div class="note-label">💡 Opportunity Identified</div>
+      <div class="note-title">Customers Don't Know the Hardware Shop Exists</div>
+      <p>Customers who buy from the steel shop are often unaware that Paracka also operates a hardware shop selling paints, plumbing supplies, and more. The collection touchpoints — calls and WhatsApp messages — are an opportunity to surface the hardware shop to steel customers and vice versa. This can be incorporated into the communication templates.</p>
+    </div>
+
+  </div><!-- /requirements tab -->
+
+</div><!-- /container -->
+
+<div class="footer">
+  Paracka Traders — Digital Transformation Brief &nbsp;·&nbsp; Prepared by elSapiens Product Team &nbsp;·&nbsp; June 2025<br>
+  This document is intended for internal business stakeholders and department heads only.
+</div>
+
+<script>
+  (function() {
+    document.querySelectorAll('.tab-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        document.body.dataset.view = btn.dataset.view;
+        document.querySelectorAll('.tab-btn').forEach(function(b) {
+          b.classList.toggle('active', b === btn);
+        });
+        if (btn.dataset.view !== 'requirements') {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>
