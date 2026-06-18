@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Done Right — BNI Eduslot · elSapiens</title>
+<meta name="description" content="BNI Eduslot by Dawn Dharmishtan, elSapiens — the practical AI playbook for business owners.">
+<meta name="author" content="Dawn Dharmishtan">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=Space+Grotesk:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+/* ═══════════════════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════════════════ */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html, body { width:100vw; height:100vh; height:100dvh; overflow:hidden; background:#000; }
+:root { --accent:#8b5cf6; }   /* updated per slide by JS — drives rail, ghost number & curtain */
+
+/* ═══════════════════════════════════════════════════
+   SLIDE SYSTEM — "IRIS" KINETIC MASK REVEAL
+═══════════════════════════════════════════════════ */
+.slide {
+  position:absolute; inset:0;
+  opacity:0; visibility:hidden; pointer-events:none;
+  transform:translateZ(0);
+  overflow:hidden;
+  font-family:'Plus Jakarta Sans', sans-serif; color:#fff;
+}
+/* resting visible state: aperture fully open */
+.slide.active {
+  opacity:1; visibility:visible; pointer-events:auto;
+  clip-path:circle(150% at 50% 50%);
+  z-index:3;
+}
+/* entering slide sits above current, aperture grows open from the edge we travel toward */
+@keyframes irisIn-fwd { from{ clip-path:circle(0% at 86% 50%); } to{ clip-path:circle(150% at 86% 50%); } }
+@keyframes irisIn-bwd { from{ clip-path:circle(0% at 14% 50%); } to{ clip-path:circle(150% at 14% 50%); } }
+/* leaving slide recedes in depth + dims (transform/opacity/filter only) */
+@keyframes recede {
+  from{ transform:scale(1);   opacity:1; filter:brightness(1); }
+  to  { transform:scale(.92); opacity:0; filter:brightness(.5); }
+}
+.slide.entering {
+  visibility:visible; opacity:1; z-index:5;
+  will-change:clip-path;
+  animation:irisIn-fwd .8s cubic-bezier(.83,0,.17,1) forwards;
+}
+.slide.entering.bwd { animation-name:irisIn-bwd; }
+.slide.prev {
+  visibility:visible; z-index:4;
+  will-change:transform,opacity;
+  animation:recede .8s cubic-bezier(.4,0,.2,1) forwards;
+}
+/* shutter-edge glint on the entering slide (opacity only) */
+.slide.entering::before {
+  content:""; position:absolute; inset:0; pointer-events:none; z-index:50;
+  background:radial-gradient(circle at 86% 50%, transparent 60%, rgba(255,255,255,0.3) 62%, transparent 66%);
+  background:radial-gradient(circle at 86% 50%, transparent 60%, color-mix(in srgb,var(--accent) 38%, transparent) 62%, transparent 66%);
+  opacity:0; animation:glint .8s ease-out forwards;
+}
+.slide.entering.bwd::before {
+  background:radial-gradient(circle at 14% 50%, transparent 60%, rgba(255,255,255,0.3) 62%, transparent 66%);
+  background:radial-gradient(circle at 14% 50%, transparent 60%, color-mix(in srgb,var(--accent) 38%, transparent) 62%, transparent 66%);
+}
+@keyframes glint { 0%{opacity:0} 30%{opacity:.9} 100%{opacity:0} }
+
+/* curtain — a thin accent tick that flicks across at each cut */
+#curtain {
+  position:fixed; inset:0; z-index:200; pointer-events:none; transform:translateX(-110%);
+  background:linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.18) 46%, rgba(255,255,255,0.26) 50%, rgba(255,255,255,0.18) 54%, transparent 100%);
+  background:linear-gradient(90deg, transparent 0%, color-mix(in srgb,var(--accent) 55%, transparent) 46%, color-mix(in srgb,var(--accent) 70%, transparent) 50%, color-mix(in srgb,var(--accent) 55%, transparent) 54%, transparent 100%);
+}
+@keyframes curtainFwd { 0%{transform:translateX(-110%)} 100%{transform:translateX(110%)} }
+@keyframes curtainBwd { 0%{transform:translateX(110%)} 100%{transform:translateX(-110%)} }
+
+/* ═══════════════════════════════════════════════════
+   INNER-CONTENT REVEAL — focus-pull, gated by .in
+═══════════════════════════════════════════════════ */
+@keyframes focusIn {
+  0%  { opacity:0; transform:translateY(22px) scale(.985); filter:blur(10px); }
+  60% { filter:blur(2px); }
+  100%{ opacity:1; transform:translateY(0) scale(1); filter:blur(0); }
+}
+.slide [data-a] { opacity:0; }
+.slide.in [data-a] { animation:focusIn .68s cubic-bezier(.22,1,.36,1) both; will-change:opacity,transform,filter; }
+.slide.in [data-a="0"] { animation-delay:.04s; }
+.slide.in [data-a="1"] { animation-delay:.12s; }
+.slide.in [data-a="2"] { animation-delay:.20s; }
+.slide.in [data-a="3"] { animation-delay:.28s; }
+.slide.in [data-a="4"] { animation-delay:.36s; }
+.slide.in [data-a="5"] { animation-delay:.44s; }
+.slide.in [data-a="6"] { animation-delay:.52s; }
+.slide.in [data-a="7"] { animation-delay:.60s; }
+
+/* reduced motion + clip-path fallback */
+@media (prefers-reduced-motion:reduce) {
+  .slide.entering, .slide.entering.bwd { animation:none !important; clip-path:circle(150% at 50% 50%) !important; }
+  .slide.prev { animation:none !important; }
+  .slide.in [data-a] { animation:none !important; opacity:1 !important; filter:none !important; transform:none !important; }
+  #curtain { display:none; }
+}
+@supports not (clip-path:circle(0%)) {
+  .slide.entering, .slide.entering.bwd { animation:fadeScaleIn .5s ease forwards; }
+  @keyframes fadeScaleIn { from{opacity:0;transform:scale(1.03)} to{opacity:1;transform:scale(1)} }
+}
+
+/* ═══════════════════════════════════════════════════
+   FIXED CHROME
+═══════════════════════════════════════════════════ */
+.watermark {
+  position:fixed; top:20px; left:24px; height:52px; z-index:800;
+  opacity:0.88; filter:drop-shadow(0 2px 14px rgba(255,255,255,0.18));
+  pointer-events:none;
+}
+/* right-edge segment rail */
+.rail { position:fixed; right:16px; top:50%; transform:translateY(-50%); z-index:800;
+  display:flex; flex-direction:column; gap:7px; align-items:center; }
+.rail .seg { width:3px; height:18px; border-radius:2px; background:rgba(255,255,255,.14);
+  cursor:pointer; overflow:hidden; position:relative; transition:width .3s ease; }
+.rail .seg::after { content:""; position:absolute; inset:0; transform-origin:bottom; transform:scaleY(0);
+  background:var(--accent); transition:transform .8s cubic-bezier(.83,0,.17,1); }
+.rail .seg.done::after { transform:scaleY(1); }
+.rail .seg.cur { width:5px; }
+.rail .seg:hover { background:rgba(255,255,255,.3); }
+
+/* giant ghost slide number */
+.ghostnum { position:fixed; right:34px; bottom:30px; z-index:790; pointer-events:none;
+  font-family:'Space Grotesk',sans-serif; line-height:.8; user-select:none; }
+.ghostnum #gnBig { font-size:118px; font-weight:800; color:rgba(255,255,255,0.10); color:color-mix(in srgb,var(--accent) 16%, transparent); }
+.ghostnum #gnSmall { font-size:26px; font-weight:600; color:rgba(255,255,255,.12); margin-left:4px; }
+.ghostnum.swap { animation:gnSwap .5s ease; }
+@keyframes gnSwap { 0%{opacity:0;transform:translateY(10px)} 100%{opacity:1;transform:translateY(0)} }
+
+/* editorial HUD: live section title + mono counter */
+.hud { position:fixed; left:32px; bottom:26px; z-index:800; display:flex; flex-direction:column; gap:4px; }
+.hud-title { font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:15px;
+  text-transform:uppercase; letter-spacing:.14em; color:#fff; }
+.hud-title.wipe { animation:titleWipe .42s cubic-bezier(.83,0,.17,1) both; }
+@keyframes titleWipe { from{ clip-path:inset(0 100% 0 0); transform:translateY(4px); opacity:.4; }
+  to{ clip-path:inset(0 0 0 0); transform:translateY(0); opacity:1; } }
+.hud-ctr { font-family:'JetBrains Mono',monospace; font-size:12px; color:rgba(255,255,255,.4); }
+.hud-ctr b { color:var(--accent); font-weight:700; }
+
+/* tap zones */
+.tap-zone { position:fixed; top:0; height:100%; width:18%; z-index:300; cursor:pointer; }
+.tap-zone-left { left:0; }
+.tap-zone-right { right:0; }
+
+/* ═══════════════════════════════════════════════════
+   SLIDE 0 — TITLE
+   Theme: Deep space purple | Animated orbs + particles
+═══════════════════════════════════════════════════ */
+.s0 {
+  background: radial-gradient(ellipse 130% 100% at 50% 60%, #0d0030 0%, #050015 55%, #01000a 100%);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:100px 48px; text-align:center;
+}
+.s0-orb {
+  position:absolute; border-radius:50%; pointer-events:none;
+  animation: orbPulse ease-in-out infinite;
+}
+.s0-orb-1 { width:700px; height:700px; top:-200px; left:-180px; background:radial-gradient(circle,rgba(100,30,255,0.3) 0%,transparent 65%); animation-duration:10s; filter:blur(60px); }
+.s0-orb-2 { width:550px; height:550px; right:-100px; bottom:-120px; background:radial-gradient(circle,rgba(0,180,255,0.22) 0%,transparent 65%); animation-duration:13s; animation-delay:-4s; filter:blur(60px); }
+.s0-orb-3 { width:320px; height:320px; left:45%; top:25%; background:radial-gradient(circle,rgba(180,0,255,0.18) 0%,transparent 65%); animation-duration:8s; animation-delay:-2s; filter:blur(50px); }
+@keyframes orbPulse {
+  0%,100% { transform:scale(1) translateY(0); }
+  50%      { transform:scale(1.1) translateY(-30px); }
+}
+.s0-particle {
+  position:absolute; border-radius:50%; pointer-events:none;
+  animation:particleRise linear infinite;
+}
+@keyframes particleRise {
+  0%   { transform:translateY(0) translateX(0); opacity:0; }
+  8%   { opacity:1; }
+  92%  { opacity:0.6; }
+  100% { transform:translateY(-100vh) translateX(var(--pdx,20px)); opacity:0; }
+}
+.s0-content { position:relative; z-index:2; display:flex; flex-direction:column; align-items:center; }
+.s0-pill {
+  display:inline-flex; align-items:center; gap:8px; margin-bottom:30px;
+  padding:8px 22px; border-radius:30px;
+  background:rgba(130,50,255,0.14); border:1px solid rgba(130,50,255,0.4);
+  font-size:13px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase;
+  color:rgba(190,150,255,1);
+}
+.s0-h1 {
+  font-family:'Space Grotesk',sans-serif; font-size:82px; font-weight:800;
+  line-height:1.0; letter-spacing:-0.03em; color:#fff; max-width:1050px;
+}
+.s0-h1 .glow {
+  background:linear-gradient(135deg, #c084fc, #67e8f9, #a78bfa);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  filter: drop-shadow(0 0 30px rgba(167,139,250,0.4));
+}
+.s0-sub {
+  font-family:'Space Grotesk',sans-serif; font-size:36px; font-weight:400;
+  color:rgba(180,220,255,0.7); margin-top:12px;
+}
+.s0-caption { font-size:17px; color:rgba(255,255,255,0.38); margin-top:26px; max-width:560px; line-height:1.7; }
+.s0-tags { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:30px; }
+.s0-tag {
+  padding:7px 18px; border-radius:20px;
+  background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);
+  font-size:14px; color:rgba(255,255,255,0.45);
+}
+.s0-tag b { color:rgba(255,255,255,0.85); font-weight:700; }
+
+/* ═══════════════════════════════════════════════════
+   SLIDE 1 — THE REAL TALK
+═══════════════════════════════════════════════════ */
+.s1 {
+  background:#040004;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:100px 80px; text-align:center;
+}
+.s1-giant {
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  font-family:'Space Grotesk',sans-serif; font-size:500px; font-weight:900;
+  letter-spacing:-0.06em; line-height:1;
+  color:rgba(255,30,30,0.055); pointer-events:none; user-select:none;
+}
+.s1-content { position:relative; z-index:2; }
+.s1-label { font-size:13px; font-weight:700; letter-spacing:0.25em; text-transform:uppercase; color:rgba(255,80,80,0.8); margin-bottom:20px; }
+.s1-h { font-family:'Space Grotesk',sans-serif; font-size:56px; font-weight:800; line-height:1.12; letter-spacing:-0.025em; color:#fff; max-width:920px; }
+.s1-red { color:#ff4545; }
+.s1-rule { width:70px; height:3px; background:#ff4545; margin:30px auto; border-radius:2px; box-shadow:0 0 24px rgba(255,60,60,0.7); }
+.s1-sub { font-size:22px; color:rgba(255,255,255,0.45); max-width:660px; line-height:1.75; margin:0 auto; }
+.s1-callout {
+  margin-top:44px; display:inline-flex; align-items:center; gap:14px;
+  padding:16px 28px; border-radius:12px;
+  background:rgba(255,40,40,0.07); border:1px solid rgba(255,40,40,0.22);
+  font-size:16px; color:rgba(255,170,170,0.75); font-style:italic; max-width:700px;
+}
+
+/* ═══════════════════════════════════════════════════
+   SLIDE 2 — THE AI LANDSCAPE
+═══════════════════════════════════════════════════ */
+.s2 {
+  background:radial-gradient(ellipse 110% 90% at 50% 55%, #020d1c 0%, #01060f 100%);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:80px 44px 60px;
+}
+.s2-ey { font-size:12px; font-weight:700; letter-spacing:0.22em; text-transform:uppercase; color:rgba(34,211,238,0.65); margin-bottom:7px; text-align:center; }
+.s2-h  { font-family:'Space Grotesk',sans-serif; font-size:38px; font-weight:700; color:#fff; text-align:center; margin-bottom:22px; }
+.s2-h span { color:rgba(255,255,255,0.28); font-weight:400; }
+.s2-rows { display:flex; flex-direction:column; gap:8px; width:100%; max-width:1300px; }
+.s2-row {
+  display:flex; align-items:center; gap:16px; padding:12px 16px; border-radius:12px;
+  background:rgba(255,255,255,0.025); border:1px solid rgba(255,255,255,0.06);
+  border-left-width:3px; transition:background 0.2s;
+}
+.s2-row:hover { background:rgba(255,255,255,0.04); }
+.s2-cat-badge {
+  display:flex; align-items:center; gap:8px;
+  min-width:170px; padding-right:16px; border-right:1px solid rgba(255,255,255,0.07); flex-shrink:0;
+}
+.s2-cat-em  { font-size:18px; }
+.s2-cat-lbl { font-family:'Space Grotesk',sans-serif; font-size:12px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; }
+.s2-chips   { display:flex; gap:7px; flex:1; flex-wrap:nowrap; }
+.s2-chip {
+  display:flex; align-items:center; gap:8px; padding:7px 12px; border-radius:9px;
+  background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07);
+  transition:all 0.22s; cursor:default; flex-shrink:0;
+}
+.s2-chip:hover { background:rgba(255,255,255,0.08); transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,0.4); }
+.s2-logo {
+  width:28px; height:28px; border-radius:6px; display:flex; align-items:center; justify-content:center;
+  font-size:9px; font-weight:800; font-family:'Space Grotesk',sans-serif; color:#fff; flex-shrink:0; letter-spacing:-0.02em;
+}
+.s2-tname { font-size:13px; font-weight:600; color:rgba(255,255,255,0.82); white-space:nowrap; }
+.s2-free  { font-size:9px; font-weight:700; padding:2px 5px; border-radius:3px; background:rgba(52,211,153,0.12); color:rgba(52,211,153,0.8); border:1px solid rgba(52,211,153,0.2); flex-shrink:0; }
+.s2-paid  { font-size:9px; font-weight:700; padding:2px 5px; border-radius:3px; background:rgba(245,158,11,0.1); color:rgba(245,158,11,0.75); border:1px solid rgba(245,158,11,0.2); flex-shrink:0; }
+.s2-r1 { border-left-color:#22d3ee; } .s2-r1 .s2-cat-lbl { color:#22d3ee; }
+.s2-r2 { border-left-color:#a855f7; } .s2-r2 .s2-cat-lbl { color:#a855f7; }
+.s2-r3 { border-left-color:#ec4899; } .s2-r3 .s2-cat-lbl { color:#ec4899; }
+.s2-r4 { border-left-color:#34d399; } .s2-r4 .s2-cat-lbl { color:#34d399; }
+.s2-r5 { border-left-color:#f59e0b; } .s2-r5 .s2-cat-lbl { color:#f59e0b; }
+.s2-foot { margin-top:12px; font-size:13px; color:rgba(255,255,255,0.22); font-style:italic; text-align:center; }
+
+/* ═══════════════════════════════════════════════════
+   SLIDE 3 — THE CRAFT METHOD
+═══════════════════════════════════════════════════ */
+.s3 {
+  background:#000d04;
+  display:flex; align-items:center; justify-content:center;
+  padding:90px 48px; gap:48px;
+}
+.s3::before {
+  content:''; position:absolute; inset:0; pointer-events:none; z-index:1;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,80,0.012) 2px,rgba(0,255,80,0.012) 4px);
+}
+.s3-left { flex:0 0 auto; position:relative; z-index:2; }
+.s3-ey { font-family:'JetBrains Mono',monospace; font-size:12px; color:rgba(0,255,100,0.5); letter-spacing:0.15em; margin-bottom:16px; }
+.s3-h { font-family:'Space Grotesk',sans-serif; font-size:42px; font-weight:800; color:#fff; margin-bottom:8px; }
+.s3-h .cr { color:#22d3ee; }
+.s3-h .rr { color:#4ade80; }
+.s3-h .ar { color:#f59e0b; }
+.s3-h .fr { color:#a855f7; }
+.s3-h .tr { color:#ec4899; }
+.s3-sub { font-size:15px; color:rgba(255,255,255,0.32); margin-bottom:26px; }
+.craft-list { display:flex; flex-direction:column; gap:9px; }
+.craft-row {
+  display:flex; align-items:center; gap:16px; padding:12px 18px; border-radius:10px;
+  background:rgba(0,255,100,0.04); border:1px solid rgba(0,255,100,0.1); transition:all 0.25s;
+}
+.craft-row:hover { background:rgba(0,255,100,0.08); border-color:rgba(0,255,100,0.25); }
+.cr-l { font-family:'JetBrains Mono',monospace; font-size:28px; font-weight:700; min-width:36px; }
+.cr-w { font-family:'Space Grotesk',sans-serif; font-size:16px; font-weight:700; color:rgba(255,255,255,0.9); min-width:80px; }
+.cr-d { font-size:13px; color:rgba(255,255,255,0.38); }
+.s3-right { flex:0 0 560px; max-width:560px; position:relative; z-index:2; }
+.terminal {
+  background:#010f05; border:1px solid rgba(0,255,100,0.18); border-radius:14px;
+  overflow:hidden; box-shadow:0 24px 70px rgba(0,0,0,0.7), 0 0 50px rgba(0,255,100,0.04);
+}
+.t-bar {
+  display:flex; align-items:center; gap:7px; padding:12px 16px;
+  background:rgba(0,255,100,0.05); border-bottom:1px solid rgba(0,255,100,0.1);
+}
+.td { width:11px; height:11px; border-radius:50%; }
+.td-r{background:#ff5f57;} .td-y{background:#febc2e;} .td-g{background:#28c840;}
+.t-title { margin-left:auto; margin-right:auto; font-family:'JetBrains Mono',monospace; font-size:12px; color:rgba(0,255,100,0.45); }
+.t-body { padding:22px 22px; font-family:'JetBrains Mono',monospace; font-size:13.5px; line-height:1.85; }
+.t-prompt { color:rgba(0,255,100,0.55); }
+.t-bad    { color:#ff6060; text-decoration:line-through; opacity:0.65; }
+.t-err    { color:rgba(255,90,90,0.5); font-size:12px; }
+.t-sep    { color:rgba(0,255,100,0.35); margin:12px 0 8px; }
+.t-cmt    { color:rgba(0,255,100,0.35); }
+.t-cmd    { color:#e2e8f0; }
+.t-bracket{ color:#22d3ee; }
+.t-out {
+  margin-top:14px; padding:12px 14px; border-radius:8px;
+  background:rgba(0,255,100,0.04); border:1px solid rgba(0,255,100,0.12);
+}
+.t-out-label { font-size:11px; color:rgba(0,255,100,0.4); margin-bottom:6px; }
+.t-ok   { color:#22ff88; }
+.t-res  { font-size:13px; color:rgba(255,255,255,0.72); line-height:1.5; }
+.cursor { display:inline-block; width:2px; height:1.1em; background:#22ff88; margin-left:2px; vertical-align:text-bottom; animation:blink 1.1s step-end infinite; }
+@keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0;} }
+
+/* ═══════════════════════════════════════════════════
+   SLIDE 4 — THE HUMAN-AI FORMULA
+═══════════════════════════════════════════════════ */
+.s4 {
+  background:radial-gradient(ellipse 110% 90% at 50% 40%, #0a0020 0%, #020008 100%);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:80px 52px; gap:0;
+}
+.s4-ey { font-size:12px; font-weight:700; letter-spacing:0.22em; text-transform:uppercase; color:rgba(167,139,250,0.7); margin-bottom:10px; text-align:center; }
+.s4-h  { font-family:'Space Grotesk',sans-serif; font-size:58px; font-weight:800; color:#fff; line-height:1.05; letter-spacing:-0.03em; text-align:center; margin-bottom:34px; }
+.s4-h em { font-style:normal; color:#a78bfa; }
+.s4-flow { display:flex; align-items:stretch; gap:0; max-width:1160px; width:100%; margin-bottom:26px; }
+.s4-step {
+  flex:1; padding:18px 14px; border-radius:14px; display:flex; flex-direction:column;
+  align-items:center; text-align:center; gap:6px; transition:transform 0.3s;
+}
+.s4-step:hover { transform:translateY(-6px); }
+.s4-step-num { font-family:'Space Grotesk',sans-serif; font-size:10px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; opacity:0.5; }
+.s4-step-em  { font-size:26px; }
+.s4-step-t   { font-family:'Space Grotesk',sans-serif; font-size:15px; font-weight:700; }
+.s4-step-d   { font-size:12px; opacity:0.48; line-height:1.55; }
+.s4-arr { font-size:20px; color:rgba(255,255,255,0.16); flex-shrink:0; display:flex; align-items:center; padding:0 8px; }
+.s4-s1 { background:rgba(245,158,11,0.08);  border:1px solid rgba(245,158,11,0.22);  } .s4-s1 .s4-step-t { color:#f59e0b; }
+.s4-s2 { background:rgba(34,211,238,0.08);  border:1px solid rgba(34,211,238,0.22);  } .s4-s2 .s4-step-t { color:#22d3ee; }
+.s4-s3 { background:rgba(167,139,250,0.08); border:1px solid rgba(167,139,250,0.22); } .s4-s3 .s4-step-t { color:#a78bfa; }
+.s4-s4 { background:rgba(52,211,153,0.08);  border:1px solid rgba(52,211,153,0.22);  } .s4-s4 .s4-step-t { color:#34d399; }
+.s4-compare { display:grid; grid-template-columns:1fr 1fr; gap:14px; max-width:1000px; width:100%; }
+.s4-col     { padding:16px 22px; border-radius:12px; }
+.s4-c-bad   { background:rgba(255,60,60,0.05);  border:1px solid rgba(255,60,60,0.18); }
+.s4-c-good  { background:rgba(52,211,153,0.05); border:1px solid rgba(52,211,153,0.18); }
+.s4-c-hd    { font-family:'Space Grotesk',sans-serif; font-size:14px; font-weight:700; margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+.s4-c-bad  .s4-c-hd { color:rgba(255,100,100,0.9); }
+.s4-c-good .s4-c-hd { color:rgba(52,211,153,0.9); }
+.s4-c-list  { list-style:none; display:flex; flex-direction:column; gap:5px; }
+.s4-c-list li { font-size:14px; color:rgba(255,255,255,0.5); display:flex; align-items:flex-start; gap:8px; line-height:1.5; }
+.s4-c-bad  .s4-c-list li::before { content:'✗'; color:rgba(255,80,80,0.6); font-size:11px; flex-shrink:0; margin-top:2px; }
+.s4-c-good .s4-c-list li::before { content:'✓'; color:rgba(52,211,153,0.7); font-size:11px; flex-shrink:0; margin-top:2px; }
+
+/* ═══════════════════════════════════════════════════
+   SLIDE 5 — PRESENTATIONS & DOCS
+═══════════════════════════════════════════════════ */
+.s5 {
+  background:radial-gradient(ellipse 110% 85% at 55% 45%, #001a12 0%, #00090a 100%);
+  display:flex; align-items:center; justify-content:center;
+  padding:100px 52px; gap:52px;
+}
+.s5-left { flex:0 0 auto; max-width:420px; }
+.s5-ey { font-size:13px; font-weight:700; letter-spacing:0.22em; text-transform:uppercase; color:rgba(52,211,153,0.9); margin-bottom:14px; }
+.s5-h  { font-family:'Space Grotesk',sans-serif; font-size:44px; font-weight:800; color:#fff; line-height:1.1; letter-spacing:-0.025em; margin-bottom:26px; }
+.s5-h em { font-style:normal; color:#34d399; }
+.s5-items { display:flex; flex-direction:column; gap:12px; }
+.s5-it {
+  display:flex; align-items:flex-start; gap:14px; padding:14px 18px; border-radius:12px;
+  background:rgba(52,211,153,0.05); border:1px solid rgba(52,211,153,0.12); transition:all 0.25s;
+}
+.s5-it:hover { background:rgba(52,211,153,0.1); border-color:rgba(52,211,153,0.28); transform:translateX(6px); }
+.si-ic { font-size:24px; flex-shrink:0; }
+.si-n  { font-family:'Space Grotesk',sans-serif; font-size:15px; font-weight:700; color:rgba(255,255,255,0.9); margin-bottom:3px; }
+.si-d  { font-size:13px; color:rgba(255,255,255,0.38); line-height:1.5; }
+.s5-right { flex:0 0 640px; max-width:640px; }
+.browser { border-radius:16px; overflow:hidden; box-shadow:0 32px 80px rgba(0,0,0,0.75), 0 0 0 1px rgba(52,211,153,0.14), 0 0 60px rgba(52,211,153,0.07); }
+.b-bar { display:flex; align-items:center; gap:7px; padding:12px 16px; background:#0e1f18; }
+.bd { width:11px; height:11px; border-radius:50%; }
+.bd-r{background:#ff5f57;} .bd-y{background:#febc2e;} .bd-g{background:#28c840;}
+.b-url { flex:1; margin:0 12px; background:rgba(255,255,255,0.06); border-radius:6px; padding:5px 12px; font-size:12px; color:rgba(255,255,255,0.38); font-family:'JetBrains Mono',monospace; }
+.b-body { background:#0b1810; padding:24px; }
+.b-ttl  { font-family:'Space Grotesk',sans-serif; font-size:20px; font-weight:700; color:#34d399; margin-bottom:16px; }
+.b-card { background:rgba(52,211,153,0.05); border:1px solid rgba(52,211,153,0.14); border-radius:10px; padding:18px 20px; }
+.b-card-t { font-size:14px; font-weight:600; color:rgba(255,255,255,0.8); margin-bottom:10px; }
+.b-bullets { display:flex; flex-direction:column; gap:7px; }
+.b-bul { display:flex; align-items:flex-start; gap:9px; font-size:13px; color:rgba(255,255,255,0.5); }
+.b-bul::before { content:'✦'; color:rgba(52,211,153,0.55); font-size:10px; flex-shrink:0; margin-top:2px; }
+.b-time { margin-top:14px; text-align:center; font-size:13px; color:rgba(52,211,153,0.55); font-style:italic; }
+.b-prog { margin-top:10px; height:4px; background:rgba(52,211,153,0.1); border-radius:2px; overflow:hidden; }
+.b-bar2 { height:100%; width:0%; background:linear-gradient(90deg,#34d399,#22d3ee); border-radius:2px; transition:width 1.8s cubic-bezier(0.22,1,0.36,1); }
+.b-note { margin-top:14px; padding:10px 14px; background:rgba(52,211,153,0.05); border:1px solid rgba(52,211,153,0.12); border-radius:8px; font-size:13px; color:rgba(52,211,153,0.65); font-style:italic; }
+
+/* ═══════════════════════════════════════════════════
+   SLIDE 6 — THE TIME EQUATION
+═══════════════════════════════════════════════════ */
+.s6 {
+  background:radial-gradient(ellipse 110% 85% at 50% 55%, #1c0e00 0%, #080400 100%);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:100px 52px;
+}
+.s6-ey { font-size:13px; font-weight:700; letter-spacing:0.22em; text-transform:uppercase; color:rgba(245,158,11,0.8); margin-bottom:10px; text-align:center; }
+.s6-h  { font-family:'Space Grotesk',sans-serif; font-size:48px; font-weight:800; color:#fff; text-align:center; margin-bottom:6px; letter-spacing:-0.025em; }
+.s6-sub { font-size:18px; color:rgba(255,255,255,0.38); text-align:center; margin-bottom:30px; font-style:italic; }
+.tt { width:100%; max-width:1080px; }
+.tt-head { display:grid; grid-template-columns:1.6fr 1fr 1fr 1fr; padding-bottom:12px; border-bottom:2px solid rgba(245,158,11,0.18); margin-bottom:6px; }
+.th { font-size:12px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; }
+.th-0 { color:rgba(255,255,255,0.38); }
+.th-1 { text-align:center; color:rgba(255,80,80,0.7); }
+.th-2 { text-align:center; color:rgba(52,211,153,0.7); }
+.th-3 { text-align:center; color:rgba(245,158,11,0.7); }
+.tt-row { display:grid; grid-template-columns:1.6fr 1fr 1fr 1fr; padding:13px 0; border-bottom:1px solid rgba(255,255,255,0.04); transition:background 0.2s; }
+.tt-row:hover { background:rgba(245,158,11,0.03); border-radius:8px; padding-left:8px; padding-right:8px; }
+.td-task { font-size:17px; font-weight:600; color:rgba(255,255,255,0.8); display:flex; align-items:center; gap:10px; }
+.td-em   { font-size:20px; }
+.td-b    { text-align:center; font-size:18px; font-weight:700; color:rgba(255,80,80,0.75); display:flex; align-items:center; justify-content:center; }
+.td-a    { text-align:center; font-size:18px; font-weight:700; color:#34d399; display:flex; align-items:center; justify-content:center; }
+.td-s    { text-align:center; font-size:18px; font-weight:700; color:#f59e0b; display:flex; align-items:center; justify-content:center; }
+.tt-total {
+  display:flex; align-items:center; justify-content:center; gap:20px;
+  margin-top:22px; padding:18px 32px; border-radius:14px;
+  background:rgba(245,158,11,0.07); border:1px solid rgba(245,158,11,0.22);
+}
+.tt-lbl { font-size:16px; color:rgba(255,255,255,0.45); }
+.tt-num { font-family:'Space Grotesk',sans-serif; font-size:42px; font-weight:800; color:#f59e0b; line-height:1; }
+.tt-unit { font-size:16px; color:rgba(255,255,255,0.45); }
+
+/* ═══════════════════════════════════════════════════
+   SLIDE 7 — THE GAP IS WIDENING  (NEW)
+═══════════════════════════════════════════════════ */
+.s7new {
+  background:radial-gradient(ellipse 120% 90% at 50% 40%, #1a0306 0%, #0a0002 70%, #050001 100%);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:70px 60px; text-align:center;
+}
+.s7n-ey { font-family:'JetBrains Mono',monospace; font-size:14px; letter-spacing:.32em; color:#ff5577; text-transform:uppercase; margin-bottom:14px; }
+.s7n-h { font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:48px; line-height:1.06; margin-bottom:38px; max-width:1000px; }
+.s7n-h em { font-style:normal; color:#ff2d55; }
+.s7n-grid { display:grid; grid-template-columns:1fr 2px 1fr; gap:26px; width:100%; max-width:1080px; align-items:stretch; }
+.gap-col { border-radius:16px; padding:24px 26px; text-align:left; }
+.gap-col.good { background:rgba(52,211,153,.07); border:1px solid rgba(52,211,153,.32);
+  box-shadow:inset 0 1px 0 rgba(52,211,153,.18); transform:perspective(900px) rotateY(-5deg); }
+.gap-col.bad { background:rgba(255,60,80,.05); border:1px solid rgba(255,60,80,.22);
+  opacity:.6; filter:grayscale(.2); transform:perspective(900px) rotateY(5deg); }
+.gap-hd { font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:19px; margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid rgba(255,255,255,.1); display:flex; align-items:center; gap:8px; }
+.gap-col.good .gap-hd { color:#34d399; } .gap-col.good .tr { color:#34d399; }
+.gap-col.bad .gap-hd { color:#ff8090; } .gap-col.bad .tr { color:#ff5570; }
+.gap-col ul { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:11px; }
+.gap-col li { font-size:16px; line-height:1.4; color:rgba(255,255,255,.86); position:relative; padding-left:26px; }
+.gap-col.good li::before { content:"✓"; position:absolute; left:0; color:#34d399; font-weight:700; }
+.gap-col.bad li { color:rgba(255,255,255,.62); } .gap-col.bad li::before { content:"✗"; position:absolute; left:0; color:#ff5570; }
+.gap-seam { width:2px; align-self:stretch; background:linear-gradient(180deg,transparent,#ff2d55,transparent); transform:scaleY(0); transform-origin:center; }
+.s7new.in .gap-seam { animation:seamGrow .8s cubic-bezier(.22,1,.36,1) .35s both; }
+@keyframes seamGrow { from{transform:scaleY(0)} to{transform:scaleY(1)} }
+.gap-callout { margin-top:34px; max-width:1080px; width:100%; padding:20px 30px; border-radius:14px;
+  background:rgba(220,20,40,.1); border:1px solid rgba(220,20,40,.42);
+  font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:21px; color:#fff; }
+.gap-callout em { font-style:normal; color:#ff5577; }
+
+/* ═══════════════════════════════════════════════════
+   SLIDE 8 — YOUR WHOLE BUSINESS
+═══════════════════════════════════════════════════ */
+.s7 {
+  background:radial-gradient(ellipse 110% 85% at 50% 55%, #020c1c 0%, #010407 100%);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:100px 44px;
+}
+.s7-ey { font-size:13px; font-weight:700; letter-spacing:0.22em; text-transform:uppercase; color:rgba(99,179,237,0.75); margin-bottom:10px; text-align:center; }
+.s7-h  { font-family:'Space Grotesk',sans-serif; font-size:44px; font-weight:800; color:#fff; text-align:center; margin-bottom:26px; letter-spacing:-0.02em; }
+.s7-h em { font-style:normal; background:linear-gradient(135deg,#22d3ee,#34d399); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.biz-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; max-width:1180px; width:100%; }
+.biz-c {
+  padding:22px 20px; border-radius:16px; position:relative; overflow:hidden;
+  transition:transform 0.3s cubic-bezier(0.22,1,0.36,1), box-shadow 0.3s;
+}
+.biz-c:hover { transform:translateY(-7px) scale(1.02); }
+.biz-c::after { content:''; position:absolute; top:0; left:0; right:0; height:3px; }
+.biz-head { display:flex; align-items:center; gap:12px; margin-bottom:14px; }
+.biz-em   { font-size:28px; }
+.biz-t    { font-family:'Space Grotesk',sans-serif; font-size:17px; font-weight:700; }
+.biz-ul   { list-style:none; }
+.biz-ul li { font-size:14px; color:rgba(255,255,255,0.48); padding-left:16px; position:relative; line-height:1.85; }
+.biz-ul li::before { content:'›'; position:absolute; left:0; font-size:16px; }
+.biz-1 { background:rgba(34,211,238,0.05); border:1px solid rgba(34,211,238,0.15); }
+.biz-1::after   { background:linear-gradient(90deg,#22d3ee,transparent); }
+.biz-1 .biz-t   { color:#22d3ee; }
+.biz-1 .biz-ul li::before { color:#22d3ee; }
+.biz-1:hover    { box-shadow:0 20px 60px rgba(34,211,238,0.1), 0 0 0 1px rgba(34,211,238,0.25); }
+.biz-2 { background:rgba(52,211,153,0.05); border:1px solid rgba(52,211,153,0.15); }
+.biz-2::after   { background:linear-gradient(90deg,#34d399,transparent); }
+.biz-2 .biz-t   { color:#34d399; }
+.biz-2 .biz-ul li::before { color:#34d399; }
+.biz-2:hover    { box-shadow:0 20px 60px rgba(52,211,153,0.1), 0 0 0 1px rgba(52,211,153,0.25); }
+.biz-3 { background:rgba(245,158,11,0.05); border:1px solid rgba(245,158,11,0.15); }
+.biz-3::after   { background:linear-gradient(90deg,#f59e0b,transparent); }
+.biz-3 .biz-t   { color:#f59e0b; }
+.biz-3 .biz-ul li::before { color:#f59e0b; }
+.biz-3:hover    { box-shadow:0 20px 60px rgba(245,158,11,0.1), 0 0 0 1px rgba(245,158,11,0.25); }
+.biz-4 { background:rgba(168,85,247,0.05); border:1px solid rgba(168,85,247,0.15); }
+.biz-4::after   { background:linear-gradient(90deg,#a855f7,transparent); }
+.biz-4 .biz-t   { color:#a855f7; }
+.biz-4 .biz-ul li::before { color:#a855f7; }
+.biz-4:hover    { box-shadow:0 20px 60px rgba(168,85,247,0.1), 0 0 0 1px rgba(168,85,247,0.25); }
+.biz-5 { background:rgba(236,72,153,0.05); border:1px solid rgba(236,72,153,0.15); }
+.biz-5::after   { background:linear-gradient(90deg,#ec4899,transparent); }
+.biz-5 .biz-t   { color:#ec4899; }
+.biz-5 .biz-ul li::before { color:#ec4899; }
+.biz-5:hover    { box-shadow:0 20px 60px rgba(236,72,153,0.1), 0 0 0 1px rgba(236,72,153,0.25); }
+.biz-6 { background:rgba(99,179,237,0.05); border:1px solid rgba(99,179,237,0.15); }
+.biz-6::after   { background:linear-gradient(90deg,#63b3ed,transparent); }
+.biz-6 .biz-t   { color:#63b3ed; }
+.biz-6 .biz-ul li::before { color:#63b3ed; }
+.biz-6:hover    { box-shadow:0 20px 60px rgba(99,179,237,0.1), 0 0 0 1px rgba(99,179,237,0.25); }
+.s7-tag { margin-top:18px; font-size:15px; color:rgba(255,255,255,0.3); font-style:italic; text-align:center; }
+
+/* ═══════════════════════════════════════════════════
+   SLIDE 9 — THE 3-MOVE PLAYBOOK
+═══════════════════════════════════════════════════ */
+.s8 {
+  background:#050508;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+  background-size:52px 52px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:100px 52px;
+}
+.s8-ey { font-size:13px; font-weight:700; letter-spacing:0.22em; text-transform:uppercase; color:rgba(255,255,255,0.35); margin-bottom:10px; }
+.s8-h  { font-family:'Space Grotesk',sans-serif; font-size:48px; font-weight:800; color:#fff; text-align:center; margin-bottom:8px; letter-spacing:-0.025em; }
+.s8-sub { font-size:18px; color:rgba(255,255,255,0.28); text-align:center; margin-bottom:38px; }
+.playbook { display:grid; grid-template-columns:repeat(3,1fr); gap:22px; max-width:1100px; width:100%; }
+.pb {
+  padding:34px 28px; border-radius:20px; position:relative; overflow:hidden;
+  display:flex; flex-direction:column; gap:14px;
+  transition:transform 0.3s cubic-bezier(0.22,1,0.36,1);
+}
+.pb:hover { transform:translateY(-10px); }
+.pb-bg-num {
+  position:absolute; top:8px; right:16px;
+  font-family:'Space Grotesk',sans-serif; font-size:90px; font-weight:900;
+  letter-spacing:-0.04em; opacity:0.12; line-height:1; pointer-events:none; user-select:none;
+}
+.pb-step   { font-size:12px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; }
+.pb-title  { font-family:'Space Grotesk',sans-serif; font-size:26px; font-weight:700; color:#fff; line-height:1.1; }
+.pb-line   { width:36px; height:2px; border-radius:1px; }
+.pb-body   { font-size:16px; color:rgba(255,255,255,0.52); line-height:1.65; }
+.pb-cta    { margin-top:auto; padding:10px 18px; border-radius:8px; font-size:14px; font-weight:700; text-align:center; letter-spacing:0.04em; }
+.pb1 { background:rgba(34,211,238,0.06);  border:1px solid rgba(34,211,238,0.2); }
+.pb1 .pb-bg-num { color:#22d3ee; } .pb1 .pb-step { color:rgba(34,211,238,0.8); }
+.pb1 .pb-line   { background:#22d3ee; box-shadow:0 0 12px rgba(34,211,238,0.55); }
+.pb1 .pb-cta    { background:rgba(34,211,238,0.1); border:1px solid rgba(34,211,238,0.25); color:#22d3ee; }
+.pb1:hover      { box-shadow:0 24px 60px rgba(34,211,238,0.14), 0 0 0 1px rgba(34,211,238,0.35); }
+.pb2 { background:rgba(52,211,153,0.06);  border:1px solid rgba(52,211,153,0.2); }
+.pb2 .pb-bg-num { color:#34d399; } .pb2 .pb-step { color:rgba(52,211,153,0.8); }
+.pb2 .pb-line   { background:#34d399; box-shadow:0 0 12px rgba(52,211,153,0.55); }
+.pb2 .pb-cta    { background:rgba(52,211,153,0.1); border:1px solid rgba(52,211,153,0.25); color:#34d399; }
+.pb2:hover      { box-shadow:0 24px 60px rgba(52,211,153,0.14), 0 0 0 1px rgba(52,211,153,0.35); }
+.pb3 { background:rgba(245,158,11,0.06);  border:1px solid rgba(245,158,11,0.2); }
+.pb3 .pb-bg-num { color:#f59e0b; } .pb3 .pb-step { color:rgba(245,158,11,0.8); }
+.pb3 .pb-line   { background:#f59e0b; box-shadow:0 0 12px rgba(245,158,11,0.55); }
+.pb3 .pb-cta    { background:rgba(245,158,11,0.1); border:1px solid rgba(245,158,11,0.25); color:#f59e0b; }
+.pb3:hover      { box-shadow:0 24px 60px rgba(245,158,11,0.14), 0 0 0 1px rgba(245,158,11,0.35); }
+
+/* ═══════════════════════════════════════════════════
+   SLIDE 10 — YOUR FIRST AI WIN  (NEW)
+═══════════════════════════════════════════════════ */
+.s10new {
+  background:radial-gradient(ellipse 110% 85% at 50% 50%, #01160d 0%, #00070a 70%, #02040a 100%);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:60px; text-align:center;
+}
+.s10n-ey { font-family:'JetBrains Mono',monospace; font-size:14px; letter-spacing:.32em; color:#34d399; text-transform:uppercase; margin-bottom:14px; }
+.s10n-h { font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:50px; line-height:1.05; margin-bottom:26px; }
+.s10n-h em { font-style:normal; color:#34d399; }
+.win-steps { display:flex; align-items:center; gap:12px; flex-wrap:wrap; justify-content:center; margin-bottom:24px; }
+.win-chip2 { font-family:'JetBrains Mono',monospace; font-size:13px; padding:8px 14px; border-radius:10px;
+  background:rgba(52,211,153,.08); border:1px solid rgba(52,211,153,.28); color:#cfeede; }
+.win-chip2 b { color:#34d399; font-weight:700; margin-left:6px; }
+.win-arrow { color:#34d399; font-size:18px; }
+.win-prompt { width:100%; max-width:860px; border-radius:14px; overflow:hidden;
+  background:#021109; border:1px solid rgba(52,211,153,.3); box-shadow:0 24px 70px rgba(0,0,0,.7); text-align:left; }
+.wp-bar { display:flex; align-items:center; gap:7px; padding:11px 16px; background:rgba(255,255,255,.03); border-bottom:1px solid rgba(52,211,153,.18); }
+.wp-bar .dot { width:11px; height:11px; border-radius:50%; }
+.wp-bar .dot.r{background:#ff5f56} .wp-bar .dot.y{background:#ffbd2e} .wp-bar .dot.g{background:#27c93f}
+.wp-title { font-family:'JetBrains Mono',monospace; font-size:12px; color:rgba(255,255,255,.4); margin-left:8px; }
+.wp-copy { margin-left:auto; font-family:'JetBrains Mono',monospace; font-size:12px; padding:5px 12px; border-radius:7px;
+  background:rgba(52,211,153,.12); border:1px solid rgba(52,211,153,.4); color:#34d399; cursor:pointer; }
+.wp-copy:hover { background:rgba(52,211,153,.22); }
+.wp-body { padding:22px 24px; font-family:'JetBrains Mono',monospace; font-size:17px; line-height:1.7; color:#d8ffe9; }
+.wp-body .ph { color:#22d3ee; }
+.wp-cursor { color:#34d399; animation:blink 1s step-end infinite; }
+.s10n-sub { margin-top:26px; font-size:20px; color:rgba(255,255,255,.82); font-weight:500; }
+.s10n-chips { display:flex; gap:12px; margin-top:18px; }
+.win-pill { font-family:'JetBrains Mono',monospace; font-size:13px; padding:9px 16px; border-radius:30px;
+  background:rgba(52,211,153,.1); border:1px solid rgba(52,211,153,.34); color:#34d399; }
+.s10n-note { margin-top:18px; font-style:italic; font-size:15px; color:rgba(255,255,255,.4); }
+
+/* ═══════════════════════════════════════════════════
+   SLIDE 11 — CLOSE
+═══════════════════════════════════════════════════ */
+.s9 { padding:0; }
+.s9-wrap { position:absolute; inset:0; display:grid; grid-template-columns:1fr 1fr; }
+.s9-left {
+  display:flex; flex-direction:column; justify-content:center; padding:60px 56px;
+  background:linear-gradient(135deg,#04001e,#020014);
+  border-right:1px solid rgba(130,60,255,0.22); position:relative; overflow:hidden;
+}
+.s9-left::before {
+  content:''; position:absolute; width:600px; height:600px; border-radius:50%;
+  top:-200px; left:-200px; pointer-events:none;
+  background:radial-gradient(circle,rgba(100,30,255,0.18) 0%,transparent 65%);
+}
+.s9-left::after {
+  content:''; position:absolute; width:400px; height:400px; border-radius:50%;
+  bottom:-150px; right:-100px; pointer-events:none;
+  background:radial-gradient(circle,rgba(6,182,212,0.1) 0%,transparent 65%);
+}
+.s9-right { position:relative; overflow:hidden; }
+.s9-photo { position:absolute; inset:0; background:center/cover no-repeat; }
+.s9-photo::after {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(90deg,rgba(2,0,20,0.92) 0%,rgba(2,0,20,0.45) 35%,transparent 65%);
+}
+.s9-c { position:relative; z-index:2; }
+.s9-ey   { font-size:13px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:rgba(130,60,255,0.8); margin-bottom:16px; }
+.s9-name { font-family:'Space Grotesk',sans-serif; font-size:68px; font-weight:800; letter-spacing:-0.03em; color:#fff; line-height:1.0; margin-bottom:14px; }
+.s9-div  { width:56px; height:3px; background:linear-gradient(90deg,#7c3aed,#06b6d4); border-radius:2px; margin-bottom:18px; box-shadow:0 0 18px rgba(124,58,237,0.55); }
+.s9-bio  { font-size:17px; color:rgba(255,255,255,0.48); line-height:1.75; max-width:440px; margin-bottom:24px; }
+.s9-links { display:flex; flex-direction:column; gap:12px; margin-bottom:24px; }
+.s9-link .lbl { font-size:12px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:rgba(124,58,237,0.7); margin-bottom:2px; }
+.s9-link .val { font-size:17px; font-weight:600; color:rgba(255,255,255,0.62); }
+.s9-cta {
+  padding:22px 26px; border-radius:14px;
+  background:linear-gradient(135deg,rgba(124,58,237,0.12),rgba(6,182,212,0.08));
+  border:1px solid rgba(124,58,237,0.3);
+}
+.s9-cta p { font-size:17px; font-weight:600; color:rgba(255,255,255,0.82); line-height:1.65; }
+.s9-cta em { font-style:normal; color:#a78bfa; }
+
+/* ═══════════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════════ */
+@media (max-width:1280px) {
+  .s2-rows { max-width:100%; }
+  .s2-chips { flex-wrap:wrap; }
+  .s4-flow { flex-wrap:wrap; gap:10px; }
+  .s4-arr  { display:none; }
+  .s4-step { flex:0 0 calc(50% - 5px); }
+  .s5 { flex-direction:column; gap:24px; }
+}
+@media (max-width:1100px) {
+  .s0-h1 { font-size:54px; }
+  .s1-h  { font-size:42px; }
+  .s1-giant { font-size:320px; }
+  .s3 { flex-direction:column; gap:24px; }
+  .biz-grid { grid-template-columns:1fr 1fr; }
+  .playbook { grid-template-columns:1fr; max-width:480px; gap:14px; }
+  .s7n-h { font-size:38px; }
+  .s10n-h { font-size:38px; }
+}
+@media (max-width:768px) {
+  /* every slide scrolls vertically instead of clipping; centers when it fits, top-aligns when tall */
+  .slide { overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch; }
+  .s0,.s1,.s2,.s3,.s4,.s5,.s6,.s7new,.s7,.s8,.s10new {
+    flex-direction:column; align-items:center; justify-content:safe center;
+    padding:62px 16px 78px; gap:14px;
+  }
+
+  /* ---- chrome (declutter for small screens) ---- */
+  .watermark { height:26px; top:14px; left:14px; z-index:801; }
+  .rail { display:none; }
+  .ghostnum { display:none; }
+  .hud { left:14px; bottom:11px; gap:2px; z-index:801; }
+  .hud-title { font-size:11px; letter-spacing:.1em; }
+  .hud-ctr { font-size:11px; }
+  .tap-zone { width:12%; }
+  /* solid top & bottom bands so chrome sits on a clean strip and content scrolls under */
+  body::before, body::after {
+    content:''; position:fixed; left:0; right:0; z-index:700;
+    background:#06070c; pointer-events:none;
+  }
+  body::before { top:0; height:52px; border-bottom:1px solid rgba(255,255,255,0.06); }
+  body::after  { bottom:0; height:46px; border-top:1px solid rgba(255,255,255,0.06); }
+
+  /* ---- slide 0 ---- */
+  .s0-h1 { font-size:40px; }
+  .s0-sub { font-size:22px; }
+  .s0-caption { font-size:15px; margin-top:18px; }
+  .s0-tags { margin-top:20px; }
+
+  /* ---- slide 1 ---- */
+  .s1-giant { font-size:190px; }
+  .s1-h { font-size:27px; }
+  .s1-sub { font-size:16px; }
+  .s1-callout { font-size:14px; margin-top:24px; }
+
+  /* ---- slide 2 ---- */
+  .s2-h { font-size:26px; }
+  .s2-row { flex-direction:column; align-items:stretch; gap:9px; }
+  .s2-cat-badge { min-width:0; width:100%; border-right:none; border-bottom:1px solid rgba(255,255,255,.08); padding:0 0 8px; }
+  .s2-chips { flex-wrap:wrap; }
+  .s2-foot { font-size:11px; }
+
+  /* ---- slide 3 ---- */
+  .s3 { gap:18px; }
+  .s3-left, .s3-right { flex:none; width:100%; max-width:100%; }
+  .s3-h { font-size:30px; }
+  .t-body { font-size:11px; padding:16px; }
+  .cr-d { font-size:12px; }
+
+  /* ---- slide 4 ---- */
+  .s4-h { font-size:32px; margin-bottom:20px; }
+  .s4-flow { flex-direction:column; gap:9px; }
+  .s4-step { flex:none; width:100%; }
+  .s4-arr { display:none; }
+  .s4-compare { grid-template-columns:1fr; }
+
+  /* ---- slide 5 ---- */
+  .s5-left, .s5-right { flex:none; width:100%; max-width:100%; }
+  .s5-h { font-size:30px; }
+  .browser { max-width:100%; }
+
+  /* ---- slide 6 ---- */
+  .s6-h { font-size:30px; }
+  .s6-sub { font-size:14px; margin-bottom:16px; }
+  .th { font-size:9px; letter-spacing:.04em; }
+  .td-task { font-size:12px; gap:6px; }
+  .td-em { font-size:14px; }
+  .td-b, .td-a, .td-s { font-size:12px; }
+  .tt-total { flex-direction:column; gap:4px; padding:14px; text-align:center; }
+  .tt-num { font-size:34px; }
+
+  /* ---- slide 7 (gap) ---- */
+  .s7n-h { font-size:28px; margin-bottom:22px; }
+  .s7n-grid { grid-template-columns:1fr; gap:14px; }
+  .gap-col.good, .gap-col.bad { transform:none; }
+  .gap-col.bad { opacity:.78; }
+  .gap-seam { display:none; }
+  .gap-col li { font-size:14px; }
+  .gap-callout { font-size:16px; padding:16px 20px; margin-top:24px; }
+
+  /* ---- slide 8 (whole business) ---- */
+  .s7-h { font-size:30px; }
+  .biz-grid { grid-template-columns:1fr; gap:10px; }
+  .s7-tag { font-size:13px; }
+
+  /* ---- slide 9 (playbook) ---- */
+  .s8-h { font-size:30px; }
+  .s8-sub { font-size:14px; margin-bottom:20px; }
+  .playbook { grid-template-columns:1fr; max-width:100%; gap:12px; }
+  .pb { padding:22px 20px; }
+  .pb-title { font-size:22px; }
+
+  /* ---- slide 10 (first win) ---- */
+  .s10n-h { font-size:30px; }
+  .win-steps { gap:8px; margin-bottom:18px; }
+  .win-arrow { display:none; }
+  .win-prompt { max-width:100%; }
+  .wp-body { font-size:13px; padding:16px; }
+  .s10n-sub { font-size:16px; margin-top:20px; }
+  .s10n-chips { flex-direction:column; gap:8px; align-items:center; }
+
+  /* ---- slide 11 (close) ---- */
+  .s9 { display:block; }
+  .s9-wrap { position:relative; grid-template-columns:1fr; min-height:100%; }
+  .s9-right { display:none; }
+  .s9-left { border-right:none; justify-content:flex-start; padding:72px 22px 84px; }
+  .s9-name { font-size:46px; }
+  .s9-bio { font-size:15px; }
+}
+@media (max-width:480px) {
+  .s0-h1 { font-size:32px; }
+  .s0-sub { font-size:18px; }
+  .s1-giant { font-size:140px; }
+  .s1-h { font-size:23px; }
+  .s2-h, .s4-h, .s5-h, .s6-h, .s7-h, .s8-h, .s7n-h, .s10n-h { font-size:25px; }
+  .tt-head, .tt-row { grid-template-columns:1.4fr .9fr .9fr .9fr; }
+  .th { font-size:8px; }
+  .td-task { font-size:11px; }
+  .td-b, .td-a, .td-s { font-size:11px; }
+  .s9-name { font-size:38px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── FIXED CHROME ───────────────────────────────── -->
+<div id="curtain"></div>
+<img src="../logo_dark_clean.png" class="watermark" alt="elSapiens">
+<div id="rail" class="rail"></div>
+<div class="ghostnum"><span id="gnBig">01</span><span id="gnSmall">/12</span></div>
+<div class="hud">
+  <div id="hudTitle" class="hud-title">AI Done Right</div>
+  <div id="hudCtr" class="hud-ctr"><b>01</b> / 12</div>
+</div>
+<div class="tap-zone tap-zone-left"  onclick="go(-1)"></div>
+<div class="tap-zone tap-zone-right" onclick="go(1)"></div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 0 · TITLE
+════════════════════════════════════════════════════════════ -->
+<div class="slide s0 active" data-slide="0">
+  <div class="s0-orb s0-orb-1"></div>
+  <div class="s0-orb s0-orb-2"></div>
+  <div class="s0-orb s0-orb-3"></div>
+  <div id="s0-particles"></div>
+  <div class="s0-content">
+    <div class="s0-pill" data-a="0">⚡&nbsp;&nbsp;BNI EDUSLOT · JUNE 2026 · ELSAPIENS</div>
+    <div class="s0-h1" data-a="1">AI Done <span class="glow">Right.</span></div>
+    <div class="s0-sub" data-a="2">From dabbling to deploying.</div>
+    <div class="s0-caption" data-a="3">The practical playbook for business owners who want real results — not just experiments.</div>
+    <div class="s0-tags" data-a="4">
+      <div class="s0-tag"><b>Images</b> in seconds</div>
+      <div class="s0-tag"><b>Proposals</b> on demand</div>
+      <div class="s0-tag"><b>Presentations</b> in minutes</div>
+      <div class="s0-tag"><b>Automation</b> while you sleep</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 1 · THE REAL TALK
+════════════════════════════════════════════════════════════ -->
+<div class="slide s1" data-slide="1">
+  <div class="s1-giant">90%</div>
+  <div class="s1-content">
+    <div class="s1-label" data-a="0">The Uncomfortable Reality</div>
+    <div class="s1-h" data-a="1">
+      ChatGPT passed the Bar Exam,<br>
+      the CFA, and the GMAT.<br>
+      <span class="s1-red">Most people use it to write captions.</span>
+    </div>
+    <div class="s1-rule" data-a="2"></div>
+    <div class="s1-sub" data-a="3">The gap between what AI <em>can</em> do and what most businesses <em>ask it</em> to do is massive. Today, let's close that gap — in 4 minutes.</div>
+    <div class="s1-callout" data-a="4">
+      💡&nbsp; 90% of AI's potential in your business is sitting completely unused right now.
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 2 · THE AI LANDSCAPE
+════════════════════════════════════════════════════════════ -->
+<div class="slide s2" data-slide="2">
+  <div class="s2-ey" data-a="0">What's Actually Out There</div>
+  <div class="s2-h" data-a="1">It's not just ChatGPT. <span>Not even close.</span></div>
+
+  <div class="s2-rows" data-a="2">
+
+    <div class="s2-row s2-r1">
+      <div class="s2-cat-badge"><span class="s2-cat-em">💬</span><span class="s2-cat-lbl">Chat &amp; Write</span></div>
+      <div class="s2-chips">
+        <div class="s2-chip"><div class="s2-logo" style="background:#10a37f">GPT</div><span class="s2-tname">ChatGPT</span><span class="s2-free">Free</span></div>
+        <div class="s2-chip"><div class="s2-logo" style="background:#c96a3a">Cla</div><span class="s2-tname">Claude</span><span class="s2-free">Free</span></div>
+        <div class="s2-chip"><div class="s2-logo" style="background:linear-gradient(135deg,#4285F4,#34A853,#EA4335)">G</div><span class="s2-tname">Gemini</span><span class="s2-free">Free</span></div>
+        <div class="s2-chip"><div class="s2-logo" style="background:#20808D">⊕</div><span class="s2-tname">Perplexity</span><span class="s2-free">Free</span></div>
+      </div>
+    </div>
+
+    <div class="s2-row s2-r2">
+      <div class="s2-cat-badge"><span class="s2-cat-em">🎨</span><span class="s2-cat-lbl">Images &amp; Design</span></div>
+      <div class="s2-chips">
+        <div class="s2-chip"><div class="s2-logo" style="background:#1b1b2e;border:1px solid rgba(255,255,255,0.15)">MJ</div><span class="s2-tname">Midjourney</span><span class="s2-paid">Paid</span></div>
+        <div class="s2-chip"><div class="s2-logo" style="background:#10a37f">D·E</div><span class="s2-tname">DALL·E 3</span><span class="s2-free">Free</span></div>
+        <div class="s2-chip"><div class="s2-logo" style="background:#00C4CC">C</div><span class="s2-tname">Canva AI</span><span class="s2-free">Free</span></div>
+        <div class="s2-chip"><div class="s2-logo" style="background:linear-gradient(135deg,#e01e37,#f48c06)">Af</div><span class="s2-tname">Adobe Firefly</span><span class="s2-paid">Paid</span></div>
+      </div>
+    </div>
+
+    <div class="s2-row s2-r3">
+      <div class="s2-cat-badge"><span class="s2-cat-em">🎬</span><span class="s2-cat-lbl">Video &amp; Voice</span></div>
+      <div class="s2-chips">
+        <div class="s2-chip"><div class="s2-logo" style="background:#111;border:1px solid #4ade80;color:#4ade80">Rwy</div><span class="s2-tname">Runway</span><span class="s2-paid">Paid</span></div>
+        <div class="s2-chip"><div class="s2-logo" style="background:#4F6FFF">HG</div><span class="s2-tname">HeyGen</span><span class="s2-paid">Paid</span></div>
+        <div class="s2-chip"><div class="s2-logo" style="background:#111;border:1px solid rgba(255,255,255,0.2)">11</div><span class="s2-tname">ElevenLabs</span><span class="s2-free">Free</span></div>
+        <div class="s2-chip"><div class="s2-logo" style="background:linear-gradient(135deg,#6366f1,#ec4899)">Sora</div><span class="s2-tname">Sora</span><span class="s2-paid">Paid</span></div>
+      </div>
+    </div>
+
+    <div class="s2-row s2-r4">
+      <div class="s2-cat-badge"><span class="s2-cat-em">📄</span><span class="s2-cat-lbl">Docs &amp; Decks</span></div>
+      <div class="s2-chips">
+        <div class="s2-chip"><div class="s2-logo" style="background:linear-gradient(135deg,#6366F1,#a855f7);font-size:14px">γ</div><span class="s2-tname">Gamma.app</span><span class="s2-free">Free</span></div>
+        <div class="s2-chip"><div class="s2-logo" style="background:#fff;color:#000;font-size:14px">N</div><span class="s2-tname">Notion AI</span><span class="s2-paid">Paid</span></div>
+        <div class="s2-chip"><div class="s2-logo" style="background:#0f7b6c">NLM</div><span class="s2-tname">NotebookLM</span><span class="s2-free">Free</span></div>
+        <div class="s2-chip"><div class="s2-logo" style="background:#1a1a2e;border:1px solid rgba(99,102,241,0.45)">B.ai</div><span class="s2-tname">Beautiful.ai</span><span class="s2-paid">Paid</span></div>
+      </div>
+    </div>
+
+    <div class="s2-row s2-r5">
+      <div class="s2-cat-badge"><span class="s2-cat-em">⚡</span><span class="s2-cat-lbl">Automation</span></div>
+      <div class="s2-chips">
+        <div class="s2-chip"><div class="s2-logo" style="background:#FF4A00;font-size:14px">Z</div><span class="s2-tname">Zapier AI</span><span class="s2-free">Free</span></div>
+        <div class="s2-chip"><div class="s2-logo" style="background:#6D28D9">Make</div><span class="s2-tname">Make</span><span class="s2-free">Free</span></div>
+        <div class="s2-chip"><div class="s2-logo" style="background:#FF6D5A">n8n</div><span class="s2-tname">n8n</span><span class="s2-free">Free</span></div>
+        <div class="s2-chip"><div class="s2-logo" style="background:#0078D4">MS</div><span class="s2-tname">MS Copilot</span><span class="s2-paid">Paid</span></div>
+      </div>
+    </div>
+
+  </div>
+  <div class="s2-foot" data-a="3">20 tools shown · 100+ AI tools available — something for every role in your business.</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 3 · THE CRAFT METHOD
+════════════════════════════════════════════════════════════ -->
+<div class="slide s3" data-slide="3">
+  <div class="s3-left">
+    <div class="s3-ey" data-a="0">// the_secret_nobody_teaches.prompt</div>
+    <div class="s3-h" data-a="1">The <span class="cr">C</span><span class="rr">R</span><span class="ar">A</span><span class="fr">F</span><span class="tr">T</span> Method</div>
+    <div class="s3-sub" data-a="2">5 elements that turn AI from mediocre to magical.</div>
+    <div class="craft-list" data-a="3">
+      <div class="craft-row">
+        <div class="cr-l" style="color:#22d3ee;">C</div>
+        <div class="cr-w">Context</div>
+        <div class="cr-d">Who you are, what you do, who you're talking to</div>
+      </div>
+      <div class="craft-row">
+        <div class="cr-l" style="color:#4ade80;">R</div>
+        <div class="cr-w">Role</div>
+        <div class="cr-d">"Act as a marketing expert / lawyer / HR manager..."</div>
+      </div>
+      <div class="craft-row">
+        <div class="cr-l" style="color:#f59e0b;">A</div>
+        <div class="cr-w">Action</div>
+        <div class="cr-d">Write, summarise, compare, plan, analyse — be specific</div>
+      </div>
+      <div class="craft-row">
+        <div class="cr-l" style="color:#a855f7;">F</div>
+        <div class="cr-w">Format</div>
+        <div class="cr-d">Bullet list, email, table, 150 words, 3 paragraphs</div>
+      </div>
+      <div class="craft-row">
+        <div class="cr-l" style="color:#ec4899;">T</div>
+        <div class="cr-w">Tone</div>
+        <div class="cr-d">Professional, warm, urgent, bold, casual — AI nails it</div>
+      </div>
+    </div>
+  </div>
+  <div class="s3-right" data-a="4">
+    <div class="terminal">
+      <div class="t-bar">
+        <span class="td td-r"></span><span class="td td-y"></span><span class="td td-g"></span>
+        <span class="t-title">ai_prompt.sh</span>
+      </div>
+      <div class="t-body">
+        <div class="t-line"><span class="t-prompt">$ </span><span class="t-bad">"Write a follow-up email after my BNI 1-to-1."</span></div>
+        <div class="t-line t-err">→ Generic. Could be anyone. Won't send it.</div>
+        <div class="t-sep"># ─────────── CRAFT version ───────────</div>
+        <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">"I'm a financial advisor at BNI Falcon. <span class="t-bracket">[C]</span></span></div>
+        <div class="t-line"><span class="t-cmd">&nbsp;Act as a warm relationship-builder. <span class="t-bracket">[R]</span></span></div>
+        <div class="t-line"><span class="t-cmd">&nbsp;Write a 100-word follow-up after a 1-to-1 <span class="t-bracket">[A]</span></span></div>
+        <div class="t-line"><span class="t-cmd">&nbsp;where we explored a referral partnership.</span></div>
+        <div class="t-line"><span class="t-cmd">&nbsp;Format: subject + 2 paras + CTA. <span class="t-bracket">[F]</span></span></div>
+        <div class="t-line"><span class="t-cmd">&nbsp;Tone: professional but personal." <span class="t-bracket">[T]</span><span class="cursor"></span></span></div>
+        <div class="t-out">
+          <div class="t-out-label">OUTPUT:</div>
+          <div class="t-ok">Subject: Great connecting today — here's what I had in mind...</div>
+          <div class="t-res">Hi Priya, it was wonderful meeting you this morning at our chapter meeting. I've been thinking about how a referral partnership between us could genuinely help both our clients...</div>
+        </div>
+        <div class="t-cmt">→ Ready to send. Sounds like you. Gets replies.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 4 · THE HUMAN-AI FORMULA
+════════════════════════════════════════════════════════════ -->
+<div class="slide s4" data-slide="4">
+  <div class="s4-ey" data-a="0">The Missing Ingredient</div>
+  <div class="s4-h" data-a="1">AI <em>Generates.</em><br>You <em>Perfect.</em></div>
+
+  <div class="s4-flow" data-a="2">
+    <div class="s4-step s4-s1">
+      <div class="s4-step-num">Step 1</div>
+      <div class="s4-step-em">🧠</div>
+      <div class="s4-step-t">You Direct</div>
+      <div class="s4-step-d">Context · Intent<br>Brand voice · Audience</div>
+    </div>
+    <div class="s4-arr">→</div>
+    <div class="s4-step s4-s2">
+      <div class="s4-step-num">Step 2</div>
+      <div class="s4-step-em">⚡</div>
+      <div class="s4-step-t">AI Generates</div>
+      <div class="s4-step-d">Drafts · Images · Ideas<br>Structure · Options · Speed</div>
+    </div>
+    <div class="s4-arr">→</div>
+    <div class="s4-step s4-s3">
+      <div class="s4-step-num">Step 3</div>
+      <div class="s4-step-em">👁️</div>
+      <div class="s4-step-t">You Review</div>
+      <div class="s4-step-d">Facts · Tone · Brand<br>Judgment · Final check</div>
+    </div>
+    <div class="s4-arr">→</div>
+    <div class="s4-step s4-s4">
+      <div class="s4-step-num">Result</div>
+      <div class="s4-step-em">✨</div>
+      <div class="s4-step-t">Perfection</div>
+      <div class="s4-step-d">On-brand · Accurate<br>Powerful · Truly yours</div>
+    </div>
+  </div>
+
+  <div class="s4-compare" data-a="3">
+    <div class="s4-col s4-c-bad">
+      <div class="s4-c-hd">✗ &nbsp;AI Without Human Guidance</div>
+      <ul class="s4-c-list">
+        <li>Generic output — could belong to anyone</li>
+        <li>Wrong facts, outdated or hallucinated information</li>
+        <li>Off-brand tone — wrong audience, wrong voice</li>
+        <li>Missing your context, nuance, and judgment</li>
+      </ul>
+    </div>
+    <div class="s4-col s4-c-good">
+      <div class="s4-c-hd">✓ &nbsp;AI Guided by a Human</div>
+      <ul class="s4-c-list">
+        <li>Sounds exactly like you — your brand, your voice</li>
+        <li>Verified, accurate, credible, on-point</li>
+        <li>Right message for exactly the right audience</li>
+        <li>10× faster — zero compromise on quality</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 5 · PRESENTATIONS & DOCS   (keeps bBar2 — index 5)
+════════════════════════════════════════════════════════════ -->
+<div class="slide s5" data-slide="5">
+  <div class="s5-left">
+    <div class="s5-ey" data-a="0">AI-Powered Content Creation</div>
+    <div class="s5-h" data-a="1"><em>3 minutes</em> to a full deck.<br><span style="font-size:28px;font-weight:400;color:rgba(255,255,255,0.38);">60 seconds to understand any document.</span></div>
+    <div class="s5-items" data-a="2">
+      <div class="s5-it"><span class="si-ic">🚀</span><div><div class="si-n">Gamma.app</div><div class="si-d">Paste bullet points → fully-designed presentation in 60 seconds. Zero template battles.</div></div></div>
+      <div class="s5-it"><span class="si-ic">🎨</span><div><div class="si-n">Canva Magic Design</div><div class="si-d">Describe the topic → slides, social posts, marketing material — all on brand.</div></div></div>
+      <div class="s5-it"><span class="si-ic">🔍</span><div><div class="si-n">NotebookLM (Google)</div><div class="si-d">Upload any PDF → ask questions → instant answers from your own content.</div></div></div>
+      <div class="s5-it"><span class="si-ic">📝</span><div><div class="si-n">Claude · ChatGPT</div><div class="si-d">First-draft contracts, proposals, SOPs, T&Cs — review and send.</div></div></div>
+    </div>
+  </div>
+  <div class="s5-right" data-a="3">
+    <div class="browser">
+      <div class="b-bar">
+        <span class="bd bd-r"></span><span class="bd bd-y"></span><span class="bd bd-g"></span>
+        <span class="b-url">gamma.app/generate</span>
+      </div>
+      <div class="b-body">
+        <div class="b-ttl">🚀&nbsp; Generating your presentation...</div>
+        <div class="b-card">
+          <div class="b-card-t">Slide 1 of 8: "Why AI-Powered Businesses Win in 2026"</div>
+          <div class="b-bullets">
+            <div class="b-bul">Market advantage through speed and consistency</div>
+            <div class="b-bul">AI handles repetitive tasks — humans focus on relationships</div>
+            <div class="b-bul">The 5–10× productivity multiplier, across every team member</div>
+          </div>
+        </div>
+        <div class="b-time">⏱&nbsp; Estimated time: 43 seconds remaining...</div>
+        <div class="b-prog"><div class="b-bar2" id="bBar2"></div></div>
+        <div class="b-note">✦&nbsp; This presentation was built with AI. The one you're watching right now.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 6 · THE TIME EQUATION
+════════════════════════════════════════════════════════════ -->
+<div class="slide s6" data-slide="6">
+  <div class="s6-ey" data-a="0">The Productivity Multiplier</div>
+  <div class="s6-h" data-a="1">Your Hours. Given Back.</div>
+  <div class="s6-sub" data-a="2">What one week looks like — before and after AI.</div>
+  <div class="tt" data-a="3">
+    <div class="tt-head">
+      <div class="th th-0">Task</div>
+      <div class="th th-1">Without AI</div>
+      <div class="th th-2">With AI</div>
+      <div class="th th-3">Saved</div>
+    </div>
+    <div class="tt-row"><div class="td-task"><span class="td-em">📣</span> Monthly social content</div><div class="td-b">8 hrs</div><div class="td-a">20 min</div><div class="td-s">~7.5 hrs</div></div>
+    <div class="tt-row"><div class="td-task"><span class="td-em">💰</span> Sales proposal</div><div class="td-b">4 hrs</div><div class="td-a">5 min</div><div class="td-s">~4 hrs</div></div>
+    <div class="tt-row"><div class="td-task"><span class="td-em">📋</span> SOP document</div><div class="td-b">3 hrs</div><div class="td-a">5 min</div><div class="td-s">~3 hrs</div></div>
+    <div class="tt-row"><div class="td-task"><span class="td-em">📧</span> Email sequence (5 emails)</div><div class="td-b">2 hrs</div><div class="td-a">4 min</div><div class="td-s">~2 hrs</div></div>
+    <div class="tt-row"><div class="td-task"><span class="td-em">📊</span> Market research summary</div><div class="td-b">5 hrs</div><div class="td-a">15 min</div><div class="td-s">~5 hrs</div></div>
+  </div>
+  <div class="tt-total" data-a="4">
+    <div class="tt-lbl">That's over</div>
+    <div class="tt-num">22</div>
+    <div class="tt-unit">hours saved — every single week.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 7 · THE GAP IS WIDENING  (NEW)
+════════════════════════════════════════════════════════════ -->
+<div class="slide s7new" data-slide="7">
+  <div class="s7n-ey" data-a="0">THE UNFAIR ADVANTAGE</div>
+  <div class="s7n-h" data-a="1">Every week you wait, the gap <em>grows wider.</em></div>
+  <div class="s7n-grid">
+    <div class="gap-col good" data-a="2">
+      <div class="gap-hd"><span class="tr">▲</span> AI-Powered Businesses</div>
+      <ul>
+        <li>Proposals done in 5 minutes</li>
+        <li>Social content on autopilot</li>
+        <li>24/7 consistent output quality</li>
+        <li>Team focused on strategy &amp; relationships</li>
+        <li>22+ hours reclaimed every week</li>
+      </ul>
+    </div>
+    <div class="gap-seam"></div>
+    <div class="gap-col bad" data-a="3">
+      <div class="gap-hd"><span class="tr">▼</span> Traditional Businesses</div>
+      <ul>
+        <li>Hours writing every proposal</li>
+        <li>Social media eats every evening</li>
+        <li>Output limited by human hours</li>
+        <li>Buried in admin &amp; repetitive tasks</li>
+        <li>Same 24 hours — falling behind</li>
+      </ul>
+    </div>
+  </div>
+  <div class="gap-callout" data-a="4">Your competitors are already using AI. The question isn't <em>whether.</em> It's <em>how fast.</em></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 8 · YOUR WHOLE BUSINESS
+════════════════════════════════════════════════════════════ -->
+<div class="slide s7" data-slide="8">
+  <div class="s7-ey" data-a="0">Every Department. Every Role.</div>
+  <div class="s7-h" data-a="1">Your entire business, <em>assisted.</em></div>
+  <div class="biz-grid" data-a="2">
+    <div class="biz-c biz-1">
+      <div class="biz-head"><span class="biz-em">📣</span><span class="biz-t">Marketing</span></div>
+      <ul class="biz-ul"><li>Full month's social calendar in one session</li><li>Email campaign sequences on demand</li><li>Ad copy &amp; landing page text</li></ul>
+    </div>
+    <div class="biz-c biz-2">
+      <div class="biz-head"><span class="biz-em">💰</span><span class="biz-t">Sales</span></div>
+      <ul class="biz-ul"><li>Professional proposals in 5 minutes</li><li>Personalised follow-up sequences</li><li>Pitch decks &amp; scripts</li></ul>
+    </div>
+    <div class="biz-c biz-3">
+      <div class="biz-head"><span class="biz-em">⚙️</span><span class="biz-t">Operations</span></div>
+      <ul class="biz-ul"><li>SOPs from a 2-minute voice note</li><li>Meeting notes → action items</li><li>Process documentation, instantly</li></ul>
+    </div>
+    <div class="biz-c biz-4">
+      <div class="biz-head"><span class="biz-em">🎯</span><span class="biz-t">Customer Service</span></div>
+      <ul class="biz-ul"><li>FAQ docs from your own knowledge</li><li>Response templates for every scenario</li><li>Complaint scripts that retain clients</li></ul>
+    </div>
+    <div class="biz-c biz-5">
+      <div class="biz-head"><span class="biz-em">📊</span><span class="biz-t">Finance</span></div>
+      <ul class="biz-ul"><li>Report summaries in plain English</li><li>Budget analysis &amp; breakdowns</li><li>Invoice copy &amp; payment reminders</li></ul>
+    </div>
+    <div class="biz-c biz-6">
+      <div class="biz-head"><span class="biz-em">🧑‍💼</span><span class="biz-t">HR &amp; Legal</span></div>
+      <ul class="biz-ul"><li>First-draft contracts &amp; policies</li><li>Job descriptions in 2 minutes</li><li>Onboarding guides &amp; handbooks</li></ul>
+    </div>
+  </div>
+  <div class="s7-tag" data-a="3">AI doesn't replace your team. It makes every team member perform like your best one.</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 9 · THE 3-MOVE PLAYBOOK
+════════════════════════════════════════════════════════════ -->
+<div class="slide s8" data-slide="9">
+  <div class="s8-ey" data-a="0">Take This Away Today</div>
+  <div class="s8-h" data-a="1">Your 3-Move Playbook</div>
+  <div class="s8-sub" data-a="2">Do these three things before this week ends.</div>
+  <div class="playbook" data-a="3">
+    <div class="pb pb1">
+      <div class="pb-bg-num">01</div>
+      <div class="pb-step">Move 1</div>
+      <div class="pb-title">Open ChatGPT or Claude — today</div>
+      <div class="pb-line"></div>
+      <div class="pb-body">Both free. Sign up in 2 minutes. Don't wait — familiarity is half the battle. Use it on something real from work before you get home today. Even one email counts.</div>
+      <div class="pb-cta">→ chatgpt.com &nbsp;/&nbsp; claude.ai</div>
+    </div>
+    <div class="pb pb2">
+      <div class="pb-bg-num">02</div>
+      <div class="pb-step">Move 2</div>
+      <div class="pb-title">Use CRAFT on your next prompt</div>
+      <div class="pb-line"></div>
+      <div class="pb-body">Context + Role + Action + Format + Tone. One well-crafted prompt beats a hundred vague ones. Apply it to your next email, proposal, or social post — tonight.</div>
+      <div class="pb-cta">→ The 5-element prompt formula</div>
+    </div>
+    <div class="pb pb3">
+      <div class="pb-bg-num">03</div>
+      <div class="pb-step">Move 3</div>
+      <div class="pb-title">Give ONE weekly task to AI</div>
+      <div class="pb-line"></div>
+      <div class="pb-body">Proposals, reports, social content — pick one task you repeat every week. Let AI draft it. Seven days of daily use builds a permanent habit and gives you hours back forever.</div>
+      <div class="pb-cta">→ One task. This week. Go.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 10 · YOUR FIRST AI WIN  (NEW)
+════════════════════════════════════════════════════════════ -->
+<div class="slide s10new" data-slide="10">
+  <div class="s10n-ey" data-a="0">DO THIS TODAY</div>
+  <div class="s10n-h" data-a="1">Your first AI win is <em>90 seconds</em> away.</div>
+  <div class="win-steps" data-a="2">
+    <span class="win-chip2">1 · open ChatGPT <b>chatgpt.com · free</b></span>
+    <span class="win-arrow">→</span>
+    <span class="win-chip2">2 · paste the prompt</span>
+    <span class="win-arrow">→</span>
+    <span class="win-chip2">3 · hit Enter</span>
+  </div>
+  <div class="win-prompt" data-a="3">
+    <div class="wp-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+      <span class="wp-title">your-first-win.prompt</span>
+      <button class="wp-copy" id="winCopy">Copy</button></div>
+    <div class="wp-body" id="winText">I run a <span class="ph">[your business type]</span> in <span class="ph">[your city]</span>. Write a compelling 80-word BNI weekly presentation that grabs attention, explains what I do, and ends with a clear referral ask. Make it conversational.<span class="wp-cursor">▌</span></div>
+  </div>
+  <div class="s10n-sub" data-a="4">That's your next Weekly Presentation. Done. In 90 seconds.</div>
+  <div class="s10n-chips" data-a="5">
+    <span class="win-pill">free — no account needed to try</span>
+    <span class="win-pill">⏱ 90 seconds</span>
+  </div>
+  <div class="s10n-note" data-a="6">Then use CRAFT to make it 10× better.</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SLIDE 11 · CLOSE
+════════════════════════════════════════════════════════════ -->
+<div class="slide s9" data-slide="11">
+  <div class="s9-wrap">
+    <div class="s9-left">
+      <div class="s9-c">
+        <div class="s9-ey" data-a="0">Founder &amp; CEO · elSapiens</div>
+        <div class="s9-name" data-a="1">I'm Dawn.</div>
+        <div class="s9-div" data-a="2"></div>
+        <div class="s9-bio" data-a="3">We build AI systems that plug into your existing business — real workflows, not just chat windows. Sales, ops, marketing, customer service — guided by AI that knows <em>your</em> business.</div>
+        <div class="s9-links" data-a="4">
+          <div class="s9-link"><div class="lbl">Website</div><div class="val">elsapiens.com</div></div>
+          <div class="s9-link"><div class="lbl">Email</div><div class="val">dawndharm@elsapiens.com</div></div>
+        </div>
+        <div class="s9-cta" data-a="5">
+          <p>If you want to know exactly what AI should be doing in <em>your</em> business — let me map it out for you. Five minutes after the meeting. Let's talk. 🤝</p>
+        </div>
+      </div>
+    </div>
+    <div class="s9-right">
+      <div class="s9-photo" style="background-image:url('../30april2026/assets/dawn.jpg')"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const slides = [...document.querySelectorAll('.slide')];
+const TOTAL = slides.length;          // 12
+const DUR = 800;                      // MUST equal CSS .8s
+let cur = 0, isAnimating = false;
+
+// per-slide accent + live section title (index-aligned to DOM order)
+const ACCENTS = ['#8b5cf6','#ff3b3b','#22d3ee','#22ff88','#ec4899','#34d399','#fbbf24','#ff2d55','#3b82f6','#a78bfa','#34d399','#a78bfa'];
+const TITLES  = ['AI Done Right','The Real Talk','The AI Landscape','The CRAFT Method','AI Generates. You Perfect.','Presentations & Docs','The Time Equation','The Gap Is Widening','Your Whole Business','The 3-Move Playbook','Your First AI Win','Connect with Dawn'];
+
+// build the right-edge segment rail
+const rail = document.getElementById('rail');
+for (let i = 0; i < TOTAL; i++) {
+  const s = document.createElement('div');
+  s.className = 'seg';
+  s.onclick = () => goTo(i);
+  rail.appendChild(s);
+}
+const segs = [...rail.children];
+
+function paintChrome(dir, silent) {
+  document.documentElement.style.setProperty('--accent', ACCENTS[cur]);
+  segs.forEach((s, i) => { s.classList.toggle('done', i <= cur); s.classList.toggle('cur', i === cur); });
+  const n = String(cur + 1).padStart(2, '0');
+  document.getElementById('gnBig').textContent = n;
+  const gn = document.querySelector('.ghostnum'); gn.classList.remove('swap'); void gn.offsetWidth; gn.classList.add('swap');
+  document.getElementById('hudCtr').innerHTML = `<b>${n}</b> / ${TOTAL}`;
+  const t = document.getElementById('hudTitle'); t.textContent = TITLES[cur];
+  t.classList.remove('wipe'); void t.offsetWidth; t.classList.add('wipe');
+  if (!silent) {
+    const c = document.getElementById('curtain'); c.style.animation = 'none'; void c.offsetWidth;
+    c.style.animation = `${dir >= 0 ? 'curtainFwd' : 'curtainBwd'} ${DUR}ms cubic-bezier(.83,0,.17,1)`;
+  }
+}
+
+function triggerInner(el) { el.classList.remove('in'); void el.offsetWidth; el.classList.add('in'); }
+
+function runSlideHooks(i) {
+  if (i === 5) { setTimeout(() => { const b = document.getElementById('bBar2'); if (b) b.style.width = '78%'; }, 400); }
+}
+
+function moveTo(next, dir) {
+  if (isAnimating) return;                 // hard guard — no overlap / double-advance
+  if (next < 0 || next >= TOTAL || next === cur) return;
+  isAnimating = true;
+  const outEl = slides[cur], inEl = slides[next];
+  inEl.scrollTop = 0;                      // open each slide at its top (mobile scroll)
+  inEl.classList.remove('active', 'prev', 'in');
+  inEl.classList.add('entering');
+  inEl.classList.toggle('bwd', dir < 0);
+  outEl.classList.remove('active');        // keep .in so its content recedes WITH the slide
+  outEl.classList.add('prev');
+  void inEl.offsetWidth;                    // reflow so keyframes restart clean
+  cur = next;
+  paintChrome(dir);
+
+  let fired = false;
+  const done = () => {
+    outEl.classList.remove('prev', 'bwd', 'in');
+    inEl.classList.remove('entering', 'bwd');
+    inEl.classList.add('active');
+    triggerInner(inEl);                     // focus-pull AFTER the aperture lands
+    runSlideHooks(cur);
+    isAnimating = false;
+  };
+  const h = e => {
+    if (e.target !== inEl) return;
+    // accept either the iris animation or the reduced-motion/clip-path fallback animation
+    if (e.animationName.indexOf('irisIn') !== 0 && e.animationName.indexOf('fadeScaleIn') !== 0) return;
+    fired = true; inEl.removeEventListener('animationend', h); done();
+  };
+  inEl.addEventListener('animationend', h);
+  // when motion is reduced the iris animation is suppressed entirely (no animationend) — release fast
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  setTimeout(() => { if (!fired) { inEl.removeEventListener('animationend', h); done(); } }, reduce ? 60 : DUR + 140);
+}
+function go(dir) { moveTo(cur + dir, dir); }
+function goTo(n) { if (n === cur) return; moveTo(n, n > cur ? 1 : -1); }
+
+// init — slide 0 visible + revealed
+slides[0].classList.add('active', 'in');
+paintChrome(1, true);
+runSlideHooks(0);
+
+// keyboard
+document.addEventListener('keydown', e => {
+  if ([' ', 'ArrowRight', 'PageDown', 'Enter'].includes(e.key)) { e.preventDefault(); go(1); }
+  else if (['ArrowLeft', 'Backspace', 'PageUp'].includes(e.key)) { e.preventDefault(); go(-1); }
+  else if (e.key === 'Home') goTo(0);
+  else if (e.key === 'End') goTo(TOTAL - 1);
+  else if (e.key.toLowerCase() === 'f') document.documentElement.requestFullscreen?.();
+});
+
+// touch swipe
+let tx = null;
+document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+document.addEventListener('touchend', e => {
+  if (tx === null) return;
+  const dx = e.changedTouches[0].clientX - tx;
+  if (Math.abs(dx) > 50) go(dx < 0 ? 1 : -1);
+  tx = null;
+}, { passive: true });
+
+// floating particles on slide 0
+(function () {
+  const c = document.getElementById('s0-particles');
+  if (!c) return;
+  c.style.cssText = 'position:absolute;inset:0;overflow:hidden;pointer-events:none;';
+  for (let i = 0; i < 35; i++) {
+    const p = document.createElement('div');
+    p.className = 's0-particle';
+    const x = Math.random() * 100;
+    const delay = Math.random() * 14;
+    const dur = 9 + Math.random() * 13;
+    const dx = (Math.random() - 0.5) * 70;
+    const sz = 0.8 + Math.random() * 2.2;
+    p.style.cssText = `left:${x}%;bottom:-8px;width:${sz}px;height:${sz}px;background:rgba(255,255,255,${0.2 + Math.random() * 0.5});border-radius:50%;--pdx:${dx}px;animation:particleRise ${dur}s linear ${-delay}s infinite;`;
+    c.appendChild(p);
+  }
+})();
+
+// copy button on the "First AI Win" slide
+(function () {
+  const btn = document.getElementById('winCopy');
+  if (!btn) return;
+  const text = 'I run a [your business type] in [your city]. Write a compelling 80-word BNI weekly presentation that grabs attention, explains what I do, and ends with a clear referral ask. Make it conversational.';
+  btn.onclick = async () => {
+    try { await navigator.clipboard.writeText(text); }
+    catch (_) {
+      const ta = document.createElement('textarea'); ta.value = text;
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      ta.remove();
+    }
+    btn.textContent = 'Copied ✓';
+    setTimeout(() => btn.textContent = 'Copy', 1500);
+  };
+})();
+</script>
+</body>
+</html>
