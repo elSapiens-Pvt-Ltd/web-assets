@@ -1,0 +1,1478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>elPOS Training Plan — Climate Naturals</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --wisteria-50:  hsl(218 31% 95%);
+      --wisteria-100: hsl(218 31% 90%);
+      --wisteria-200: hsl(218 32% 80%);
+      --wisteria-300: hsl(218 34% 70%);
+      --wisteria-400: hsl(218 34% 60%);
+      --wisteria-500: hsl(218 33% 50%);
+      --wisteria-600: hsl(218 33% 40%);
+      --wisteria-700: hsl(218 33% 30%);
+      --wisteria-800: hsl(218 33% 20%);
+      --wisteria-850: hsl(218 33% 15%);
+      --wisteria-900: hsl(218 33% 10%);
+      --wisteria-950: hsl(220 33% 7%);
+      --neutral-50:  hsl(0 0% 98%); --neutral-100: hsl(0 0% 96%);
+      --neutral-200: hsl(0 0% 92%); --neutral-300: hsl(0 0% 85%);
+      --neutral-400: hsl(0 0% 64%); --neutral-500: hsl(0 0% 45%);
+      --neutral-600: hsl(0 0% 32%); --neutral-700: hsl(0 0% 25%);
+      --neutral-900: hsl(0 0% 9%);
+      --brand: var(--wisteria-400); --brand-dark: var(--wisteria-600);
+      --brand-darker: var(--wisteria-800); --brand-light: var(--wisteria-300);
+      --brand-xlight: var(--wisteria-50);
+      --gray-50: var(--neutral-50); --gray-100: var(--neutral-100);
+      --gray-200: var(--neutral-200); --gray-300: var(--neutral-300);
+      --gray-400: var(--neutral-400); --gray-500: var(--neutral-500);
+      --gray-600: var(--neutral-600); --gray-700: var(--neutral-700);
+      --gray-900: var(--neutral-900);
+      --red-light: hsl(0 70% 95%); --red: hsl(0 72% 45%);
+      --amber-light: hsl(38 90% 92%); --amber: hsl(33 80% 38%);
+      --teal: hsl(163 64% 30%); --teal-light: hsl(163 45% 92%);
+      --green: hsl(142 60% 30%); --green-light: hsl(142 50% 94%);
+      --purple: hsl(255 45% 50%); --purple-light: hsl(255 55% 96%);
+      --shadow-sm: 0 1px 2px rgb(0 0 0 / .05);
+      --shadow: 0 1px 3px rgb(0 0 0 / .08), 0 1px 2px -1px rgb(0 0 0 / .08);
+      --shadow-md: 0 4px 12px -2px rgb(15 23 42 / .10);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Manrope', system-ui, sans-serif; background: var(--neutral-100); color: var(--gray-700); font-size: 14px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+
+    /* COVER */
+    .cover { background: linear-gradient(135deg, var(--wisteria-950) 0%, var(--wisteria-800) 100%); padding: 56px 48px 48px; }
+    .cover-badge { display: inline-flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--wisteria-300); margin-bottom: 18px; }
+    .cover h1 { font-size: 42px; font-weight: 800; color: white; line-height: 1.1; margin-bottom: 8px; }
+    .cover h1 span { color: var(--wisteria-300); font-style: italic; }
+    .cover-sub { font-size: 15px; color: rgba(255,255,255,.6); margin-bottom: 28px; }
+    .cover-meta { display: flex; gap: 32px; flex-wrap: wrap; border-top: 1px solid rgba(255,255,255,.1); padding-top: 20px; }
+    .cover-meta div { display: flex; flex-direction: column; gap: 3px; }
+    .lbl { font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--wisteria-400); }
+    .cover-meta strong { color: white; font-size: 13px; font-weight: 600; }
+
+    /* KEY DATES STRIP */
+    .key-dates { display: flex; gap: 0; background: var(--wisteria-900); overflow: hidden; }
+    .key-date { flex: 1; padding: 12px 16px; border-right: 1px solid rgba(255,255,255,.08); text-align: center; }
+    .key-date:last-child { border-right: none; }
+    .key-date .kd-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--wisteria-400); margin-bottom: 3px; }
+    .key-date .kd-date { font-size: 15px; font-weight: 700; color: white; }
+    .key-date .kd-note { font-size: 11px; color: rgba(255,255,255,.5); margin-top: 2px; }
+    .key-date.highlight { background: var(--wisteria-700); }
+
+    /* TAB NAV */
+    .tab-nav { display: flex; align-items: center; gap: 4px; padding: 10px 24px; background: white; border-bottom: 1px solid var(--gray-200); position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow); flex-wrap: wrap; }
+    .tab-nav-label { font-size: 11px; font-weight: 700; color: var(--gray-400); letter-spacing: .06em; text-transform: uppercase; margin-right: 6px; }
+    .tab-btn { font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 600; padding: 6px 14px; border-radius: 6px; border: 1px solid transparent; cursor: pointer; background: transparent; color: var(--gray-500); transition: all .15s; }
+    .tab-btn:hover { background: var(--gray-100); color: var(--gray-700); }
+    .tab-btn.active { background: var(--wisteria-800); color: white; }
+
+    /* TAB VISIBILITY */
+    body[data-view="plan"]    [data-tab]:not([data-tab~="plan"])    { display: none !important; }
+    body[data-view="mod1"]    [data-tab]:not([data-tab~="mod1"])    { display: none !important; }
+    body[data-view="mod2"]    [data-tab]:not([data-tab~="mod2"])    { display: none !important; }
+    body[data-view="mod3"]    [data-tab]:not([data-tab~="mod3"])    { display: none !important; }
+    body[data-view="mod4"]    [data-tab]:not([data-tab~="mod4"])    { display: none !important; }
+    body[data-view="eval"]    [data-tab]:not([data-tab~="eval"])    { display: none !important; }
+
+    /* CONTAINER */
+    .container { max-width: 976px; margin: 0 auto; padding: 32px 24px 64px; }
+
+    /* HUB HEADER */
+    .hub-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--gray-200); }
+    .hub-icon { width: 40px; height: 40px; border-radius: 10px; background: var(--wisteria-800); color: white; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+    .hub-header h2 { font-size: 22px; font-weight: 700; color: var(--gray-900); }
+    .hub-header p  { font-size: 13px; color: var(--gray-500); margin-top: 3px; }
+
+    /* PAGE CARD */
+    .page-card { background: white; border-radius: 12px; border: 1px solid var(--gray-200); overflow: hidden; margin-bottom: 16px; box-shadow: var(--shadow-sm); }
+    .page-card-header { display: flex; align-items: flex-start; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--gray-200); }
+    .page-name { font-size: 15px; font-weight: 700; color: var(--gray-900); }
+    .page-sub  { font-size: 12px; color: var(--gray-500); margin-top: 3px; }
+
+    /* BADGES */
+    .badge { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; border: 1px solid; white-space: nowrap; }
+    .b-plan   { background: var(--wisteria-50); color: var(--wisteria-800); border-color: var(--wisteria-200); }
+    .b-mod1   { background: hsl(200 60% 95%); color: hsl(200 60% 25%); border-color: hsl(200 50% 80%); }
+    .b-mod2   { background: var(--green-light); color: var(--green); border-color: hsl(142 40% 80%); }
+    .b-mod3   { background: hsl(38 90% 94%); color: hsl(33 80% 30%); border-color: hsl(38 70% 78%); }
+    .b-mod4   { background: var(--purple-light); color: var(--purple); border-color: hsl(255 40% 80%); }
+    .b-eval   { background: var(--red-light); color: var(--red); border-color: hsl(0 60% 82%); }
+    .b-admin  { background: hsl(163 45% 94%); color: var(--teal); border-color: hsl(163 40% 78%); }
+    .b-done   { background: var(--green-light); color: var(--green); border-color: hsl(142 40% 80%); }
+    .b-live   { background: #fef2f2; color: #991b1b; border-color: #fecaca; }
+
+    /* CARD GRID */
+    .card-grid { display: grid; grid-template-columns: 1fr 1fr; }
+    .col { padding: 20px 22px; border-right: 1px solid var(--gray-200); }
+    .col:last-child { border-right: none; }
+    .col-full { grid-column: 1 / -1; padding: 20px 22px; border-top: 1px solid var(--gray-200); }
+    .col-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; }
+    .col-3 .col { border-right: 1px solid var(--gray-200); }
+    .col-3 .col:last-child { border-right: none; }
+    @media (max-width: 680px) { .card-grid,.col-3 { grid-template-columns: 1fr; } .col { border-right: none; border-bottom: 1px solid var(--gray-200); } }
+
+    /* SECTION LABEL */
+    .section-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--wisteria-600); margin-bottom: 10px; }
+
+    /* FEATURES */
+    ul.features { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 7px; }
+    ul.features li { font-size: 13px; color: var(--gray-700); padding-left: 14px; position: relative; line-height: 1.55; }
+    ul.features li::before { content: '–'; position: absolute; left: 0; color: var(--wisteria-400); font-weight: 600; }
+
+    /* USER STORY CARDS */
+    .stories { padding: 20px 22px; display: flex; flex-direction: column; gap: 10px; }
+    .story { padding: 13px 16px; background: var(--gray-50); border-radius: 8px; border: 1px solid var(--gray-200); }
+    .story-id { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--wisteria-600); margin-bottom: 5px; }
+    .story-text { font-size: 13px; color: var(--gray-700); line-height: 1.6; }
+    .story-text strong { color: var(--gray-900); }
+    .story-note { margin-top: 8px; padding: 7px 10px; background: #fef9c3; border-left: 3px solid #eab308; border-radius: 0 5px 5px 0; font-size: 12px; color: #713f12; }
+    .story-demo { margin-top: 8px; padding: 7px 10px; background: var(--wisteria-50); border-left: 3px solid var(--wisteria-400); border-radius: 0 5px 5px 0; font-size: 12px; color: var(--wisteria-800); }
+    .story-mgr  { margin-top: 8px; padding: 7px 10px; background: var(--teal-light); border-left: 3px solid var(--teal); border-radius: 0 5px 5px 0; font-size: 12px; color: var(--teal); }
+
+    /* KEYBOARD KEY */
+    kbd { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; padding: 1px 6px; background: white; border: 1px solid var(--gray-300); border-bottom: 2px solid var(--gray-400); border-radius: 4px; color: var(--gray-700); line-height: 1.5; }
+
+    /* NOTICE */
+    .notice-warn { margin-bottom: 14px; padding: 14px 18px; background: #fef2f2; border-left: 4px solid #dc2626; border-radius: 0 8px 8px 0; font-size: 13px; color: #374151; }
+    .notice-warn .notice-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #dc2626; margin-bottom: 6px; }
+    .notice-info { margin-bottom: 20px; padding: 12px 18px; background: var(--brand-xlight); border-left: 3px solid var(--brand-dark); border-radius: 0 8px 8px 0; font-size: 13px; color: var(--brand-darker); }
+    .notice-success { padding: 12px 18px; background: var(--green-light); border-left: 3px solid var(--green); border-radius: 0 8px 8px 0; font-size: 13px; color: var(--green); margin-bottom: 14px; }
+
+    /* SECTION DIVIDER */
+    .section-divider { margin: 28px 0 16px; display: flex; align-items: center; gap: 12px; background: #1a1a2e; border-radius: 8px; padding: 10px 16px; }
+    .sd-title { font-size: 13px; font-weight: 700; color: #fff; letter-spacing: .04em; }
+    .sd-sub   { font-size: 12px; color: rgba(255,255,255,.6); }
+
+    /* TIMELINE */
+    .timeline { display: flex; flex-direction: column; gap: 0; position: relative; padding-left: 32px; }
+    .timeline::before { content: ''; position: absolute; left: 11px; top: 8px; bottom: 8px; width: 2px; background: var(--gray-200); }
+    .tl-item { display: flex; gap: 14px; position: relative; padding-bottom: 24px; }
+    .tl-item:last-child { padding-bottom: 0; }
+    .tl-dot { width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: white; position: absolute; left: -32px; top: 1px; }
+    .tl-dot.sa  { background: #1e3a5f; }
+    .tl-dot.dh  { background: var(--teal); }
+    .tl-dot.ev  { background: var(--amber); }
+    .tl-dot.ml  { background: var(--red); }
+    .tl-dot.go  { background: var(--green); }
+    .tl-body { flex: 1; }
+    .tl-date { font-size: 11px; font-weight: 700; color: var(--gray-400); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 3px; }
+    .tl-title { font-size: 14px; font-weight: 700; color: var(--gray-900); margin-bottom: 3px; }
+    .tl-desc  { font-size: 13px; color: var(--gray-600); }
+    .tl-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+    .tl-chip  { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 12px; border: 1px solid; }
+    .chip-sa { background: #e8eef7; color: #1e3a5f; border-color: #b8c8df; }
+    .chip-dh { background: var(--teal-light); color: var(--teal); border-color: hsl(163 40% 75%); }
+    .chip-all { background: var(--wisteria-50); color: var(--wisteria-700); border-color: var(--wisteria-200); }
+
+    /* ROLE LEGEND */
+    .role-legend { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; font-size: 12px; font-weight: 600; }
+    .role-dot { display: flex; align-items: center; gap: 6px; }
+    .role-dot span { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+
+    /* EVAL GRID */
+    .eval-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 20px 22px; }
+    .eval-item { padding: 14px 16px; border-radius: 8px; border: 1px solid var(--gray-200); background: var(--gray-50); }
+    .eval-item .ei-title { font-size: 13px; font-weight: 700; color: var(--gray-900); margin-bottom: 6px; }
+    .eval-item .ei-pts  { font-size: 11px; font-weight: 700; color: var(--wisteria-600); margin-bottom: 8px; text-transform: uppercase; letter-spacing: .05em; }
+    .eval-item ul { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 5px; }
+    .eval-item li { font-size: 12px; color: var(--gray-700); padding-left: 12px; position: relative; }
+    .eval-item li::before { content: '✓'; position: absolute; left: 0; color: var(--green); font-size: 10px; font-weight: 700; top: 1px; }
+
+    /* FLOW STEPS */
+    .flow-steps { display: flex; flex-direction: column; }
+    .flow-step { display: flex; gap: 14px; position: relative; }
+    .flow-step:not(:last-child)::before { content: ''; position: absolute; left: 15px; top: 32px; width: 2px; height: calc(100% - 10px); background: var(--gray-200); }
+    .step-num { width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0; background: var(--wisteria-800); color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; margin-top: 2px; }
+    .step-body { flex: 1; padding: 4px 0 20px; }
+    .step-body strong { font-size: 13px; color: var(--gray-900); display: block; margin-bottom: 2px; }
+    .step-body p { font-size: 13px; color: var(--gray-600); }
+
+    /* SCREENSHOT PLACEHOLDER */
+    .screenshot-slot { margin-top: 14px; border: 2px dashed var(--gray-300); border-radius: 8px; padding: 20px; text-align: center; background: var(--gray-50); }
+    .screenshot-slot img { max-width: 100%; border-radius: 6px; border: 1px solid var(--gray-200); box-shadow: 0 2px 8px rgba(0,0,0,.08); display: block; }
+    .screenshot-slot .ph { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gray-400); }
+
+    /* MODULE OVERVIEW CHIPS */
+    .module-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+    .mod-chip { display: flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; border: 1px solid; }
+  </style>
+</head>
+<body data-view="plan">
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-badge">📋 elPOS — Phase 4</div>
+  <h1>Training Plan — <span>Go-Live July 2026</span></h1>
+  <div class="cover-sub">Structured role-based training for elPOS rollout at Climate Naturals · Beta environment · 11 users</div>
+  <div class="cover-meta">
+    <div><span class="lbl">Training Start</span><strong>June 29, 2026</strong></div>
+    <div><span class="lbl">Session Time</span><strong>4:00 PM – 5:00 PM</strong></div>
+    <div><span class="lbl">Evaluation</span><strong>July 14–15, 2026</strong></div>
+    <div><span class="lbl">Mock Drill</span><strong>July 18, 2026</strong></div>
+    <div><span class="lbl">Expected Go-Live</span><strong>July 21, 2026</strong></div>
+    <div><span class="lbl">Prepared by</span><strong>elSapiens Product Team</strong></div>
+  </div>
+</div>
+
+<!-- KEY DATES STRIP -->
+<div class="key-dates">
+  <div class="key-date"><div class="kd-label">Super Admin Training</div><div class="kd-date">Jun 24 – Jul 3</div><div class="kd-note">4 sessions · 4 PM–5 PM</div></div>
+  <div class="key-date"><div class="kd-label">All Staff Training</div><div class="kd-date">Jul 6 – Jul 13</div><div class="kd-note">4 sessions · 4 PM–5 PM</div></div>
+  <div class="key-date"><div class="kd-label">Evaluation</div><div class="kd-date">Jul 14–15</div><div class="kd-note">30 min × 11 users</div></div>
+  <div class="key-date"><div class="kd-label">Practice Reports</div><div class="kd-date">Jul 16–17, 20–21</div><div class="kd-note">Beta work → send to Praveen</div></div>
+  <div class="key-date"><div class="kd-label">Mock Drill</div><div class="kd-date">Jul 18</div><div class="kd-note">1 hr · all users · combined</div></div>
+  <div class="key-date highlight"><div class="kd-label">🚀 Go-Live</div><div class="kd-date">Jul 21</div><div class="kd-note">1 working-day cool-off after drill</div></div>
+</div>
+
+<!-- TAB NAV -->
+<nav class="tab-nav">
+  <span class="tab-nav-label">Section:</span>
+  <button class="tab-btn active" data-view="plan">📅 Training Plan</button>
+  <button class="tab-btn" data-view="mod1">Module 1 · Create Order</button>
+  <button class="tab-btn" data-view="mod2">Module 2 · Payment &amp; Credit</button>
+  <button class="tab-btn" data-view="mod3">Module 3 · International &amp; Despatch</button>
+  <button class="tab-btn" data-view="mod4">Module 4 · Admin &amp; CRM</button>
+  <button class="tab-btn" data-view="eval">🎓 Evaluation &amp; Go-Live</button>
+</nav>
+
+<div class="container">
+
+<!-- ═══════════════════════════════════════════════════════
+     TAB: TRAINING PLAN
+════════════════════════════════════════════════════════ -->
+<div data-tab="plan">
+
+  <div class="notice-warn" style="margin-top:24px;">
+    <div class="notice-title">⚠️ Beta Environment — No Real Data</div>
+    <strong>All training sessions run on the beta system.</strong> Existing customer records and order history have not been migrated. Every session involving customer search, order creation, or payment must use <strong>test data created on the spot</strong>. Do not attempt to use real customer accounts until after the live switch on July 21.
+  </div>
+
+  <!-- PARTICIPANTS -->
+  <div class="hub-header" style="margin-top:8px;">
+    <div class="hub-icon">👥</div>
+    <div><h2>Participants — 14 Staff</h2><p>3 Super Admins · 11 Tier 2 staff · Super Admins not evaluated</p></div>
+  </div>
+
+  <div class="page-card">
+    <div class="page-card-header"><div><div class="page-name">Training Roster</div><div class="page-sub">14 total · Super Admins train Jun 24 – Jul 3 · All others train Jul 6 – Jul 10</div></div></div>
+    <div style="padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+      <div>
+        <div class="section-label" style="margin-bottom:12px;">Super Admins — Modules 1–4 · Not evaluated</div>
+        <table style="width:100%;border-collapse:collapse;font-size:13px;">
+          <thead><tr style="border-bottom:2px solid var(--wisteria-200);">
+            <th style="text-align:left;padding:6px 10px;color:var(--gray-500);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.06em;">#</th>
+            <th style="text-align:left;padding:6px 10px;color:var(--gray-500);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.06em;">Name</th>
+            <th style="text-align:left;padding:6px 10px;color:var(--gray-500);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.06em;">Modules</th>
+          </tr></thead>
+          <tbody>
+            <tr style="border-bottom:1px solid var(--gray-200);"><td style="padding:8px 10px;color:var(--gray-400);font-size:12px;">1</td><td style="padding:8px 10px;font-weight:600;">Praveen</td><td style="padding:8px 10px;"><span style="font-size:11px;background:var(--wisteria-50);color:var(--wisteria-700);padding:2px 7px;border-radius:4px;font-weight:600;">1 · 2 · 3 · 4</span></td></tr>
+            <tr style="border-bottom:1px solid var(--gray-200);"><td style="padding:8px 10px;color:var(--gray-400);font-size:12px;">2</td><td style="padding:8px 10px;font-weight:600;">Nibin</td><td style="padding:8px 10px;"><span style="font-size:11px;background:var(--wisteria-50);color:var(--wisteria-700);padding:2px 7px;border-radius:4px;font-weight:600;">1 · 2 · 3 · 4</span></td></tr>
+            <tr><td style="padding:8px 10px;color:var(--gray-400);font-size:12px;">3</td><td style="padding:8px 10px;font-weight:600;">Tony</td><td style="padding:8px 10px;"><span style="font-size:11px;background:var(--wisteria-50);color:var(--wisteria-700);padding:2px 7px;border-radius:4px;font-weight:600;">1 · 2 · 3 · 4</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <div class="section-label" style="margin-bottom:12px;">Dept Heads &amp; Sales — Modules 1–3 · Evaluated Jul 14–15</div>
+        <table style="width:100%;border-collapse:collapse;font-size:13px;">
+          <thead><tr style="border-bottom:2px solid var(--wisteria-200);">
+            <th style="text-align:left;padding:6px 10px;color:var(--gray-500);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.06em;">#</th>
+            <th style="text-align:left;padding:6px 10px;color:var(--gray-500);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.06em;">Name</th>
+            <th style="text-align:left;padding:6px 10px;color:var(--gray-500);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.06em;">Modules</th>
+          </tr></thead>
+          <tbody>
+            <tr style="border-bottom:1px solid var(--gray-200);"><td style="padding:8px 10px;color:var(--gray-400);font-size:12px;">1</td><td style="padding:8px 10px;font-weight:600;">Geogi</td><td style="padding:8px 10px;"><span style="font-size:11px;background:var(--teal-light);color:var(--teal);padding:2px 7px;border-radius:4px;font-weight:600;">1 · 2 · 3</span></td></tr>
+            <tr style="border-bottom:1px solid var(--gray-200);"><td style="padding:8px 10px;color:var(--gray-400);font-size:12px;">2</td><td style="padding:8px 10px;font-weight:600;">Beena</td><td style="padding:8px 10px;"><span style="font-size:11px;background:var(--wisteria-50);color:var(--wisteria-700);padding:2px 7px;border-radius:4px;font-weight:600;">1 · 2 · 3 · 4</span></td></tr>
+            <tr style="border-bottom:1px solid var(--gray-200);"><td style="padding:8px 10px;color:var(--gray-400);font-size:12px;">3</td><td style="padding:8px 10px;font-weight:600;">Ishfaq</td><td style="padding:8px 10px;"><span style="font-size:11px;background:var(--teal-light);color:var(--teal);padding:2px 7px;border-radius:4px;font-weight:600;">1 · 2 · 3</span></td></tr>
+            <tr style="border-bottom:1px solid var(--gray-200);"><td style="padding:8px 10px;color:var(--gray-400);font-size:12px;">4</td><td style="padding:8px 10px;font-weight:600;">Jijo</td><td style="padding:8px 10px;"><span style="font-size:11px;background:var(--teal-light);color:var(--teal);padding:2px 7px;border-radius:4px;font-weight:600;">1 · 2 · 3</span></td></tr>
+            <tr style="border-bottom:1px solid var(--gray-200);"><td style="padding:8px 10px;color:var(--gray-400);font-size:12px;">5</td><td style="padding:8px 10px;font-weight:600;">Anchal</td><td style="padding:8px 10px;"><span style="font-size:11px;background:var(--teal-light);color:var(--teal);padding:2px 7px;border-radius:4px;font-weight:600;">1 · 2 · 3</span></td></tr>
+            <tr style="border-bottom:1px solid var(--gray-200);"><td style="padding:8px 10px;color:var(--gray-400);font-size:12px;">6</td><td style="padding:8px 10px;font-weight:600;">Upasana</td><td style="padding:8px 10px;"><span style="font-size:11px;background:var(--teal-light);color:var(--teal);padding:2px 7px;border-radius:4px;font-weight:600;">1 · 2 · 3</span></td></tr>
+            <tr style="border-bottom:1px solid var(--gray-200);"><td style="padding:8px 10px;color:var(--gray-400);font-size:12px;">7</td><td style="padding:8px 10px;font-weight:600;">Nithya</td><td style="padding:8px 10px;"><span style="font-size:11px;background:var(--teal-light);color:var(--teal);padding:2px 7px;border-radius:4px;font-weight:600;">1 · 2 · 3</span></td></tr>
+            <tr style="border-bottom:1px solid var(--gray-200);"><td style="padding:8px 10px;color:var(--gray-400);font-size:12px;">8</td><td style="padding:8px 10px;font-weight:600;">Alpa</td><td style="padding:8px 10px;"><span style="font-size:11px;background:var(--teal-light);color:var(--teal);padding:2px 7px;border-radius:4px;font-weight:600;">1 · 2 · 3</span></td></tr>
+            <tr style="border-bottom:1px solid var(--gray-200);"><td style="padding:8px 10px;color:var(--gray-400);font-size:12px;">9</td><td style="padding:8px 10px;font-weight:600;">Shanaz</td><td style="padding:8px 10px;"><span style="font-size:11px;background:var(--teal-light);color:var(--teal);padding:2px 7px;border-radius:4px;font-weight:600;">1 · 2 · 3</span></td></tr>
+            <tr style="border-bottom:1px solid var(--gray-200);"><td style="padding:8px 10px;color:var(--gray-400);font-size:12px;">10</td><td style="padding:8px 10px;font-weight:600;">Vikram</td><td style="padding:8px 10px;"><span style="font-size:11px;background:var(--teal-light);color:var(--teal);padding:2px 7px;border-radius:4px;font-weight:600;">1 · 2 · 3</span></td></tr>
+            <tr><td style="padding:8px 10px;color:var(--gray-400);font-size:12px;">11</td><td style="padding:8px 10px;font-weight:600;">Arpita</td><td style="padding:8px 10px;"><span style="font-size:11px;background:var(--teal-light);color:var(--teal);padding:2px 7px;border-radius:4px;font-weight:600;">1 · 2 · 3</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROLE LEGEND -->
+  <div class="hub-header" style="margin-top:8px;">
+    <div class="hub-icon">🎓</div>
+    <div><h2>Roles &amp; Training Tiers</h2><p>Super Admins train first (June 24 – July 3), then all remaining staff (July 6 – July 13). Modules 1–3 cover content relevant to every role. Module 4 (POS Admin settings) is for Super Admins only.</p></div>
+  </div>
+
+  <div class="page-card">
+    <div class="page-card-header">
+      <div><div class="page-name">Who Gets Trained &amp; When</div><div class="page-sub">Two tiers · alternate days · beta environment throughout</div></div>
+    </div>
+    <div class="col-3">
+      <div class="col">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <span style="width:14px;height:14px;border-radius:3px;background:#1e3a5f;flex-shrink:0;"></span>
+          <span style="font-size:13px;font-weight:700;color:#1e3a5f;">Tier 1 — Super Admins</span>
+        </div>
+        <ul class="features">
+          <li><strong>Praveen · Nibin · Tony</strong></li>
+          <li>Full access to all capabilities including store settings, approvals, reports, loyalty plans, and sync</li>
+
+          <li><strong>June 24</strong> — Module 1 ✓ Done</li>
+          <li><strong>June 26</strong> — Holiday (Muharram)</li>
+          <li><strong>June 29</strong> — Module 2 (today)</li>
+          <li><strong>July 1</strong> — Module 3</li>
+          <li><strong>July 3</strong> — Module 4 (Admin only)</li>
+        </ul>
+      </div>
+      <div class="col">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <span style="width:14px;height:14px;border-radius:3px;background:var(--teal);flex-shrink:0;"></span>
+          <span style="font-size:13px;font-weight:700;color:var(--teal);">Tier 2 — Dept Heads &amp; Sales</span>
+        </div>
+        <ul class="features">
+          <li><strong>Geogi · Beena · Ishfaq · Jijo · Anchal · Upasana · Nithya · Alpa · Shanaz · Vikram · Arpita</strong></li>
+          <li>Day-to-day POS users — create orders, add payments, manage customers</li>
+          <li><strong>July 6</strong> — Module 1</li>
+          <li><strong>July 8</strong> — Module 2</li>
+          <li><strong>July 10</strong> — Module 3</li>
+          <li>Same module content as Super Admin sessions</li>
+        </ul>
+      </div>
+      <div class="col">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <span style="width:14px;height:14px;border-radius:3px;background:var(--amber);flex-shrink:0;"></span>
+          <span style="font-size:13px;font-weight:700;color:var(--amber);">Evaluation — Dept Heads &amp; Sales</span>
+        </div>
+        <ul class="features">
+          <li>Individual 30-min evaluation per user: <strong>July 14–15</strong></li>
+          <li>Each user (Dept Heads &amp; Sales) performs a live scenario end-to-end in beta</li>
+          <li>Super Admins are not evaluated — they supervise and support</li>
+          <li>July 16, 17, 20, 21: users practise independently on beta and send daily reports to Praveen &amp; Sheril (email or WhatsApp group)</li>
+          <li>Mock drill: <strong>July 18</strong> — 1 hr combined</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- FULL SCHEDULE -->
+  <div class="hub-header">
+    <div class="hub-icon">📅</div>
+    <div><h2>Full Training Schedule</h2><p>Day-by-day plan from June 29 to Go-Live</p></div>
+  </div>
+
+  <div class="page-card">
+    <div class="page-card-header">
+      <div><div class="page-name">Week 1 — Super Admin Training (June 24 – July 3)</div><div class="page-sub">Tier 1 only · 4 sessions · 4:00 PM – 5:00 PM · June 26 holiday skipped</div></div>
+      <span class="badge b-plan">Tier 1</span>
+    </div>
+    <div style="padding:24px;">
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot sa">✓</div>
+          <div class="tl-body">
+            <div class="tl-date">Wednesday, June 24, 2026 — Completed</div>
+            <div class="tl-title">Super Admin Day 1 — Create Order</div>
+            <div class="tl-desc">Product search · Cart building · Customer attach &amp; creation · Delivery method · Loyalty discount · Freight · Hold &amp; recall · Orders list &amp; order detail</div>
+            <div class="tl-chips"><span class="tl-chip chip-sa">Super Admin</span><span class="tl-chip chip-all">Module 1</span><span class="tl-chip" style="background:#f0fdf4;color:#166534;border-color:#bbf7d0;">✓ Done</span></div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot" style="background:#e5e7eb;color:#6b7280;font-size:11px;">—</div>
+          <div class="tl-body">
+            <div class="tl-date">Thursday, June 26, 2026</div>
+            <div class="tl-title" style="color:var(--gray-500);">Holiday — Muharram</div>
+            <div class="tl-desc" style="color:var(--gray-400);">No training session</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot sa">2</div>
+          <div class="tl-body">
+            <div class="tl-date">Monday, June 29, 2026 — TODAY</div>
+            <div class="tl-title">Super Admin Day 2 — Payment &amp; Credit Sales</div>
+            <div class="tl-desc">Add payment (all methods) · Full payment → order confirmed · Request credit sale (ship w/o pay) · Manager approval flow in elBooks · Invoice generation · Due date from payment terms · Partial payment</div>
+            <div class="tl-chips"><span class="tl-chip chip-sa">Super Admin</span><span class="tl-chip chip-all">Module 2</span></div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot sa">3</div>
+          <div class="tl-body">
+            <div class="tl-date">Wednesday, July 1, 2026</div>
+            <div class="tl-title">Super Admin Day 3 — International Orders, Despatch, CRM &amp; Reports</div>
+            <div class="tl-desc">Create export order · Currency selection · Consignee &amp; export fields · Packaging in despatch · Despatch flow · CRM connectivity · Offline sales app · Reports: CRM vs elPOS</div>
+            <div class="tl-chips"><span class="tl-chip chip-sa">Super Admin</span><span class="tl-chip chip-all">Module 3</span></div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot sa">4</div>
+          <div class="tl-body">
+            <div class="tl-date">Friday, July 3, 2026</div>
+            <div class="tl-title">Super Admin Day 4 — POS Admin</div>
+            <div class="tl-desc">POS admin settings · Loyalty plans · Surcharges · Terminals · Approvals queue · Sync queue</div>
+            <div class="tl-chips"><span class="tl-chip chip-sa">Super Admin</span><span class="tl-chip chip-all">Module 4</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-card">
+    <div class="page-card-header">
+      <div><div class="page-name">Week 2 — All Staff Training (July 6 – July 13)</div><div class="page-sub">Dept Heads &amp; Sales · 4 sessions · 4:00 PM – 5:00 PM · alternate days</div></div>
+      <span class="badge b-admin">Tier 2</span>
+    </div>
+    <div style="padding:24px;">
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot dh">1</div>
+          <div class="tl-body">
+            <div class="tl-date">Monday, July 6, 2026</div>
+            <div class="tl-title">All Staff Day 1 — Create Order</div>
+            <div class="tl-desc">Product search · Cart · Customer · Delivery · Loyalty · Freight · Hold &amp; recall · Orders list &amp; order detail</div>
+            <div class="tl-chips"><span class="tl-chip chip-dh">Dept Heads</span><span class="tl-chip chip-dh">Sales</span><span class="tl-chip chip-all">Module 1</span></div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot dh">2</div>
+          <div class="tl-body">
+            <div class="tl-date">Wednesday, July 8, 2026</div>
+            <div class="tl-title">All Staff Day 2 — Payment &amp; Credit Sales</div>
+            <div class="tl-desc">Add payment · Full payment · Request credit sale · Manager approval flow · Invoice · Due dates · Partial payment</div>
+            <div class="tl-chips"><span class="tl-chip chip-dh">Dept Heads</span><span class="tl-chip chip-dh">Sales</span><span class="tl-chip chip-all">Module 2</span></div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot dh">3</div>
+          <div class="tl-body">
+            <div class="tl-date">Friday, July 10, 2026</div>
+            <div class="tl-title">All Staff Day 3 — International Orders, Despatch, CRM &amp; Reports</div>
+            <div class="tl-desc">Export order creation · Currency · Consignee · Export fields · Packaging · Despatch tracking · CRM connectivity · Offline sales app · Reports: CRM vs elPOS</div>
+            <div class="tl-chips"><span class="tl-chip chip-dh">Dept Heads</span><span class="tl-chip chip-dh">Sales</span><span class="tl-chip chip-all">Module 3</span></div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot dh">4</div>
+          <div class="tl-body">
+            <div class="tl-date">Monday, July 13, 2026</div>
+            <div class="tl-title">Dept Heads Day 4 — POS Admin</div>
+            <div class="tl-desc">POS admin settings walkthrough · Loyalty plan setup · Surcharges · Terminals · Approvals queue · Sync queue</div>
+            <div class="tl-chips"><span class="tl-chip chip-dh">Dept Heads</span><span class="tl-chip chip-all">Module 4</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MONITORING DASHBOARD HIGHLIGHT -->
+  <div class="page-card" style="border:2px solid var(--wisteria-300);background:linear-gradient(135deg,var(--wisteria-50) 0%,white 100%);">
+    <div class="page-card-header" style="border-bottom-color:var(--wisteria-200);">
+      <div><div class="page-name" style="color:var(--wisteria-700);">🟢 Released with Go-Live — Monitoring Dashboard</div><div class="page-sub">Available from July 21 · Key metrics tracked daily during migration &amp; monitoring phase</div></div>
+      <span class="badge" style="background:var(--wisteria-50);color:var(--wisteria-700);border-color:var(--wisteria-300);">New Feature</span>
+    </div>
+    <div class="card-grid" style="padding:20px;">
+      <div class="col">
+        <div class="section-label" style="margin-bottom:12px;">Metrics Tracked</div>
+        <ul class="features">
+          <li><strong>Order count</strong> — total orders placed per period</li>
+          <li><strong>Revenue</strong> — total sales value</li>
+          <li><strong>Average order value</strong> — revenue ÷ order count</li>
+          <li><strong>Conversions</strong> — orders completed vs started</li>
+        </ul>
+      </div>
+      <div class="col">
+        <div class="section-label" style="margin-bottom:12px;">Views Available</div>
+        <ul class="features">
+          <li><strong>Last month</strong> — baseline comparison data</li>
+          <li><strong>Day wise</strong> — daily breakdown</li>
+          <li><strong>Week wise</strong> — weekly trend</li>
+          <li><strong>Agent wise</strong> — per staff member performance</li>
+        </ul>
+      </div>
+    </div>
+    <div class="notice-info" style="margin:0 20px 20px;"><strong>Purpose:</strong> During the system migration and monitoring phase, Praveen &amp; Sheril will use this dashboard daily to ensure order volumes, revenue, and agent activity are consistent with expectations — and to catch any issues early after go-live.</div>
+  </div>
+
+  <div class="page-card">
+    <div class="page-card-header">
+      <div><div class="page-name">Evaluation, Mock Drill &amp; Go-Live (July 14 – July 21)</div><div class="page-sub">Dept Heads &amp; Sales · 30 min each · Super Admins supervise</div></div>
+      <span class="badge b-eval">Critical</span>
+    </div>
+    <div style="padding:24px;">
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot ev">E</div>
+          <div class="tl-body">
+            <div class="tl-date">Tuesday–Wednesday, July 14–15, 2026</div>
+            <div class="tl-title">Individual Evaluation — 11 Staff × 30 Minutes</div>
+            <div class="tl-desc">Geogi, Beena, Ishfaq, Jijo, Anchal, Upasana, Nithya, Alpa, Shanaz, Vikram, Arpita — each performs a live end-to-end scenario in the beta system. Praveen, Nibin &amp; Tony (Super Admins) observe and support, not evaluated.</div>
+            <div class="tl-chips"><span class="tl-chip chip-dh">11 Staff</span><span class="tl-chip chip-all">30 min / user</span><span class="tl-chip chip-sa">Super Admin: observe</span></div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot ev">P</div>
+          <div class="tl-body">
+            <div class="tl-date">Thursday–Friday July 16–17 &amp; Monday–Tuesday July 20–21, 2026</div>
+            <div class="tl-title">Independent Practice — Send Reports</div>
+            <div class="tl-desc">Geogi, Beena, Ishfaq, Jijo, Anchal, Upasana, Nithya, Alpa, Shanaz, Vikram, Arpita work independently on beta. Daily end-of-day report sent to <strong>Praveen &amp; Sheril</strong> via <strong>email or the common WhatsApp group</strong>. Report should cover: orders created, issues faced, questions.</div>
+            <div class="tl-chips"><span class="tl-chip chip-dh">11 Staff</span><span class="tl-chip chip-all">Beta Practice</span></div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot ml">M</div>
+          <div class="tl-body">
+            <div class="tl-date">July 18, 2026</div>
+            <div class="tl-title">Mock Drill — 1 Hour · All Staff Combined</div>
+            <div class="tl-desc">Full production simulation on beta. Dept Heads &amp; Sales perform their real-world roles simultaneously. Super Admins supervise and handle approvals — exactly as they would on go-live day. Business approval sign-off required after this session before cool-off begins.</div>
+            <div class="tl-chips"><span class="tl-chip chip-dh">Dept Heads</span><span class="tl-chip chip-dh">Sales</span><span class="tl-chip chip-sa">Super Admin (supervise)</span><span class="tl-chip chip-all">1 hr combined</span></div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot ml">C</div>
+          <div class="tl-body">
+            <div class="tl-date">Monday, July 20, 2026 — 1 Working Day</div>
+            <div class="tl-title">Cool-Off Period — Deployment Preparation</div>
+            <div class="tl-desc">July 20 (Monday) — tech team reviews mock drill results, resolves any final issues, and completes deployment preparation in the production environment. No training sessions. Business sign-off on mock drill required to begin cool-off.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot go">🚀</div>
+          <div class="tl-body">
+            <div class="tl-date">Tuesday, July 21, 2026</div>
+            <div class="tl-title">Go-Live — elPOS Switch</div>
+            <div class="tl-desc">All new orders created in elPOS from this date. CRM remains available for historical data. elSapiens team on standby for first-day support. Monitoring Dashboard available from day one.</div>
+            <div class="tl-chips"><span class="tl-chip" style="background:#fef2f2;color:#991b1b;border-color:#fecaca;">Live System</span><span class="tl-chip" style="background:#f0fdf4;color:#166534;border-color:#bbf7d0;">Monitoring Dashboard Live</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODULE OVERVIEW -->
+  <div class="hub-header">
+    <div class="hub-icon">📚</div>
+    <div><h2>Training Modules Overview</h2><p>Four modules — each covered across training days with user stories</p></div>
+  </div>
+
+  <div class="page-card">
+    <div class="page-card-header"><div><div class="page-name">What Each Module Covers</div><div class="page-sub">Modules 1–3 are for all roles · Module 4 is Super Admins &amp; Dept Heads only</div></div></div>
+    <div class="col-3" style="grid-template-columns:1fr 1fr;">
+      <div class="col">
+        <div class="section-label" style="color:hsl(200 60% 30%);">Module 1 — Create Order <span style="font-weight:400;color:var(--gray-400);">· All Roles · Super Admin: Jun 24 ✓ · All Staff: Jul 6</span></div>
+        <ul class="features">
+          <li>Product search (keyboard shortcuts: <kbd>/</kbd>, <kbd>F2</kbd>, <kbd>↓↑</kbd>, <kbd>Enter</kbd>)</li>
+          <li>Building the cart — add, qty adjust, remove</li>
+          <li>Attach existing customer / create new customer</li>
+          <li>Order type: Domestic vs Export</li>
+          <li>Delivery method: Pickup / Door / Godown / DACC</li>
+          <li>Loyalty discount — automatic on customer attach</li>
+          <li>Freight — To Pay vs Charged</li>
+          <li>Hold &amp; resume an order (<kbd>⌥H</kbd>)</li>
+          <li>Orders list — columns, status tabs, filters</li>
+          <li>Order detail — 3-step guide, invoice preview &amp; print</li>
+        </ul>
+      </div>
+      <div class="col">
+        <div class="section-label" style="color:var(--green);">Module 2 — Payment &amp; Credit <span style="font-weight:400;color:var(--gray-400);">· All Roles · Super Admin: Jun 29 · All Staff: Jul 8</span></div>
+        <ul class="features">
+          <li>Add payment: Cash, UPI, Card, Bank Transfer, Cheque</li>
+          <li>Full payment → order confirmed → despatch auto-created</li>
+          <li>Print / WhatsApp / Email proforma &amp; invoice</li>
+          <li>Request credit sale (ship without pay) → approval queue</li>
+          <li>Manager approves credit request in elBooks</li>
+          <li>Invoice generation and legal invoice stamping</li>
+          <li>Due date auto-derived from elBooks payment terms</li>
+          <li>Add payment to a Draft order later (⌥O → Draft tab)</li>
+          <li>Partial payment → collect balance later</li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-3" style="grid-template-columns:1fr 1fr;border-top:1px solid var(--gray-200);">
+      <div class="col">
+        <div class="section-label" style="color:hsl(33 80% 35%);">Module 3 — International Orders &amp; Despatch <span style="font-weight:400;color:var(--gray-400);">· All Roles · Super Admin: Jul 1 · All Staff: Jul 10</span></div>
+        <ul class="features">
+          <li>Set order type to Export + select currency</li>
+          <li>FX rate applied automatically (updated every 6 hrs)</li>
+          <li>Consignee details and shipping address</li>
+          <li>Export-specific fields: BoL, Incoterm, vessel, ports, country of origin</li>
+          <li>Per-line foreign price override (cashier-typed USD price)</li>
+          <li>Packaging: number of boxes, weight, packing type</li>
+          <li>Courier selection and LR (Lorry Receipt) upload</li>
+          <li>Despatch status: Pending → Ready → Dispatched</li>
+          <li>Release Dispatch for partial-payment orders</li>
+          <li>CRM connectivity — historical data still in CRM</li>
+          <li>Offline sales app — how it works alongside elPOS</li>
+          <li>Reports: elPOS bulk Excel export vs CRM reports</li>
+        </ul>
+      </div>
+      <div class="col">
+        <div class="section-label" style="color:var(--purple);">Module 4 — Admin &amp; CRM <span style="font-weight:400;color:var(--gray-400);">· Super Admins &amp; Dept Heads only · Super Admin: Jul 3 · Dept Heads: Jul 13</span></div>
+        <ul class="features">
+          <li>POS admin walkthrough: store settings, terminals</li>
+          <li>Manage loyalty plans and members</li>
+          <li>Manage surcharge presets</li>
+          <li>Approvals queue: void requests, credit sales</li>
+          <li>Sync queue — retry / discard stuck entries</li>
+          <li>elPOS reports: per-order CSV, date-range export</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- IMPORTANT NOTES -->
+  <div class="page-card">
+    <div class="page-card-header"><div><div class="page-name">Important Notes for Trainers</div><div class="page-sub">Read before each session</div></div></div>
+    <div class="card-grid">
+      <div class="col">
+        <div class="section-label">Do Before Each Session</div>
+        <ul class="features">
+          <li>Log into the beta system at <strong>beta.elpos.climatenaturals.com</strong> and confirm it is up</li>
+          <li>Create 2–3 test customers in advance (e.g. "Test Customer A", "Test Customer B") so trainees can practice searching</li>
+          <li>Have the keyboard shortcut reference open (press <kbd>?</kbd> in elPOS)</li>
+          <li>Brief trainees: <em>"Everything we do today is on the beta system — no real orders will be affected"</em></li>
+        </ul>
+      </div>
+      <div class="col">
+        <div class="section-label">How to Run Each Story</div>
+        <ul class="features">
+          <li><strong>1. Read the story aloud</strong> — "As a Sales staff, I want to…"</li>
+          <li><strong>2. Demonstrate</strong> it live in the system while narrating</li>
+          <li><strong>3. Trainee repeats</strong> the same action themselves</li>
+          <li><strong>4. Ask "Why?"</strong> — the trainee should be able to explain why this step matters, not just how to do it</li>
+          <li>Spend no more than 5 minutes per story — move on, come back if needed</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /plan -->
+
+
+<!-- ═══════════════════════════════════════════════════════
+     MODULE 1 — CREATE ORDER
+════════════════════════════════════════════════════════ -->
+<div data-tab="mod1">
+
+  <div class="hub-header" style="margin-top:24px;">
+    <div class="hub-icon">🛒</div>
+    <div><h2>Module 1 — Create Order</h2><p>Super Admin: June 24 ✓ Done · All Staff: July 6 · Duration: ~1 hr · All Roles</p></div>
+  </div>
+
+  <!-- A — FINDING A PRODUCT -->
+  <div class="section-divider">
+    <span style="font-size:18px;">🔍</span>
+    <div><div class="sd-title">A — Finding a Product</div><div class="sd-sub">Module 1 · All Roles</div></div>
+  </div>
+
+  <div class="page-card">
+    <div class="page-card-header">
+      <div><div class="page-name">POS Screen — Product List &amp; Cart</div><div class="page-sub">The two-panel billing screen</div></div>
+      <span class="badge b-mod1">Module 1</span>
+    </div>
+    <div class="card-grid">
+      <div class="col">
+        <div class="section-label">Left — Product List</div>
+        <ul class="features">
+          <li><strong>Category tabs</strong> — filter by All, Essential Oils, Spices, etc.</li>
+          <li><strong>CNS code</strong> under each product — the system identifier; useful for fast search</li>
+          <li><strong>Market price</strong> (grey) — the current market rate for this product</li>
+          <li><strong>Selling price</strong> (bold green) — what we charge the customer. This is the <strong>0–50 kg slab price by default</strong>. It adjusts automatically as quantity changes in the cart.</li>
+          <li>Products with no current price show <strong>—</strong></li>
+        </ul>
+      </div>
+      <div class="col">
+        <div class="section-label">Right — Cart Panel</div>
+        <ul class="features">
+          <li><strong>Pick customer</strong> — attach the buyer to the order</li>
+          <li><strong>Order Type</strong> — Domestic / Export</li>
+          <li><strong>Delivery</strong> — Pickup / Door / Godown / DACC</li>
+          <li>Live totals: Subtotal · Loyalty · Freight · Tax · Total</li>
+          <li>Actions: <strong>% Disc.</strong> · <strong>+ Charge</strong> · <strong>Hold</strong> · <strong>Next</strong></li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-full">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:16px;">
+        <div>
+          <div class="section-label">Two price types</div>
+          <ul class="features">
+            <li><strong>Market price product</strong> — selling price is calculated as market price + margin. The price <strong>varies by quantity slab</strong> (0–50 kg, 50–100 kg, 100–500 kg, 500–1000 kg, above 1000 kg). POS shows the 0–50 kg rate by default when the product is added to the cart.</li>
+            <li><strong>Fixed price product</strong> — one set price regardless of quantity. No slab calculation.</li>
+          </ul>
+        </div>
+        <div>
+          <div class="section-label">Price badge on each cart line</div>
+          <ul class="features">
+            <li><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;background:#e8f5e9;color:#2e7d32;border-radius:10px;border:1px solid #a5d6a7;">0 – 50 kg</span> — system-calculated slab price is applied. Price is correct for this quantity range.</li>
+            <li><span style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;background:#fff3e0;color:#e65100;border-radius:10px;border:1px solid #ffcc80;">Manual · reset</span> — the price was changed manually by the sales agent. Click <strong>reset</strong> to go back to the slab price.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RATE CHART -->
+  <div class="page-card">
+    <div class="page-card-header">
+      <div><div class="page-name">Rate Chart — All Slabs at a Glance</div><div class="page-sub">Open from the grid icon (top right of POS) · Live store rates · Base + slab-adjusted per item</div></div>
+      <span class="badge b-mod1">Module 1</span>
+    </div>
+    <div class="card-grid">
+      <div class="col">
+        <div class="section-label">What the Rate Chart shows</div>
+        <ul class="features">
+          <li>Every product grouped by commodity (Bayleaf, Black pepper, Cardamom…)</li>
+          <li><strong>Market Price</strong> column — today's market rate</li>
+          <li><strong>Selling Price slabs</strong> — 0–50 kg · 50–100 kg · 100–500 kg · 500–1000 kg · Above 1000 kg · Export rate</li>
+          <li>Rates are live — updated whenever market prices change</li>
+          <li>Search by code, name, or commodity inside the Rate Chart</li>
+        </ul>
+      </div>
+      <div class="col">
+        <div class="section-label">When to use it</div>
+        <ul class="features">
+          <li>Customer asks <em>"what is the price if I buy 200 kg?"</em> — open Rate Chart, find the 100–500 kg slab</li>
+          <li>Customer wants to compare prices across quantities before deciding</li>
+          <li>Agent wants to verify the correct rate before manually overriding a price</li>
+          <li>Quick reference without adding anything to the cart first</li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-full">
+      <div class="stories" style="padding:20px 0 0;">
+        <div class="story">
+          <div class="story-id">US-A5 · Check the Rate Chart before quoting</div>
+          <div class="story-text">As a <strong>Sales staff</strong>, I want to open the Rate Chart (grid icon, top right), so that I can look up the correct slab price for a customer's quantity before quoting — without adding a product to the cart first.</div>
+          <div class="story-demo"><strong>Try it:</strong> Click the grid icon (top right of POS) → Rate Chart opens → search "Black Pepper" → see all slab prices across quantity ranges.</div>
+        </div>
+        <div class="story">
+          <div class="story-id">US-A6 · Understand how slab price applies in the cart</div>
+          <div class="story-text">As a <strong>Sales staff</strong>, I want to see the slab badge (e.g. <strong>0–50 kg</strong>) on each cart line, so that I know which price tier is being applied — and when the customer's quantity crosses into a higher slab, the price updates automatically.</div>
+          <div class="story-note"><strong>Example:</strong> Customer buys 1 kg of Black Pepper MG1 → cart shows <strong>0–50 kg · ₹795.50</strong>. Customer adds more and total becomes 60 kg → price updates to the 50–100 kg slab rate automatically.</div>
+        </div>
+        <div class="story">
+          <div class="story-id">US-A7 · Manual price override and reset</div>
+          <div class="story-text">As a <strong>Sales staff</strong>, I want to know that if I change a price manually on a cart line, the badge changes to <strong>Manual · reset</strong> — and I can click reset to go back to the system slab price if I made a mistake.</div>
+          <div class="story-note"><strong>Important:</strong> Only override a price when explicitly instructed by the Store Manager. A manual price bypasses the slab calculation and does not adjust automatically.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-card">
+    <div class="page-card-header"><div><div class="page-name">A — Finding a Product &amp; Pricing · User Stories</div></div><span class="badge b-mod1">Module 1</span></div>
+    <div class="stories">
+      <div class="story"><div class="story-id">US-A1 · Search by name</div><div class="story-text">As a <strong>Sales staff</strong>, I want to press <kbd>/</kbd> or <kbd>F2</kbd> to jump to the search bar, so that I can find a product in seconds without touching the mouse.</div><div class="story-demo"><strong>Try it:</strong> Press <kbd>/</kbd> → type "Cardamom" → list filters. Press <kbd>Esc</kbd> to clear.</div></div>
+      <div class="story"><div class="story-id">US-A2 · Browse by category</div><div class="story-text">As a <strong>Sales staff</strong>, I want to click a category tab (e.g. Spices), so that I can browse only relevant products when I don't know the exact name.</div></div>
+      <div class="story"><div class="story-id">US-A3 · Search faster with CNS code</div><div class="story-text">As a <strong>Sales staff</strong>, I want to know the CNS code of the products I handle regularly, so that I can type it directly in the search bar and find the exact product instantly — instead of scrolling through a long list of similar names.</div><div class="story-demo"><strong>In training:</strong> "You already know your products. The CNS code is just the system's name for it. Once you memorise the codes you sell every day, billing becomes much faster — type the code, product appears, add to cart."</div></div>
+      <div class="story"><div class="story-id">US-A4 · Keyboard navigation</div><div class="story-text">As a <strong>Sales staff</strong>, I want to use <kbd>↓</kbd><kbd>↑</kbd> to move through the list and <kbd>Enter</kbd> to add, so that I can build the whole cart without switching to the mouse.</div><div class="story-demo"><strong>Try it:</strong> Press <kbd>/</kbd> → type → <kbd>↓</kbd> to highlight → <kbd>Enter</kbd> to add to cart.</div></div>
+      <div class="story"><div class="story-id">US-A5 · Check the Rate Chart before quoting a price</div><div class="story-text">As a <strong>Sales staff</strong>, I want to open the Rate Chart (grid icon, top right of POS), so that I can look up the correct slab price for a customer's quantity before quoting — without adding a product to the cart first.</div><div class="story-demo"><strong>Try it:</strong> Click the grid icon (top right) → Rate Chart opens → search "Black Pepper" → see all slab prices across quantity ranges.</div></div>
+      <div class="story"><div class="story-id">US-A6 · Quote the right price for higher quantities</div><div class="story-text">As a <strong>Sales staff</strong>, I want to know that the POS shows the <strong>0–50 kg price by default</strong> — so when a customer needs a larger quantity, I open the Rate Chart, check the correct slab for their quantity, and quote that price. Once I add the product to the cart and enter the actual quantity, the price updates automatically to the right slab.</div><div class="story-demo"><strong>Example:</strong> Customer wants 200 kg of Black Pepper MG1. POS shows ₹795.50 (0–50 kg default). Open Rate Chart → find 100–500 kg slab → quote that rate. Add to cart → enter 200 kg → price updates automatically to the 100–500 kg rate.</div></div>
+    </div>
+  </div>
+
+  <!-- B — CART -->
+  <div class="section-divider"><span style="font-size:18px;">🛒</span><div><div class="sd-title">B — Building the Cart</div><div class="sd-sub">Module 1 · All Roles</div></div></div>
+  <div class="page-card">
+    <div class="page-card-header"><div><div class="page-name">B — Cart Management · User Stories</div></div><span class="badge b-mod1">Module 1</span></div>
+    <div class="stories">
+      <div class="story"><div class="story-id">US-B1 · Add to cart</div><div class="story-text">As a <strong>Sales staff</strong>, I want to press <kbd>Enter</kbd> or click a product to add it to the cart, so that I can build the order entirely from the keyboard.</div></div>
+      <div class="story"><div class="story-id">US-B2 · Adjust quantity</div><div class="story-text">As a <strong>Sales staff</strong>, I want to press <kbd>F4</kbd> to focus the cart and use + / − to change quantities, so that I can correct amounts without leaving the keyboard.</div></div>
+      <div class="story"><div class="story-id">US-B3 · Remove an item</div><div class="story-text">As a <strong>Sales staff</strong>, I want to click 🗑 to remove a line from the cart, so that I can correct mistakes before confirming. <em>Note: once confirmed, a void request is required — covered in Module 2.</em></div></div>
+      <div class="story"><div class="story-id">US-B4 · Live total</div><div class="story-text">As a <strong>Sales staff</strong>, I want the Subtotal, Tax, and Total to update automatically as I add or adjust items, so that I always know the running amount before asking the customer for payment.</div></div>
+      <div class="story"><div class="story-id">US-B5 · Manual price override and reset</div><div class="story-text">As a <strong>Sales staff</strong>, I want to know that if I change a price manually on a cart line, the badge changes to <strong>Manual · reset</strong> — and I can click reset to go back to the correct system slab price.</div><div class="story-note"><strong>Important:</strong> Only override a price when explicitly instructed by the Store Manager. A manual price bypasses the slab calculation and will not adjust automatically with quantity.</div></div>
+    </div>
+  </div>
+
+  <!-- C — CUSTOMER -->
+  <div class="section-divider"><span style="font-size:18px;">👤</span><div><div class="sd-title">C — Attaching &amp; Creating a Customer</div><div class="sd-sub">Module 1 · All Roles</div></div></div>
+  <div class="page-card">
+    <div class="page-card-header"><div><div class="page-name">C — Customer · User Stories</div></div><span class="badge b-mod1">Module 1</span></div>
+    <div class="stories">
+      <div class="story"><div class="story-id">US-C1 · Attach an existing customer</div><div class="story-text">As a <strong>Sales staff</strong>, I want to press <kbd>⌥U</kbd> to open the customer picker and search by <strong>contact name</strong> or <strong>account name</strong>, so that the right customer is attached and their pricing and loyalty apply automatically.</div></div>
+      <div class="story"><div class="story-id">US-C2 · Loyalty applied automatically</div><div class="story-text">As a <strong>Sales staff</strong>, I want the loyalty discount to appear in the cart as soon as I attach a customer who is enrolled in a loyalty plan, so that I never accidentally miss giving them their discount.</div><div class="story-note"><strong>What you see:</strong> A "Loyalty (Friends of owner)" line appears under Subtotal with a negative amount — no extra action needed.</div></div>
+      <div class="story"><div class="story-id">US-C3 · Create a new customer from the cart</div><div class="story-text">As a <strong>Sales staff</strong>, I want to press <kbd>⌥U</kbd> → "Add new customer" → fill name, phone, address, so that a walk-in who is not in the system is registered and attached in one step without leaving the billing screen.</div><div class="story-note"><strong>During training:</strong> Use test names like "Test Customer 001" — real data not migrated yet.</div></div>
+      <div class="story"><div class="story-id">US-C4 · Edit billing address from the cart</div><div class="story-text">As a <strong>Sales staff</strong>, I want to click the edit (✏️) icon on the billing address in the cart, so that I can update the customer's address for this order — for example when their delivery address has changed or needs a correction before the invoice is generated.</div><div class="story-note"><strong>"Also save to customer profile"</strong> — if ticked, the updated address is saved permanently to the customer's record and will auto-fill on future orders. If left unticked, the change applies to this order only.</div></div>
+      <div class="story"><div class="story-id">US-C5 · Add a new address from the cart</div><div class="story-text">As a <strong>Sales staff</strong>, I want to click <strong>+ Add new address</strong> in the cart, so that I can enter a new delivery or billing address for this customer without navigating away from the cart.</div><div class="story-note">The address form has a <strong>Use as</strong> option — tick <strong>Billing</strong>, <strong>Shipping</strong>, or <strong>Consignee</strong> (or multiple). Ticking more than one stamps the same address into those cart slots automatically so you don't have to retype it.</div></div>
+      <div class="story"><div class="story-id">US-C6 · Enter GSTIN for a B2B customer</div><div class="story-text">As a <strong>Sales staff</strong>, I want to enter the customer's GSTIN in the address form, so that the invoice is generated as a B2B tax invoice with the correct GSTIN — leave it blank for a retail (B2C) sale.</div><div class="story-note"><strong>B2B vs B2C:</strong> GSTIN present → B2B invoice (IGST or CGST/SGST split based on state). GSTIN blank → B2C bill of supply. Getting this right matters for the customer's input tax credit.</div></div>
+      <div class="story"><div class="story-id">US-C7 · View full customer list via ⌥C</div><div class="story-text">As a <strong>Store Manager</strong>, I want to press <kbd>⌥C</kbd> to open the Customers section, so that I can view the full list of customers in the workspace.</div></div>
+    </div>
+  </div>
+
+  <!-- D — ORDER SETUP -->
+  <div class="section-divider"><span style="font-size:18px;">📦</span><div><div class="sd-title">D — Order Type, Delivery &amp; Freight</div><div class="sd-sub">Module 1 · All Roles</div></div></div>
+  <div class="page-card">
+    <div class="page-card-header"><div><div class="page-name">D — Order Setup · User Stories</div></div><span class="badge b-mod1">Module 1</span></div>
+    <div class="card-grid">
+      <div class="col">
+        <div class="section-label">Delivery Methods</div>
+        <ul class="features">
+          <li><strong>Pickup</strong> — customer collects at store counter</li>
+          <li><strong>Door</strong> — deliver to customer's address (shipping address required)</li>
+          <li><strong>Godown</strong> — customer collects from warehouse</li>
+          <li><strong>DACC</strong> — courier collects balance at delivery</li>
+        </ul>
+      </div>
+      <div class="col">
+        <div class="section-label">Freight</div>
+        <ul class="features">
+          <li><strong>To Pay</strong> — customer settles freight with courier directly. Nothing added to bill.</li>
+          <li><strong>Charged</strong> — we collect freight; enter the amount; appears as a separate line on the bill with its own GST.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-full">
+      <div class="stories" style="padding:20px 0 0;">
+        <div class="story"><div class="story-id">US-D1 · Set order type</div><div class="story-text">As a <strong>Sales staff</strong>, I want to select <strong>Domestic</strong> before confirming for regular orders, so that the correct domestic tax rules apply.</div><div class="story-note">For day-to-day sales, always leave order type as <strong>Domestic</strong>. Export orders (international, foreign currency) are a separate workflow covered in <strong>Module 3</strong>.</div></div>
+        <div class="story"><div class="story-id">US-D2 · Choose delivery method</div><div class="story-text">As a <strong>Sales staff</strong>, I want to select Pickup / Door / Godown / DACC to match what the customer agreed, so that the warehouse knows exactly how to prepare the goods.</div><div class="story-note"><strong>Ask the customer:</strong> "Will you be collecting, or shall we arrange delivery?" — then match to the right option.</div></div>
+        <div class="story"><div class="story-id">US-D3 · Mark freight correctly</div><div class="story-text">As a <strong>Sales staff</strong>, I want to set freight as "To Pay" or "Charged" depending on our arrangement with the customer, so that the bill reflects the correct freight liability and accounting records are accurate.</div></div>
+        <div class="story"><div class="story-id">US-D4 · Set preferred courier</div><div class="story-text">As a <strong>Sales staff</strong>, I want to select the preferred courier on the order, so that the warehouse knows which courier to use when preparing the despatch — saving a separate call or message to the warehouse team.</div><div class="story-note">Optional field. Leave blank if no specific courier preference. When set, the warehouse sees it on the despatch record in elInventory.</div></div>
+        <div class="story"><div class="story-id">US-D5 · Notify customer via WhatsApp or Email</div><div class="story-text">As a <strong>Sales staff</strong>, I want to tick the WhatsApp or Email notify option before creating the order, so that the customer receives the proforma automatically the moment the order is confirmed — without me having to send it manually.</div><div class="story-note"><strong>WhatsApp</strong> — sends proforma to the customer's registered phone number on confirmation.<br><strong>Email</strong> — sends proforma to the customer's registered email on confirmation.<br>Both can be ticked together. If unticked, the agent can still send manually from the order detail at any time.</div></div>
+        <div class="story"><div class="story-id">US-D6 · Create vs Create &amp; Pay</div><div class="story-text">As a <strong>Sales staff</strong>, I want to choose between <strong>Create</strong> (saves the order as Draft without payment) and <strong>Create &amp; Pay</strong> (goes directly to payment), so that I can handle both cases — customer paying now and customer paying later — from the same screen.</div><div class="story-note"><strong>Create</strong> → order saved as Draft. Find it later in the Draft tab of Orders list to add payment.<br><strong>Create &amp; Pay</strong> → immediately proceeds to the payment screen to collect payment now.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- E — HOLD + ORDERS LIST -->
+  <div class="section-divider"><span style="font-size:18px;">📋</span><div><div class="sd-title">E — Hold, Orders List &amp; Order Detail</div><div class="sd-sub">Module 1 · All Roles</div></div></div>
+  <div class="page-card">
+    <div class="page-card-header"><div><div class="page-name">E — Hold, Orders List &amp; Detail · User Stories</div></div><span class="badge b-mod1">Module 1</span></div>
+    <div class="stories">
+      <div class="story"><div class="story-id">US-E1 · Hold an order</div><div class="story-text">As a <strong>Sales staff</strong>, I want to click <strong>Hold</strong> to park this customer's order, so that I can serve someone else at the counter — the cart clears and the held bill is saved with all items intact. The <strong>Held</strong> badge at the top of the cart shows how many bills are on hold.</div><div class="story-demo"><strong>Try it:</strong> Add items → click Hold → cart shows "Cart is empty". Notice the <strong>Held 1</strong> badge at the top right.</div></div>
+      <div class="story"><div class="story-id">US-E2 · Recall a held bill</div><div class="story-text">As a <strong>Sales staff</strong>, I want to press <kbd>⌥H</kbd> to open the Held Bills list, so that I can see all parked orders — each showing the Bill ID, time, item preview, and total. I click <strong>Recall</strong> to restore it to the cart, or <strong>Delete</strong> to remove it permanently.</div><div class="story-note"><strong>Recall</strong> — restores the held bill back to the cart exactly as it was.<br><strong>Delete</strong> — permanently removes the held bill. Use only if the customer cancelled.</div></div>
+      <div class="story"><div class="story-id">US-E3 · Navigate to the Orders list with ⌥O</div><div class="story-text">As a <strong>Sales staff</strong>, I want to press <kbd>⌥O</kbd> to open the Orders list, so that I can check statuses, find a specific order, and review what happened today.</div><div class="story-note">There are two separate lists — <strong>Orders</strong> (domestic) and <strong>Export Orders</strong> (international). For Module 1 we only cover the domestic Orders list. Export Orders are covered in <strong>Module 3</strong>.</div></div>
+      <div class="story"><div class="story-id">US-E4 · Read the order list columns</div><div class="story-text">As a <strong>Sales staff</strong>, I want to understand every column in the Orders list, so that I can instantly see which orders need action without opening each one.</div><div class="story-note">
+        <strong>Tracking code</strong> — unique order reference (e.g. STORE_01-NIBIN-00001). Click it to open the order detail. Give this to the customer if they ask for their order number.<br><br>
+        <strong>Created at</strong> — date and time the order was placed.<br><br>
+        <strong>Customer</strong> — the account or contact the order is linked to.<br><br>
+        <strong>Created by</strong> — the staff member who placed the order.<br><br>
+        <strong>Total</strong> — full bill amount including tax.<br><br>
+        <strong>Paid</strong> — amount collected so far. ₹0.00 = no payment recorded yet.<br><br>
+        <strong>Due</strong> — outstanding balance (Total − Paid). Shown in <span style="color:var(--red);font-weight:700;">red</span> when money is still owed. Goes to ₹0.00 after full payment.<br><br>
+
+        <strong>Dispatch</strong> — tracks whether the warehouse has processed the goods.<br>
+        &nbsp;&nbsp;• <strong>—</strong> — not yet pushed to the warehouse.<br>
+        &nbsp;&nbsp;• <span style="background:var(--amber-light);color:var(--amber);padding:1px 6px;border-radius:4px;font-size:12px;font-weight:700;">+ Push to dispatch</span> — appears when the order needs a manual push. <strong>Click it to send to the warehouse directly from this list.</strong><br>
+        &nbsp;&nbsp;• <span style="background:var(--amber-light);color:var(--amber);padding:1px 6px;border-radius:4px;font-size:12px;font-weight:700;">In progress</span> — pushed; warehouse is processing.<br>
+        &nbsp;&nbsp;• <span style="background:var(--wisteria-50);color:var(--wisteria-700);padding:1px 6px;border-radius:4px;font-size:12px;font-weight:700;">Dispatched</span> — goods have left the warehouse.<br><br>
+        <strong>When does dispatch need a manual push?</strong><br>
+        &nbsp;&nbsp;• <strong>Full payment collected</strong> → dispatch is pushed <em>automatically</em>. No action needed.<br>
+        &nbsp;&nbsp;• <strong>Credit sale approved (ship without pay)</strong> → dispatch is pushed <em>automatically</em> once the manager approves.<br>
+        &nbsp;&nbsp;• <strong>Partial payment</strong> → dispatch is <em>held</em>. The agent must click <strong>+ Push to dispatch</strong> once the customer pays the remaining balance or the manager approves a credit sale.<br><br>
+
+        <strong>Delivery</strong> — whether goods reached the customer. Shows <span style="background:var(--green-light);color:var(--green);padding:1px 6px;border-radius:4px;font-size:12px;font-weight:700;">Delivered</span> once confirmed; otherwise "—".<br><br>
+
+        <strong>Order</strong> — the document lifecycle of the order. Only 3 possible values:<br>
+        &nbsp;&nbsp;• <span style="background:var(--amber-light);color:var(--amber);padding:1px 6px;border-radius:4px;font-size:12px;font-weight:700;">Draft</span> — order saved but not yet committed. Payment not collected. Still editable.<br>
+        &nbsp;&nbsp;• <span style="background:var(--green-light);color:var(--green);padding:1px 6px;border-radius:4px;font-size:12px;font-weight:700;">Confirmed</span> — order committed, stock reserved. Reached after payment is collected (or credit sale approved).<br>
+        &nbsp;&nbsp;• <span style="background:var(--red-light);color:var(--red);padding:1px 6px;border-radius:4px;font-size:12px;font-weight:700;">Voided</span> — order cancelled. No further action possible.<br><br>
+
+        <strong>Order type</strong> — <strong>Domestic</strong> or <strong>Export · [currency]</strong>. Determines which tax rules apply.<br><br>
+
+        <strong>Supply</strong> — GST supply type, derived automatically from the billing address:<br>
+        &nbsp;&nbsp;• <strong>B2C</strong> — no GSTIN on the billing address → Bill of Supply.<br>
+        &nbsp;&nbsp;• <strong>B2B</strong> — GSTIN present on the billing address → Tax Invoice.<br>
+        &nbsp;&nbsp;• Blank — Export orders (shown separately in Order type).<br><br>
+
+        <strong>Payment</strong> — the money status, independent from the Order column. 5 possible values:<br>
+        &nbsp;&nbsp;• <strong>Unpaid</strong> — nothing collected yet.<br>
+        &nbsp;&nbsp;• <strong>Partial</strong> — some payment received, balance still due.<br>
+        &nbsp;&nbsp;• <strong>Paid</strong> — fully collected.<br>
+        &nbsp;&nbsp;• <strong>Partial refund</strong> — was fully paid, then part was refunded.<br>
+        &nbsp;&nbsp;• <strong>Refunded</strong> — payment was returned to the customer.<br>
+        When Unpaid or Partial, the badge is clickable — tap it to go directly to Add Payment.<br><br>
+
+        <strong>Approvals</strong> — shows any pending request on the order:<br>
+        &nbsp;&nbsp;• <strong>+ Request credit</strong> — credit sale requested, waiting for Store Manager sign-off.<br>
+        &nbsp;&nbsp;• Blank — no pending approval.<br><br>
+
+        <strong>👁 icon</strong> — quick-preview the order summary without leaving the list.<br>
+        <strong>⋮ icon</strong> — 3-dot menu for inline actions without opening the order detail.
+      </div></div>
+      <div class="story"><div class="story-id">US-E4b · Take quick actions directly from the Orders list</div><div class="story-text">As a <strong>Sales staff</strong>, I want to handle common actions directly on the Orders list without opening the order detail, so that I can serve customers faster at a busy counter.</div><div class="story-note">
+        The Orders list is a full action surface — most counter tasks can be done without ever clicking into the order detail:<br><br>
+        <strong>Add payment</strong> — click the <strong>Unpaid</strong> or <strong>Partial</strong> badge in the Payment column → opens the payment modal inline.<br>
+        <strong>Push to dispatch</strong> — click the <strong>+ Push to dispatch</strong> badge in the Dispatch column → sends to warehouse immediately.<br>
+        <strong>Quick preview</strong> — click the <strong>👁</strong> icon → see order summary (customer, total, items) without leaving the list.<br>
+        <strong>3-dot menu (⋮)</strong> — per-row actions: View invoice, Reprint, Download, CSV, Send via Email, Send via WhatsApp, Set due date, Request credit sale, Void.<br><br>
+        Open the order detail (click tracking code) only when you need full information — History, the What to Do guide, editing the order, or setting addresses.
+      </div></div>
+      <div class="story"><div class="story-id">US-E5 · Use the status tabs to find orders quickly</div><div class="story-text">As a <strong>Sales staff</strong>, I want to click the status tabs at the top of the Orders list, so that I can filter to exactly the orders I need without scrolling through everything.</div><div class="story-note">
+        <strong>Important:</strong> The tabs mix different dimensions — some filter by Order status, others by Dispatch status.<br><br>
+        <strong>All</strong> — every order regardless of any status.<br>
+        <strong>Paid</strong> — orders where status = Confirmed (committed orders).<br>
+        <strong>Draft</strong> — orders created but not yet committed. Use this to find orders you still need to collect payment for.<br>
+        <strong>Voided</strong> — cancelled orders. Read-only.<br>
+        <strong>In progress</strong> — orders pushed to the warehouse but not yet dispatched (dispatch status = ready for dispatch).<br>
+        <strong>Dispatched</strong> — orders where goods have left the warehouse (dispatch status = dispatched).<br>
+        <strong>Custom</strong> — your own saved filter combination.<br><br>
+        <strong>Add filter +</strong> — narrow further by customer name, date range, created by, payment status, etc. Combine multiple filters at once.
+      </div></div>
+      <div class="story"><div class="story-id">US-E6 · Land on order detail after creating an order</div><div class="story-text">As a <strong>Sales staff</strong>, I want to land on the order detail page the moment I create an order, so that I can immediately see the tracking code, all order information, and the <strong>What to Do</strong> guide telling me what the next step is — no need to go back to the orders list to find it.</div><div class="story-note">Also reachable from Orders list → click any tracking code.</div></div>
+      <div class="story"><div class="story-id">US-E7 · Read the order summary header</div><div class="story-text">As a <strong>Sales staff</strong>, I want to read the summary section at the top of the order detail, so that I can confirm all key information is correct before proceeding.</div><div class="story-note">
+        <strong>Tracking code</strong> — unique order reference (e.g. STORE_01-NIBIN-00001). Give this to the customer if they ask for their order number.<br>
+        <strong>Created at</strong> — exact date and time the order was placed.<br>
+        <strong>Payment</strong> — shows "—" until payment is collected; fills in after payment is added.<br>
+        <strong>Customer</strong> — name and phone number linked to this order.<br>
+        <strong>Total</strong> — final bill amount including tax.<br>
+        <strong>Amount due</strong> — outstanding balance; becomes ₹0 after full payment.<br>
+        <strong>Delivery</strong> — the delivery method selected (e.g. Store pickup).<br>
+        <strong>Billed By</strong> — the staff member who created the order.<br>
+        <strong>Due date</strong> — shows "—" unless a payment deadline is set (see US-E12).<br>
+        <strong>Billing address</strong> — the address shown on the invoice.
+      </div></div>
+      <div class="story"><div class="story-id">US-E8 · Understand the Items and tax breakdown</div><div class="story-text">As a <strong>Sales staff</strong>, I want to read the Items section of the order detail, so that I can verify each product, quantity, price, HSN code, and tax — and confirm the totals match what I quoted the customer.</div><div class="story-note">
+        <strong>Each line shows:</strong> product name, price, quantity × unit rate, HSN code, tax amount.<br>
+        <strong>HSN code</strong> — the commodity code required on GST invoices (e.g. HSN 09083120 for cardamom). The system fills this automatically from the catalog.<br>
+        <strong>Items (tag price)</strong> — total before tax.<br>
+        <strong>Subtotal (taxable)</strong> — the amount GST is calculated on.<br>
+        <strong>Tax (items)</strong> — CGST + SGST combined (B2C domestic) or IGST (inter-state / export).<br>
+        <strong>Total</strong> — items + tax.<br>
+        <strong>Amount due</strong> — what remains unpaid. Goes to ₹0 once payment is fully collected.
+      </div></div>
+      <div class="story"><div class="story-id">US-E9 · Read the History section</div><div class="story-text">As a <strong>Sales staff</strong>, I want to check the History section of the order detail, so that I can see a timestamped record of who created the order and every action taken on it — useful when a customer disputes details or a manager asks who processed an order.</div><div class="story-note">
+        <strong>History is append-only</strong> — each event is logged automatically with the staff name and timestamp. Nobody can delete or edit a history entry.<br><br>
+        <strong>Events you will see in History:</strong><br>
+        <strong>Created</strong> — order was placed in elPOS.<br>
+        <strong>Edited</strong> — order details were modified (items, delivery, address, etc.).<br>
+        <strong>Payment added</strong> — a payment was recorded (cash / UPI / card / bank transfer).<br>
+        <strong>Refunded</strong> — a payment was reversed.<br>
+        <strong>Due date set</strong> — a payment deadline was set or updated on the order.<br>
+        <strong>Credit sale accepted</strong> — a Store Manager approved the credit sale request.<br>
+        <strong>Voided</strong> — the order was cancelled (direct void or approved void request).<br>
+        <strong>Finalized</strong> — the GST invoice was posted to elBooks (automatic, written by the system).<br>
+        <strong>Courier changed</strong> — the preferred courier was set or updated.<br>
+        <strong>Dispatched</strong> — goods were dispatched, written automatically by elInventory when the warehouse processes the order.
+      </div></div>
+      <div class="story"><div class="story-id">US-E10 · Follow the "What to Do" step guide</div><div class="story-text">As a <strong>Sales staff</strong>, I want to read the <strong>What to Do</strong> panel, so that I always know which step I am on in the order lifecycle — and what action I need to take next.</div><div class="story-note">
+        <strong>Counter sale — 3 steps:</strong><br>
+        Step 1 · Take the order — Build the cart. (Done when you reach this screen.)<br>
+        Step 2 · Collect payment — Add a payment (Cash / Card / UPI) for the order total. The <strong>Collect payment</strong> button takes you directly to the payment screen.<br>
+        Step 3 · Confirm &amp; hand over — Confirm the order and hand the goods to the customer.<br><br>
+        The active step is highlighted. Complete one step to unlock the next.
+      </div></div>
+      <div class="story"><div class="story-id">US-E11 · Send invoice via Email or WhatsApp from order detail</div><div class="story-text">As a <strong>Sales staff</strong>, I want to tap the 3-dot (⋯) menu on the order detail and choose <strong>Send via Email</strong> or <strong>Send via WhatsApp</strong>, so that I can share the invoice with the customer at any time — even after the order was created without the notify option ticked.</div><div class="story-note"><strong>Send via WhatsApp</strong> → sends the invoice to the customer's registered phone number.<br><strong>Send via Email</strong> → sends to the customer's registered email address.<br>Use this if a customer says they didn't receive their copy, or asks for a resend.</div></div>
+      <div class="story"><div class="story-id">US-E12 · View, print, download, or export the order</div><div class="story-text">As a <strong>Sales staff</strong>, I want to use the 3-dot (⋯) menu to access document options, so that I can give the customer a copy in whatever format they need.</div><div class="story-note">
+        <strong>View invoice</strong> — opens the full invoice preview on screen.<br>
+        <strong>Reprint</strong> — sends to the connected receipt printer again (for counter receipts).<br>
+        <strong>Download</strong> — saves a PDF copy of the invoice to your device.<br>
+        <strong>CSV</strong> — exports the order line items as a spreadsheet (useful for bulk orders the customer wants to reconcile).
+      </div></div>
+      <div class="story"><div class="story-id">US-E13 · Set a due date on an order</div><div class="story-text">As a <strong>Sales staff</strong>, I want to tap the 3-dot (⋯) menu and choose <strong>Set due date</strong>, so that the customer's payment deadline is recorded on the order — and the Due date field shows in red on the Orders list when it passes.</div><div class="story-note">Used for deferred payment arrangements. The due date is visible to both staff and the accounts team. Setting a due date does <em>not</em> automatically grant credit — that requires a credit sale approval (Module 2).</div></div>
+      <div class="story"><div class="story-id">US-E14 · Preview and print the invoice</div><div class="story-text">As a <strong>Sales staff</strong>, I want to open the invoice preview from the order detail (3-dot → <strong>View invoice</strong>), so that I can verify the itemised bill of supply with HSN codes, CGST/SGST breakdown, and Grand Total before printing or emailing it to the customer.</div></div>
+      <div class="story-note" style="margin:0 0 12px;background:var(--purple-light);border-left:3px solid var(--purple);padding:10px 14px;border-radius:6px;font-size:13px;"><strong>Request credit sale</strong> also appears in the 3-dot (⋯) menu. This is covered in <strong>Module 2 — Credit Sales</strong>.</div>
+    </div>
+  </div>
+
+</div><!-- /mod1 -->
+
+
+<!-- ═══════════════════════════════════════════════════════
+     MODULE 2 — PAYMENT & CREDIT
+════════════════════════════════════════════════════════ -->
+<div data-tab="mod2">
+
+  <div class="hub-header" style="margin-top:24px;">
+    <div class="hub-icon">💳</div>
+    <div><h2>Module 2 — Payment &amp; Credit Sales</h2><p>Super Admin: June 29 (today) · All Staff: July 8 · Duration: ~1 hr · All Roles</p></div>
+  </div>
+
+  <div class="notice-info"><strong>What changed from before:</strong> Payment is now collected directly in elPOS at the counter. Non-cash references (UPI ref, UTR, card code) flow automatically to elBooks where the accounts team verifies them. No separate entry needed in elBooks for most payments.</div>
+
+  <!-- A — ADD PAYMENT -->
+  <div class="section-divider"><span style="font-size:18px;">💳</span><div><div class="sd-title">A — Adding Payment &amp; Confirming the Order</div><div class="sd-sub">Module 2 · All Roles</div></div></div>
+  <div class="page-card">
+    <div class="page-card-header"><div><div class="page-name">Payment Methods &amp; What Happens After</div></div><span class="badge b-mod2">Module 2</span></div>
+    <div class="card-grid">
+      <div class="col">
+        <div class="section-label">Payment Methods</div>
+        <ul class="features">
+          <li><strong>Cash</strong> — enter amount received; system shows change due</li>
+          <li><strong>UPI</strong> — enter UPI reference number; attach screenshot if available</li>
+          <li><strong>Card</strong> — enter card slip / approval code</li>
+          <li><strong>Bank Transfer</strong> — enter UTR number</li>
+          <li><strong>Cheque</strong> — enter cheque number</li>
+          <li>Split payment supported — add multiple entries in one checkout</li>
+        </ul>
+        <div style="margin-top:10px;padding:9px 12px;background:#fef2f2;border-left:3px solid #dc2626;border-radius:0 6px 6px 0;font-size:12px;color:#374151;">
+          <strong>Important:</strong> Non-cash references must be entered accurately. The accounts team uses them in elBooks to verify the payment. A missing UTR or UPI ref creates reconciliation work.
+        </div>
+      </div>
+      <div class="col">
+        <div class="section-label">After Full Payment</div>
+        <ul class="features">
+          <li>Order status: Draft → <strong>Confirmed</strong></li>
+          <li>Payment status: Unpaid → <strong>Paid</strong></li>
+          <li>A <strong>proforma / receipt</strong> is shown automatically — Print, Download PDF, send via WhatsApp, or send via Email</li>
+          <li>A <strong>despatch record is auto-created</strong> in elInventory — warehouse team sees it immediately; no separate action needed</li>
+          <li>Reprint or resend any time from the order detail page</li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-full">
+      <div class="stories" style="padding:20px 0 0;">
+        <div class="story"><div class="story-id">US-A1 · Click Next to go to payment</div><div class="story-text">As a <strong>Sales staff</strong>, I want to click <strong>Next</strong> once the cart is ready, so that I move to the payment screen to collect the amount and confirm the order.</div></div>
+        <div class="story"><div class="story-id">US-A2 · Collect cash payment</div><div class="story-text">As a <strong>Sales staff</strong>, I want to select Cash, enter the amount the customer gives me, so that the system calculates and displays the change to return — and the order confirms when I submit.</div></div>
+        <div class="story"><div class="story-id">US-A3 · Collect UPI / card / transfer</div><div class="story-text">As a <strong>Sales staff</strong>, I want to select UPI / Card / Bank Transfer and enter the reference number, so that the payment is recorded accurately and the accounts team can verify it in elBooks without chasing me separately.</div></div>
+        <div class="story"><div class="story-id">US-A4 · Split payment</div><div class="story-text">As a <strong>Sales staff</strong>, I want to add two payment entries (e.g. ₹5,000 cash + ₹16,000 UPI) in one checkout, so that I can handle customers who pay in multiple modes in a single step.</div></div>
+        <div class="story"><div class="story-id">US-A5 · Print / send the proforma after payment</div><div class="story-text">As a <strong>Sales staff</strong>, I want to print, download, or send the proforma via WhatsApp or Email immediately after the order confirms, so that the customer has their receipt before leaving the counter.</div></div>
+        <div class="story"><div class="story-id">US-A6 · Add payment to a Draft order later</div><div class="story-text">As a <strong>Sales staff</strong>, I want to press <kbd>⌥O</kbd> → click the Draft tab → open the order → click <strong>Add payment</strong>, so that I can collect payment for an order that was created earlier but not yet paid — for example when a customer calls in to pay.</div><div class="story-note"><strong>When to use:</strong> Order was created (Draft) but payment was not collected at the time. Add payment to confirm it.</div></div>
+      </div>
+      <div class="screenshot-slot"><img src="./screenshots/mod2-payment.png" onerror="this.parentElement.innerHTML='<div class=ph>📷 screenshots/mod2-payment.png</div>'"></div>
+    </div>
+  </div>
+
+  <!-- B — CREDIT SALES -->
+  <div class="section-divider"><span style="font-size:18px;">📤</span><div><div class="sd-title">B — Request Credit Sale (Ship Without Pay)</div><div class="sd-sub">Module 2 · Sales + Store Manager</div></div></div>
+  <div class="page-card">
+    <div class="page-card-header"><div><div class="page-name">Credit Sales — Approval Flow</div><div class="page-sub">Sales submits → Manager approves → elBooks records it</div></div><span class="badge b-mod2">Module 2</span></div>
+    <div class="card-grid">
+      <div class="col">
+        <div class="section-label">What is a Credit Sale?</div>
+        <ul class="features">
+          <li>Goods are released to the customer <strong>before payment is collected</strong></li>
+          <li>Previously called "Ship Without Pay" — same concept, new name</li>
+          <li>A Sales staff cannot confirm this alone — it requires <strong>manager approval</strong></li>
+          <li>The order sits as <strong>Pending Approval</strong> until the manager acts</li>
+          <li>Once approved, a despatch record is created in elInventory as normal</li>
+        </ul>
+      </div>
+      <div class="col">
+        <div class="section-label">The Approval Flow</div>
+        <div class="flow-steps" style="margin-top:8px;">
+          <div class="flow-step"><div class="step-num">1</div><div class="step-body"><strong>Sales submits the order without payment</strong><p>At checkout, chooses "Request credit" → adds reason → submits. Order status: Pending Approval.</p></div></div>
+          <div class="flow-step"><div class="step-num">2</div><div class="step-body"><strong>Manager receives notification</strong><p>Push notification sent. Also visible in <strong>Confirm Approvals</strong> queue.</p></div></div>
+          <div class="flow-step"><div class="step-num">3</div><div class="step-body"><strong>Manager approves in elBooks</strong><p>Reviews the request; Approve → order Confirmed, despatch triggered. Reject → order stays Draft.</p></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-full">
+      <div class="stories" style="padding:20px 0 0;">
+        <div class="story"><div class="story-id">US-B1 · Sales requests a credit sale</div><div class="story-text">As a <strong>Sales staff</strong>, I want to submit an order as a credit request instead of collecting payment now, so that goods can be prepared for a trusted customer while payment is arranged — and the request goes to the manager for sign-off.</div><div class="story-note"><strong>Important:</strong> Never submit a credit request without the customer's agreement and the manager's verbal pre-approval. The system enforces approval; this is not a shortcut.</div></div>
+        <div class="story"><div class="story-id">US-B2 · Store Manager approves a credit request</div><div class="story-text">As a <strong>Store Manager</strong>, I want to review credit requests in the Confirm Approvals queue and approve or reject each one, so that no goods leave the warehouse on credit without my explicit sign-off — protecting the business from unauthorized credit.</div><div class="story-mgr"><strong>Manager path:</strong> Navigate to <strong>Approvals → Confirm Approvals</strong> → find the pending request → review → Approve or Reject.</div></div>
+        <div class="story"><div class="story-id">US-B3 · Understand what happens in elBooks</div><div class="story-text">As a <strong>Store Manager</strong>, I want to know that approved credit orders flow to elBooks as an invoice with the due date set from the customer's payment terms, so that the accounts team can track outstanding balances and send reminders without any manual entry.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- C — INVOICE & DUE DATES -->
+  <div class="section-divider"><span style="font-size:18px;">🧾</span><div><div class="sd-title">C — Invoice Generation &amp; Due Dates</div><div class="sd-sub">Module 2 · All Roles</div></div></div>
+  <div class="page-card">
+    <div class="page-card-header"><div><div class="page-name">C — Invoice &amp; Payment Terms · User Stories</div></div><span class="badge b-mod2">Module 2</span></div>
+    <div class="stories">
+      <div class="story"><div class="story-id">US-C1 · Due date auto-derived from payment terms</div><div class="story-text">As a <strong>Sales staff</strong>, I want the due date to be set automatically from the customer's elBooks payment terms (e.g. Net 30 → due = confirmed date + 30 days), so that I don't have to calculate or enter it manually — and the accounts team's overdue tracking works correctly.</div><div class="story-note"><strong>What you see:</strong> "Due date" field on the order detail. If the customer has payment terms, it auto-fills on confirmation. If no terms are set, the field stays blank until manually set.</div></div>
+      <div class="story"><div class="story-id">US-C2 · Override the due date if needed</div><div class="story-text">As a <strong>Sales staff</strong>, I want to manually set or change the due date from the order detail page, so that I can accommodate a specific customer agreement that differs from their default payment terms.</div></div>
+      <div class="story"><div class="story-id">US-C3 · Generate and send the legal invoice</div><div class="story-text">As a <strong>Store Manager</strong>, I want to generate the final legal invoice from the order detail once the order is fully confirmed and finalized in elBooks, so that the customer receives their GST-compliant tax invoice with the correct invoice number.</div><div class="story-mgr"><strong>Manager note:</strong> The proforma is generated immediately on payment. The legal invoice (with the GST invoice number stamped by elBooks) is generated after the accounting sync completes.</div></div>
+      <div class="story"><div class="story-id">US-C4 · Partial payment — collect balance later</div><div class="story-text">As a <strong>Sales staff</strong>, I want to collect a partial payment and confirm the order, so that goods can be released even when the full amount isn't collected now — and the balance appears in the Due column of the orders list for follow-up.</div><div class="story-note"><strong>When to use:</strong> Only when the store has partial payment enabled in Store Settings. Check with your Store Manager before using this.</div></div>
+    </div>
+  </div>
+
+  <!-- D — ORDER CANCELLATION -->
+  <div class="section-divider"><span style="font-size:18px;">❌</span><div><div class="sd-title">D — Order Cancellation (Void Request)</div><div class="sd-sub">Module 2 · All Roles</div></div></div>
+  <div class="page-card">
+    <div class="page-card-header"><div><div class="page-name">D — Order Cancellation · User Stories</div><div class="page-sub">Two-step approval — Sales requests, Manager approves</div></div><span class="badge b-mod2">Module 2</span></div>
+    <div class="card-grid">
+      <div class="col">
+        <div class="section-label">Why two steps?</div>
+        <ul class="features">
+          <li>A Sales staff <strong>cannot cancel a confirmed order directly</strong></li>
+          <li>Prevents accidental or unauthorized cancellations</li>
+          <li>Creates a full audit trail — every cancellation has a reason and a reviewer</li>
+          <li>Prevents stock releasing back to elInventory without manager awareness</li>
+        </ul>
+      </div>
+      <div class="col">
+        <div class="section-label">The Void Flow</div>
+        <ul class="features">
+          <li><strong>Sales:</strong> Opens order → Request Void → adds reason → submits</li>
+          <li>Status changes to <em>Void Pending</em></li>
+          <li><strong>Manager:</strong> Receives notification → reviews in Void Approvals queue</li>
+          <li><strong>Approved:</strong> order → Voided; stock released in elInventory</li>
+          <li><strong>Rejected:</strong> order stays active; Sales is notified</li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-full">
+      <div class="stories" style="padding:20px 0 0;">
+        <div class="story"><div class="story-id">US-D1 · Sales raises a void request</div><div class="story-text">As a <strong>Sales staff</strong>, I want to raise a void request on a confirmed order I created, so that the cancellation is sent to the Store Manager for review — I cannot delete an order myself because every cancellation needs authorization and a paper trail.</div></div>
+        <div class="story"><div class="story-id">US-D2 · Store Manager approves or rejects a void</div><div class="story-text">As a <strong>Store Manager</strong>, I want to approve or reject void requests from the Void Approvals queue, so that order cancellations are reviewed before any stock or accounting record is affected.</div><div class="story-mgr"><strong>Manager path:</strong> <strong>Approvals → Void Requests</strong> → find pending request → Approve or Reject.</div></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /mod2 -->
+
+
+<!-- ═══════════════════════════════════════════════════════
+     MODULE 3 — INTERNATIONAL ORDERS & DESPATCH
+════════════════════════════════════════════════════════ -->
+<div data-tab="mod3">
+
+  <div class="hub-header" style="margin-top:24px;">
+    <div class="hub-icon">🌍</div>
+    <div><h2>Module 3 — International Orders, Despatch, CRM &amp; Reports</h2><p>Super Admin: July 1 · All Staff: July 10 · Duration: ~1 hr · All Roles</p></div>
+  </div>
+
+  <div class="notice-info"><strong>Key difference from domestic:</strong> On an export order, selling prices display in the customer's currency (USD, EUR, etc.), FX rate is pulled live from elCurrency every 6 hours, and additional document fields (BoL, Incoterm, ports) are required for the invoice and export documentation.</div>
+
+  <!-- A — INTERNATIONAL ORDER -->
+  <div class="section-divider"><span style="font-size:18px;">🌍</span><div><div class="sd-title">A — Creating an International Order</div><div class="sd-sub">Module 3 · All Roles</div></div></div>
+  <div class="page-card">
+    <div class="page-card-header"><div><div class="page-name">Export Order — What's Different</div></div><span class="badge b-mod3">Module 3</span></div>
+    <div class="card-grid">
+      <div class="col">
+        <div class="section-label">At the Cart</div>
+        <ul class="features">
+          <li>Set <strong>Order Type → Export</strong></li>
+          <li><strong>Order Currency</strong> becomes required — select from the currency list (USD, EUR, GBP, etc.)</li>
+          <li>Selling price displays in the selected currency at the current FX rate</li>
+          <li>FX rate updated every 6 hours via elCurrency; shown on the cart</li>
+          <li>Cashier can <strong>override the per-unit foreign price</strong> on any line directly</li>
+          <li>Export pricing = market price + international margin (configured per store)</li>
+        </ul>
+      </div>
+      <div class="col">
+        <div class="section-label">At Checkout — Export Fields</div>
+        <ul class="features">
+          <li><strong>Reference Numbers:</strong> Bill of Lading No, Reference, Buyer Reference, Letter of Credit No</li>
+          <li><strong>Shipment:</strong> Incoterm, Method of Dispatch, Type of Shipment, Vessel/Aircraft, Voyage No</li>
+          <li><strong>Route:</strong> Port of Loading, Port of Discharge, Country of Origin &amp; Destination, Final Destination, Date of Departure</li>
+          <li><strong>Additional:</strong> Terms of Payment, Marine Cover Policy No, Packing Information</li>
+          <li>Consignee address goes in the <strong>Shipping Address</strong> field</li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-full">
+      <div class="stories" style="padding:20px 0 0;">
+        <div class="story"><div class="story-id">US-A1 · Set up an export order</div><div class="story-text">As a <strong>Sales staff</strong>, I want to set Order Type to Export and select the customer's currency (e.g. USD), so that the cart shows prices in dollars and the system applies international margin automatically — giving the customer the correct foreign-currency quote.</div></div>
+        <div class="story"><div class="story-id">US-A2 · Override a line price</div><div class="story-text">As a <strong>Sales staff</strong>, I want to type the agreed per-unit foreign price directly on a cart line (e.g. $11.00/kg), so that when the customer has negotiated a specific rate, I can override the auto-calculated FX price and the system records my typed value exactly.</div><div class="story-note"><strong>When to use:</strong> Customer says "we agreed $11/kg" and the auto-rate shows something different. Type the agreed value; the system skips the FX pipeline for that line.</div></div>
+        <div class="story"><div class="story-id">US-A3 · Fill in the export document fields</div><div class="story-text">As a <strong>Sales staff</strong>, I want to fill the export fields at checkout accurately (Incoterm, BoL, ports, vessel), so that the invoice and export documentation generated by elPOS are complete — no manual re-entry needed by the documentation team.</div><div class="story-note"><strong>Why this matters:</strong> These fields print directly on the export invoice. Wrong or missing values mean the documentation team has to reject and regenerate the invoice.</div></div>
+        <div class="story"><div class="story-id">US-A4 · Add consignee address</div><div class="story-text">As a <strong>Sales staff</strong>, I want to enter the consignee's shipping address in the Shipping Address field, so that the correct delivery destination appears on the export invoice and despatch record.</div></div>
+      </div>
+      <div class="screenshot-slot"><img src="./screenshots/mod3-export-order.png" onerror="this.parentElement.innerHTML='<div class=ph>📷 screenshots/mod3-export-order.png</div>'"></div>
+    </div>
+  </div>
+
+  <!-- B — DESPATCH -->
+  <div class="section-divider"><span style="font-size:18px;">🚛</span><div><div class="sd-title">B — Packaging &amp; Despatch</div><div class="sd-sub">Module 3 · All Roles (Warehouse flow)</div></div></div>
+  <div class="page-card">
+    <div class="page-card-header"><div><div class="page-name">Despatch — elInventory Flow</div><div class="page-sub">Despatch record created automatically; warehouse updates it</div></div><span class="badge b-mod3">Module 3</span></div>
+    <div class="card-grid">
+      <div class="col">
+        <div class="section-label">What Happens Automatically</div>
+        <ul class="features">
+          <li>When an order is <strong>confirmed in elPOS</strong>, a despatch record is <strong>immediately created in elInventory</strong> — no manual action needed by anyone</li>
+          <li>The warehouse team sees it in elInventory under Pending Despatches</li>
+          <li>The Dispatch column in the elPOS orders list reflects elInventory status in real time</li>
+        </ul>
+      </div>
+      <div class="col">
+        <div class="section-label">What the Warehouse Does in elInventory</div>
+        <ul class="features">
+          <li>Opens the despatch record for the order</li>
+          <li>Fills <strong>packaging details</strong>: number of boxes, weight, packing type</li>
+          <li>Selects the <strong>courier</strong></li>
+          <li>Uploads the <strong>LR (Lorry Receipt)</strong> once available</li>
+          <li>Updates status: Pending → <strong>Ready for Despatch</strong> → <strong>Dispatched</strong></li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-full">
+      <div class="stories" style="padding:20px 0 0;">
+        <div class="story"><div class="story-id">US-B1 · Understand the automatic despatch link</div><div class="story-text">As a <strong>Sales staff</strong>, I want to know that confirming a paid order in elPOS automatically creates a despatch record in elInventory, so that I don't need to call or message the warehouse team separately — the system handles the handoff.</div></div>
+        <div class="story"><div class="story-id">US-B2 · Track despatch status from elPOS</div><div class="story-text">As a <strong>Sales staff</strong>, I want to see the Dispatch and Delivery columns in the orders list, so that when a customer asks "has my order been sent?", I can answer immediately without calling the warehouse.</div></div>
+        <div class="story"><div class="story-id">US-B3 · Re-trigger a stuck despatch</div><div class="story-text">As a <strong>Store Manager</strong>, I want to use <strong>Push to Dispatch</strong> from the order detail if a despatch record was missed or stuck, so that the warehouse gets the record without needing a system restart or manual workaround.</div><div class="story-mgr"><strong>Manager path:</strong> Open order detail → three-dot menu → Push to Dispatch.</div></div>
+        <div class="story"><div class="story-id">US-B4 · Release a held despatch (partial payment)</div><div class="story-text">As a <strong>Store Manager</strong>, I want to use <strong>Release Dispatch</strong> to release goods to elInventory when an order is confirmed on partial payment and the balance is still outstanding, so that the warehouse can proceed with packing while the account team follows up on the remaining amount.</div></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /mod3 -->
+
+
+<!-- ═══════════════════════════════════════════════════════
+     MODULE 4 — ADMIN & CRM
+════════════════════════════════════════════════════════ -->
+<div data-tab="mod4">
+
+  <div class="hub-header" style="margin-top:24px;">
+    <div class="hub-icon">⚙️</div>
+    <div><h2>Module 4 — POS Admin</h2><p>Super Admin: July 3 · Dept Heads: July 13 · Duration: ~1 hr · Super Admins &amp; Dept Heads only</p></div>
+  </div>
+
+  <!-- A — ADMIN SETTINGS -->
+  <div class="section-divider"><span style="font-size:18px;">⚙️</span><div><div class="sd-title">A — POS Admin Walkthrough</div><div class="sd-sub">Module 4 · Store Manager &amp; Dept Heads</div></div></div>
+  <div class="page-card">
+    <div class="page-card-header"><div><div class="page-name">Admin Settings Overview</div><div class="page-sub">Store Manager capabilities — accessed via ⌥, (Settings)</div></div><span class="badge b-mod4">Module 4</span></div>
+    <div class="card-grid">
+      <div class="col">
+        <div class="section-label">Store Configuration</div>
+        <ul class="features">
+          <li><strong>Store Settings</strong> — tax mode, freight taxability, partial payment toggle, payment methods enabled per store</li>
+          <li><strong>Terminals</strong> — billing counter setup; each terminal has its own name and receipt footer</li>
+          <li><strong>Payment Providers</strong> — card/UPI provider config (POS terminal link)</li>
+          <li><strong>Authorised Signatory</strong> — name that prints on invoices; configurable per store</li>
+        </ul>
+      </div>
+      <div class="col">
+        <div class="section-label">Catalog &amp; Loyalty Management</div>
+        <ul class="features">
+          <li><strong>Goods &amp; Services</strong> — product catalog management; create / edit / delete items</li>
+          <li><strong>Loyalty Plans</strong> — create tiers (e.g. "Friends of Owner"), set discount %, enrol customers; discount applies automatically at cart when enrolled customer is attached</li>
+          <li><strong>Surcharges</strong> — preset library of named charges (e.g. "Custom Packaging ₹500"); Sales staff picks from this list at checkout; prints as its own line on the bill</li>
+          <li><strong>Customers</strong> — CRUD; add GSTIN, multiple addresses</li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-full">
+      <div class="stories" style="padding:20px 0 0;">
+        <div class="story"><div class="story-id">US-A1 · Navigate to store settings</div><div class="story-text">As a <strong>Store Manager</strong>, I want to press <kbd>⌥,</kbd> to open Settings, so that I can configure the store without navigating through multiple menus.</div></div>
+        <div class="story"><div class="story-id">US-A2 · Set up a loyalty plan</div><div class="story-text">As a <strong>Store Manager</strong>, I want to create a loyalty plan (e.g. "Friends of Owner" at 0.5%), enrol specific customers, so that their discount applies automatically every time they are attached to a cart — no manual action needed at the counter.</div></div>
+        <div class="story"><div class="story-id">US-A3 · Add a surcharge preset</div><div class="story-text">As a <strong>Store Manager</strong>, I want to add surcharge presets (e.g. "Custom Packaging — ₹500 flat"), so that Sales staff can apply them consistently without typing free-form amounts — ensuring the surcharge appears correctly on the bill and accounting records.</div></div>
+        <div class="story"><div class="story-id">US-A4 · Manage approvals</div><div class="story-text">As a <strong>Store Manager</strong>, I want to check the <strong>Approvals</strong> menu daily — Confirm Approvals (credit requests) and Void Requests — so that pending actions are not left waiting and orders are not stuck in the queue.</div><div class="story-mgr"><strong>Manager daily habit:</strong> Start each day by checking Approvals → any Pending items need to be acted on before Sales can proceed.</div></div>
+        <div class="story"><div class="story-id">US-A5 · Manage sync queue</div><div class="story-text">As a <strong>Store Manager</strong>, I want to check the <strong>Sync</strong> section to see if any orders are stuck in the accounting sync queue, so that no invoices are left unsynced to elBooks — which would cause gaps in the accounts team's records.</div><div class="story-mgr"><strong>Manager path:</strong> Settings → Sync — retry stuck entries or discard ones that cannot be fixed (escalate to tech team).</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- B — CRM & REPORTS -->
+  <div class="section-divider"><span style="font-size:18px;">📊</span><div><div class="sd-title">B — CRM Connectivity &amp; Reports</div><div class="sd-sub">Module 4 · All Roles</div></div></div>
+  <div class="page-card">
+    <div class="page-card-header"><div><div class="page-name">CRM vs elPOS — What Lives Where</div><div class="page-sub">The single most important thing to get right on go-live day</div></div><span class="badge b-mod4">Module 4</span></div>
+    <div class="card-grid">
+      <div class="col">
+        <div class="section-label">CRM (existing system)</div>
+        <ul class="features">
+          <li><strong>Historical orders</strong> (before July 21) stay in the CRM — still accessible, still searchable</li>
+          <li>CRM reports for historical data continue to work as before</li>
+          <li>New orders from July 21 onwards are <strong>NOT in the CRM</strong></li>
+          <li>Customer data in CRM is the reference for old records; new customer records live in elAccounts (elPOS customer directory)</li>
+        </ul>
+      </div>
+      <div class="col">
+        <div class="section-label">elPOS (new system)</div>
+        <ul class="features">
+          <li><strong>All new orders from July 21</strong> are in elPOS — this is the source of truth</li>
+          <li><strong>Per-order CSV</strong> — one click from any order detail; includes HSN, qty, rate, CGST/SGST, totals, freight, surcharges</li>
+          <li><strong>Bulk Excel export</strong> — date-range picker; two sheets: Orders (one row/order) and Order Items (one row/line)</li>
+          <li>Status-tab filter is honoured on export — export only Confirmed or Paid orders</li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-full">
+      <div class="stories" style="padding:20px 0 0;">
+        <div class="story"><div class="story-id">US-B1 · Use CRM for historical data only</div><div class="story-text">As a <strong>Sales staff</strong>, I want to know that the CRM still holds all orders placed before July 21, so that when a customer queries an old order, I go to the CRM — and for anything new, I go to elPOS.</div><div class="story-note"><strong>The rule:</strong> Before July 21 → CRM. From July 21 → elPOS. Never mix them up.</div></div>
+        <div class="story"><div class="story-id">US-B2 · Export a per-order report</div><div class="story-text">As a <strong>Sales staff</strong>, I want to click the download icon on any order detail to get a CSV, so that I can share a full itemised breakdown (with HSN codes and taxes) with the accounts team or the customer in one click.</div></div>
+        <div class="story"><div class="story-id">US-B3 · Bulk Excel export for a date range</div><div class="story-text">As a <strong>Store Manager</strong>, I want to open the Reports section (<kbd>⌥R</kbd>), select a date range, and download the bulk Excel export, so that I have a complete sales dataset for accounting, MIS, or GST filing without manual data entry.</div><div class="story-mgr"><strong>Manager path:</strong> Press <kbd>⌥R</kbd> → Reports → select date range → Export Excel. File has two sheets: Orders + Order Items.</div></div>
+        <div class="story"><div class="story-id">US-B4 · Use the offline sales app alongside elPOS</div><div class="story-text">As a <strong>Sales staff</strong>, I want to know how the offline sales app (if in use) syncs with elPOS, so that orders created offline are reconciled correctly and don't create duplicate entries in the system.</div><div class="story-note"><strong>Important:</strong> Ask the trainer to demo the offline app sync before go-live. Any order started offline must be completed and synced before the live switch date.</div></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /mod4 -->
+
+
+<!-- ═══════════════════════════════════════════════════════
+     EVALUATION & GO-LIVE
+════════════════════════════════════════════════════════ -->
+<div data-tab="eval">
+
+  <div class="hub-header" style="margin-top:24px;">
+    <div class="hub-icon">🎓</div>
+    <div><h2>Evaluation, Mock Drill &amp; Go-Live</h2><p>July 14–15 evaluation · July 18 mock drill · July 21 go-live</p></div>
+  </div>
+
+  <div class="notice-warn" style="margin-top:8px;">
+    <div class="notice-title">⚠️ Evaluation on Beta — Test Data Only</div>
+    Each user's evaluation session uses the beta system. No real customer data will be present. Evaluators must create test customers and orders during the session. Evaluation pass/fail is based on completing the scenario — not on speed.
+  </div>
+
+  <!-- EVALUATION CRITERIA -->
+  <div class="section-divider"><span style="font-size:18px;">📝</span><div><div class="sd-title">Individual Evaluation — 30 Minutes per User</div><div class="sd-sub">July 14–15 · 11 users · ~5–6 per day</div></div></div>
+
+  <div class="page-card">
+    <div class="page-card-header"><div><div class="page-name">Evaluation Scenario — What Each User Must Complete</div><div class="page-sub">Live end-to-end in beta · evaluator observes and scores</div></div><span class="badge b-eval">July 14–15</span></div>
+    <div style="padding:24px;">
+      <div class="flow-steps">
+        <div class="flow-step"><div class="step-num">1</div><div class="step-body"><strong>Create a domestic order (10 min)</strong><p>Search for 2–3 products · add to cart · attach a test customer · set delivery method · set freight · review totals · confirm the order without payment (save as Draft)</p></div></div>
+        <div class="flow-step"><div class="step-num">2</div><div class="step-body"><strong>Add payment and confirm (5 min)</strong><p>Go to Orders list → Draft tab → open the order → Add payment → select Cash → enter amount → submit → confirm the order is now Confirmed/Paid</p></div></div>
+        <div class="flow-step"><div class="step-num">3</div><div class="step-body"><strong>Print / send the proforma (5 min)</strong><p>From the confirmed order → open invoice preview → Download PDF or Print. Explain what the Tax Particulars section shows (CGST/SGST).</p></div></div>
+        <div class="flow-step"><div class="step-num">4</div><div class="step-body"><strong>Role-specific task (10 min)</strong><p><strong>Sales:</strong> Hold an order and Recall it via ⌥H. Request a void on a confirmed order. Use Add filter in Orders list.<br><strong>Store Manager / Dept Head:</strong> Approve a void request. Access Reports and explain the bulk export. Show where Loyalty Plans are configured.</p></div></div>
+      </div>
+    </div>
+    <div class="col-full" style="border-top:1px solid var(--gray-200);">
+      <div class="eval-grid">
+        <div class="eval-item">
+          <div class="ei-title">Product &amp; Cart</div>
+          <div class="ei-pts">Pass criteria</div>
+          <ul>
+            <li>Can find a product using search and category tabs</li>
+            <li>Knows that typing a CNS code in search finds the product faster than browsing by name</li>
+            <li>Adjusts quantity without using mouse (keyboard)</li>
+          </ul>
+        </div>
+        <div class="eval-item">
+          <div class="ei-title">Customer &amp; Order Setup</div>
+          <div class="ei-pts">Pass criteria</div>
+          <ul>
+            <li>Attaches an existing customer with ⌥U</li>
+            <li>Can explain what loyalty discount appearing means</li>
+            <li>Sets correct order type and delivery method</li>
+          </ul>
+        </div>
+        <div class="eval-item">
+          <div class="ei-title">Payment</div>
+          <div class="ei-pts">Pass criteria</div>
+          <ul>
+            <li>Locates a Draft order and adds payment correctly</li>
+            <li>Selects the right payment method and enters reference</li>
+            <li>Can explain what Due in red means in the orders list</li>
+          </ul>
+        </div>
+        <div class="eval-item">
+          <div class="ei-title">Orders List &amp; Invoice</div>
+          <div class="ei-pts">Pass criteria</div>
+          <ul>
+            <li>Filters by status tab correctly</li>
+            <li>Opens invoice preview and identifies Grand Total + Tax breakdown</li>
+            <li>Knows the difference between proforma and legal invoice</li>
+          </ul>
+        </div>
+        <div class="eval-item">
+          <div class="ei-title">Role-Specific (Sales)</div>
+          <div class="ei-pts">Pass criteria</div>
+          <ul>
+            <li>Holds an order and resumes with ⌥H</li>
+            <li>Raises a void request with a reason</li>
+            <li>Understands what happens after void is submitted (goes to manager)</li>
+          </ul>
+        </div>
+        <div class="eval-item">
+          <div class="ei-title">Role-Specific (Manager)</div>
+          <div class="ei-pts">Pass criteria</div>
+          <ul>
+            <li>Navigates to Approvals and approves a void request</li>
+            <li>Accesses Reports and explains bulk Excel export</li>
+            <li>Can locate and explain the Loyalty Plans section</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRACTICE REPORTS -->
+  <div class="section-divider"><span style="font-size:18px;">📬</span><div><div class="sd-title">Practice Reports — July 16, 17, 20 &amp; 21</div><div class="sd-sub">All users · independent beta practice · 4 days · daily report</div></div></div>
+  <div class="page-card">
+    <div class="page-card-header"><div><div class="page-name">What Users Must Submit — Daily Practice Report</div><div class="page-sub">Send to Praveen &amp; Sheril via email or common WhatsApp group · by end of each day</div></div><span class="badge b-eval">July 16, 17, 20, 21</span></div>
+    <div class="card-grid">
+      <div class="col">
+        <div class="section-label">What to include in the report</div>
+        <ul class="features">
+          <li>Number of orders created on beta today</li>
+          <li>Order types used (domestic / export / credit)</li>
+          <li>Any step where you got stuck or confused</li>
+          <li>Any feature that didn't work as expected</li>
+          <li>Questions to clarify before go-live</li>
+        </ul>
+      </div>
+      <div class="col">
+        <div class="section-label">Purpose of the practice period</div>
+        <ul class="features">
+          <li>Builds muscle memory — speed and confidence before go-live</li>
+          <li>Surfaces any last gaps in understanding so they can be addressed before July 18</li>
+          <li>Reports help the tech team identify any system issues that appear under real-world-like usage</li>
+          <li>Users who complete all 4 days of practice reports demonstrate readiness for go-live</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- MOCK DRILL -->
+  <div class="section-divider"><span style="font-size:18px;">🔥</span><div><div class="sd-title">Mock Drill — July 18 · 1 Hour · All 11 Users</div><div class="sd-sub">Full production simulation on beta · business sign-off required</div></div></div>
+  <div class="page-card">
+    <div class="page-card-header"><div><div class="page-name">Mock Drill — What We Simulate</div><div class="page-sub">Every user performs their real go-live role simultaneously</div></div><span class="badge b-live">July 18</span></div>
+    <div class="card-grid">
+      <div class="col">
+        <div class="section-label">What happens during the drill</div>
+        <ul class="features">
+          <li>All 11 users log into beta simultaneously</li>
+          <li>Each person performs exactly what they will do on go-live day — same role, same flow</li>
+          <li>Sales staff create orders, hold orders, add payments</li>
+          <li>Dept Heads create and manage orders for their accounts</li>
+          <li>Store Managers approve credit requests, manage void requests, check reports</li>
+          <li>Duration: 1 hour · no interruptions</li>
+        </ul>
+      </div>
+      <div class="col">
+        <div class="section-label">Sign-off criteria</div>
+        <ul class="features">
+          <li>All users completed their scenario without trainer assistance</li>
+          <li>No critical bugs or blockers encountered on beta</li>
+          <li>All orders created during the drill are correctly reflected in the orders list and order statuses</li>
+          <li><strong>Business sign-off:</strong> Sheril &amp; Praveen confirm readiness → tech team starts cool-off period</li>
+          <li>If issues arise: cool-off is delayed; tech team resolves before rescheduling</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- GO-LIVE -->
+  <div class="section-divider"><span style="font-size:18px;">🚀</span><div><div class="sd-title">Go-Live — July 21, 2026</div><div class="sd-sub">1 working-day cool-off after mock drill sign-off</div></div></div>
+  <div class="page-card">
+    <div class="page-card-header"><div><div class="page-name">Go-Live Checklist &amp; Day-One Plan</div></div><span class="badge b-live">July 21</span></div>
+    <div class="card-grid">
+      <div class="col">
+        <div class="section-label">Before Go-Live (Tech Team)</div>
+        <ul class="features">
+          <li>Customer data migration from CRM to elAccounts completed and verified</li>
+          <li>Historical order data review — confirm CRM reports still accessible</li>
+          <li>Live system smoke test (terminal, printer, payment provider)</li>
+          <li>elBooks sync verified end-to-end</li>
+          <li>elInventory warehouse connection verified</li>
+          <li>elSapiens on standby for Day 1 support</li>
+        </ul>
+      </div>
+      <div class="col">
+        <div class="section-label">On Go-Live Day</div>
+        <ul class="features">
+          <li><strong>All new orders created in elPOS</strong> — no exceptions</li>
+          <li>CRM remains read-only for historical lookup</li>
+          <li>First order of the day to be created by the Store Manager as a confirmation test</li>
+          <li>Any issue → WhatsApp group → tech team responds within 30 minutes</li>
+          <li>End of Day 1: all users send a summary of orders created to Praveen &amp; Sheril</li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-full">
+      <div class="notice-success" style="margin-top:0;">
+        <strong>Expected go-live: Tuesday, July 21, 2026</strong> — contingent on mock drill sign-off on July 18 and a clean 1-working-day cool-off. If any critical issue is found during the mock drill, go-live is deferred until resolved and re-drilled.
+      </div>
+    </div>
+  </div>
+
+</div><!-- /eval -->
+
+  <!-- FOOTER -->
+  <div style="margin-top:40px;text-align:center;font-size:12px;color:var(--gray-400);padding-bottom:16px;">
+    elPOS Training Plan · Climate Naturals · Prepared by elSapiens Product Team · June 2026 · Expected Go-Live: July 21, 2026
+  </div>
+
+</div><!-- /container -->
+
+<script>
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.body.setAttribute('data-view', btn.dataset.view);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+</script>
+</body>
+</html>
