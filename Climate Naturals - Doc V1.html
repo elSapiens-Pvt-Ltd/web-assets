@@ -4510,6 +4510,39 @@
           structured, scannable format.
         </div>
       </div>
+      <div style=
+      "margin: 40px 0 16px; padding: 10px 16px; background: #1a1a2e; border-radius: 8px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #fff;">
+        📅 June 23, 2026
+      </div>
+      <div style=
+      "margin: 24px 0 10px; font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.08em; border-bottom: 1px solid #e5e7eb; padding-bottom: 6px;">
+        Phase 4 — Order Operations
+      </div>
+      <div style=
+      "margin-top: 20px; background: #f0fdf4; border-left: 4px solid #16a34a; border-radius: 0 8px 8px 0; padding: 16px 20px;">
+        <div style=
+        "font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #16a34a; margin-bottom: 6px;">
+          📝 Note
+        </div>
+        <div style="font-size: 13px; font-weight: 600; color: #1a1a2e; margin-bottom: 8px;">
+          For-Despatch — Factory Approval Required
+        </div>
+        <div style="font-size: 13px; color: #374151; line-height: 1.6;">
+          In the current system, POS agents can push orders directly to <em>For Despatch</em> based on payment status —
+          partial payment, ship without payment approval, or full payment automatically triggers the status change.<br>
+          <br>
+          This must be replaced with an <strong>approval-based system</strong>. When an agent moves an order to For
+          Despatch, it should instead submit an approval request to the factory team. The factory team will then
+          <strong>approve, reject, or hold</strong> the order based on:
+          <ul style="margin: 8px 0 0 16px; line-height: 1.9;">
+            <li>Raw material availability</li>
+            <li>Packing material availability</li>
+            <li>Rate</li>
+            <li>Freight charges</li>
+          </ul><br>
+          On approval, the order status changes to <strong>For Despatch</strong>.
+        </div>
+      </div>
     </div>
   </div><!-- ══════════════════════════════════════
        RELEASES TAB
@@ -4849,6 +4882,504 @@
           time</strong>.</li>
           <li><strong>Business</strong> — responsible for ensuring the Procurement Admin is fulfilling this
           responsibility.</li>
+        </ul>
+      </div>
+    </div>
+    <div style="margin: 32px 0 10px; font-size: 10px; font-weight: 600; color: #9ca3af; letter-spacing: 0.08em;">
+      📅 June 19, 2026
+    </div>
+    <div style=
+    "margin: 0 0 20px; padding: 12px 18px; background: #1a1a2e; border-radius: 8px; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #fff;">
+      Inventory Report — New Reports
+    </div>
+    <!-- PURCHASE REPORT -->
+    <div style=
+    "margin: 0 0 12px; padding: 8px 14px; background: #f8faff; border: 1px solid #c7d2fe; border-radius: 6px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #4338ca;">
+      1 · Purchase Report
+    </div>
+    <!-- REQUIREMENTS -->
+    <div style=
+    "margin-top: 12px; background: #f0fdf4; border-left: 4px solid #16a34a; border-radius: 0 8px 8px 0; padding: 16px 20px;">
+      <div style=
+      "font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #16a34a; margin-bottom: 6px;">
+        📝 Requirements
+      </div>
+      <div style="font-size: 13px; font-weight: 600; color: #1a1a2e; margin-bottom: 10px;">
+        Purpose &amp; Report Specification
+      </div>
+      <div style="font-size: 13px; color: #374151; line-height: 1.6;">
+        <div style=
+        "font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #6b7280; margin: 0 0 6px;">
+          Purpose
+        </div>
+        <ul style="margin: 0 0 16px 16px; line-height: 1.9;">
+          <li><strong>Traceability</strong> — trace every purchase from source (auction / farmer / trader) through to the customer it was ultimately sold to.</li>
+          <li><strong>Purchase Price Trends</strong> — understand how prices move per source and grade over time, informing <strong>buy mode / sell mode</strong> decisions for the procurement team.</li>
+        </ul>
+        <div style=
+        "font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #6b7280; margin: 0 0 6px;">
+          Usage
+        </div>
+        <ul style="margin: 0 0 16px 16px; line-height: 1.9;">
+          <li>Used on a <strong>daily or monthly</strong> basis by the procurement team.</li>
+        </ul>
+        <div style=
+        "font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #6b7280; margin: 0 0 6px;">
+          Graph
+        </div>
+        <ul style="margin: 0 0 16px 16px; line-height: 1.9;">
+          <li><strong>Y-axis:</strong> Price per kg</li>
+          <li><strong>X-axis:</strong> Purchase source</li>
+          <li><strong>Series / values:</strong> Grades (e.g. 8.5, 8, 8 Bold, 7–6, 6–7, 5–6, Seeds, Bulk, Bulk Rejections)</li>
+          <li><strong>Default view:</strong> Last 1 month, commodity = Cardamom</li>
+          <li>Export data option</li>
+        </ul>
+        <div style=
+        "font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #6b7280; margin: 0 0 6px;">
+          Table
+        </div>
+        <ul style="margin: 0 0 4px 16px; line-height: 1.9;">
+          <li><strong>Columns:</strong> Date of Purchase · Source · Qty · Bulk / Grade · Price</li>
+          <li>If the purchase is <strong>Bulk</strong>: expand to show each graded item's qty and price as sub-rows</li>
+        </ul>
+      </div>
+    </div>
+    <!-- CONTEXT -->
+    <div style=
+    "margin-top: 12px; background: #f0fdf4; border-left: 4px solid #16a34a; border-radius: 0 8px 8px 0; padding: 16px 20px;">
+      <div style=
+      "font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #16a34a; margin-bottom: 6px;">
+        📝 Context
+      </div>
+      <div style="font-size: 13px; font-weight: 600; color: #1a1a2e; margin-bottom: 10px;">
+        Current State
+      </div>
+      <div style="font-size: 13px; color: #374151; line-height: 1.6;">
+        <ul style="margin: 0 0 12px 16px; line-height: 1.9;">
+          <li>The inventory management system was introduced in <strong>April 2026</strong>. Purchase data from <strong>August 2025 to April 2026</strong> was managed by <strong>Geogi (Procurement Admin)</strong> and exists outside the system.</li>
+          <li>Current purchase mix: approximately <strong>95% Cardamom, 5% other spices</strong>.</li>
+          <li>Cardamom grades typically purchased: <strong>8.5 · 8 · 8 Bold · 7–6 · 6–7 · 5–6 · Seeds · Bulk · Bulk Rejections</strong>.</li>
+          <li>Geogi maintained <strong>9 manual graphs</strong> to track purchase price data until April 2026 — this report replaces that manual effort.</li>
+        </ul>
+      </div>
+    </div>
+    <!-- PROBLEM -->
+    <div style=
+    "margin-top: 12px; background: #fef2f2; border-left: 4px solid #dc2626; border-radius: 0 8px 8px 0; padding: 16px 20px;">
+      <div style=
+      "font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #dc2626; margin-bottom: 6px;">
+        ⚠️ Problem
+      </div>
+      <div style="font-size: 13px; font-weight: 600; color: #1a1a2e; margin-bottom: 10px;">
+        Unstructured Purchase Source Data — Traceability Not Achievable
+      </div>
+      <div style="font-size: 13px; color: #374151; line-height: 1.6;">
+        The system currently does not capture <strong>purchase source type</strong> (Auction / Farmer / Trader) or <strong>purchase source details</strong> as structured fields. Instead, this information is recorded in a free-text <strong>Notes</strong> field.
+        <ul style="margin: 8px 0 12px 16px; line-height: 1.9;">
+          <li>Since the field is unstructured, data quality is inconsistent — some entries contain only the auction number, others only the lot number, and some have no source data at all.</li>
+          <li>As a result, <strong>traceability from purchase source to customer cannot be achieved</strong> with the current data.</li>
+          <li>For <strong>Farmers and Traders</strong>, there is no link to a supplier record — they are not being added as suppliers in the system.</li>
+        </ul>
+      </div>
+    </div>
+    <!-- OPEN ITEMS -->
+    <div style=
+    "margin-top: 12px; background: #fff7ed; border-left: 4px solid #d97706; border-radius: 0 8px 8px 0; padding: 16px 20px;">
+      <div style=
+      "font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #d97706; margin-bottom: 6px;">
+        🔶 Open Items &amp; Decisions
+      </div>
+      <div style="font-size: 13px; color: #374151; line-height: 1.6;">
+        <div style=
+        "font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #6b7280; margin: 0 0 6px;">
+          1. Purchase Source Fields to Collect
+        </div>
+        <ul style="margin: 0 0 14px 16px; line-height: 1.9;">
+          <li><strong>Source Type</strong> (Auction / Farmer / Trader) — to be added as a structured field on the purchase entry.</li>
+          <li>If <strong>Auction</strong>: collect <strong>Auction Number</strong> and <strong>Lot Number</strong>.</li>
+          <li>If <strong>Farmer or Trader</strong>: link to a <strong>Supplier record</strong> in the system.</li>
+          <li><strong>Decision needed:</strong> Should <strong>seller details</strong> also be collected in addition to auction number and lot number for auction purchases?</li>
+        </ul>
+        <div style=
+        "font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #6b7280; margin: 0 0 6px;">
+          2. Summary Table Definition
+        </div>
+        <ul style="margin: 0 0 14px 16px; line-height: 1.9;">
+          <li>Define the exact columns and structure of the summary table before development begins.</li>
+        </ul>
+        <div style=
+        "font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #6b7280; margin: 0 0 6px;">
+          3. Data Backfill — August 2025 to April 2026
+        </div>
+        <ul style="margin: 0 0 4px 16px; line-height: 1.9;">
+          <li>Backfill purchase source data from the Notes field across existing stock entries.</li>
+        </ul>
+      </div>
+    </div>
+    <!-- SAMPLING REPORT -->
+    <div style=
+    "margin: 24px 0 12px; padding: 8px 14px; background: #f8faff; border: 1px solid #c7d2fe; border-radius: 6px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #4338ca;">
+      2 · Sampling Report
+    </div>
+    <!-- REQUIREMENTS -->
+    <div style=
+    "margin-top: 12px; background: #f0fdf4; border-left: 4px solid #16a34a; border-radius: 0 8px 8px 0; padding: 16px 20px;">
+      <div style=
+      "font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #16a34a; margin-bottom: 6px;">
+        📝 Requirements
+      </div>
+      <div style="font-size: 13px; font-weight: 600; color: #1a1a2e; margin-bottom: 10px;">
+        Purpose
+      </div>
+      <div style="font-size: 13px; color: #374151; line-height: 1.6;">
+        <ul style="margin: 0 0 4px 16px; line-height: 1.9;">
+          <li><strong>Sampling vs Actual</strong> — compare the estimated grade split from sampling against the actual graded output per batch.</li>
+          <li><strong>Availability Trends in Season</strong> — understand how grade availability shifts across the season, so procurement can time purchases better.</li>
+        </ul>
+      </div>
+    </div>
+    <!-- CONTEXT -->
+    <div style=
+    "margin-top: 12px; background: #f0fdf4; border-left: 4px solid #16a34a; border-radius: 0 8px 8px 0; padding: 16px 20px;">
+      <div style=
+      "font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #16a34a; margin-bottom: 6px;">
+        📝 Context
+      </div>
+      <div style="font-size: 13px; font-weight: 600; color: #1a1a2e; margin-bottom: 10px;">
+        Grade Availability Benchmarks — Cardamom
+      </div>
+      <div style="font-size: 13px; color: #374151; line-height: 1.6;">
+        Based on historical pattern, the following grade availability benchmarks are observed:
+        <table style="width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 13px;">
+          <thead>
+            <tr>
+              <th style="text-align: left; padding: 8px 12px; background: #f3f4f6; color: #6b7280; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid #e5e7eb;">Grade</th>
+              <th style="text-align: left; padding: 8px 12px; background: #f3f4f6; color: #6b7280; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid #e5e7eb;">Availability %</th>
+              <th style="text-align: left; padding: 8px 12px; background: #f3f4f6; color: #6b7280; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid #e5e7eb;">Pattern</th>
+              <th style="text-align: left; padding: 8px 12px; background: #f3f4f6; color: #6b7280; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid #e5e7eb;">Demand</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="padding: 9px 12px; border-bottom: 1px solid #f3f4f6; font-weight: 600; color: #111827;">7–8 mm</td>
+              <td style="padding: 9px 12px; border-bottom: 1px solid #f3f4f6; color: #374151;">20–25%</td>
+              <td style="padding: 9px 12px; border-bottom: 1px solid #f3f4f6; color: #374151;">Consistently available</td>
+              <td style="padding: 9px 12px; border-bottom: 1px solid #f3f4f6; font-weight: 600; color: #16a34a;">High</td>
+            </tr>
+            <tr>
+              <td style="padding: 9px 12px; border-bottom: 1px solid #f3f4f6; font-weight: 600; color: #111827;">6–7 mm</td>
+              <td style="padding: 9px 12px; border-bottom: 1px solid #f3f4f6; color: #374151;">10–12%</td>
+              <td style="padding: 9px 12px; border-bottom: 1px solid #f3f4f6; color: #374151;">Consistently available</td>
+              <td style="padding: 9px 12px; border-bottom: 1px solid #f3f4f6; color: #374151;">—</td>
+            </tr>
+            <tr>
+              <td style="padding: 9px 12px; border-bottom: 1px solid #f3f4f6; font-weight: 600; color: #111827;">8 mm</td>
+              <td style="padding: 9px 12px; border-bottom: 1px solid #f3f4f6; color: #374151;">10–12%</td>
+              <td style="padding: 9px 12px; border-bottom: 1px solid #f3f4f6; color: #374151;">Consistently available</td>
+              <td style="padding: 9px 12px; border-bottom: 1px solid #f3f4f6; color: #374151;">—</td>
+            </tr>
+            <tr>
+              <td style="padding: 9px 12px; border-bottom: none; font-weight: 600; color: #111827;">8.5 mm</td>
+              <td style="padding: 9px 12px; border-bottom: none; color: #374151;">—</td>
+              <td style="padding: 9px 12px; border-bottom: none; color: #dc2626; font-weight: 600;">Highly fluctuating</td>
+              <td style="padding: 9px 12px; border-bottom: none; color: #374151;">—</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- GAP -->
+    <div style=
+    "margin-top: 12px; background: #fef2f2; border-left: 4px solid #dc2626; border-radius: 0 8px 8px 0; padding: 16px 20px;">
+      <div style=
+      "font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #dc2626; margin-bottom: 6px;">
+        ⚠️ Gap in Current Report
+      </div>
+      <div style="font-size: 13px; font-weight: 600; color: #1a1a2e; margin-bottom: 10px;">
+        Availability Not Communicated
+      </div>
+      <div style="font-size: 13px; color: #374151; line-height: 1.6;">
+        <ul style="margin: 0 0 12px 16px; line-height: 1.9;">
+          <li>The current sampling report shows <strong>sampling vs actual</strong> per grade but does not communicate <strong>availability trends across the season</strong> — this will be addressed by a separate Availability Report.</li>
+          <li>The <strong>Variations table</strong> currently has no Net / Total row, making it hard to quickly understand the overall picture across all grades in a batch. The following columns need a total:
+            <ul style="margin: 6px 0 0 16px; line-height: 1.9;">
+              <li>Expected %</li>
+              <li>Expected Qty</li>
+              <li>Actual Qty</li>
+              <li>Actual %</li>
+              <li>Variation</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <!-- CHANGE -->
+    <div style=
+    "margin-top: 12px; background: #f5f3ff; border-left: 4px solid #7c3aed; border-radius: 0 8px 8px 0; padding: 16px 20px;">
+      <div style=
+      "font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #7c3aed; margin-bottom: 6px;">
+        → Change to Existing Report
+      </div>
+      <div style="font-size: 13px; color: #374151; line-height: 1.6;">
+        Add a <strong>Net / Total row</strong> at the bottom of the Variations table in the existing Sampling Report, summing: Expected %, Expected Qty, Actual Qty, Actual %, and Variation.
+      </div>
+    </div>
+    <!-- AVAILABILITY REPORT -->
+    <div style=
+    "margin: 24px 0 12px; padding: 8px 14px; background: #f8faff; border: 1px solid #c7d2fe; border-radius: 6px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #4338ca;">
+      3 · Availability Report
+    </div>
+    <div style=
+    "margin-top: 12px; background: #f0fdf4; border-left: 4px solid #16a34a; border-radius: 0 8px 8px 0; padding: 16px 20px;">
+      <div style=
+      "font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #16a34a; margin-bottom: 6px;">
+        📝 Requirements
+      </div>
+      <div style="font-size: 13px; font-weight: 600; color: #1a1a2e; margin-bottom: 10px;">
+        Purpose
+      </div>
+      <div style="font-size: 13px; color: #374151; line-height: 1.6;">
+        <ul style="margin: 0 0 4px 16px; line-height: 1.9;">
+          <li>Communicate <strong>grade availability trends across the season</strong> — what percentage of each grade is available from the market over time.</li>
+          <li>Helps procurement understand supply patterns and plan buying decisions aligned with seasonal availability.</li>
+        </ul>
+      </div>
+    </div>
+    <!-- DATA SOURCE -->
+    <div style=
+    "margin-top: 12px; background: #fff7ed; border-left: 4px solid #ea580c; border-radius: 0 8px 8px 0; padding: 16px 20px;">
+      <div style=
+      "font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #ea580c; margin-bottom: 6px;">
+        📦 Data Source
+      </div>
+      <div style="font-size: 13px; font-weight: 600; color: #1a1a2e; margin-bottom: 10px;">
+        Based on Bulk Purchase Processing Output
+      </div>
+      <div style="font-size: 13px; color: #374151; line-height: 1.6;">
+        <ul style="margin: 0 0 4px 16px; line-height: 1.9;">
+          <li>The Availability Report is derived from <strong>actual bulk purchase processing output</strong> — not from sampling output.</li>
+          <li>This reflects <strong>real processed quantities</strong> per grade, giving an accurate picture of what is genuinely available in the market rather than projections based on sample data.</li>
+        </ul>
+      </div>
+    </div>
+    <!-- AVAILABILITY BY SOURCE -->
+    <div style=
+    "margin-top: 12px; background: #f0f9ff; border-left: 4px solid #0284c7; border-radius: 0 8px 8px 0; padding: 16px 20px;">
+      <div style=
+      "font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #0284c7; margin-bottom: 6px;">
+        🏷️ Availability by Source
+      </div>
+      <div style="font-size: 13px; font-weight: 600; color: #1a1a2e; margin-bottom: 10px;">
+        Break Down by Procurement Source
+      </div>
+      <div style="font-size: 13px; color: #374151; line-height: 1.6;">
+        <p style="margin: 0 0 10px 0;">Availability figures must be segmented by the source from which goods were procured, so procurement teams can identify where each grade is flowing from:</p>
+        <ul style="margin: 0 0 4px 16px; line-height: 1.9;">
+          <li><strong>Auction</strong> — availability of all grades procured through auction.</li>
+          <li><strong>Farmer</strong> — availability of all grades procured directly from farmers.</li>
+          <li><strong>Trader</strong> — availability of all grades sourced through traders.</li>
+        </ul>
+        <p style="margin: 10px 0 0 0; color: #374151;">Each source should be shown alongside the grade breakdown so the report reveals not just <em>how much</em> of each grade is available, but <em>where it is coming from</em>.</p>
+      </div>
+    </div>
+    <!-- GRADING & SORTING REPORT -->
+    <div style=
+    "margin: 24px 0 12px; padding: 8px 14px; background: #f8faff; border: 1px solid #c7d2fe; border-radius: 6px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #4338ca;">
+      4 · Grading &amp; Sorting Report
+    </div>
+    <!-- PROCESS SEPARATION -->
+    <div style=
+    "margin-top: 12px; background: #fff7ed; border-left: 4px solid #ea580c; border-radius: 0 8px 8px 0; padding: 16px 20px;">
+      <div style=
+      "font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #ea580c; margin-bottom: 6px;">
+        ⚙️ Process Separation Required
+      </div>
+      <div style="font-size: 13px; font-weight: 600; color: #1a1a2e; margin-bottom: 10px;">
+        Grading and Sorting Must Be Tracked Independently
+      </div>
+      <div style="font-size: 13px; color: #374151; line-height: 1.6;">
+        <ul style="margin: 0 0 4px 16px; line-height: 1.9;">
+          <li>Currently grading and sorting are recorded as a single operation in the system. These are two distinct processes and must be separated.</li>
+          <li><strong>Grading:</strong> Bulk input is processed through grading machines — the output is multiple grades.</li>
+          <li><strong>Sorting:</strong> Each grade output from grading then passes through sorting machines independently.</li>
+          <li>Separating the two enables accurate productivity and capacity tracking per process.</li>
+        </ul>
+      </div>
+    </div>
+    <!-- PURPOSE & DATA FIELDS -->
+    <div style=
+    "margin-top: 12px; background: #f0fdf4; border-left: 4px solid #16a34a; border-radius: 0 8px 8px 0; padding: 16px 20px;">
+      <div style=
+      "font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #16a34a; margin-bottom: 6px;">
+        📝 Requirements
+      </div>
+      <div style="font-size: 13px; font-weight: 600; color: #1a1a2e; margin-bottom: 10px;">
+        Purpose
+      </div>
+      <div style="font-size: 13px; color: #374151; line-height: 1.6;">
+        <ul style="margin: 0 0 12px 16px; line-height: 1.9;">
+          <li>Track <strong>productivity</strong> per machine — defined capacity vs actual throughput.</li>
+          <li>Monitor <strong>manpower allocation</strong> across grading and sorting operations.</li>
+          <li>Identify performance gaps between expected and actual output per machine per day.</li>
+        </ul>
+      </div>
+      <div style="font-size: 13px; font-weight: 600; color: #1a1a2e; margin-bottom: 10px;">
+        Report Data Fields
+      </div>
+      <div style="font-size: 13px; color: #374151; line-height: 1.6;">
+        <ul style="margin: 0 0 4px 16px; line-height: 1.9;">
+          <li><strong>Qty</strong> — input and output quantities per session.</li>
+          <li><strong>Time</strong> — start time, end time, break time, reason for break.</li>
+          <li><strong>Source</strong> — origin of the bulk being processed.</li>
+          <li><strong>Item</strong> — the commodity / product being graded or sorted.</li>
+        </ul>
+      </div>
+    </div>
+    <!-- MACHINE CAPACITY -->
+    <div style=
+    "margin-top: 12px; background: #f0f9ff; border-left: 4px solid #0284c7; border-radius: 0 8px 8px 0; padding: 16px 20px;">
+      <div style=
+      "font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #0284c7; margin-bottom: 6px;">
+        🏭 Machine Capacity
+      </div>
+      <div style="font-size: 13px; font-weight: 600; color: #1a1a2e; margin-bottom: 12px;">
+        Current Setup — 2 Grading Machines · 2 Sorting Machines
+      </div>
+      <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+        <thead>
+          <tr style="background: #e0f2fe;">
+            <th style="padding: 9px 12px; text-align: left; font-weight: 700; color: #0c4a6e; border-bottom: 1px solid #bae6fd;">Machine</th>
+            <th style="padding: 9px 12px; text-align: left; font-weight: 700; color: #0c4a6e; border-bottom: 1px solid #bae6fd;">Count</th>
+            <th style="padding: 9px 12px; text-align: left; font-weight: 700; color: #0c4a6e; border-bottom: 1px solid #bae6fd;">Defined Capacity / Day</th>
+            <th style="padding: 9px 12px; text-align: left; font-weight: 700; color: #0c4a6e; border-bottom: 1px solid #bae6fd;">Actual / Day</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="padding: 9px 12px; border-bottom: 1px solid #f0f9ff; font-weight: 600; color: #111827;">Grading</td>
+            <td style="padding: 9px 12px; border-bottom: 1px solid #f0f9ff; color: #374151;">2</td>
+            <td style="padding: 9px 12px; border-bottom: 1px solid #f0f9ff; color: #374151;">2,500 kg</td>
+            <td style="padding: 9px 12px; border-bottom: 1px solid #f0f9ff; font-weight: 600; color: #dc2626;">~1,300 kg</td>
+          </tr>
+          <tr>
+            <td style="padding: 9px 12px; border-bottom: none; font-weight: 600; color: #111827;">Sorting</td>
+            <td style="padding: 9px 12px; border-bottom: none; color: #374151;">2</td>
+            <td style="padding: 9px 12px; border-bottom: none; color: #374151;">3,000 kg (avg 2,500 kg)</td>
+            <td style="padding: 9px 12px; border-bottom: none; font-weight: 600; color: #dc2626;">~1,300 kg</td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="margin-top: 10px; font-size: 12px; color: #6b7280; font-style: italic;">
+        Current throughput is approximately 52% of defined capacity — the report should surface this gap clearly per machine per day.
+      </div>
+    </div>
+    <!-- DEPENDENCIES -->
+    <div style=
+    "margin-top: 12px; background: #f5f3ff; border-left: 4px solid #7c3aed; border-radius: 0 8px 8px 0; padding: 16px 20px;">
+      <div style=
+      "font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #7c3aed; margin-bottom: 6px;">
+        🔗 Dependencies &amp; Supporting Setup
+      </div>
+      <div style="font-size: 13px; font-weight: 600; color: #1a1a2e; margin-bottom: 10px;">
+        Required for Accurate Time &amp; Productivity Tracking
+      </div>
+      <div style="font-size: 13px; color: #374151; line-height: 1.6;">
+        <ul style="margin: 0 0 4px 16px; line-height: 1.9;">
+          <li><strong>Holiday Calendar</strong> — define non-working days so the report correctly excludes them from capacity calculations.</li>
+          <li><strong>Working Time Configuration</strong> — define standard working hours per day as the baseline for each machine's expected output.</li>
+          <li><strong>Session Time Tracking</strong> — operators must record:
+            <ul style="margin: 6px 0 0 16px; line-height: 1.9;">
+              <li><strong>Start Time</strong> — when processing began.</li>
+              <li><strong>End Time</strong> — when processing ended.</li>
+              <li><strong>Break Time</strong> — duration of any breaks taken.</li>
+              <li><strong>Reason for Break</strong> — e.g. machine downtime, maintenance, no raw material, shift change.</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <!-- DESPATCH REPORT -->
+    <div style=
+    "margin: 24px 0 12px; padding: 8px 14px; background: #f8faff; border: 1px solid #c7d2fe; border-radius: 6px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #4338ca;">
+      5 · Despatch Report
+    </div>
+    <!-- PURPOSE -->
+    <div style=
+    "margin-top: 12px; background: #f0fdf4; border-left: 4px solid #16a34a; border-radius: 0 8px 8px 0; padding: 16px 20px;">
+      <div style=
+      "font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #16a34a; margin-bottom: 6px;">
+        📝 Purpose
+      </div>
+      <div style="font-size: 13px; color: #374151; line-height: 1.6;">
+        <ul style="margin: 0 0 4px 16px; line-height: 1.9;">
+          <li><strong>Lead Time Tracking</strong> — measure the time from when a despatch is initiated to when it is completed, identifying delays in the fulfilment process.</li>
+          <li><strong>Customer-Side Traceability</strong> — track exactly which item (grade, batch, quantity) was despatched to which customer, enabling full forward traceability from processing to delivery.</li>
+        </ul>
+      </div>
+    </div>
+    <!-- DATA FIELDS -->
+    <div style=
+    "margin-top: 12px; background: #f0f9ff; border-left: 4px solid #0284c7; border-radius: 0 8px 8px 0; padding: 16px 20px;">
+      <div style=
+      "font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #0284c7; margin-bottom: 6px;">
+        🗂️ Report Data Fields
+      </div>
+      <div style="font-size: 13px; font-weight: 600; color: #1a1a2e; margin-bottom: 12px;">
+        Each despatch record must capture the following:
+      </div>
+      <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+        <thead>
+          <tr style="background: #e0f2fe;">
+            <th style="padding: 9px 12px; text-align: left; font-weight: 700; color: #0c4a6e; border-bottom: 1px solid #bae6fd;">Field</th>
+            <th style="padding: 9px 12px; text-align: left; font-weight: 700; color: #0c4a6e; border-bottom: 1px solid #bae6fd;">Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="padding: 9px 12px; border-bottom: 1px solid #f0f9ff; font-weight: 600; color: #111827;">Date</td>
+            <td style="padding: 9px 12px; border-bottom: 1px solid #f0f9ff; color: #374151;">Date of despatch.</td>
+          </tr>
+          <tr>
+            <td style="padding: 9px 12px; border-bottom: 1px solid #f0f9ff; font-weight: 600; color: #111827;">Grade</td>
+            <td style="padding: 9px 12px; border-bottom: 1px solid #f0f9ff; color: #374151;">Grade of the item despatched.</td>
+          </tr>
+          <tr>
+            <td style="padding: 9px 12px; border-bottom: 1px solid #f0f9ff; font-weight: 600; color: #111827;">Qty</td>
+            <td style="padding: 9px 12px; border-bottom: 1px solid #f0f9ff; color: #374151;">Quantity despatched.</td>
+          </tr>
+          <tr>
+            <td style="padding: 9px 12px; border-bottom: 1px solid #f0f9ff; font-weight: 600; color: #111827;">Customer</td>
+            <td style="padding: 9px 12px; border-bottom: 1px solid #f0f9ff; color: #374151;">Customer to whom the goods were despatched — links to traceability.</td>
+          </tr>
+          <tr>
+            <td style="padding: 9px 12px; border-bottom: 1px solid #f0f9ff; font-weight: 600; color: #111827;">Batch Number</td>
+            <td style="padding: 9px 12px; border-bottom: 1px solid #f0f9ff; color: #374151;">Batch reference tying the despatch back to the processing batch — enables full traceability.</td>
+          </tr>
+          <tr>
+            <td style="padding: 9px 12px; border-bottom: 1px solid #f0f9ff; font-weight: 600; color: #111827;">Source</td>
+            <td style="padding: 9px 12px; border-bottom: 1px solid #f0f9ff; color: #374151;">Origin of the goods (auction / farmer / trader).</td>
+          </tr>
+          <tr>
+            <td style="padding: 9px 12px; border-bottom: none; font-weight: 600; color: #111827;">Packing Material</td>
+            <td style="padding: 9px 12px; border-bottom: none; color: #374151;">Type of packaging used for the despatch. Brand information is derived from the packaging.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- LEAD TIME -->
+    <div style=
+    "margin-top: 12px; background: #fef2f2; border-left: 4px solid #dc2626; border-radius: 0 8px 8px 0; padding: 16px 20px;">
+      <div style=
+      "font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #dc2626; margin-bottom: 6px;">
+        ⏱️ Lead Time Calculation
+      </div>
+      <div style="font-size: 13px; font-weight: 600; color: #1a1a2e; margin-bottom: 10px;">
+        Despatch Initiated → Despatch Completed
+      </div>
+      <div style="font-size: 13px; color: #374151; line-height: 1.6;">
+        <ul style="margin: 0 0 4px 16px; line-height: 1.9;">
+          <li>The report must record both the <strong>despatch initiation time</strong> and the <strong>despatch completion time</strong> to calculate the actual lead time per order.</li>
+          <li>Aggregated lead time data will highlight patterns — e.g. consistently slow despatches for specific customers, grades, or time periods.</li>
         </ul>
       </div>
     </div>
