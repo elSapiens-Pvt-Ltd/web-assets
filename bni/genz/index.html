@@ -10,7 +10,6 @@
 <helmet>
 <link rel="stylesheet" href="ds/nocturne/styles.css">
 <script src="ds/nocturne/ds-bundle.js"></script>
-<script src="image-slot.js"></script>
 <title>Leading Gen Z &amp; Gen Alpha</title>
 <style>
 deck-stage {
@@ -50,6 +49,7 @@ deck-stage {
     color-mix(in srgb, var(--color-bg) 38%, transparent));
 }
 .final .slide-title { font-size: 88px; line-height: calc(2 * var(--baseline)); max-width: 20ch; position: relative; }
+.final .rise { gap: 72px; }
 .final .slide-title::before {
   content: ""; position: absolute; left: calc(-64px + 0.06em);
   top: calc(0.5cap - 0.5px); width: 44px; height: 1px; background: var(--color-accent);
@@ -181,7 +181,7 @@ deck-stage[data-no-page-furniture] .page-foot { display: none !important; }
   margin: 0; max-width: 30ch; text-indent: -0.474em; text-box: trim-both cap alphabetic;
 }
 .bleed-figure { position: absolute; inset: 0; margin: 0; }
-.bleed-figure image-slot { width: 100%; height: 100%; }
+.bleed-figure img { width: 100%; height: 100%; }
 .bleed-scrim {
   position: absolute; inset: 0; pointer-events: none;
   background:
@@ -206,7 +206,7 @@ deck-stage[data-no-page-furniture] .page-foot { display: none !important; }
       transparent 35%);
 }
 .half-bleed-figure { position: absolute; inset: 0 0 0 auto; width: 860px; margin: 0; }
-.half-bleed-figure image-slot { width: 100%; height: 100%; }
+.half-bleed-figure img { width: 100%; height: 100%; }
 .half-bleed > .slide-title { max-width: none; white-space: nowrap; }
 .half-bleed .bullets li + li { margin-top: calc(1.5 * var(--baseline) - 1cap); }
 .icon-grid span { white-space: nowrap; }
@@ -272,7 +272,7 @@ a:hover { color: var(--color-accent-200); }
 
   <section class="slide cover" data-label="Title" data-speaker-notes="Welcome. Eight minutes on leading the next generation of the workforce — practical, not theoretical.">
     <figure class="bleed-figure lighten">
-      <image-slot id="photo-cover" shape="rect" src="assets/aurora.png" placeholder="Cover background — drop a photo shot on a dark ground"></image-slot>
+      <img src="assets/aurora.png" alt="" style="width:100%;height:100%;object-fit:cover;display:block">
     </figure>
     <div class="bleed-scrim"></div>
     <div class="kicker"><span>Leadership talk</span></div>
@@ -288,7 +288,7 @@ a:hover { color: var(--color-accent-200); }
   </section>
 
   <section class="slide content" data-label="Every Generation" data-speaker-notes="Every generation has been described this way. The real question isn't whether Gen Z is difficult — it's whether leadership has evolved. Ask for a show of hands on each line.">
-    <figure class="bleed-figure lighten"><image-slot id="photo-perception" shape="rect" src="assets/aurora.png" placeholder="Background — drop a photo shot on a dark ground"></image-slot></figure>
+    <figure class="bleed-figure lighten"><img src="assets/aurora.png" alt="" style="width:100%;height:100%;object-fit:cover;display:block"></figure>
     <div class="bleed-scrim soft"></div>
     <div class="kicker"><span>01 · Perception</span></div>
     <h2 class="slide-title">Every Generation Thinks the Next One Is Difficult</h2>
@@ -312,7 +312,7 @@ a:hover { color: var(--color-accent-200); }
   </section>
 
   <section class="slide content" data-label="Who They Are" data-speaker-notes="Unlike many of us, they have never experienced a world without instant access to information. That shapes how they learn, communicate, and solve problems.">
-    <figure class="bleed-figure lighten"><image-slot id="photo-who" shape="rect" src="assets/aurora.png" placeholder="Background — drop a photo shot on a dark ground"></image-slot></figure>
+    <figure class="bleed-figure lighten"><img src="assets/aurora.png" alt="" style="width:100%;height:100%;object-fit:cover;display:block"></figure>
     <div class="bleed-scrim soft"></div>
     <div class="kicker"><span>02 · Context</span></div>
     <h2 class="slide-title">Who Are Gen Z &amp; Gen Alpha?</h2><div class="cols cols-2 rise">
@@ -346,7 +346,7 @@ a:hover { color: var(--color-accent-200); }
 
   <section class="slide content half-bleed" data-label="What Makes Them Different" data-speaker-notes="This isn't disrespect. It's curiosity. They want purpose before process.">
     <figure class="half-bleed-figure lighten">
-      <image-slot id="photo-different" shape="rect" src="assets/network.png" placeholder="Drop a photo — your team at work (dark backgrounds blend best)"></image-slot>
+      <img src="assets/network.png" alt="" style="width:100%;height:100%;object-fit:cover;display:block">
     </figure>
     <div class="kicker"><span>03 · Mindset</span></div>
     <h2 class="slide-title">What Makes Them Different?</h2>
@@ -364,7 +364,7 @@ a:hover { color: var(--color-accent-200); }
 
   <section class="slide content half-bleed" data-label="Their Strengths" data-speaker-notes="Every generation has strengths. Ours brought experience. They bring speed and technology.">
     <figure class="half-bleed-figure lighten">
-      <image-slot id="photo-strengths" shape="rect" src="assets/rise.png" placeholder="Drop a photo — dark backgrounds blend best"></image-slot>
+      <img src="assets/rise.png" alt="" style="width:100%;height:100%;object-fit:cover;display:block">
     </figure>
     <div class="kicker"><span>04 · Strengths</span></div>
     <h2 class="slide-title">Their Biggest Strengths</h2>
@@ -381,7 +381,7 @@ a:hover { color: var(--color-accent-200); }
   </section>
 
   <section class="slide content" data-label="Why Leaders Struggle" data-speaker-notes="The biggest shift is moving from being the boss to becoming a mentor.">
-    <figure class="bleed-figure lighten"><image-slot id="photo-gap" shape="rect" src="assets/aurora.png" placeholder="Background — drop a photo shot on a dark ground"></image-slot></figure>
+    <figure class="bleed-figure lighten"><img src="assets/aurora.png" alt="" style="width:100%;height:100%;object-fit:cover;display:block"></figure>
     <div class="bleed-scrim soft"></div>
     <div class="kicker"><span>05 · The gap</span></div>
     <h2 class="slide-title">Why Leaders Struggle</h2>
@@ -402,7 +402,7 @@ a:hover { color: var(--color-accent-200); }
   </section>
 
   <section class="slide content" data-label="Five Ways to Lead" data-speaker-notes="Five practical shifts. None of them cost money — they cost habit.">
-    <figure class="bleed-figure lighten"><image-slot id="photo-playbook" shape="rect" src="assets/aurora.png" placeholder="Background — drop a photo shot on a dark ground"></image-slot></figure>
+    <figure class="bleed-figure lighten"><img src="assets/aurora.png" alt="" style="width:100%;height:100%;object-fit:cover;display:block"></figure>
     <div class="bleed-scrim soft"></div>
     <div class="kicker"><span>06 · The playbook</span></div>
     <h2 class="slide-title">Five Ways to Lead Gen Z</h2>
@@ -418,7 +418,7 @@ a:hover { color: var(--color-accent-200); }
   </section>
 
   <section class="slide content" data-label="A Real Example" data-speaker-notes="People don't usually leave companies. They leave poor leadership.">
-    <figure class="bleed-figure lighten"><image-slot id="photo-example" shape="rect" src="assets/aurora.png" placeholder="Background — drop a photo shot on a dark ground"></image-slot></figure>
+    <figure class="bleed-figure lighten"><img src="assets/aurora.png" alt="" style="width:100%;height:100%;object-fit:cover;display:block"></figure>
     <div class="bleed-scrim soft"></div>
     <div class="kicker"><span>07 · In practice</span></div>
     <h2 class="slide-title">A Real Workplace Example</h2>
@@ -448,7 +448,7 @@ a:hover { color: var(--color-accent-200); }
 
   <section class="slide cover final" data-label="Final Message" data-speaker-notes="Great leaders listen, coach, trust, adapt, and keep learning.">
     <figure class="bleed-figure lighten">
-      <image-slot id="photo-final" shape="rect" src="assets/network.png" placeholder="Background — drop a photo shot on a dark ground"></image-slot>
+      <img src="assets/network.png" alt="" style="width:100%;height:100%;object-fit:cover;display:block">
     </figure>
     <div class="bleed-scrim"></div>
     <div class="rise">
@@ -466,7 +466,7 @@ a:hover { color: var(--color-accent-200); }
 
   <section class="slide quote" data-label="Close" data-speaker-notes="When electricity arrived, businesses that embraced it transformed industries. Today, AI and a new generation are reshaping the workplace in much the same way. We have two choices: resist the change or learn to lead through it. Gen Z and Gen Alpha don't need different values — they need leadership that understands the world they've grown up in. If we adapt, we'll not only build better workplaces but also unlock the incredible potential of the next generation. Thank you.">
     <figure class="bleed-figure lighten">
-      <image-slot id="photo-close" shape="rect" src="assets/aurora.png" placeholder="Closing background — drop a photo shot on a dark ground"></image-slot>
+      <img src="assets/aurora.png" alt="" style="width:100%;height:100%;object-fit:cover;display:block">
     </figure>
     <div class="bleed-scrim"></div>
     <div class="kicker"><span>08 · The takeaway</span></div>
