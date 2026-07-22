@@ -10,13 +10,13 @@
 <helmet>
 <link rel="stylesheet" href="ds/nocturne/styles.css">
 <script src="ds/nocturne/ds-bundle.js"></script>
-<title>Leading Gen Z &amp; Gen Alpha</title>
+<title>Leading Gen Z &amp; Gen Alpha — Mobile</title>
 <script>
 (function () {
-  var mq = matchMedia('(max-width: 768px)');
+  var mq = matchMedia('(min-width: 769px)');
   var go = function () {
-    if (mq.matches || /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) {
-      location.replace('mobile.dc.html' + location.hash);
+    if (mq.matches && !/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) {
+      location.replace('index.html' + location.hash);
     }
   };
   go();
@@ -25,24 +25,25 @@
 </script>
 <style>
 deck-stage {
-  --type-display: 116px;
-  --type-title: 64px;
-  --type-subtitle: 40px;
-  --type-body: 34px;
+  --type-display: 92px;
+  --type-title: 60px;
+  --type-subtitle: 38px;
+  --type-body: 32px;
   --type-small: 28px;
-  --type-kicker: 24px;
-  --pad-x: 120px;
+  --type-kicker: 22px;
+  --pad-x: 80px;
   --page-foot-note: "Leading Gen Z & Gen Alpha";
-  --pad-top: 104px;
-  --pad-bottom: 96px;
-  --baseline: 48px;
+  --pad-top: 96px;
+  --pad-bottom: 104px;
+  --baseline: 46px;
+  counter-reset: page;
 }
 .slide {
   display: flex; flex-direction: column;
   background:
-    radial-gradient(120% 85% at 80% -10%,
+    radial-gradient(140% 45% at 85% -6%,
       color-mix(in srgb, var(--color-accent-900) 75%, transparent), transparent 58%),
-    radial-gradient(130% 95% at -12% 112%,
+    radial-gradient(150% 50% at -12% 106%,
       color-mix(in srgb, black 30%, transparent), transparent 52%),
     var(--color-bg);
   color: var(--color-text);
@@ -51,20 +52,37 @@ deck-stage {
   padding: var(--pad-top) var(--pad-x) var(--pad-bottom);
   print-color-adjust: exact; -webkit-print-color-adjust: exact;
   isolation: isolate;
+  counter-increment: page;
 }
 .slide > .bleed-figure { z-index: -2; }
 .slide > .bleed-scrim { z-index: -1; }
-.bleed-scrim.soft {
-  background: linear-gradient(105deg,
-    var(--color-bg) 42%,
-    color-mix(in srgb, var(--color-bg) 72%, transparent) 72%,
-    color-mix(in srgb, var(--color-bg) 38%, transparent));
+.bleed-figure { position: absolute; inset: 0; margin: 0; }
+.bleed-figure img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.bleed-scrim {
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    linear-gradient(to bottom,
+      color-mix(in srgb, var(--color-bg) 92%, transparent),
+      color-mix(in srgb, var(--color-bg) 66%, transparent) 55%,
+      color-mix(in srgb, var(--color-bg) 30%, transparent)),
+    linear-gradient(to top,
+      color-mix(in srgb, var(--color-bg) 82%, transparent),
+      transparent 32%);
 }
-.final .slide-title { font-size: 88px; line-height: calc(2 * var(--baseline)); max-width: 20ch; position: relative; }
-.final .rise { gap: 72px; }
-.final .slide-title::before {
-  content: ""; position: absolute; left: calc(-64px + 0.06em);
-  top: calc(0.5cap - 0.5px); width: 44px; height: 1px; background: var(--color-accent);
+.bleed-scrim.soft {
+  background: linear-gradient(to bottom,
+    var(--color-bg) 34%,
+    color-mix(in srgb, var(--color-bg) 74%, transparent) 70%,
+    color-mix(in srgb, var(--color-bg) 42%, transparent));
+}
+.bottom-bleed-figure { position: absolute; inset: auto 0 0 0; height: 640px; margin: 0; z-index: -2; }
+.bottom-bleed-figure img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.bottom-bleed-scrim {
+  position: absolute; inset: auto 0 0 0; height: 640px; pointer-events: none; z-index: -1;
+  background: linear-gradient(to bottom,
+    var(--color-bg),
+    color-mix(in srgb, var(--color-bg) 55%, transparent) 45%,
+    color-mix(in srgb, var(--color-bg) 25%, transparent));
 }
 .kicker {
   position: absolute; top: calc(2 * var(--baseline) - 1cap);
@@ -73,8 +91,8 @@ deck-stage {
   color: var(--color-accent); font-feature-settings: "tnum" 1;
 }
 .kicker::before {
-  content: ""; position: absolute; left: -64px; top: calc(50% - 0.5px);
-  width: 44px; height: 1px; background: var(--color-accent);
+  content: ""; position: absolute; left: -52px; top: calc(50% - 0.5px);
+  width: 36px; height: 1px; background: var(--color-accent);
 }
 .slide-title {
   font-family: var(--font-heading); font-weight: var(--font-heading-weight);
@@ -83,10 +101,8 @@ deck-stage {
   text-box: trim-both cap alphabetic;
 }
 .pin-bottom { position: absolute; left: var(--pad-x); right: var(--pad-x); bottom: var(--pad-bottom); }
-.meta { display: flex; align-items: baseline; gap: 18px; font-size: var(--type-kicker); color: color-mix(in srgb, var(--color-text) 55%, transparent); }
+.meta { display: flex; align-items: baseline; gap: 16px; font-size: var(--type-kicker); color: color-mix(in srgb, var(--color-text) 55%, transparent); }
 .meta span { text-box: trim-both cap alphabetic; }
-deck-stage { counter-reset: page; }
-.slide { counter-increment: page; }
 .page-foot {
   position: absolute; right: var(--pad-x); bottom: 32px;
   font-size: var(--type-kicker); letter-spacing: 0.04em;
@@ -94,15 +110,15 @@ deck-stage { counter-reset: page; }
   text-box: trim-both cap alphabetic;
 }
 .page-foot::before { content: counter(page) " · "; font-feature-settings: "tnum" 1; }
-.brand { position: absolute; top: calc(1.5 * var(--baseline)); right: var(--pad-x); }
-.brand img { display: block; height: 44px; width: auto; }
 .page-foot::after { content: var(--page-foot-note); }
 deck-stage[data-no-page-furniture] .page-foot { display: none !important; }
+.brand { position: absolute; top: calc(1.5 * var(--baseline)); right: var(--pad-x); }
+.brand img { display: block; height: 38px; width: auto; }
 .cover { justify-content: center; }
-.cover .rise { display: flex; flex-direction: column; gap: 36px; position: relative; isolation: isolate; }
+.cover .rise { display: flex; flex-direction: column; gap: 40px; position: relative; isolation: isolate; }
 .cover .rise::before {
-  content: ""; position: absolute; left: -200px; top: -160px;
-  width: 920px; height: 620px; border-radius: 50%; pointer-events: none;
+  content: ""; position: absolute; left: -180px; top: -160px;
+  width: 820px; height: 640px; border-radius: 50%; pointer-events: none;
   background: radial-gradient(closest-side,
     color-mix(in srgb, var(--color-accent-800) 60%, transparent), transparent);
   filter: blur(70px); z-index: -1;
@@ -112,49 +128,40 @@ deck-stage[data-no-page-furniture] .page-foot { display: none !important; }
   font-size: var(--type-display); line-height: calc(2.5 * var(--baseline)); letter-spacing: -0.02em; margin: 0;
   margin-left: -0.06em;
 }
-.cover-sub { font-size: var(--type-subtitle); line-height: var(--baseline); max-width: none; white-space: nowrap; margin: 0; }
-.divider {
-  justify-content: center;
-  background:
-    radial-gradient(75% 105% at 22% 42%,
-      color-mix(in srgb, var(--color-section-glow) 70%, transparent), transparent 64%),
-    var(--color-section);
-}
-.divider .rise { display: flex; flex-direction: column; align-items: flex-start; gap: 40px; }
-.divider .slide-title { position: relative; font-size: 88px; line-height: calc(2 * var(--baseline)); max-width: 20ch; }
-.divider .slide-title::before {
-  content: ""; position: absolute; left: calc(-64px + 0.06em);
-  top: calc(0.5cap - 0.5px);
-  width: 44px; height: 1px; background: var(--color-accent);
-}
-.content { padding-top: calc(5 * var(--baseline)); }
-.content > .slide-title { margin-top: -1cap; }
+.cover-sub { font-size: var(--type-subtitle); line-height: calc(1.25 * var(--baseline)); max-width: 20ch; margin: 0; }
+.content { padding-top: calc(5 * var(--baseline)); justify-content: center; }
+.content > .slide-title { margin-top: 0; }
 .content > .bullets { margin-top: calc(3 * var(--baseline) - 1cap); }
-.content > .table { margin-top: calc(2 * var(--baseline)); }
+.content > .table { margin-top: calc(2.5 * var(--baseline)); }
 .content > .lead { margin-top: calc(3 * var(--baseline) - 1cap); }
-.bullets { display: flex; flex-direction: column; max-width: 1180px; margin: 0; padding: 0; list-style: none; font-size: var(--type-body); }
+.bullets { display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; font-size: var(--type-body); }
 .bullets li { position: relative; line-height: var(--baseline); text-box: trim-both cap alphabetic; }
 .bullets li + li { margin-top: calc(2 * var(--baseline) - 1cap); }
-.bullets li::before { content: ""; position: absolute; left: -46px; top: calc(0.5cap - 0.5px); width: 26px; height: 1px; background: var(--color-accent); }
-.lead { font-size: var(--type-body); line-height: var(--baseline); margin: 0; text-box: trim-both cap alphabetic; color: var(--color-neutral-300); max-width: 40ch; }
-.cols { display: grid; align-items: start; gap: calc(2 * var(--baseline)) 96px; margin-top: calc(4 * var(--baseline) - 1cap); }
+.bullets li::before { content: ""; position: absolute; left: -42px; top: calc(0.5cap - 0.5px); width: 24px; height: 1px; background: var(--color-accent); }
+.lead { font-size: var(--type-body); line-height: var(--baseline); margin: 0; text-box: trim-both cap alphabetic; color: var(--color-neutral-300); max-width: 26ch; }
+.stack { display: flex; flex-direction: column; gap: calc(2.5 * var(--baseline)); margin-top: calc(3 * var(--baseline) - 1cap); }
 .col-head {
   font-size: var(--type-kicker); letter-spacing: 0.06em; text-transform: uppercase;
   color: color-mix(in srgb, var(--color-text) 55%, transparent);
   font-family: var(--font-body); font-weight: var(--font-heading-weight);
   text-box: trim-both cap alphabetic;
-  margin: calc(var(--baseline) - 0.5cap - 0.5px) 0 calc(var(--baseline) - 0.5cap + 0.5px);
+  margin: 0 0 calc(var(--baseline) - 1cap + 0.5px);
 }
-.cols-2 { grid-template-columns: 1fr 1fr; }
-.cols p { font-size: var(--type-small); line-height: var(--baseline); margin: 0; text-box: trim-both cap alphabetic; color: var(--color-neutral-300); }
-.cols h3 { font-family: var(--font-heading); font-weight: var(--font-heading-weight);
+.stack h3 { font-family: var(--font-heading); font-weight: var(--font-heading-weight);
   font-size: var(--type-body); margin: 0 0 calc(1 * var(--baseline) - 1cap);
   text-box: trim-both cap alphabetic; }
-.cols .bullets { margin-top: calc(2 * var(--baseline) - 1cap); }
-.slide .table { max-width: 1480px; font-size: 30px; }
+.stack .bullets { margin-top: calc(2 * var(--baseline) - 1cap); }
+.sayings blockquote {
+  font-family: var(--font-heading); font-weight: var(--font-heading-weight);
+  font-size: var(--type-subtitle); line-height: calc(1.5 * var(--baseline)); letter-spacing: -0.015em;
+  margin: 0; text-indent: -0.474em; text-box: trim-both cap alphabetic;
+}
+.sayings { margin: 0; }
+.sayings figcaption { font-size: var(--type-kicker); line-height: calc(0.75 * var(--baseline)); color: color-mix(in srgb, var(--color-text) 55%, transparent); margin: calc(1.5 * var(--baseline) - 1cap) 0 0; text-box: trim-both cap alphabetic; }
+.slide .table { font-size: var(--type-small); }
 .slide .table th, .slide .table td {
   text-box: trim-both cap alphabetic;
-  padding: calc(var(--baseline) - 0.5cap - 0.5px) 28px calc(var(--baseline) - 0.5cap - 0.5px);
+  padding: calc(var(--baseline) - 0.5cap - 0.5px) 20px calc(var(--baseline) - 0.5cap - 0.5px);
 }
 .slide .table th { font-size: var(--type-kicker); border-bottom: 1px solid var(--color-divider); }
 .slide .table td { border-bottom: 1px solid var(--color-divider); }
@@ -176,70 +183,20 @@ deck-stage[data-no-page-furniture] .page-foot { display: none !important; }
 .slide .table.plain-rules::after { display: none; }
 .slide .table th:first-child, .slide .table td:first-child { padding-left: 0; }
 .slide .table th:last-child, .slide .table td:last-child { padding-right: 0; }
-.quote { justify-content: center; gap: 48px; }
-.quote .rise { display: flex; flex-direction: column; gap: 48px; }
-.quote blockquote {
-  font-family: var(--font-heading); font-weight: var(--font-heading-weight);
-  font-size: 56px; line-height: calc(1.5 * var(--baseline)); letter-spacing: -0.015em;
-  max-width: 26ch; margin: 0;
-  text-indent: -0.474em;
-}
-.quote figcaption { font-size: var(--type-small); margin: 0; text-indent: -1.267em; }
-/* — deck-specific pieces — */
 .ic { fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; flex: none; }
-.sayings blockquote {
-  font-family: var(--font-heading); font-weight: var(--font-heading-weight);
-  font-size: var(--type-subtitle); line-height: calc(1.5 * var(--baseline)); letter-spacing: -0.015em;
-  margin: 0; max-width: 30ch; text-indent: -0.474em; text-box: trim-both cap alphabetic;
-}
-.bleed-figure { position: absolute; inset: 0; margin: 0; }
-.bleed-figure img { width: 100%; height: 100%; }
-.bleed-scrim {
-  position: absolute; inset: 0; pointer-events: none;
-  background:
-    linear-gradient(to right,
-      color-mix(in srgb, var(--color-bg) 94%, transparent),
-      color-mix(in srgb, var(--color-bg) 68%, transparent) 55%,
-      color-mix(in srgb, var(--color-bg) 30%, transparent)),
-    linear-gradient(to top,
-      color-mix(in srgb, var(--color-bg) 80%, transparent),
-      transparent 30%);
-}
-.quote .rise { position: relative; }
-.divider .rise { position: relative; }
-.divider .bleed-scrim {
-  background:
-    linear-gradient(to right,
-      color-mix(in srgb, var(--color-section) 90%, transparent),
-      color-mix(in srgb, var(--color-section) 60%, transparent) 55%,
-      color-mix(in srgb, var(--color-section) 25%, transparent)),
-    linear-gradient(to top,
-      color-mix(in srgb, var(--color-section) 70%, transparent),
-      transparent 35%);
-}
-.half-bleed-figure { position: absolute; inset: 0 0 0 auto; width: 860px; margin: 0; }
-.half-bleed-figure img { width: 100%; height: 100%; }
-.half-bleed > .slide-title { max-width: none; white-space: nowrap; }
-.half-bleed .bullets li + li { margin-top: calc(1.5 * var(--baseline) - 1cap); }
-.icon-grid span { white-space: nowrap; }
-.half-bleed .lead, .half-bleed .bullets { max-width: 640px; }
-.half-bleed .icon-grid { grid-template-columns: auto auto; justify-content: start; max-width: 880px; gap: calc(2 * var(--baseline)) 160px; margin-top: calc(3 * var(--baseline) - 1cap); }
-.half-bleed .page-foot { right: auto; left: var(--pad-x); }
-.sayings figcaption { font-size: var(--type-small); line-height: var(--baseline); color: color-mix(in srgb, var(--color-text) 55%, transparent); margin: calc(2 * var(--baseline) - 1cap) 0 0; text-box: trim-both cap alphabetic; max-width: 34ch; }
-.icon-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: calc(3 * var(--baseline)) 96px; margin-top: calc(4 * var(--baseline) - 1cap); max-width: 1480px; }
-.icon-grid > div { display: flex; flex-direction: column; gap: 28px; }
-.icon-grid .ic { width: 60px; height: 60px; color: var(--color-accent); }
-.icon-grid span { font-size: var(--type-body); line-height: var(--baseline); text-box: trim-both cap alphabetic; }
 .grew { display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; }
-.grew li { display: flex; align-items: center; gap: 32px; font-size: var(--type-body); }
-.grew li:first-child { margin-top: calc(var(--baseline) - 15px); }
+.grew li { display: flex; align-items: center; gap: 28px; font-size: var(--type-body); }
 .grew li + li { margin-top: calc(2 * var(--baseline) - 44px); }
 .grew .ic { width: 44px; height: 44px; color: var(--color-accent); }
 .grew span { text-box: trim-both cap alphabetic; }
-.steps { display: flex; flex-direction: column; max-width: 1560px; margin-top: calc(2 * var(--baseline) - 1px); }
+.icon-grid { display: grid; grid-template-columns: 1fr 1fr; gap: calc(2.5 * var(--baseline)) 64px; margin-top: calc(3.5 * var(--baseline) - 1cap); }
+.icon-grid > div { display: flex; flex-direction: column; gap: 26px; }
+.icon-grid .ic { width: 56px; height: 56px; color: var(--color-accent); }
+.icon-grid span { font-size: var(--type-body); line-height: var(--baseline); text-box: trim-both cap alphabetic; }
+.steps { display: flex; flex-direction: column; margin-top: calc(2.5 * var(--baseline) - 1px); }
 .steps > div {
-  display: grid; grid-template-columns: 88px 560px 1fr; align-items: baseline; gap: 48px;
-  padding: calc(var(--baseline) - 0.5cap - 0.5px) 0;
+  display: grid; grid-template-columns: 80px 1fr; align-items: baseline; gap: calc(0.75 * var(--baseline)) 24px;
+  padding: calc(var(--baseline) - 0.5cap - 0.5px) 0 calc(var(--baseline) - 0.5cap + 4px);
   border-bottom: 1px solid transparent;
   background: linear-gradient(to right,
     transparent, var(--color-divider) 48px,
@@ -254,24 +211,39 @@ deck-stage[data-no-page-furniture] .page-foot { display: none !important; }
 .steps span { text-box: trim-both cap alphabetic; }
 .step-num { font-size: var(--type-kicker); color: var(--color-accent); font-feature-settings: "tnum" 1; }
 .step-head { font-family: var(--font-heading); font-weight: var(--font-heading-weight); font-size: var(--type-subtitle); }
-.step-copy { font-size: var(--type-small); color: var(--color-neutral-300); }
+.step-copy { grid-column: 2; font-size: var(--type-small); line-height: calc(0.9 * var(--baseline)); color: var(--color-neutral-300); }
 .verdict { display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; }
-.verdict li { display: flex; align-items: center; gap: 24px; font-size: var(--type-small); }
+.verdict li { display: flex; align-items: center; gap: 22px; font-size: var(--type-small); }
 .verdict li + li { margin-top: calc(var(--baseline) - 12px); }
 .verdict .ic { width: 30px; height: 30px; }
 .verdict .yes .ic { color: var(--color-accent-300); }
 .verdict .no .ic { color: color-mix(in srgb, var(--color-text) 40%, transparent); }
 .verdict span { text-box: trim-both cap alphabetic; }
-.cols p.mgr-quote {
+.mgr-quote {
   font-family: var(--font-heading); font-weight: var(--font-heading-weight);
-  font-size: var(--type-subtitle); line-height: calc(1.5 * var(--baseline));
-  margin: calc(1 * var(--baseline) - 1cap) 0 calc(2 * var(--baseline) - 1cap);
-  text-box: trim-both cap alphabetic; max-width: none; white-space: nowrap; color: var(--color-text);
+  font-size: var(--type-subtitle); line-height: calc(1.25 * var(--baseline));
+  margin: calc(1 * var(--baseline) - 1cap) 0 calc(1.5 * var(--baseline) - 1cap);
+  text-box: trim-both cap alphabetic; color: var(--color-text);
 }
 .mgr-label { font-size: var(--type-kicker); letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-accent); text-box: trim-both cap alphabetic; }
-.trait-row { display: flex; align-items: baseline; gap: 22px; flex-wrap: wrap; font-size: var(--type-subtitle); }
+.final .slide-title { font-size: 72px; line-height: calc(2 * var(--baseline)); position: relative; }
+.final .rise { gap: 64px; }
+.final .slide-title::before {
+  content: ""; position: absolute; left: calc(-52px + 0.06em);
+  top: calc(0.5cap - 0.5px); width: 36px; height: 1px; background: var(--color-accent);
+}
+.trait-row { display: flex; align-items: baseline; gap: 20px; flex-wrap: wrap; font-size: var(--type-subtitle); max-width: 16ch; row-gap: calc(1 * var(--baseline)); }
 .trait-row .sep { color: var(--color-accent); }
 .trait-row span { text-box: trim-both cap alphabetic; }
+.quote { justify-content: center; }
+.quote .rise { display: flex; flex-direction: column; gap: 48px; position: relative; }
+.quote blockquote {
+  font-family: var(--font-heading); font-weight: var(--font-heading-weight);
+  font-size: 52px; line-height: calc(1.75 * var(--baseline)); letter-spacing: -0.015em;
+  max-width: 16ch; margin: 0;
+  text-indent: -0.474em;
+}
+.quote figcaption { font-size: var(--type-small); margin: 0; text-indent: -1.267em; }
 a { color: var(--color-accent-300); }
 a:hover { color: var(--color-accent-200); }
 @media (prefers-reduced-motion: no-preference) {
@@ -280,12 +252,10 @@ a:hover { color: var(--color-accent-200); }
 }
 </style>
 </helmet>
-<x-import component-from-global-scope="deck-stage" from="./deck-stage.js" width="1920" height="1080" no-rail="" hint-size="100%,100%" data-uneditable="">
+<x-import component-from-global-scope="deck-stage" from="./deck-stage.js" width="1080" height="1920" no-rail="" hint-size="100%,100%" data-uneditable="">
 
   <section class="slide cover" data-label="Title" data-speaker-notes="Welcome. Eight minutes on leading the next generation of the workforce — practical, not theoretical.">
-    <figure class="bleed-figure lighten">
-      <img src="assets/aurora.png" alt="" style="width:100%;height:100%;object-fit:cover;display:block">
-    </figure>
+    <figure class="bleed-figure lighten"><img src="assets/aurora.png" alt=""></figure>
     <div class="bleed-scrim"></div>
     <div class="kicker"><span>Leadership talk</span></div>
     <div class="rise">
@@ -300,14 +270,14 @@ a:hover { color: var(--color-accent-200); }
   </section>
 
   <section class="slide content" data-label="Every Generation" data-speaker-notes="Every generation has been described this way. The real question isn't whether Gen Z is difficult — it's whether leadership has evolved. Ask for a show of hands on each line.">
-    <figure class="bleed-figure lighten"><img src="assets/aurora.png" alt="" style="width:100%;height:100%;object-fit:cover;display:block"></figure>
+    <figure class="bleed-figure lighten"><img src="assets/aurora.png" alt=""></figure>
     <div class="bleed-scrim soft"></div>
     <div class="kicker"><span>01 · Perception</span></div>
     <h2 class="slide-title">Every Generation Thinks the Next One Is Difficult</h2>
-    <div class="cols cols-2 rise">
+    <div class="stack rise">
       <figure class="sayings">
         <blockquote>“The young people of today think of nothing but themselves. They have no reverence for parents or old age. They are impatient of all restraint.”</blockquote>
-        <figcaption>Attributed to Confucius, c. 500 BC — the same complaint once pinned on Socrates (“The children now love luxury…”). The attributions rarely hold up; the sentiment is thousands of years old.</figcaption>
+        <figcaption>Attributed to Confucius, c. 500 BC — the same complaint once pinned on Socrates. The attributions rarely hold up; the sentiment is thousands of years old.</figcaption>
       </figure>
       <div>
         <h3>Have you heard someone say:</h3>
@@ -324,11 +294,12 @@ a:hover { color: var(--color-accent-200); }
   </section>
 
   <section class="slide content" data-label="Who They Are" data-speaker-notes="Unlike many of us, they have never experienced a world without instant access to information. That shapes how they learn, communicate, and solve problems.">
-    <figure class="bleed-figure lighten"><img src="assets/aurora.png" alt="" style="width:100%;height:100%;object-fit:cover;display:block"></figure>
+    <figure class="bleed-figure lighten"><img src="assets/aurora.png" alt=""></figure>
     <div class="bleed-scrim soft"></div>
     <div class="kicker"><span>02 · Context</span></div>
-    <h2 class="slide-title">Who Are Gen Z &amp; Gen Alpha?</h2><div class="cols cols-2 rise">
-      <table class="table plain-rules" style="margin-top: -32px">
+    <h2 class="slide-title">Who Are Gen Z &amp; Gen Alpha?</h2>
+    <div class="stack rise">
+      <table class="table plain-rules">
         <thead>
           <tr><th>Generation</th><th>Born</th></tr>
         </thead>
@@ -339,9 +310,10 @@ a:hover { color: var(--color-accent-200); }
           <tr><td>Gen Z</td><td>1997–2012</td></tr>
           <tr><td>Gen Alpha</td><td>2013 onwards</td></tr>
         </tbody>
-      </table><div style="width: 434px; height: 518px; margin-left: 160px">
-        
-        <h3 class="col-head" style="width: 542px; height: 28px">They grew up with</h3><ul class="grew" style="width: 434px; height: 477px">
+      </table>
+      <div>
+        <h3 class="col-head">They grew up with</h3>
+        <ul class="grew">
           <li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="7.5" y="2.5" width="9" height="19" rx="2"></rect><line x1="10.5" y1="18.5" x2="13.5" y2="18.5"></line></svg><span>Smartphones</span></li>
           <li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><ellipse cx="12" cy="12" rx="4" ry="9"></ellipse><line x1="3" y1="12" x2="21" y2="12"></line></svg><span>The internet</span></li>
           <li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.9 7.1L21 12l-7.1 1.9L12 21l-1.9-7.1L3 12l7.1-1.9z"></path></svg><span>AI</span></li>
@@ -349,17 +321,14 @@ a:hover { color: var(--color-accent-200); }
           <li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5c-4.7 0-8.5 3.2-8.5 7.2 0 2.2 1.1 4.1 2.8 5.4L5.2 20.5l4.2-1.4c.8.2 1.7.3 2.6.3 4.7 0 8.5-3.2 8.5-7.2S16.7 3.5 12 3.5z"></path><circle cx="8.6" cy="10.7" r="0.4"></circle><circle cx="12" cy="10.7" r="0.4"></circle><circle cx="15.4" cy="10.7" r="0.4"></circle></svg><span>Social media</span></li>
         </ul>
       </div>
-      
     </div>
-    
     <div class="page-foot" aria-hidden="true"></div>
     <div class="brand"><img src="assets/elsapiens-logo.png" alt="elSapiens"></div>
   </section>
 
-  <section class="slide content half-bleed" data-label="What Makes Them Different" data-speaker-notes="This isn't disrespect. It's curiosity. They want purpose before process.">
-    <figure class="half-bleed-figure lighten">
-      <img src="assets/network.png" alt="" style="width:100%;height:100%;object-fit:cover;display:block">
-    </figure>
+  <section class="slide content" data-label="What Makes Them Different" data-speaker-notes="This isn't disrespect. It's curiosity. They want purpose before process.">
+    <figure class="bottom-bleed-figure lighten"><img src="assets/network.png" alt=""></figure>
+    <div class="bottom-bleed-scrim"></div>
     <div class="kicker"><span>03 · Mindset</span></div>
     <h2 class="slide-title">What Makes Them Different?</h2>
     <p class="lead rise">Instead of asking <em>“What should I do?”</em> — they ask:</p>
@@ -374,10 +343,9 @@ a:hover { color: var(--color-accent-200); }
     <div class="brand"><img src="assets/elsapiens-logo.png" alt="elSapiens"></div>
   </section>
 
-  <section class="slide content half-bleed" data-label="Their Strengths" data-speaker-notes="Every generation has strengths. Ours brought experience. They bring speed and technology.">
-    <figure class="half-bleed-figure lighten">
-      <img src="assets/rise.png" alt="" style="width:100%;height:100%;object-fit:cover;display:block">
-    </figure>
+  <section class="slide content" data-label="Their Strengths" data-speaker-notes="Every generation has strengths. Ours brought experience. They bring speed and technology.">
+    <figure class="bottom-bleed-figure lighten"><img src="assets/rise.png" alt=""></figure>
+    <div class="bottom-bleed-scrim"></div>
     <div class="kicker"><span>04 · Strengths</span></div>
     <h2 class="slide-title">Their Biggest Strengths</h2>
     <div class="icon-grid rise">
@@ -393,7 +361,7 @@ a:hover { color: var(--color-accent-200); }
   </section>
 
   <section class="slide content" data-label="Why Leaders Struggle" data-speaker-notes="The biggest shift is moving from being the boss to becoming a mentor.">
-    <figure class="bleed-figure lighten"><img src="assets/aurora.png" alt="" style="width:100%;height:100%;object-fit:cover;display:block"></figure>
+    <figure class="bleed-figure lighten"><img src="assets/aurora.png" alt=""></figure>
     <div class="bleed-scrim soft"></div>
     <div class="kicker"><span>05 · The gap</span></div>
     <h2 class="slide-title">Why Leaders Struggle</h2>
@@ -414,7 +382,7 @@ a:hover { color: var(--color-accent-200); }
   </section>
 
   <section class="slide content" data-label="Five Ways to Lead" data-speaker-notes="Five practical shifts. None of them cost money — they cost habit.">
-    <figure class="bleed-figure lighten"><img src="assets/aurora.png" alt="" style="width:100%;height:100%;object-fit:cover;display:block"></figure>
+    <figure class="bleed-figure lighten"><img src="assets/aurora.png" alt=""></figure>
     <div class="bleed-scrim soft"></div>
     <div class="kicker"><span>06 · The playbook</span></div>
     <h2 class="slide-title">Five Ways to Lead Gen Z</h2>
@@ -430,11 +398,11 @@ a:hover { color: var(--color-accent-200); }
   </section>
 
   <section class="slide content" data-label="A Real Example" data-speaker-notes="People don't usually leave companies. They leave poor leadership.">
-    <figure class="bleed-figure lighten"><img src="assets/aurora.png" alt="" style="width:100%;height:100%;object-fit:cover;display:block"></figure>
+    <figure class="bleed-figure lighten"><img src="assets/aurora.png" alt=""></figure>
     <div class="bleed-scrim soft"></div>
     <div class="kicker"><span>07 · In practice</span></div>
     <h2 class="slide-title">A Real Workplace Example</h2>
-    <div class="cols cols-2 rise">
+    <div class="stack rise">
       <div>
         <div class="mgr-label">Manager A</div>
         <p class="mgr-quote">“Do exactly what I tell you.”</p>
@@ -459,9 +427,7 @@ a:hover { color: var(--color-accent-200); }
   </section>
 
   <section class="slide cover final" data-label="Final Message" data-speaker-notes="Great leaders listen, coach, trust, adapt, and keep learning.">
-    <figure class="bleed-figure lighten">
-      <img src="assets/network.png" alt="" style="width:100%;height:100%;object-fit:cover;display:block">
-    </figure>
+    <figure class="bleed-figure lighten"><img src="assets/network.png" alt=""></figure>
     <div class="bleed-scrim"></div>
     <div class="rise">
       <h2 class="slide-title"><span>Don’t manage generations.</span><br><span style="color: var(--color-accent-300)">Inspire people.</span></h2>
@@ -477,9 +443,7 @@ a:hover { color: var(--color-accent-200); }
   </section>
 
   <section class="slide quote" data-label="Close" data-speaker-notes="When electricity arrived, businesses that embraced it transformed industries. Today, AI and a new generation are reshaping the workplace in much the same way. We have two choices: resist the change or learn to lead through it. Gen Z and Gen Alpha don't need different values — they need leadership that understands the world they've grown up in. If we adapt, we'll not only build better workplaces but also unlock the incredible potential of the next generation. Thank you.">
-    <figure class="bleed-figure lighten">
-      <img src="assets/aurora.png" alt="" style="width:100%;height:100%;object-fit:cover;display:block">
-    </figure>
+    <figure class="bleed-figure lighten"><img src="assets/aurora.png" alt=""></figure>
     <div class="bleed-scrim"></div>
     <div class="kicker"><span>08 · The takeaway</span></div>
     <figure class="rise">
